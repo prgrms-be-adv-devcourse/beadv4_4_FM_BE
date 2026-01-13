@@ -1,0 +1,15 @@
+# .github/issue-branch.yml
+branchName: "${level}/${issue.number}/${issue.title}"
+branches:
+  - label: "feature"
+    level: "feature" # 기능 작업
+  - label: "fix"
+    level: "fix" # 수정사항 발생 시
+  - label: "refactor"
+    level: "refactor" # 리팩토링
+  - label: "hotfix"
+    level: "hotfix" # 급한 수정사항 (릴리즈 후)
+  - label: "setting"
+    level: "setting" # 프로젝트 세팅 등
+# 기본 설정: 라벨이 없을 경우 feature를 기본값으로 사용하거나 무시할 수 있습니다.
+defaultBranch: main
