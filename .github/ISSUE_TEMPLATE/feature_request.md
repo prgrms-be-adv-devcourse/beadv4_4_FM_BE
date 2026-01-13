@@ -1,7 +1,7 @@
 ---
 name: "🚀 Feature Request"
 about: "새로운 기능 구현을 위한 이슈를 생성합니다."
-title: "[Feature] "
+title: "[Feature] : 이슈 설명 "
 labels: enhancement
 ---
 
