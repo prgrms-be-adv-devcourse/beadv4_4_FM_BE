@@ -1,6 +1,6 @@
 package backend.mossy.shared.member.domain;
 
-import com.back.global.jpa.entity.BaseEntity;
+import backend.mossy.global.jpa.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
