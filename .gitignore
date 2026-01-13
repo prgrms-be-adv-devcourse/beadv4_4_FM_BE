@@ -1,16 +1,6 @@
-# Compiled class file
+# [Build & Compiled]
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -18,7 +8,43 @@
 *.zip
 *.tar.gz
 *.rar
+build/
+.gradle/
+bin/
+out/
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# [IDE - IntelliJ]
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# [IDE - VS Code & Others]
+.vscode/
+.classpath
+.project
+.settings/
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# [OS]
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# [Crashes]
 hs_err_pid*
 replay_pid*
+
+# [Sensitive Data - 중요!]
+# 모든 yml을 막는 대신, 민감한 정보가 담긴 특정 파일만 제외합니다.
+# application.yml은 공유하되, 보안이 필요한 경우 application-local.yml 등을 따로 만들어 관리하세요.
+# .yml (주석 처리: 전체 차단 해제
+application-dev.yml
