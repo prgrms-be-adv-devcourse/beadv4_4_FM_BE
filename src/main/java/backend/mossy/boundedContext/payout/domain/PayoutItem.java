@@ -34,10 +34,6 @@ public class PayoutItem extends BaseIdAndTime {
     @Column(name = "rel_id", nullable = false)
     private Long relId;
 
-    /**
-     * 금액: 스키마의 DECIMAL(10,2)에 맞춰 BigDecimal 사용 권장
-     * 정수 기반(long)을 원하시면 1원 단위 절사가 필요합니다.
-     */
     @Column(name = "amount", precision = 10, scale = 2, nullable = false)
     private BigDecimal amount;
 
