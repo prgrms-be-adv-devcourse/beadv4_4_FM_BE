@@ -42,7 +42,6 @@ public class PayoutCandidateItem extends BaseIdAndTime {
 
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "payout_item_id")
-    @Setter
     private PayoutItem payoutItem;
 
     @Builder

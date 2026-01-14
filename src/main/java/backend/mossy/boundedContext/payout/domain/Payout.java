@@ -10,8 +10,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,8 +29,6 @@ public class Payout extends BaseIdAndTime {
     @JoinColumn(name = "seller_id") // seller_id 컬럼과 매핑
     private PayoutMember payee;
 
-
-    @Setter
     private LocalDateTime payoutDate;
 
     private BigDecimal amount = BigDecimal.ZERO; // BigDecimal로 타입 변경 및 초기화
