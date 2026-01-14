@@ -1,6 +1,8 @@
 package backend.mossy.boundedContext.payout.domain;
 
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
+import backend.mossy.shared.payout.dto.response.PayoutItemResponseDto;
+import backend.mossy.shared.payout.dto.response.PayoutResponseDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -10,10 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal; // BigDecimal 임포트 추가
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
@@ -43,14 +46,20 @@ public class Payout extends BaseIdAndTime {
 
     public PayoutItem addItem(PayoutEventType eventType, String relTypeCode, int relId, LocalDateTime payDate, PayoutMember payer,
                               PayoutMember payee, long itemAmount) {
-        PayoutItem payoutItem = new PayoutItem(
-                this, eventType, relTypeCode, relId, payDate, payer, payee, itemAmount
-        );
+        PayoutItem payoutItem = PayoutItem.builder()
+                .payout(this)
+                .sellerId(payee.getId())
+                .eventType(eventType)
+                .relTypeCode(relTypeCode)
+                .relId(relId)
+                .amount(BigDecimal.valueOf(itemAmount))
+                .payoutDate(payDate)
+                .build();
 
         items.add(payoutItem);
 
-        // 총 정산 금액을 업데이트합니다. PayoutItem의 long amount를 BigDecimal로 변환하여 더합니다.
-        this.amount = this.amount.add(BigDecimal.valueOf(itemAmount));
+        // 총 정산 금액을 업데이트합니다.
+        this.amount = this.amount.add(payoutItem.getAmount());
 
         return payoutItem;
     }
@@ -59,25 +68,34 @@ public class Payout extends BaseIdAndTime {
     public void completePayout() {
         this.payoutDate = LocalDateTime.now();
 
-        publishEvent(
-                new PayoutCompletedEvent(
-                        toDto()
-                )
-        );
+        // TODO: PayoutCompletedEvent가 새로운 PayoutResponseDto를 받도록 수정해야 합니다.
+        // publishEvent(
+        //         new PayoutCompletedEvent(
+        //                 toDto()
+        //         )
+        // );
     }
 
 
-    public PayoutDto toDto() {
-        return new PayoutDto(
-                getId(),
-                getCreateDate(),
-                getModifyDate(),
-                payee.getId(),
-                payee.getNickname(),
-                payoutDate,
-                amount, // BigDecimal 타입으로 변경된 amount 전달
-                payee.isSystem()
-                // buyer.getId() // buyer ID 제거
-        );
+    public PayoutResponseDto toDto() {
+        // PayoutItem 리스트를 PayoutItemResponseDto 리스트로 변환
+        List<PayoutItemResponseDto> itemDtos = this.items.stream()
+                .map(item -> PayoutItemResponseDto.builder()
+                        .payoutItemId(item.getId())
+                        .eventType(item.getEventType().name())
+                        .amount(item.getAmount())
+                        .itemPayDate(item.getPayoutDate())
+                        .build())
+                .collect(Collectors.toList());
+
+        // 최종적으로 PayoutResponseDto를 빌더로 생성하여 반환
+        return PayoutResponseDto.builder()
+                .payoutId(getId())
+                .createdDate(getCreateDate())
+                .payoutDate(this.payoutDate)
+                .payee(this.payee.toDto()) // PayoutMember의 toDto()를 재사용
+                .totalAmount(this.amount)
+                .items(itemDtos)
+                .build();
     }
 }
