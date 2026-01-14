@@ -1,7 +1,9 @@
 package backend.mossy.auth.config;
 
+import backend.mossy.auth.jwt.JwtAuthenticationFilter;
 import backend.mossy.auth.security.RestAccessDeniedHandler;
 import backend.mossy.auth.security.RestAuthenticationEntryPoint;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -10,11 +12,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RestAccessDeniedHandler accessDeniedHandler;
+    private final RestAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -30,21 +38,33 @@ public class SecurityConfig {
                 //폼 로그인 비활성
                 .formLogin(form -> form.disable())
                 //기본 인증 비활성
-
+                .httpBasic(basic -> basic.disable())
                 // 인증 / 인가 예외 처리
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                        .accessDeniedHandler(new RestAccessDeniedHandler())
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
 
                 // 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
-                );
+                        .requestMatchers(
+                                //swagger
+                                "/mossy-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/error",
 
-        // JWT 필터는 다음 PR에서 추가 예정
-        // http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                                //Auth 테스트 (토큰)
+                                "/api/auth/login"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+
+                //JWT 인증 필터
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

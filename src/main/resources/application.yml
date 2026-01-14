@@ -37,4 +37,7 @@ logging:
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
 
+jwt:
+  secret: mossy-secret-key-change-later-32bytes-minimum!!
+  access-token-expire-ms: 1800000
 
