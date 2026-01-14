@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public abstract class ReplicaMember extends BaseMember {
     @Id
-    private int id;
+    private long id;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
 
-    public ReplicaMember(int id, LocalDateTime createDate, LocalDateTime modifyDate, String username, String password, String nickname, int activityScore) {
+    public ReplicaMember(long id, LocalDateTime createDate, LocalDateTime modifyDate, String username, String password, String nickname, int activityScore) {
         super(username, password, nickname, activityScore);
         this.id = id;
         this.createDate = createDate;

@@ -32,7 +32,7 @@ public class PayoutItem extends BaseIdAndTime {
     private String relTypeCode;
 
     @Column(name = "rel_id", nullable = false)
-    private int relId;
+    private Long relId;
 
     /**
      * 금액: 스키마의 DECIMAL(10,2)에 맞춰 BigDecimal 사용 권장
@@ -49,7 +49,7 @@ public class PayoutItem extends BaseIdAndTime {
 
     @Builder
     public PayoutItem(Payout payout, Long sellerId, PayoutEventType eventType,
-                      String relTypeCode, int relId, BigDecimal amount, LocalDateTime payoutDate) {
+                      String relTypeCode, Long relId, BigDecimal amount, LocalDateTime payoutDate) {
         this.payout = payout;
         this.sellerId = sellerId;
         this.eventType = eventType;

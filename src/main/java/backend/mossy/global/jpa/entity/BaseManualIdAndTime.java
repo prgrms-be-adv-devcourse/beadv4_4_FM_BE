@@ -17,13 +17,13 @@ import java.time.LocalDateTime;
 @Getter
 public abstract class BaseManualIdAndTime extends BaseEntity {
     @Id
-    private int id;
+    private long id;
     @CreatedDate
     private LocalDateTime createDate;
     @LastModifiedDate
     private LocalDateTime modifyDate;
 
-    public BaseManualIdAndTime(int id) {
+    public BaseManualIdAndTime(long id) {
         this.id = id;
     }
 }

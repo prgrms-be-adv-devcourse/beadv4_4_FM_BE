@@ -25,7 +25,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private String relTypeCode;
 
     @Column(name = "rel_id", nullable = false)
-    private int relId;
+    private Long relId;
 
     @Column(name = "payout_date", nullable = false)
     private LocalDateTime payoutDate;
@@ -38,7 +38,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private PayoutMember payee;
 
     @Column(name = "amount", columnDefinition = "INT DEFAULT 0")
-    private long amount;
+    private Long amount;
 
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "payout_item_id")
@@ -46,8 +46,8 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private PayoutItem payoutItem;
 
     @Builder
-    public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, int relId,
-                               LocalDateTime payoutDate, PayoutMember payee, long amount) {
+    public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
+                               LocalDateTime payoutDate, PayoutMember payee, Long amount) {
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;
         this.relId = relId;
