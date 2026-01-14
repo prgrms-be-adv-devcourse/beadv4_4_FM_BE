@@ -23,7 +23,7 @@ public abstract class BaseManualIdAndTime extends BaseEntity {
     @LastModifiedDate
     private LocalDateTime modifyDate;
 
-    public BaseManualIdAndTime(long id) {
+    public BaseManualIdAndTime(Long id) {
         this.id = id;
     }
 }
