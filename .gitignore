@@ -33,6 +33,8 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
 # [OS]
 .DS_Store
