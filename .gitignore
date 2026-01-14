@@ -8,16 +8,21 @@
 *.zip
 *.tar.gz
 *.rar
+.gradle
 build/
-.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
 bin/
-out/
 
 # [IDE - IntelliJ]
-.idea/
+.idea
 *.iws
 *.iml
 *.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
 # [IDE - VS Code & Others]
 .vscode/
@@ -50,4 +55,6 @@ replay_pid*
 # application.yml은 공유하되, 보안이 필요한 경우 application-local.yml 등을 따로 만들어 관리하세요.
 # .yml (주석 처리: 전체 차단 해제
 application-dev.yml
+
+### Custom ###
 .env
