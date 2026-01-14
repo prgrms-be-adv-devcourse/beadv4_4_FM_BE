@@ -18,10 +18,7 @@ import lombok.NoArgsConstructor;
 public class Payment extends BaseManualIdAndTime {
 
     @Embedded
-    private PaymentReference reference; // 복합키 (orderId + buyerId)
-
-    @Column(unique = true)
-    private String pgUid; // PG사 거래 고유 번호
+    private PaymentReference reference; // 복합키 (orderId + buyerId + pgUid)
 
     @Column(nullable = false)
     private long amount; // 결제 금액
