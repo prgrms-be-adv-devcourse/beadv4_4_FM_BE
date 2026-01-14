@@ -8,16 +8,21 @@
 *.zip
 *.tar.gz
 *.rar
+.gradle
 build/
-.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
 bin/
-out/
 
 # [IDE - IntelliJ]
-.idea/
+.idea
 *.iws
 *.iml
 *.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
 
 # [IDE - VS Code & Others]
 .vscode/
