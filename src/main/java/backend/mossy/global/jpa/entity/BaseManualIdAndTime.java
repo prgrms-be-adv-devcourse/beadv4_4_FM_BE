@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Getter
 public abstract class BaseManualIdAndTime extends BaseEntity {
     @Id
-    private long id;
+    private Long id;
     @CreatedDate
     private LocalDateTime createDate;
     @LastModifiedDate
