@@ -21,11 +21,11 @@ public abstract class BaseManualIdAndTime extends BaseEntity {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    protected LocalDateTime createDate;
+    protected LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    protected LocalDateTime modifyDate;
+    protected LocalDateTime updatedAt;
 
     protected BaseManualIdAndTime(Long id) {
         this.id = id;
