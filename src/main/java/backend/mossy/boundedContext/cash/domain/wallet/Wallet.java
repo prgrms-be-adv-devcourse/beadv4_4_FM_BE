@@ -24,7 +24,7 @@ public class Wallet extends BaseManualIdAndTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private CashUser member;
+    private CashUser user;
 
     private long balance = 0;
 
