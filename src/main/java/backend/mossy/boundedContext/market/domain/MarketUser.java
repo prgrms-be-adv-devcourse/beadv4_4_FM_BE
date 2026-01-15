@@ -13,11 +13,7 @@ import lombok.NoArgsConstructor;
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
 public class MarketUser extends ReplicaUser {
 
-    @Column(name = "email")
     private String email;
-
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "rrn_encrypted")
     private String rrnEncrypted;
