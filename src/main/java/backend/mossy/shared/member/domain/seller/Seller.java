@@ -19,7 +19,7 @@ public class Seller extends BaseTimeOnly {
     //seller_id == user_id (공유PK)
     @Id
     @Column(name = "seller_id")
-    private Long seller_id;
+    private Long sellerId;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
@@ -68,7 +68,7 @@ public class Seller extends BaseTimeOnly {
     ) {
         Seller s = new Seller();
         s.user = user;
-        s.seller_id = user.getId();
+        s.sellerId = user.getId();
         s.sellerType = sellerType;
         s.storeName = storeName;
         s.businessNum = businessNum;
