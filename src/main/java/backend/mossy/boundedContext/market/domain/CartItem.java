@@ -12,9 +12,10 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "MARKET_CART_ITEM")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@AttributeOverride(name = "id", column = @Column(name = "cart_item_id"))
 public class CartItem extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "cart_id")
+    @JoinColumn(name = "cart_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Cart cart;
 
     @Column(name = "product_id", nullable = false)
