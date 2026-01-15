@@ -12,20 +12,22 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "MARKET_ORDER_DETAIL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@AttributeOverride(name = "id", column = @Column(name = "order_detail_id"))
 public class OrderDetail extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "seller_id")
+    @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketSeller seller;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "weight_grade_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private WeightGrade weightGrade;
 
     @Column(name = "product_id", nullable = false)
     private Long productId;
-
-    @ManyToOne(fetch = LAZY)
-    private WeightGrade weightGrade;
 
     @Column(nullable = false)
     private int count;

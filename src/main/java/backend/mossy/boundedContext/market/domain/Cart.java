@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.market.domain;
 
-import backend.mossy.global.jpa.entity.BaseManualIdAndTime;
+import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,9 +13,10 @@ import java.util.List;
 @Table(name = "MARKET_CART")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Cart extends BaseManualIdAndTime {
+@AttributeOverride(name = "id", column = @Column(name = "cart_id"))
+public class Cart extends BaseIdAndTime {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketUser buyer;
 
     @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)

@@ -1,6 +1,7 @@
 package backend.mossy.boundedContext.market.domain;
 
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "MARKET_WEIGHT_GRADE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@AttributeOverride(name = "id", column = @Column(name = "weight_grade_id"))
 public class WeightGrade extends BaseIdAndTime {
     @Column(nullable = false)
     private String weightGradeName;
