@@ -1,42 +1,53 @@
 package backend.mossy.boundedContext.market.domain;
 
-import backend.mossy.global.jpa.entity.BaseIdAndTime;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import backend.mossy.shared.market.dto.MarketUserDto;
+import backend.mossy.shared.member.domain.ReplicaMember;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "MARKET_USER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-public class MarketUser extends BaseIdAndTime {
+public class MarketUser extends ReplicaMember {
+    @Builder
+    public MarketUser(
+            Long id,
+            String email,
+            String name,
+            String rrnEncrypted,
+            String phoneNum,
+            String password,
+            String address,
+            String status,
+            String nickname,
+            String profileImage,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        super(id, email, name, rrnEncrypted, phoneNum, password, address, status, nickname, profileImage, createdAt, updatedAt);
+    }
 
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "rrn_encrypted")
-    private String rrnEncrypted;
-
-    @Column(name = "phone_num", nullable = false, length = 20)
-    private String phoneNum;
-
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "status", nullable = false, length = 20)
-    private String status;
-
-    @Column(name = "nickname", nullable = false, length = 50)
-    private String nickname;
-
-    @Column(name = "profile_image")
-    private String profileImage;
+    public MarketUserDto toDto() {
+        return MarketUserDto.builder()
+                .id(getId())
+                .email(getEmail())
+                .name(getName())
+                .rrnEncrypted(getRrnEncrypted())
+                .phoneNum(getPhoneNum())
+                .password(getPassword())
+                .address(getAddress())
+                .status(getStatus())
+                .nickname(getNickname())
+                .profileImage(getProfileImage())
+                .createdAt(getCreatedAt())
+                .updatedAt(getUpdatedAt())
+                .build();
+    }
 }
