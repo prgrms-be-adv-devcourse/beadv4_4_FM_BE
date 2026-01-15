@@ -10,30 +10,23 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "PAYOUT_MEMBER") // Payout 컨텍스트 전용 회원 테이블
+@Table(name = "PAYOUT_MEMBER")
 @Getter
 @NoArgsConstructor
-public class PayoutMember extends ReplicaMember { // ReplicaMember를 상속받아 회원 기본 정보 복제
+public class PayoutMember extends ReplicaMember {
+
     public PayoutMember(Long id, LocalDateTime createDate, LocalDateTime modifyDate, String username, String password, String nickname, int activityScore) {
         super(id, createDate, modifyDate, username, password, nickname, activityScore);
     }
 
     /**
-     * PayoutMember의 DTO(Data Transfer Object)를 생성합니다.
-     * 주로 이벤트 발행 시 다른 컨텍스트로 정보를 전달하는 데 사용됩니다.
+     * DTO 변환 책임을 PayoutMemberResponseDto의 정적 메서드에 위임합니다.
      */
     public PayoutMemberResponseDto toDto() {
-        return new PayoutMemberResponseDto(
-                getId(),
-                getCreateDate(),
-                getModifyDate(),
-                getUsername(),
-                getNickname(),
-                getActivityScore()
-        );
+        return PayoutMemberResponseDto.from(this);
     }
 
     public boolean isSystem() {
-        return getUsername().equals("system");
+        return "system".equals(getUsername());
     }
 }
