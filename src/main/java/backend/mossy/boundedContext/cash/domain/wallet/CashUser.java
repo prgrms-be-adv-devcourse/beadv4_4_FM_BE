@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.cash.domain.wallet;
 
-import backend.mossy.shared.member.domain.ReplicaMember;
+import backend.mossy.shared.member.domain.ReplicaUser;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "CASH_MEMBER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CashMember extends ReplicaMember {
+public class CashUser extends ReplicaUser {
     //수정 필요
 }
