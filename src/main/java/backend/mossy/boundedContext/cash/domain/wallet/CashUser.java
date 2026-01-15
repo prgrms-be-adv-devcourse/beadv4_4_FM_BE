@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.cash.domain.wallet;
 
+import backend.mossy.shared.member.domain.ReplicaMember;
 import backend.mossy.shared.member.domain.ReplicaUser;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
