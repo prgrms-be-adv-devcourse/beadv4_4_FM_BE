@@ -29,6 +29,8 @@ spring:
 springdoc:
   swagger-ui:
     path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs
 
 logging:
   level:
