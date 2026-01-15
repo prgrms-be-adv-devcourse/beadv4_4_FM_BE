@@ -1,12 +1,7 @@
 package backend.mossy.boundedContext.cash.domain.payment;
 
 import backend.mossy.global.jpa.entity.BaseManualIdAndTime;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "PAYMENT_PAYMENT")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AttributeOverride(name = "id", column = @Column(name = "payment_id"))
 public class Payment extends BaseManualIdAndTime {
 
     @Embedded

@@ -8,18 +8,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
-
 
 @Entity
 @Table(name = "MARKET_PRODUCT")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @AttributeOverride(name = "id", column = @Column(name = "product_id"))
 public class Product extends BaseIdAndTime {
 
-    @Column(name = "seller_id", nullable = false)
-    private Long sellerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private MarketSeller seller;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
@@ -46,6 +47,7 @@ public class Product extends BaseIdAndTime {
     @Column(nullable = false, length = 20)
     private String status = "ON_SALE"; // 기본값 설정
 
+    @Builder.Default
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
+    private List<ProductImage> images = new ArrayList<>();
 }

@@ -1,20 +1,19 @@
-package backend.mossy.boundedContext.cash.domain.wallet;
+package backend.mossy.boundedContext.market.domain;
 
+import backend.mossy.global.jpa.entity.BaseIdAndTime;
+import backend.mossy.shared.member.domain.BaseMember;
 import backend.mossy.shared.member.domain.ReplicaMember;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "CASH_MEMBER")
+@Table(name = "MARKET_USER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-public class CashMember extends ReplicaMember {
+public class MarketUser extends ReplicaMember {
 
     @Column(name = "email")
     private String email;
