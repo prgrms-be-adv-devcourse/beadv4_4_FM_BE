@@ -1,6 +1,8 @@
 package backend.mossy.boundedContext.market.domain;
 
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
+import backend.mossy.shared.member.domain.BaseMember;
+import backend.mossy.shared.member.domain.ReplicaMember;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-public class MarketUser extends BaseIdAndTime {
+public class MarketUser extends ReplicaMember {
 
     @Column(name = "email")
     private String email;
