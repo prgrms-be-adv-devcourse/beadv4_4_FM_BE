@@ -1,5 +1,6 @@
 package backend.mossy.shared.payout.dto.response;
 
+import backend.mossy.boundedContext.payout.domain.PayoutItem;
 import lombok.Builder;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,4 +15,12 @@ public record PayoutItemResponseDto(
         BigDecimal amount,
         LocalDateTime itemPayDate
 ) {
+    public static PayoutItemResponseDto from(PayoutItem item) {
+        return PayoutItemResponseDto.builder()
+                .payoutItemId(item.getId())
+                .eventType(item.getEventType().name())
+                .amount(item.getAmount())
+                .itemPayDate(item.getPayoutDate())
+                .build();
+    }
 }
