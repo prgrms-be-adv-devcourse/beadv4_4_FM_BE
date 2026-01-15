@@ -23,7 +23,7 @@ public abstract class BaseEntity implements HashModelTypeCode {
         GlobalConfig.getEventPublisher().publish(event);
     }
 
-    public abstract int getId();
-    public abstract LocalDateTime getCreateDate();
-    public abstract LocalDateTime getModifyDate();
+    public abstract Long getId();
+    public abstract LocalDateTime getCreatedAt();
+    public abstract LocalDateTime getUpdatedAt();
 }

@@ -21,11 +21,11 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public abstract class SourceMember extends BaseMember {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private int id;
+    private Long id;
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime modifyDate;
+    private LocalDateTime updatedAt;
 
     public SourceMember(String username, String password, String nickname) {
         //초기에 만드는 score값을 0으로 초기화 한다.

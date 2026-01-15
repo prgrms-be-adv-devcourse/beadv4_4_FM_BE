@@ -1,22 +1,22 @@
 package backend.mossy.boundedContext.market.domain;
 
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
-import jakarta.persistence.*;
+import backend.mossy.shared.member.domain.BaseMember;
+import backend.mossy.shared.member.domain.ReplicaMember;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
-
 @Entity
-@Table(name = "MARKET_MEMBER")
+@Table(name = "MARKET_SELLER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "seller_id"))
-public class MarketMember extends BaseIdAndTime {
+public class MarketSeller extends ReplicaMember {
 
     @Column(name = "user_id")
     private Long userId;
