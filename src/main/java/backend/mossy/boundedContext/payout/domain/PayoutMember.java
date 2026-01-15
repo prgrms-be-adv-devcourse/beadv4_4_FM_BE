@@ -2,6 +2,8 @@ package backend.mossy.boundedContext.payout.domain;
 
 import backend.mossy.shared.member.domain.ReplicaMember;
 import backend.mossy.shared.payout.dto.response.PayoutMemberResponseDto;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PAYOUT_MEMBER")
+@AttributeOverride(name = "id", column = @Column(name = "seller_id"))
 @Getter
 @NoArgsConstructor
 public class PayoutMember extends ReplicaMember {
