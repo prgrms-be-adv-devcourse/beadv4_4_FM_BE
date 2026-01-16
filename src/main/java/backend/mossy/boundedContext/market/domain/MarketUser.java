@@ -1,6 +1,7 @@
 package backend.mossy.boundedContext.market.domain;
 
-import backend.mossy.shared.user.domain.ReplicaUser;
+import backend.mossy.shared.member.domain.user.ReplicaUser;
+import backend.mossy.shared.member.domain.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,11 +14,7 @@ import lombok.NoArgsConstructor;
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
 public class MarketUser extends ReplicaUser {
 
-    @Column(name = "email")
     private String email;
-
-    @Column(name = "name")
-    private String name;
 
     @Column(name = "rrn_encrypted")
     private String rrnEncrypted;
@@ -32,7 +29,7 @@ public class MarketUser extends ReplicaUser {
     private String address;
 
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private UserStatus status;
 
     @Column(name = "nickname", nullable = false, length = 50)
     private String nickname;
