@@ -1,7 +1,6 @@
-package backend.mossy.shared.member.domain;
+package backend.mossy.shared.user.domain;
 
 import backend.mossy.global.jpa.entity.BaseEntity;
-import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Setter(value = PROTECTED)
 @NoArgsConstructor
-public abstract class BaseMember extends BaseEntity {
+public abstract class BaseUser extends BaseEntity {
     private String email;
     private String name;
     private String rrnEncrypted;
@@ -24,7 +23,7 @@ public abstract class BaseMember extends BaseEntity {
     private String nickname;
     private String profileImage;
 
-    public BaseMember(String email, String name, String rrnEncrypted, String phoneNum, String password, String address, String status, String nickname, String profileImage) {
+    public BaseUser(String email, String name, String rrnEncrypted, String phoneNum, String password, String address, String status, String nickname, String profileImage) {
         this.email = email;
         this.name = name;
         this.rrnEncrypted = rrnEncrypted;
