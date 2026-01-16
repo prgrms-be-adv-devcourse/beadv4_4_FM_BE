@@ -14,20 +14,29 @@ import static lombok.AccessLevel.PROTECTED;
 @Setter(value = PROTECTED)
 @NoArgsConstructor
 public abstract class BaseMember extends BaseEntity {
-    @Column(unique = true)
-    private String username;
+    private String email;
+    private String name;
+    private String rrnEncrypted;
+    private String phoneNum;
     private String password;
+    private String address;
+    private String status;
     private String nickname;
-    private int activityScore;
+    private String profileImage;
 
-    public BaseMember(String username, String password, String nickname, int activityScore) {
-        this.username = username;
+    public BaseMember(String email, String name, String rrnEncrypted, String phoneNum, String password, String address, String status, String nickname, String profileImage) {
+        this.email = email;
+        this.name = name;
+        this.rrnEncrypted = rrnEncrypted;
+        this.phoneNum = phoneNum;
         this.password = password;
+        this.address = address;
+        this.status = status;
         this.nickname = nickname;
-        this.activityScore = activityScore;
+        this.profileImage = profileImage;
     }
 
     public boolean isSystem() {
-        return "system".equals(username);
+        return "system".equals(name);
     }
 }

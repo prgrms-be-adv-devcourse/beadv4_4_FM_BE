@@ -23,12 +23,14 @@ public abstract class SourceMember extends BaseMember {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @CreatedDate
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime modifyDate;
+    private LocalDateTime updatedAt;
 
-    public SourceMember(String username, String password, String nickname) {
-        //초기에 만드는 score값을 0으로 초기화 한다.
-        super(username, password, nickname, 0);
+    public SourceMember(String email, String name, String rrnEncrypted, String phoneNum, String password, String address, String status, String nickname, String profileImage, Long id, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        super(email, name, rrnEncrypted, phoneNum, password, address, status, nickname, profileImage);
+        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }

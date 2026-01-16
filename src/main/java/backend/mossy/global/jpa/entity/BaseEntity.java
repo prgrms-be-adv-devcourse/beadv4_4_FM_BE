@@ -24,6 +24,6 @@ public abstract class BaseEntity implements HashModelTypeCode {
     }
 
     public abstract Long getId();
-    public abstract LocalDateTime getCreateDate();
-    public abstract LocalDateTime getModifyDate();
+    public abstract LocalDateTime getCreatedAt();
+    public abstract LocalDateTime getUpdatedAt();
 }
