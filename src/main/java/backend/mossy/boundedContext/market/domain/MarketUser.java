@@ -1,11 +1,7 @@
 package backend.mossy.boundedContext.market.domain;
 
-import backend.mossy.shared.market.dto.MarketUserDto;
-import backend.mossy.shared.member.domain.ReplicaMember;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import backend.mossy.shared.user.domain.ReplicaUser;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

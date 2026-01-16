@@ -1,4 +1,4 @@
-package backend.mossy.shared.member.domain;
+package backend.mossy.shared.user.domain;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class ReplicaMember extends BaseMember {
+public abstract class ReplicaUser extends BaseUser {
     @Id
     private Long id;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public ReplicaMember(Long id, String email, String name, String rrnEncrypted, String phoneNum, String password, String address, String status, String nickname, String profileImage, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ReplicaUser(String email, String name, String rrnEncrypted, String phoneNum, String password, String address, String status, String nickname, String profileImage, Long id, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(email, name, rrnEncrypted, phoneNum, password, address, status, nickname, profileImage);
         this.id = id;
         this.createdAt = createdAt;
