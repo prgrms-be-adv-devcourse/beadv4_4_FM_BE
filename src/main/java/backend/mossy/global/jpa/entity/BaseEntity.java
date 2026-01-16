@@ -17,4 +17,6 @@ public abstract class BaseEntity implements HashModelTypeCode {
     protected void publishEvent(Object event) {
         GlobalConfig.getEventPublisher().publish(event);
     }
+
+    public abstract Long getId();
 }

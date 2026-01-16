@@ -1,6 +1,7 @@
-package backend.mossy.shared.member.domain.user;
+package backend.mossy.shared.member.domain.role;
 
 import backend.mossy.global.jpa.entity.BaseEntity;
+import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Role extends BaseEntity {
+public class Role extends BaseIdAndTime {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "code", nullable = false, unique = true, length = 30)

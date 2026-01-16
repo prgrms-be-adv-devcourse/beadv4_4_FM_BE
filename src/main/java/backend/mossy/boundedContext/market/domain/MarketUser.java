@@ -1,6 +1,7 @@
 package backend.mossy.boundedContext.market.domain;
 
-import backend.mossy.shared.user.domain.ReplicaUser;
+import backend.mossy.shared.member.domain.user.ReplicaUser;
+import backend.mossy.shared.member.domain.user.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class MarketUser extends ReplicaUser {
     private String address;
 
     @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    private UserStatus status;
 
     @Column(name = "nickname", nullable = false, length = 50)
     private String nickname;
