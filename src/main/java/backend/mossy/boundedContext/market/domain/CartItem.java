@@ -29,4 +29,8 @@ public class CartItem extends BaseIdAndTime {
         this.productId = productId;
         this.quantity = count;
     }
+
+    public void addCount(int count) {
+        this.count += count;
+    }
 }

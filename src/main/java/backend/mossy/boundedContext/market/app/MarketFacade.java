@@ -3,6 +3,7 @@ package backend.mossy.boundedContext.market.app;
 import backend.mossy.boundedContext.market.domain.Cart;
 import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.domain.Product;
+import backend.mossy.shared.market.dto.requets.CartItemAddRequest;
 import backend.mossy.shared.market.dto.requets.ProductRequest;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.MarketUserDto;
@@ -20,6 +21,7 @@ public class MarketFacade {
     private final MarketRegisterProductUseCase marketRegisterProductUseCase;
     private final MarketSyncUserUseCase marketSyncUserUseCase;
     private final MarketCreateCartUseCase marketCreateCartUseCase;
+    private final MarketAddCartItemUseCase marketAddCartItemUseCase;
 
     @Transactional(readOnly = true)
     public List<Product> getProductList() {
@@ -39,5 +41,10 @@ public class MarketFacade {
     @Transactional
     public RsData<Cart> createCart(MarketUserDto buyer) {
         return marketCreateCartUseCase.createCart(buyer);
+    }
+
+    @Transactional
+    public RsData<Void> addCartItem(Long userId, CartItemAddRequest request) {
+        return marketAddCartItemUseCase.addCartItem(userId, request);
     }
 }

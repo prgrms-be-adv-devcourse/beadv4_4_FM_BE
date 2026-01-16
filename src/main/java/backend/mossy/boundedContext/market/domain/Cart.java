@@ -33,6 +33,13 @@ public class Cart extends BaseIdAndTime {
     }
 
     public void addItem(Long productId, int count){
+        for (CartItem item : this.items) {
+            if (item.getProductId().equals(productId)) {
+                item.addCount(count);
+                this.totalCount += count;
+                return;
+            }
+        }
         CartItem cartItem = new CartItem(this, productId, count);
         this.getItems().add(cartItem);
         this.totalQuantity += count;
