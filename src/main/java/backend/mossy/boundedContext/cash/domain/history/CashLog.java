@@ -2,7 +2,7 @@ package backend.mossy.boundedContext.cash.domain.history;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-import backend.mossy.boundedContext.cash.domain.wallet.CashMember;
+import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
 import backend.mossy.boundedContext.cash.domain.wallet.Wallet;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
@@ -25,8 +25,8 @@ public class CashLog extends BaseIdAndTime {
     @Column(nullable = false)
     private int relId;
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private CashMember member;
+    @JoinColumn(name = "member_id")
+    private CashUser user;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "wallet_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Wallet wallet;
