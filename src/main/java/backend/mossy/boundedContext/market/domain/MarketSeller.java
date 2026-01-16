@@ -1,6 +1,8 @@
 package backend.mossy.boundedContext.market.domain;
 
-import backend.mossy.shared.user.domain.ReplicaUser;
+import backend.mossy.shared.member.domain.seller.ReplicaSeller;
+import backend.mossy.shared.member.domain.seller.SellerStatus;
+import backend.mossy.shared.member.domain.seller.SellerType;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "seller_id"))
-public class MarketSeller extends ReplicaUser {
+public class MarketSeller extends ReplicaSeller {
 
     @Column(name = "user_id")
     private Long userId;
@@ -23,7 +25,7 @@ public class MarketSeller extends ReplicaUser {
     private Long accountId;
 
     @Column(name = "seller_type")
-    private String sellerType;
+    private SellerType sellerType;
 
     @Column(name = "store_name")
     private String storeName;
@@ -47,5 +49,5 @@ public class MarketSeller extends ReplicaUser {
     private String address2;
 
     @Column(name = "status")
-    private String status;
+    private SellerStatus status;
 }

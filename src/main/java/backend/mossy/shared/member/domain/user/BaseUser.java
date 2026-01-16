@@ -1,5 +1,6 @@
-package backend.mossy.shared.member.domain;
+package backend.mossy.shared.member.domain.user;
 
+import backend.mossy.global.jpa.entity.BaseEntity;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class BaseUser extends BaseIdAndTime {
+public abstract class BaseUser extends BaseEntity {
 
     @Column(name = "email", nullable = false, unique = true, length = 255)
     protected String email;
@@ -44,22 +45,17 @@ public abstract class BaseUser extends BaseIdAndTime {
     protected BaseUser(
             String email,
             String name,
-            String rrnEncrypted,
-            String phoneNum,
-            String password,
             String address,
             String nickname,
-            String profileImage
+            String profileImage,
+            UserStatus status
     ) {
         this.email = email;
         this.name = name;
-        this.rrnEncrypted = rrnEncrypted;
-        this.phoneNum = phoneNum;
-        this.password = password;
         this.address = address;
         this.nickname = nickname;
         this.profileImage = profileImage;
-        this.status = UserStatus.ACTIVE;
+        this.status = status;
     }
 
     // ===== 의미 있는 변경 메서드 =====

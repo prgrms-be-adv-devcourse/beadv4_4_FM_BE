@@ -10,20 +10,18 @@ import java.time.LocalDateTime;
 @Builder // 빌더 어노테이션 추가
 public record PayoutUserResponseDto(
         Long id,
-        LocalDateTime createDate,
-        LocalDateTime modifyDate,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         String username,
-        String nickname,
-        int activityScore
+        String nickname
 ) {
     public static PayoutUserResponseDto from(PayoutUser user) {
         return PayoutUserResponseDto.builder()
                 .id(user.getId())
-                .createDate(user.getCreatedAt())
-                .modifyDate(user.getUpdatedAt())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .username(user.getName())
                 .nickname(user.getNickname())
-                .activityScore(user.getActivityScore())
                 .build();
     }
 }
