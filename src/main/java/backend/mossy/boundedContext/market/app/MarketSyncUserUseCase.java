@@ -26,7 +26,6 @@ public class MarketSyncUserUseCase {
                     .phoneNum(user.phoneNum())
                     .password(user.password())
                     .address(user.address())
-                    .status(user.status())
                     .nickname(user.nickname())
                     .profileImage(user.profileImage())
                     .createdAt(user.createdAt())

@@ -17,13 +17,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MarketFacade {
     private final MarketGetProductListUseCase marketGetProductListUseCase;
+    private final MarketRegisterProductUseCase marketRegisterProductUseCase;
     private final MarketSyncUserUseCase marketSyncUserUseCase;
     private final MarketCreateCartUseCase marketCreateCartUseCase;
-    private final MarketRegisterProductUseCase marketRegisterProductUseCase;
 
     @Transactional(readOnly = true)
     public List<Product> getProductList() {
         return marketGetProductListUseCase.getProductList();
+    }
+
+    @Transactional
+    public Product registerProduct(ProductRequest request) {
+        return marketRegisterProductUseCase.register(request);
     }
 
     @Transactional
@@ -34,10 +39,5 @@ public class MarketFacade {
     @Transactional
     public RsData<Cart> createCart(MarketUserDto buyer) {
         return marketCreateCartUseCase.createCart(buyer);
-    }
-
-    @Transactional
-    public Product registerProduct(ProductRequest request) {
-        return marketRegisterProductUseCase.register(request);
     }
 }

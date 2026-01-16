@@ -13,7 +13,6 @@ public record UserDto (
         String phoneNum,
         String password,
         String address,
-        String status,
         String nickname,
         String profileImage,
         LocalDateTime createdAt,
