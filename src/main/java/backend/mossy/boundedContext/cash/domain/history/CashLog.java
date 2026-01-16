@@ -26,7 +26,7 @@ public class CashLog extends BaseIdAndTime {
     private int relId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private CashUser member;
+    private CashUser user;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "wallet_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Wallet wallet;
