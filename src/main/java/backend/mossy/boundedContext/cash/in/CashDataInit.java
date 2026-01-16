@@ -4,6 +4,7 @@ import backend.mossy.boundedContext.cash.app.CashFacade;
 import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
 import backend.mossy.shared.cash.dto.response.WalletResponseDto;
 import backend.mossy.shared.member.dto.common.UserDto;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
@@ -31,30 +32,50 @@ public class CashDataInit {
                     .name("shin")
                     .email("shin@naver.com")
                     .nickname("짱구")
+                    .address("서울시 행복구 떡잎마을")
+                    .status("ACTIVE")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build(),
                 UserDto.builder()
                     .id(2L)
                     .name("kim")
                     .email("kim@gmail.com")
                     .nickname("철수")
+                    .address("서울시 행복구 떡잎마을")
+                    .status("ACTIVE")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build(),
                 UserDto.builder()
                     .id(3L)
                     .name("lee")
                     .email("lee@daum.net")
                     .nickname("유리")
+                    .address("서울시 행복구 떡잎마을")
+                    .status("ACTIVE")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build(),
                 UserDto.builder()
                     .id(4L)
                     .name("park")
                     .email("park@kakao.com")
                     .nickname("맹구")
+                    .address("서울시 행복구 떡잎마을")
+                    .status("ACTIVE")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build(),
                 UserDto.builder()
                     .id(5L)
                     .name("jung")
                     .email("jung@naver.com")
                     .nickname("훈이")
+                    .address("서울시 행복구 떡잎마을")
+                    .status("ACTIVE")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build()
             };
             for (UserDto userDto : users) {

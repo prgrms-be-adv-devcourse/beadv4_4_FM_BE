@@ -6,6 +6,7 @@ import backend.mossy.boundedContext.cash.out.WalletRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.cash.dto.common.CashUserDto;
 import backend.mossy.shared.cash.event.CashUserCreatedEvent;
+import backend.mossy.shared.member.domain.user.UserStatus;
 import backend.mossy.shared.member.dto.common.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class CashSyncUserUseCase {
                 .name(userDto.name())
                 .nickname(userDto.nickname())
                 .address(userDto.address())
+                .status(UserStatus.valueOf(userDto.status()))
                 .build()
         );
 
