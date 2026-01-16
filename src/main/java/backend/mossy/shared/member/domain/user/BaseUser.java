@@ -1,8 +1,12 @@
 package backend.mossy.shared.member.domain.user;
 
 import backend.mossy.global.jpa.entity.BaseEntity;
-import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
+import backend.mossy.global.jpa.entity.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
