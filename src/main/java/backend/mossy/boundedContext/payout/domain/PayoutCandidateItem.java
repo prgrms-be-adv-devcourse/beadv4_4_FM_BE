@@ -7,6 +7,7 @@ import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -38,7 +39,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private PayoutMember payee;
 
     @Column(name = "amount", columnDefinition = "INT DEFAULT 0")
-    private Long amount;
+    private BigDecimal amount;
 
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "payout_item_id")
@@ -46,12 +47,12 @@ public class PayoutCandidateItem extends BaseIdAndTime {
 
     @Builder
     public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
-                               LocalDateTime payoutDate, PayoutMember payee, Long amount) {
+                               LocalDateTime payoutDate, PayoutMember payee, BigDecimal amount) {
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;
         this.relId = relId;
         this.payoutDate = payoutDate;
         this.payee = payee;
-        this.amount = amount;
+        this.amount = (amount != null) ? amount : BigDecimal.ZERO;
     }
 }
