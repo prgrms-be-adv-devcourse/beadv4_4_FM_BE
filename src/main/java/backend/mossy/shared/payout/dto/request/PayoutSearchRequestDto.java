@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public record PayoutSearchRequestDto(
         LocalDate startDate,
         LocalDate endDate,
-        Long memberId
+        Long userId
         // 필요 시 아래와 같이 페이징 파라미터 추가 가능
 
 ) {

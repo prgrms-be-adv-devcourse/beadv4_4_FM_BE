@@ -22,7 +22,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class Payout extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id")
-    private PayoutMember payee;
+    private PayoutUser payee;
 
     private LocalDateTime payoutDate;
 
@@ -31,7 +31,7 @@ public class Payout extends BaseIdAndTime {
     @OneToMany(mappedBy = "payout", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
     private List<PayoutItem> items = new ArrayList<>();
 
-    public Payout(PayoutMember payee) {
+    public Payout(PayoutUser payee) {
         this.payee = payee;
     }
 
@@ -60,10 +60,4 @@ public class Payout extends BaseIdAndTime {
         // 정산 완료 이벤트 발행 로직 등이 올 자리
     }
 
-    /**
-     * DTO 변환 책임을 PayoutResponseDto로 위임합니다.
-     */
-    public PayoutResponseDto toDto() {
-        return PayoutResponseDto.from(this);
-    }
 }

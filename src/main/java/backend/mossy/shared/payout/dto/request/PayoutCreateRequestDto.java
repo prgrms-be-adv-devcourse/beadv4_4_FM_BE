@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  */
 public record PayoutCreateRequestDto(
         // 정산받을 멤버의 ID
-        Long payeeMemberId,
+        Long payeeUserId,
 
         // 정산 요청 금액
         BigDecimal amount

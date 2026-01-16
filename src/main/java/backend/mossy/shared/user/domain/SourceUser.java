@@ -1,4 +1,4 @@
-package backend.mossy.shared.member.domain;
+package backend.mossy.shared.user.domain;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor
-public abstract class SourceMember extends BaseMember {
+public abstract class SourceUser extends BaseUser {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -27,7 +27,7 @@ public abstract class SourceMember extends BaseMember {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public SourceMember(String email, String name, String rrnEncrypted, String phoneNum, String password, String address, String status, String nickname, String profileImage, Long id, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public SourceUser(String email, String name, String rrnEncrypted, String phoneNum, String password, String address, String status, String nickname, String profileImage, Long id, LocalDateTime createdAt, LocalDateTime updatedAt) {
         super(email, name, rrnEncrypted, phoneNum, password, address, status, nickname, profileImage);
         this.id = id;
         this.createdAt = createdAt;

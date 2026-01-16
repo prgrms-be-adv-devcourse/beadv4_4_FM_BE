@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.cash.domain.wallet;
 
-import backend.mossy.shared.member.domain.ReplicaMember;
+import backend.mossy.shared.user.domain.ReplicaUser;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-public class CashMember extends ReplicaMember {
+public class CashUser extends ReplicaUser {
 
     @Column(name = "email")
     private String email;

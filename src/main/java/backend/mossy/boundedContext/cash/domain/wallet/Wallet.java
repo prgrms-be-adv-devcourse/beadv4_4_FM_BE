@@ -22,7 +22,7 @@ public class Wallet extends BaseManualIdAndTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private CashMember member;
+    private CashUser member;
 
     private long balance = 0;
 
