@@ -1,8 +1,9 @@
-package backend.mossy.auth.controller;
+package backend.mossy.boundedContext.auth.in;
 
-import backend.mossy.auth.dto.LoginRequest;
-import backend.mossy.auth.dto.LoginResponse;
-import backend.mossy.auth.jwt.JwtProvider;
+import backend.mossy.boundedContext.auth.app.AuthFacade;
+import backend.mossy.boundedContext.auth.in.dto.LoginRequest;
+import backend.mossy.boundedContext.auth.in.dto.LoginResponse;
+import backend.mossy.boundedContext.auth.infra.jwt.JwtProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthConroller {
 
     private final JwtProvider jwtProvider;
+    private final AuthFacade authFacade;
 
     @Operation(
             summary = "[TEMP] 로그인",
@@ -30,10 +32,10 @@ public class AuthConroller {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         //TODO: 나중에 DB 검증
         Long mockUserId = 1L;
-        String role = "USER";
+        String mockRole = "USER";
 
-        String accessToken = jwtProvider.createToken(mockUserId, role);
-        return ResponseEntity.ok(new LoginResponse(accessToken));
+        LoginResponse response = authFacade.login(mockUserId, mockRole);
+        return ResponseEntity.ok(response);
     }
 
 

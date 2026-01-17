@@ -1,4 +1,4 @@
-package backend.mossy.auth.jwt;
+package backend.mossy.boundedContext.auth.infra.jwt;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

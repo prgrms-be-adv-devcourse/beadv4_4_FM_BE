@@ -1,8 +1,8 @@
-package backend.mossy.auth.config;
+package backend.mossy.boundedContext.auth.infra.config;
 
-import backend.mossy.auth.jwt.JwtAuthenticationFilter;
-import backend.mossy.auth.security.RestAccessDeniedHandler;
-import backend.mossy.auth.security.RestAuthenticationEntryPoint;
+import backend.mossy.boundedContext.auth.infra.jwt.JwtAuthenticationFilter;
+import backend.mossy.boundedContext.auth.infra.security.RestAccessDeniedHandler;
+import backend.mossy.boundedContext.auth.infra.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package backend.mossy.auth.config;
+package backend.mossy.boundedContext.auth.infra.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
