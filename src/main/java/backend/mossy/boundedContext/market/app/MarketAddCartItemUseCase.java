@@ -20,7 +20,7 @@ public class MarketAddCartItemUseCase {
             throw new DomainException("404", "해당 상품이 존재하지 않습니다.");
         }
 
-        Cart cart = cartRepository.findByBuyerId(userId).orElseThrow(
+        Cart cart = cartRepository.findByBuyerIdWithItems(userId).orElseThrow(
                 ()-> new DomainException("404", "장바구니가 존재하지 않습니다.")
         );
 
