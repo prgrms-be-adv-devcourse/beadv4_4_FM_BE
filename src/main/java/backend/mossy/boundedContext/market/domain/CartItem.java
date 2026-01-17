@@ -22,11 +22,11 @@ public class CartItem extends BaseIdAndTime {
     private Long productId;
 
     @Column(nullable = false)
-    private int count;
+    private int quantity;
 
     public CartItem(Cart cart, Long productId, int count) {
         this.cart = cart;
         this.productId = productId;
-        this.count = count;
+        this.quantity = count;
     }
 }

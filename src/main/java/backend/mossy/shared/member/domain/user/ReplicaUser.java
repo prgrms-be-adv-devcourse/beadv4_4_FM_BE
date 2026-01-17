@@ -20,6 +20,9 @@ public class ReplicaUser extends BaseUser {
             Long id,
             String email,
             String name,
+            String rrnEncrypted,
+            String phoneNum,
+            String password,
             String address,
             String nickname,
             String profileImage,
@@ -27,7 +30,7 @@ public class ReplicaUser extends BaseUser {
             LocalDateTime updatedAt,
             UserStatus status
     ) {
-        super(email, name, address, nickname, profileImage, status);
+        super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, status);
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

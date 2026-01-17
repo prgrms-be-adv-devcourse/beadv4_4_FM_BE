@@ -1,9 +1,10 @@
 package backend.mossy.boundedContext.market.domain;
 
-import backend.mossy.shared.user.domain.ReplicaUser;
-import jakarta.persistence.*;
 import backend.mossy.shared.market.dto.MarketUserDto;
-import backend.mossy.shared.member.domain.ReplicaUser;
+import backend.mossy.shared.member.domain.user.ReplicaUser;
+import backend.mossy.shared.member.domain.user.UserStatus;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -28,13 +29,13 @@ public class MarketUser extends ReplicaUser {
             String phoneNum,
             String password,
             String address,
-            String status,
             String nickname,
             String profileImage,
+            UserStatus status,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
-        super(id, email, name, rrnEncrypted, phoneNum, password, address, status, nickname, profileImage, createdAt, updatedAt);
+        super(id, email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, createdAt, updatedAt, status);
     }
 
     public MarketUserDto toDto() {
@@ -46,9 +47,9 @@ public class MarketUser extends ReplicaUser {
                 .phoneNum(getPhoneNum())
                 .password(getPassword())
                 .address(getAddress())
-                .status(getStatus())
                 .nickname(getNickname())
                 .profileImage(getProfileImage())
+                .status(getStatus())
                 .createdAt(getCreatedAt())
                 .updatedAt(getUpdatedAt())
                 .build();

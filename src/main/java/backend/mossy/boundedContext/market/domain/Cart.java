@@ -23,18 +23,18 @@ public class Cart extends BaseIdAndTime {
     private List<CartItem> items = new ArrayList<>();
 
     @Column(name = "total_count", nullable = false)
-    private int totalCount;
+    private int totalQuantity;
 
     public static Cart createCart(MarketUser buyer) {
         Cart cart = new Cart();
         cart.buyer = buyer;
-        cart.totalCount = 0;
+        cart.totalQuantity = 0;
         return cart;
     }
 
     public void addItem(Long productId, int count){
         CartItem cartItem = new CartItem(this, productId, count);
         this.getItems().add(cartItem);
-        this.totalCount += count;
+        this.totalQuantity += count;
     }
 }

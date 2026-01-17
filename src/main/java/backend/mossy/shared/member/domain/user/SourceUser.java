@@ -26,11 +26,14 @@ public class SourceUser extends BaseUser {
     public SourceUser(
             String email,
             String name,
+            String rrnEncrypted,
+            String phoneNum,
+            String password,
             String address,
             String nickname,
             String profileImage,
             UserStatus status
     ) {
-        super(email, name, address, nickname, profileImage, status);
+        super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, status);
     }
 }

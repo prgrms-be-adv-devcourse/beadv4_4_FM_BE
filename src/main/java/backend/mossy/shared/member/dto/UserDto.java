@@ -1,5 +1,6 @@
 package backend.mossy.shared.member.dto;
 
+import backend.mossy.shared.member.domain.user.UserStatus;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public record UserDto (
         String address,
         String nickname,
         String profileImage,
+        UserStatus status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ){ }

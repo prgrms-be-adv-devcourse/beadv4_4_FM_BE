@@ -1,8 +1,6 @@
 package backend.mossy.shared.member.domain.user;
 
 import backend.mossy.global.jpa.entity.BaseEntity;
-import jakarta.persistence.*;
-import backend.mossy.global.jpa.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -49,6 +47,9 @@ public abstract class BaseUser extends BaseEntity {
     protected BaseUser(
             String email,
             String name,
+            String rrnEncrypted,
+            String phoneNum,
+            String password,
             String address,
             String nickname,
             String profileImage,
@@ -56,6 +57,9 @@ public abstract class BaseUser extends BaseEntity {
     ) {
         this.email = email;
         this.name = name;
+        this.rrnEncrypted = rrnEncrypted;
+        this.phoneNum = phoneNum;
+        this.password = password;
         this.address = address;
         this.nickname = nickname;
         this.profileImage = profileImage;
