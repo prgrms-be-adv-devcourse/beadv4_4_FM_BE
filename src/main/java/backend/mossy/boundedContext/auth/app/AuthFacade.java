@@ -31,9 +31,43 @@ public class AuthFacade {
         return new LoginResponse(accessToken, refreshToken);
     }
 
+    //토큰 재발급
     @Transactional
     public LoginResponse reissue(String refreshToken){
 
-        return null;
+        String userId = refreshTokenRepository.getUserIdByToken(refreshToken);
+
+        if (userId == null) {
+            throw new IllegalArgumentException("유효하지 않거나 만료된 토큰입니다."); //변경할 예정
+        }
+
+        if (!refreshTokenRepository.existsInUserSet(userId, refreshToken)) {
+            throw new IllegalArgumentException("사용할 수 없는 토큰입니다.");
+        }
+
+        refreshTokenRepository.delete(userId, refreshToken);
+
+        String newAccessToken = jwtProvider.createAccesToken(Long.valueOf(userId), "USER"); //Role은 나중에 DB에서 가져오기
+        String newRefreshToken = jwtProvider.createRefreshToken(Long.valueOf(userId));
+
+        refreshTokenRepository.save(
+                userId,
+                newRefreshToken,
+                jwtProperties.refreshTokenExpireMs()
+        );
+
+        return new LoginResponse(newAccessToken, newRefreshToken);
+
     }
+
+
+    //로그아웃
+    @Transactional
+    public  void logout(String refreshToken){
+        String userId = refreshTokenRepository.getUserIdByToken(refreshToken);
+        if (userId == null) {
+            refreshTokenRepository.delete(userId, refreshToken);
+        }
+    }
+
 }
