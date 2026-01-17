@@ -32,16 +32,16 @@ public class Cart extends BaseIdAndTime {
         return cart;
     }
 
-    public void addItem(Long productId, int count){
+    public void addItem(Long productId, int quantity){
         for (CartItem item : this.items) {
             if (item.getProductId().equals(productId)) {
-                item.addCount(count);
-                this.totalCount += count;
+                item.addItem(quantity);
+                this.totalQuantity += quantity;
                 return;
             }
         }
-        CartItem cartItem = new CartItem(this, productId, count);
+        CartItem cartItem = new CartItem(this, productId, quantity);
         this.getItems().add(cartItem);
-        this.totalQuantity += count;
+        this.totalQuantity += quantity;
     }
 }
