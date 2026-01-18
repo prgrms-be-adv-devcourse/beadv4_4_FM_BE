@@ -1,6 +1,5 @@
 package backend.mossy.shared.member.domain.seller;
 
-import backend.mossy.shared.member.domain.user.BaseUser;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
@@ -30,10 +29,6 @@ public class ReplicaSeller extends BaseSeller {
             String address2
     ) {
         super(userId,sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2);
-
-        this.id = id;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 }
 
