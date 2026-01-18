@@ -1,8 +1,10 @@
 package backend.mossy.boundedContext.cash.in;
 
 import backend.mossy.boundedContext.cash.app.CashFacade;
+import backend.mossy.boundedContext.cash.app.CashSupport;
 import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
 import backend.mossy.shared.cash.dto.response.WalletResponseDto;
+import backend.mossy.shared.member.domain.user.UserStatus;
 import backend.mossy.shared.member.dto.common.UserDto;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.core.annotation.Order;
 public class CashDataInit {
 
     private final CashFacade cashFacade;
+    private final CashSupport cashSupport;
 
     @Bean
     @Order(1)
@@ -32,8 +35,12 @@ public class CashDataInit {
                     .name("shin")
                     .email("shin@naver.com")
                     .nickname("짱구")
+                    .password("1234") // 필수 필드 추가
+                    .phoneNum("010-1111-1111") // 필수 필드 추가
+                    .profileImage("https://example.com/shin.png") // 필수 필드 추가
+                    .rrnEncrypted("encrypted-rrn-1") // 필수 필드 추가
                     .address("서울시 행복구 떡잎마을")
-                    .status("ACTIVE")
+                    .status(UserStatus.valueOf("ACTIVE"))
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build(),
@@ -42,8 +49,12 @@ public class CashDataInit {
                     .name("kim")
                     .email("kim@gmail.com")
                     .nickname("철수")
+                    .password("1234")
+                    .phoneNum("010-2222-2222")
+                    .profileImage("https://example.com/kim.png")
+                    .rrnEncrypted("encrypted-rrn-2")
                     .address("서울시 행복구 떡잎마을")
-                    .status("ACTIVE")
+                    .status(UserStatus.valueOf("ACTIVE"))
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build(),
@@ -52,8 +63,12 @@ public class CashDataInit {
                     .name("lee")
                     .email("lee@daum.net")
                     .nickname("유리")
+                    .password("1234")
+                    .phoneNum("010-3333-3333")
+                    .profileImage("https://example.com/lee.png")
+                    .rrnEncrypted("encrypted-rrn-3")
                     .address("서울시 행복구 떡잎마을")
-                    .status("ACTIVE")
+                    .status(UserStatus.valueOf("ACTIVE"))
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build(),
@@ -62,8 +77,12 @@ public class CashDataInit {
                     .name("park")
                     .email("park@kakao.com")
                     .nickname("맹구")
+                    .password("1234")
+                    .phoneNum("010-4444-4444")
+                    .profileImage("https://example.com/park.png")
+                    .rrnEncrypted("encrypted-rrn-4")
                     .address("서울시 행복구 떡잎마을")
-                    .status("ACTIVE")
+                    .status(UserStatus.valueOf("ACTIVE"))
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build(),
@@ -72,8 +91,12 @@ public class CashDataInit {
                     .name("jung")
                     .email("jung@naver.com")
                     .nickname("훈이")
+                    .password("1234")
+                    .phoneNum("010-5555-5555")
+                    .profileImage("https://example.com/jung.png")
+                    .rrnEncrypted("encrypted-rrn-5")
                     .address("서울시 행복구 떡잎마을")
-                    .status("ACTIVE")
+                    .status(UserStatus.valueOf("ACTIVE"))
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build()
@@ -99,9 +122,9 @@ public class CashDataInit {
         Long[] userIds = {1L, 2L, 3L, 4L, 5L};
 
         for (Long userId : userIds) {
-            CashUser user = cashFacade.findCashUserById(userId);
+            CashUser user = cashSupport.findCashUserById(userId);
 
-            WalletResponseDto walletDto = cashFacade.findByWalletByUserId(userId);
+            WalletResponseDto walletDto = cashFacade.findWalletByUserId(userId);
 
             log.info("검증 OK - 회원: [{}] {}, 지갑 잔액: {}",
                 user.getId(), user.getName(), walletDto.balance());
