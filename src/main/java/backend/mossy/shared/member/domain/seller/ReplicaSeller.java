@@ -1,6 +1,7 @@
 package backend.mossy.shared.member.domain.seller;
 
 import backend.mossy.shared.member.domain.user.BaseUser;
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
@@ -12,13 +13,17 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReplicaSeller extends BaseSeller {
+public abstract class ReplicaSeller extends BaseSeller {
     @Id
+    @Column(name = "seller_id", nullable = false)
     private Long id;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public ReplicaSeller(
+            Long id,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
             Long userId,
             SellerType sellerType,
             String storeName,
@@ -27,10 +32,10 @@ public class ReplicaSeller extends BaseSeller {
             String contactEmail,
             String contactPhone,
             String address1,
-            String address2
-    ) {
-        super(userId,sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2);
-
+            String address2,
+            SellerStatus status
+            ) {
+        super(userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, status);
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

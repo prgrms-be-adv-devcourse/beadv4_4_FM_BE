@@ -1,4 +1,5 @@
 package backend.mossy.shared.member.domain.user;
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
@@ -10,8 +11,9 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReplicaUser extends BaseUser {
+public abstract class ReplicaUser extends BaseUser {
     @Id
+    @Column(name = "user_id", nullable = false)
     private Long id;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
