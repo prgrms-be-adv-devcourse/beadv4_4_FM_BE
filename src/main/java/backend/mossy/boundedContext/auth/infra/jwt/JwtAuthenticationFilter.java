@@ -1,6 +1,8 @@
 package backend.mossy.boundedContext.auth.infra.jwt;
 
+import backend.mossy.global.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        //토큰이 없는 경우
         if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -40,6 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = header.substring(7);
 
         try {
+            //토큰 파싱 및 검증
             Claims claims = jwtProvider.parseClaims(token);
 
             Long userId = Long.valueOf(claims.getSubject());
@@ -50,12 +54,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             var authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+            //인증 성공 시 Context에 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (Exception e) {
-            //토큰이 이상하면 인증 정보 안널고 통과
-            SecurityContextHolder.clearContext();
-        }
 
-        filterChain.doFilter(request, response);
+            //필터로 진행
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException e) {
+            //토큰 만료 에러 (401)
+            setErrorResponse(response, ErrorCode.EXPIRED_TOKEN);
+        } catch (Exception e) {
+            setErrorResponse(response, ErrorCode.INVALID_TOKEN);
+        }
+    }
+
+    private void setErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+
+        response.setStatus(errorCode.getStatus());
+        response.setContentType("application/json;charset=UTF-8");
+
+        String jsonResponse = String.format(
+                "{\"status\": %d, \"message\": \"%s\"}",
+                errorCode.getStatus(),
+                errorCode.getMsg()
+        );
+
+        response.getWriter().write(jsonResponse);
     }
 }
