@@ -1,12 +1,21 @@
 package backend.mossy.boundedContext.auth.app;
 
+import backend.mossy.boundedContext.auth.in.dto.LoginRequest;
 import backend.mossy.boundedContext.auth.in.dto.LoginResponse;
 import backend.mossy.boundedContext.auth.infra.jwt.JwtProperties;
 import backend.mossy.boundedContext.auth.infra.jwt.JwtProvider;
 import backend.mossy.boundedContext.auth.out.RefreshTokenRepository;
+import backend.mossy.boundedContext.member.domain.User;
+import backend.mossy.boundedContext.member.out.UserRepository;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
+import backend.mossy.shared.member.domain.role.UserRole;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -14,16 +23,31 @@ public class AuthFacade {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProperties jwtProperties;
+    //로그인
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public LoginResponse login(Long userId, String role) {
-        //TODO: 유저 검증 로직 불러오기
+    public LoginResponse login(LoginRequest request) {
 
-        String accessToken = jwtProvider.createAccesToken(userId, role);
-        String refreshToken = jwtProvider.createRefreshToken(userId);
+        //이메일로 유저 찾기
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+
+        //비밀번호 대조
+        if(!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new DomainException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        //권한 꺼내기
+        String role = extractRole(user);
+
+        //토큰 생성
+        String accessToken = jwtProvider.createAccesToken(user.getId(), role);
+        String refreshToken = jwtProvider.createRefreshToken(user.getId());
 
         refreshTokenRepository.save(
-                String.valueOf(userId),
+                String.valueOf(user.getId()),
                 refreshToken,
                 jwtProperties.refreshTokenExpireMs()
         );
@@ -35,23 +59,33 @@ public class AuthFacade {
     @Transactional
     public LoginResponse reissue(String refreshToken){
 
-        String userId = refreshTokenRepository.getUserIdByToken(refreshToken);
+        String userIdStr = refreshTokenRepository.getUserIdByToken(refreshToken);
 
-        if (userId == null) {
-            throw new IllegalArgumentException("유효하지 않거나 만료된 토큰입니다."); //변경할 예정
+        if (userIdStr == null) {
+            throw new DomainException(ErrorCode.INVALID_TOKEN);
         }
 
-        if (!refreshTokenRepository.existsInUserSet(userId, refreshToken)) {
-            throw new IllegalArgumentException("사용할 수 없는 토큰입니다.");
+        if (!refreshTokenRepository.existsInUserSet(userIdStr, refreshToken)) {
+            throw new DomainException(ErrorCode.INVALID_TOKEN);
         }
 
-        refreshTokenRepository.delete(userId, refreshToken);
+        //기존 토큰 삭제
+        refreshTokenRepository.delete(userIdStr, refreshToken);
 
-        String newAccessToken = jwtProvider.createAccesToken(Long.valueOf(userId), "USER"); //Role은 나중에 DB에서 가져오기
-        String newRefreshToken = jwtProvider.createRefreshToken(Long.valueOf(userId));
+        //DB에서 다시 유저 정보 조회
+        Long userId = Long.valueOf(userIdStr);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+
+        //권한 다시 추출
+        String role = extractRole(user);
+
+        // 새 토큰 발급
+        String newAccessToken = jwtProvider.createAccesToken(userId, role);
+        String newRefreshToken = jwtProvider.createRefreshToken(userId);
 
         refreshTokenRepository.save(
-                userId,
+                userIdStr,
                 newRefreshToken,
                 jwtProperties.refreshTokenExpireMs()
         );
@@ -65,9 +99,18 @@ public class AuthFacade {
     @Transactional
     public  void logout(String refreshToken){
         String userId = refreshTokenRepository.getUserIdByToken(refreshToken);
-        if (userId == null) {
+        if (userId != null) {
             refreshTokenRepository.delete(userId, refreshToken);
         }
     }
 
+    private String extractRole(User user) {
+        List<UserRole> userRoles = user.getUserRoles();
+
+        if (userRoles == null || userRoles.isEmpty()) {
+            return "USER";
+        }
+
+        return userRoles.get(0).getRole().getCode().name();
+    }
 }

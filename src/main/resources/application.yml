@@ -48,3 +48,7 @@ jwt:
   access-token-expire-ms: 1800000
   refresh-token-expire-ms: 1209600000
 
+
+encryption:
+  secret-key: mossy-encrypt-key-must-be-32byte
+

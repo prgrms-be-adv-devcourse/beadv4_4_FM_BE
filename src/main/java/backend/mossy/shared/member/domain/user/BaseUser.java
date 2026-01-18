@@ -23,7 +23,7 @@ public abstract class BaseUser extends BaseEntity {
     @Column(name = "rrn_encrypted", nullable = false, unique = true, length = 255)
     protected String rrnEncrypted;
 
-    @Column(name = "phone_num", nullable = false, length = 20)
+    @Column(name = "phone_num", nullable = false, length = 255)
     protected String phoneNum;
 
     @Column(name = "password", nullable = false, length = 255)

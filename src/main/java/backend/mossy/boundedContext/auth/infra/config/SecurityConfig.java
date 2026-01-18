@@ -57,6 +57,7 @@ public class SecurityConfig {
                                 "/error",
 
                                 //Auth 테스트 (토큰)
+                                "/api/auth/signup",
                                 "/api/auth/login",
                                 "/api/auth/reissue",
                                 "/api/auth/logout"
