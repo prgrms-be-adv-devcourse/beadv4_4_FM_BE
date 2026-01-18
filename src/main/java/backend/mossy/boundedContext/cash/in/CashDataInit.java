@@ -116,20 +116,31 @@ public class CashDataInit {
     }
 
     public void verifyResult() {
-        log.info("=== 검증 시작 ===");
+        log.info("=== 지갑 및 잔액 조회 기능 검증 시작 ===");
 
-        // 이메일 대신 Long 타입 ID 배열 사용 (1L부터 5L까지)
+        // 검증할 사용자 ID 목록
         Long[] userIds = {1L, 2L, 3L, 4L, 5L};
 
         for (Long userId : userIds) {
+            // 1. 도메인 사용자 존재 여부 확인
             CashUser user = cashSupport.findCashUserById(userId);
 
+            // 2. 지갑 상세 정보 조회 검증 (Facade - WalletResponseDto)
             WalletResponseDto walletDto = cashFacade.findWalletByUserId(userId);
 
-            log.info("검증 OK - 회원: [{}] {}, 지갑 잔액: {}",
-                user.getId(), user.getName(), walletDto.balance());
+            // 3. 순수 잔액 조회 검증 (Facade - BigDecimal)
+            java.math.BigDecimal balance = cashFacade.findBalanceByUserId(userId);
+
+            // 4. 상세 정보와 잔액 데이터가 일치하는지 교차 검증
+            if (!walletDto.balance().equals(balance)) {
+                log.error("검증 실패 - 사용자 ID: {} 의 상세 잔액과 단일 조회 잔액이 일치하지 않습니다.", userId);
+                throw new IllegalStateException("데이터 불일치 발생");
+            }
+
+            log.info("검증 성공 - 사용자: [{} / {}], 지갑 식별자: {}, 확인된 잔액: {}",
+                user.getId(), user.getName(), walletDto.walletId(), balance);
         }
 
-        log.info("=== 전체 검증 성공 ===");
+        log.info("=== 모든 사용자 지갑 조회 및 잔액 검증 완료 ===");
     }
 }
