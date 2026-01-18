@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MarketPolicy {
 
-    @Value("${market.policy.cart.max-quantity}")
+    @Value("${market.policy.cart.max_quantity}")
     private int maxQuantity;
 
     public void validateCartItemQuantity(int quantity) {
