@@ -21,28 +21,28 @@ public class CashSyncUserUseCase {
     private final EventPublisher eventPublisher;
 
     @Transactional
-    public CashUser syncUser(UserDto userDto) {
+    public CashUser syncUser(UserDto user) {
         // 1. CashUser 빌더를 사용하여 엔티티 생성 및 저장
-        CashUser user = cashUserRepository.save(
+        CashUser cashUser = cashUserRepository.save(
             CashUser.builder()
-                .id(userDto.id())
-                .createdAt(userDto.createdAt())
-                .updatedAt(userDto.updatedAt())
-                .email(userDto.email())
-                .name(userDto.name())
-                .nickname(userDto.nickname())
-                .address(userDto.address())
-                .status(UserStatus.valueOf(userDto.status()))
+                .id(user.id())
+                .createdAt(user.createdAt())
+                .updatedAt(user.updatedAt())
+                .email(user.email())
+                .name(user.name())
+                .nickname(user.nickname())
+                .address(user.address())
+                .status(UserStatus.valueOf(user.status()))
                 .build()
         );
 
         // 2. 해당 유저의 지갑이 없는 경우에만 지갑 생성 이벤트 발행
-        if (!walletRepository.existsWalletByUser_Id(user.getId())) {
+        if (!walletRepository.existsWalletByUser_Id(cashUser.getId())) {
             eventPublisher.publish(
-                new CashUserCreatedEvent(CashUserDto.from(user))
+                new CashUserCreatedEvent(cashUser.toDto())
             );
         }
 
-        return user;
+        return cashUser;
     }
 }
