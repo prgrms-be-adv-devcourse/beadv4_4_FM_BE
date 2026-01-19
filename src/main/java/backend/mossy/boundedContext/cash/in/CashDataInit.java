@@ -5,7 +5,7 @@ import backend.mossy.boundedContext.cash.app.CashSupport;
 import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
 import backend.mossy.shared.cash.dto.response.WalletResponseDto;
 import backend.mossy.shared.member.domain.user.UserStatus;
-import backend.mossy.shared.member.dto.common.UserDto;
+import backend.mossy.shared.member.dto.event.UserDto;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
