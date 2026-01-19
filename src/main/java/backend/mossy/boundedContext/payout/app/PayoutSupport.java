@@ -1,9 +1,9 @@
 package backend.mossy.boundedContext.payout.app;
 
 import backend.mossy.boundedContext.payout.domain.PayoutCandidateItem;
-import backend.mossy.boundedContext.payout.domain.PayoutUser;
+import backend.mossy.boundedContext.payout.domain.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
-import backend.mossy.boundedContext.payout.out.PayoutUserRepository;
+import backend.mossy.boundedContext.payout.out.PayoutSellerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +13,13 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PayoutSupport {
-    private final PayoutUserRepository payoutUserRepository;
+    private final PayoutSellerRepository payoutSellerRepository;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
 
-    public Optional<PayoutUser> findSystemMember() {return payoutUserRepository.findByUsername("system");
+    public Optional<PayoutSeller> findSystemMember() {return payoutSellerRepository.findByName("system");
     }
-    public Optional<PayoutUser> findMemberById(Long id) {
-        return payoutUserRepository.findById(id);
+    public Optional<PayoutSeller> findSellerById(Long id) {
+        return payoutSellerRepository.findById(id);
     }
 
     public List<PayoutCandidateItem> findPayoutCandidateItems() {
@@ -27,3 +27,4 @@ public class PayoutSupport {
     }
 
 }
+
