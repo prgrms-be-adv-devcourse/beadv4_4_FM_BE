@@ -18,11 +18,11 @@ public class PayoutSupport {
 
     public Optional<PayoutSeller> findSystemMember() {return payoutSellerRepository.findByName("system");
     }
-    public Optional<PayoutSeller> findSellerById(Long id) {
+    public Optional<PayoutSeller> findMemberById(Long id) {
         return payoutSellerRepository.findById(id);
     }
 
-    public List<PayoutCandidateItem> findPayoutCandidateItems() {
+    public List<PayoutCandidateItem> findPayoutCandidateItem() {
         return payoutCandidateItemRepository.findAll();
     }
 
