@@ -7,12 +7,16 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
+
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 public abstract class BaseEntity implements HashModelTypeCode {
+    public abstract Long getId();
+    public abstract LocalDateTime getCreatedAt();
+    public abstract LocalDateTime getUpdatedAt();
 
-    @Override
     public String getModelTypeCode() {
         return this.getClass().getSimpleName();
     }
@@ -20,6 +24,4 @@ public abstract class BaseEntity implements HashModelTypeCode {
     protected void publishEvent(Object event) {
         GlobalConfig.getEventPublisher().publish(event);
     }
-
-    public abstract Long getId();
 }

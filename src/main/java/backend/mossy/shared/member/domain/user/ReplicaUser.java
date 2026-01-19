@@ -11,8 +11,9 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReplicaUser extends BaseUser {
+public abstract class ReplicaUser extends BaseUser {
     @Id
+    @Column(name = "user_id", nullable = false)
     private Long id;
     @Column(name = "created_at")
     private LocalDateTime createdAt;

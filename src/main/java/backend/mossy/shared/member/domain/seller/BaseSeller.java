@@ -47,17 +47,7 @@ public abstract class BaseSeller extends BaseEntity {
     @Column(name = "status", nullable = false, length = 20)
     protected SellerStatus status = SellerStatus.PENDING;
 
-    protected BaseSeller(
-            Long userId,
-            SellerType sellerType,
-            String storeName,
-            String businessNum,
-            String representativeName,
-            String contactEmail,
-            String contactPhone,
-            String address1,
-            String address2
-    ) {
+    public BaseSeller(Long userId, SellerType sellerType, String storeName, String businessNum, String representativeName, String contactEmail, String contactPhone, String address1, String address2, SellerStatus status) {
         this.userId = userId;
         this.sellerType = sellerType;
         this.storeName = storeName;
@@ -67,7 +57,7 @@ public abstract class BaseSeller extends BaseEntity {
         this.contactPhone = contactPhone;
         this.address1 = address1;
         this.address2 = address2;
+        this.status = status;
     }
-
 }
 

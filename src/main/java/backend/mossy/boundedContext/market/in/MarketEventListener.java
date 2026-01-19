@@ -15,6 +15,11 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 @Component
 @RequiredArgsConstructor
 public class MarketEventListener {
+    private final MarketFacade  marketFacade;
+
+//    @TransactionalEventListener(phase = AFTER_COMMIT)
+//    @Transactional(propagation = REQUIRES_NEW)
+//    public void handle(결제 이벤트) { marketFacade.decreaseProductStock(productId, 1);}
     private final MarketFacade marketFacade;
 
     @TransactionalEventListener(phase = AFTER_COMMIT)

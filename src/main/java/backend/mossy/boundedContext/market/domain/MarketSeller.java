@@ -11,43 +11,41 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "MARKET_SELLER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AttributeOverride(name = "id", column = @Column(name = "seller_id"))
+//@AttributeOverride(name = "id", column = @Column(name = "seller_id"))
 public class MarketSeller extends ReplicaSeller {
-
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "account_id")
-    private Long accountId;
-
-    @Column(name = "seller_type")
-    private SellerType sellerType;
-
-    @Column(name = "store_name")
-    private String storeName;
-
-    @Column(name = "business_num")
-    private String businessNum;
-
-    @Column(name = "representative_name")
-    private String representativeName;
-
-    @Column(name = "contact_email")
-    private String contactEmail;
-
-    @Column(name = "contact_phone")
-    private String contactPhone;
-
-    @Column(name = "address1")
-    private String address1;
-
-    @Column(name = "address2")
-    private String address2;
-
-    @Column(name = "status")
-    private SellerStatus status;
+    public MarketSeller(
+            Long id,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
+            Long userId,
+            SellerType sellerType,
+            String storeName,
+            String businessNum,
+            String representativeName,
+            String contactEmail,
+            String contactPhone,
+            String address1,
+            String address2,
+            SellerStatus sellerStatus) {
+        super(
+                id,
+                createdAt,
+                updatedAt,
+                userId,
+                sellerType,
+                storeName,
+                businessNum,
+                representativeName,
+                contactEmail,
+                contactPhone,
+                address1,
+                address2,
+                sellerStatus);
+    }
 }

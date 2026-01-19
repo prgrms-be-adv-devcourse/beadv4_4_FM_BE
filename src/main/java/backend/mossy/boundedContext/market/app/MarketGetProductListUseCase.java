@@ -1,6 +1,7 @@
 package backend.mossy.boundedContext.market.app;
 
 import backend.mossy.boundedContext.market.domain.Product;
+import backend.mossy.boundedContext.market.domain.ProductStatus;
 import backend.mossy.boundedContext.market.out.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,6 @@ public class MarketGetProductListUseCase {
     private final ProductRepository productRepository;
 
     public List<Product> getProductList() {
-        return productRepository.findTop10ByOrderByIdDesc();
+        return productRepository.findTop10ByStatusOrderByCreatedAtDesc(ProductStatus.FOR_SALE);
     }
 }
