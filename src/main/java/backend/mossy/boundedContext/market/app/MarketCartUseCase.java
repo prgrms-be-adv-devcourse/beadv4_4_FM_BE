@@ -30,7 +30,7 @@ public class MarketCartUseCase {
         MarketUser user = marketUserRepository.getReferenceById(buyer.id());
         Cart cart = Cart.createCart(user);
         cartRepository.save(cart);
-        return new RsData<>("201", "장바구니가 생성되었습니다.");
+        return new RsData<>("200", "장바구니가 생성되었습니다.");
     }
 
     public RsData<CartResponse> getCart(Long userId) {
