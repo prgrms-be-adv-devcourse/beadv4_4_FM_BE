@@ -21,9 +21,6 @@ public class PayoutUser extends ReplicaUser {
             Long id,
             String email,
             String name,
-            String rrnEncrypted,
-            String phoneNum,
-            String password,
             String address,
             String nickname,
             String profileImage,
@@ -31,7 +28,7 @@ public class PayoutUser extends ReplicaUser {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
-        super(id, email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, createdAt, updatedAt, status);
+        super(id, email, name, address, nickname, profileImage, createdAt, updatedAt, status);
     }
 
 

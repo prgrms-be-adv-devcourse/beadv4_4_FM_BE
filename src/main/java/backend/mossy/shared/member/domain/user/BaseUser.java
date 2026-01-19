@@ -19,15 +19,6 @@ public abstract class BaseUser extends BaseEntity {
     @Column(name = "name", nullable = false, length = 100)
     protected String name;
 
-    @Column(name = "rrn_encrypted", nullable = false, unique = true, length = 255)
-    protected String rrnEncrypted;
-
-    @Column(name = "phone_num", nullable = false, length = 255)
-    protected String phoneNum;
-
-    @Column(name = "password", nullable = false, length = 255)
-    protected String password;
-
     @Column(name = "address", nullable = false, length = 1000)
     protected String address;
 
@@ -44,9 +35,6 @@ public abstract class BaseUser extends BaseEntity {
     protected BaseUser(
         String email,
         String name,
-        String rrnEncrypted,
-        String phoneNum,
-        String password,
         String address,
         String nickname,
         String profileImage,
@@ -54,9 +42,6 @@ public abstract class BaseUser extends BaseEntity {
     ) {
         this.email = email;
         this.name = name;
-        this.rrnEncrypted = rrnEncrypted;
-        this.phoneNum = phoneNum;
-        this.password = password;
         this.address = address;
         this.nickname = nickname;
         this.profileImage = profileImage;
@@ -64,10 +49,6 @@ public abstract class BaseUser extends BaseEntity {
     }
 
     // ===== 의미 있는 변경 메서드 =====
-    public void changePassword(String encodedPassword) {
-        this.password = encodedPassword;
-    }
-
     public void changeNickname(String nickname) {
         this.nickname = nickname;
     }
