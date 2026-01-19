@@ -1,6 +1,5 @@
 package backend.mossy.boundedContext.market.app.cart;
 
-import backend.mossy.boundedContext.market.app.marketUser.MarketSyncUserUseCase;
 import backend.mossy.shared.market.dto.event.MarketUserDto;
 import backend.mossy.shared.market.dto.request.CartItemAddRequest;
 import backend.mossy.shared.market.dto.request.CartItemUpdateRequest;
@@ -12,36 +11,40 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CartFacade {
-    private final MarketSyncUserUseCase marketSyncUserUseCase;
-    private final CartUseCase cartUseCase;
+    private final CreateCartUseCase createCartUseCase;
+    private final AddCartItemUseCase addCartItemUseCase;
+    private final UpdateCartItemQuantityUseCase updateCartItemUseCase;
+    private final RemoveCartItemUseCase removeCartItemUseCase;
+    private final ClearCartUseCase clearCartUseCase;
+    private final GetCartItemListUseCase getCartItemListUseCase;
+
+    @Transactional(readOnly = true)
+    public CartResponse getCart(Long userId) {
+        return getCartItemListUseCase.getCart(userId);
+    }
 
     @Transactional
     public void createCart(MarketUserDto buyer) {
-        cartUseCase.create(buyer);
+        createCartUseCase.create(buyer);
     }
 
     @Transactional
     public void addCartItem(Long userId, CartItemAddRequest request) {
-        cartUseCase.addItem(userId, request);
+        addCartItemUseCase.addItem(userId, request);
     }
 
     @Transactional
     public void updateCartItem(Long userId, CartItemUpdateRequest request) {
-        cartUseCase.updateItem(userId, request);
+        updateCartItemUseCase.updateItemQuantity(userId, request);
     }
 
     @Transactional
     public void removeCartItem(Long userId, Long productId) {
-        cartUseCase.removeItem(userId, productId);
+        removeCartItemUseCase.removeItem(userId, productId);
     }
 
     @Transactional
     public void clearCart(Long userId) {
-        cartUseCase.clear(userId);
-    }
-
-    @Transactional(readOnly = true)
-    public CartResponse getCart(Long userId) {
-        return cartUseCase.getCart(userId);
+        clearCartUseCase.clear(userId);
     }
 }
