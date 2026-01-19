@@ -4,6 +4,7 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
 
 import backend.mossy.boundedContext.cash.app.CashFacade;
+import backend.mossy.shared.cash.event.CashSellerCreatedEvent;
 import backend.mossy.shared.cash.event.CashUserCreatedEvent;
 import backend.mossy.shared.member.event.SellerJoinedEvent;
 import backend.mossy.shared.member.event.UserUpdatedEvent;
@@ -41,5 +42,11 @@ public class CashEventListener {
     @Transactional(propagation = REQUIRES_NEW)
     public void cashUserCreatedEvent(CashUserCreatedEvent event) {
         cashFacade.createUserWallet(event.user());
+    }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public void cashSellerCreatedEvent(CashSellerCreatedEvent event) {
+        cashFacade.createSellerWallet(event.seller());
     }
 }

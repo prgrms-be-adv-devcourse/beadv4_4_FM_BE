@@ -1,6 +1,8 @@
 package backend.mossy.boundedContext.cash.app;
 
 import backend.mossy.boundedContext.cash.app.usecase.seller.CashCreateSellerWalletUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerBalanceUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerWalletInfoUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.sync.CashSyncSellerUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.sync.CashSyncUserUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.user.CashCreateUserWalletUseCase;
@@ -12,6 +14,7 @@ import backend.mossy.boundedContext.cash.domain.user.CashUser;
 import backend.mossy.boundedContext.cash.domain.user.UserWallet;
 import backend.mossy.shared.cash.dto.event.CashSellerDto;
 import backend.mossy.shared.cash.dto.event.CashUserDto;
+import backend.mossy.shared.cash.dto.response.SellerWalletResponseDto;
 import backend.mossy.shared.cash.dto.response.UserWalletResponseDto;
 import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.member.dto.event.UserDto;
@@ -30,7 +33,8 @@ public class CashFacade {
     private final CashCreateSellerWalletUseCase cashCreateSellerWalletUseCase;
     private final CashGetWalletInfoUseCase cashGetWalletInfoUseCase;
     private final CashGetBalanceUseCase cashGetBalanceUseCase;
-
+    private final CashGetSellerWalletInfoUseCase cashGetSellerWalletInfoUseCase;
+    private final CashGetSellerBalanceUseCase cashGetSellerBalanceUseCase;
     // === [동기화 영역] ===
 
     @Transactional
@@ -65,5 +69,15 @@ public class CashFacade {
     @Transactional(readOnly = true)
     public BigDecimal findUserBalance(Long userId) {
         return cashGetBalanceUseCase.getUserWalletBalance(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public SellerWalletResponseDto findSellerWallet(Long sellerId) {
+        return cashGetSellerWalletInfoUseCase.getSellerWalletInfo(sellerId);
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal findSellerBalance(Long sellerId) {
+        return cashGetSellerBalanceUseCase.getSellerBalance(sellerId);
     }
 }
