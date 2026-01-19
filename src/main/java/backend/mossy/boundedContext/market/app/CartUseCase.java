@@ -6,7 +6,6 @@ import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.out.CartRepository;
 import backend.mossy.boundedContext.market.out.MarketUserRepository;
 import backend.mossy.global.exception.DomainException;
-import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.event.MarketUserDto;
 import backend.mossy.shared.market.dto.request.CartItemAddRequest;
 import backend.mossy.shared.market.dto.request.CartItemUpdateRequest;
@@ -32,12 +31,12 @@ public class CartUseCase {
         cartRepository.save(cart);
     }
 
-    public RsData<CartResponse> getCart(Long userId) {
+    public CartResponse getCart(Long userId) {
         Cart cart = cartRepository.findByBuyerId(userId).orElseThrow(
                 () -> new DomainException("404", "장바구니가 존재하지 않습니다.")
         );
         List<CartItemResponse> items = cartRepository.findCartItemsByBuyerId(userId);
-        return new RsData<>("200", "장바구니 조회 성공", CartResponse.of(cart, items));
+        return CartResponse.of(cart, items);
     }
 
     public void addItem(Long userId, CartItemAddRequest request) {

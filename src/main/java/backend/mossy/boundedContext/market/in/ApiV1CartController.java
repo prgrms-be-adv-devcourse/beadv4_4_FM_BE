@@ -16,7 +16,7 @@ public class ApiV1CartController {
 
     @GetMapping
     public RsData<CartResponse> getCart(@RequestParam Long userId) {
-        return marketFacade.getCart(userId);
+        return new RsData<>("200", "상품 조회를 성공했습니다.",marketFacade.getCart(userId));
     }
 
     @PostMapping("/items")

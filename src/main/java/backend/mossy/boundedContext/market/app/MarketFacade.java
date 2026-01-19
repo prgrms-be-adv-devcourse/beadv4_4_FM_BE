@@ -2,12 +2,11 @@ package backend.mossy.boundedContext.market.app;
 
 import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.domain.Product;
-import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.event.MarketUserDto;
 import backend.mossy.shared.market.dto.request.*;
 import backend.mossy.shared.market.dto.response.CartResponse;
-import backend.mossy.shared.member.dto.common.UserDto;
 import backend.mossy.shared.market.dto.response.ProductDetailResponse;
+import backend.mossy.shared.member.dto.common.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,7 +100,7 @@ public class MarketFacade {
     }
 
     @Transactional(readOnly = true)
-    public RsData<CartResponse> getCart(Long userId) {
+    public CartResponse getCart(Long userId) {
         return cartUseCase.getCart(userId);
     }
 }
