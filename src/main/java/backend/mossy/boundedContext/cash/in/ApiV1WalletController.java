@@ -2,6 +2,7 @@ package backend.mossy.boundedContext.cash.in;
 
 import backend.mossy.boundedContext.cash.app.CashFacade;
 import backend.mossy.global.rsData.RsData;
+import backend.mossy.shared.cash.dto.response.SellerWalletResponseDto;
 import backend.mossy.shared.cash.dto.response.UserWalletResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import java.math.BigDecimal;
@@ -43,5 +44,27 @@ public class ApiV1WalletController {
     public RsData<BigDecimal> getUserBalance(@PathVariable("userId") Long userId) {
         BigDecimal balance = cashFacade.findUserBalance(userId);
         return new RsData<>("C-200", "구매자 잔액 조액 성공", balance);
+    }
+
+    // --- [판매자(Seller) 관련 API] ---
+
+    @GetMapping("/sellers/{sellerId}")
+    @Operation(
+        summary = "판매자 정산 지갑 상세 조회",
+        description = "판매자의 정산용 지갑 정보와 판매자 레플리카 정보를 포함한 상세 내역을 조회합니다."
+    )
+    public RsData<SellerWalletResponseDto> getSellerWallet(@PathVariable("sellerId") Long sellerId) {
+        SellerWalletResponseDto wallet = cashFacade.findSellerWallet(sellerId);
+        return new RsData<>("C-200", "판매자(%d)님의 지갑 정보가 정상적으로 조회되었습니다.".formatted(sellerId), wallet);
+    }
+
+    @GetMapping("/sellers/{sellerId}/balance")
+    @Operation(
+        summary = "판매자 정산 가능 잔액 조회",
+        description = "정산 도메인에서 실제 출금 가능 금액을 파악하기 위해 판매자 지갑의 잔액만을 조회합니다."
+    )
+    public RsData<BigDecimal> getSellerBalance(@PathVariable("sellerId") Long sellerId) {
+        BigDecimal balance = cashFacade.findSellerBalance(sellerId);
+        return new RsData<>("C-200", "판매자 잔액 조회 성공", balance);
     }
 }
