@@ -1,10 +1,10 @@
-package backend.mossy.boundedContext.market.app;
+package backend.mossy.boundedContext.market.app.product;
 
 import backend.mossy.boundedContext.market.domain.Category;
 import backend.mossy.boundedContext.market.domain.Product;
 import backend.mossy.boundedContext.market.out.ProductRepository;
 import backend.mossy.boundedContext.market.out.categoryRepository;
-import backend.mossy.shared.market.dto.requets.ProductUpdateRequest;
+import backend.mossy.shared.market.dto.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

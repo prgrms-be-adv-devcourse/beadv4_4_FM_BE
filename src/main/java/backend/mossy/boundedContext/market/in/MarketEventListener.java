@@ -1,9 +1,11 @@
 package backend.mossy.boundedContext.market.in;
 
-import backend.mossy.boundedContext.market.app.MarketFacade;
+import backend.mossy.boundedContext.market.app.cart.CartFacade;
+import backend.mossy.boundedContext.market.app.marketUser.MarketFacade;
+import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.shared.market.event.MarketUserCreatedEvent;
 import backend.mossy.shared.member.event.UserJoinedEvent;
-import backend.mossy.shared.member.event.UserModifiedEvent;
+import backend.mossy.shared.member.event.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,28 +17,28 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 @Component
 @RequiredArgsConstructor
 public class MarketEventListener {
-    private final MarketFacade  marketFacade;
+    private final MarketFacade marketFacade;
+    private final CartFacade cartFacade;
 
 //    @TransactionalEventListener(phase = AFTER_COMMIT)
 //    @Transactional(propagation = REQUIRES_NEW)
 //    public void handle(결제 이벤트) { marketFacade.decreaseProductStock(productId, 1);}
-    private final MarketFacade marketFacade;
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(UserJoinedEvent event) {
-        marketFacade.syncUser(event.user());
+    public MarketUser userCreatedEvent(UserJoinedEvent event) {
+        return marketFacade.syncUser(event.user());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(UserModifiedEvent event) {
-        marketFacade.syncUser(event.user());
+    public MarketUser userUpdatedEvent(UserUpdatedEvent event) {
+        return marketFacade.syncUser(event.user());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(MarketUserCreatedEvent event) {
-        marketFacade.createCart(event.buyer());
+    public void MarketCartCreatedEvent(MarketUserCreatedEvent event) {
+        cartFacade.createCart(event.buyer());
     }
 }

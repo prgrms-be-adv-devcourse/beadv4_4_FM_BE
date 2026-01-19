@@ -1,4 +1,4 @@
-package backend.mossy.shared.market.dto.requets;
+package backend.mossy.shared.market.dto.request;
 
 import backend.mossy.boundedContext.market.domain.ProductStatus;
 import jakarta.validation.constraints.NotBlank;
