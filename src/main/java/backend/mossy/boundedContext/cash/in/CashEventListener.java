@@ -20,20 +20,20 @@ public class CashEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handleCashMemberJoinedEvent(UserJoinedEvent event) {
+    public void userJoinedEvent(UserJoinedEvent event) {
         cashFacade.syncUser(event.user());
     }
 
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handleCashMemberJoinedEvent(UserUpdatedEvent event) {
+    public void userUpdatedEvent(UserUpdatedEvent event) {
         cashFacade.syncUser(event.user());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handleCashMemberCreatedEvent(CashUserCreatedEvent event) {
+    public void cashUserCreatedEvent(CashUserCreatedEvent event) {
         cashFacade.createWallet(event.user());
     }
 }

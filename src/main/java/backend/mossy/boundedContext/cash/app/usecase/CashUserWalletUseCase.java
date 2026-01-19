@@ -29,14 +29,14 @@ public class CashUserWalletUseCase {
     }
 
     public WalletResponseDto getMyWallet(Long userId) {
-        return walletRepository.findWalletByUser_Id(userId)
+        return walletRepository.findWalletByUserId(userId)
             .map(WalletResponseDto::from)
             .orElseThrow(
                 () -> new DomainException("NOT_FOUND_WALLET", "지갑 정보를 찾을 수 없습니다." + userId));
     }
 
     public BigDecimal getBalance(Long userId) {
-        return walletRepository.findWalletByUser_Id(userId)
+        return walletRepository.findWalletByUserId(userId)
             .map(Wallet::getBalance)
             .orElse(BigDecimal.ZERO);
     }
