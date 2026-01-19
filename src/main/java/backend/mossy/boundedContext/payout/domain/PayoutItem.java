@@ -18,7 +18,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class PayoutItem extends BaseIdAndTime {
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "payout_id", nullable = false)
+    @JoinColumn(name = "payout_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Payout payout;
 
     @Column(name = "seller_id", nullable = false)

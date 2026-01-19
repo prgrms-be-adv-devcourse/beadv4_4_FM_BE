@@ -1,13 +1,14 @@
 package backend.mossy.shared.market.dto.requets;
 
+import backend.mossy.boundedContext.market.domain.Category;
 import backend.mossy.boundedContext.market.domain.MarketSeller;
 import backend.mossy.boundedContext.market.domain.Product;
+import backend.mossy.boundedContext.market.domain.ProductStatus;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-
-public record ProductRequest(
+public record ProductCreateRequest(
         Long sellerId,
         Long userId,
         Long categoryId,
@@ -16,20 +17,19 @@ public record ProductRequest(
         BigDecimal weight,
         BigDecimal price,
         Integer quantity,
-        String status,
+        ProductStatus status,
         List<String> imageUrls
 ) {
-    public Product toEntity(MarketSeller seller) {
+    public Product toEntity(MarketSeller seller, Category category) {
         return Product.builder()
                 .seller(seller)
                 .userId(this.userId)
-                .categoryId(this.categoryId)
+                .category(category)
                 .name(this.name)
                 .description(this.description)
                 .weight(this.weight)
                 .price(this.price)
                 .quantity(this.quantity)
-                .status(this.status)
                 .build();
     }
 }

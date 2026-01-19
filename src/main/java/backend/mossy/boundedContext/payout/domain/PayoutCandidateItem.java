@@ -32,14 +32,14 @@ public class PayoutCandidateItem extends BaseIdAndTime {
      * 돈을 받을 주체 (Seller)만 남김
      */
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "seller_id", nullable = false)
+    @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private PayoutUser payee;
 
     @Column(name = "amount", columnDefinition = "INT DEFAULT 0")
     private BigDecimal amount;
 
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "payout_item_id")
+    @JoinColumn(name = "payout_item_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private PayoutItem payoutItem;
 
     @Builder
