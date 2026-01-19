@@ -4,6 +4,7 @@ import backend.mossy.boundedContext.market.app.MarketFacade;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.requets.CartItemAddRequest;
 import backend.mossy.shared.market.dto.requets.CartItemUpdateRequest;
+import backend.mossy.shared.market.dto.response.CartResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ApiV1CartController {
     private final MarketFacade marketFacade;
+
+    @GetMapping
+    public RsData<CartResponse> getCart(@RequestParam Long userId) {
+        return marketFacade.getCart(userId);
+    }
 
     @PostMapping("/items")
     public RsData<Void> addCartItem(

@@ -10,9 +10,13 @@ import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.MarketUserDto;
 import backend.mossy.shared.market.dto.requets.CartItemAddRequest;
 import backend.mossy.shared.market.dto.requets.CartItemUpdateRequest;
+import backend.mossy.shared.market.dto.response.CartItemResponse;
+import backend.mossy.shared.market.dto.response.CartResponse;
 import backend.mossy.shared.market.out.ProductApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +30,15 @@ public class MarketCartUseCase {
         MarketUser user = marketUserRepository.getReferenceById(buyer.id());
         Cart cart = Cart.createCart(user);
         cartRepository.save(cart);
-        return new RsData<>("201", "장바구니가 생성되었습니다.");
+        return new RsData<>("200", "장바구니가 생성되었습니다.");
+    }
+
+    public RsData<CartResponse> getCart(Long userId) {
+        Cart cart = cartRepository.findByBuyerId(userId).orElseThrow(
+                () -> new DomainException("404", "장바구니가 존재하지 않습니다.")
+        );
+        List<CartItemResponse> items = cartRepository.findCartItemsByBuyerId(userId);
+        return new RsData<>("200", "장바구니 조회 성공", CartResponse.of(cart, items));
     }
 
     public RsData<Void> addItem(Long userId, CartItemAddRequest request) {

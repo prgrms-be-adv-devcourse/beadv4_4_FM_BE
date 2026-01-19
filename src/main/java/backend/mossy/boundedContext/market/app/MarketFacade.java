@@ -7,6 +7,7 @@ import backend.mossy.shared.market.dto.MarketUserDto;
 import backend.mossy.shared.market.dto.requets.CartItemAddRequest;
 import backend.mossy.shared.market.dto.requets.CartItemUpdateRequest;
 import backend.mossy.shared.market.dto.requets.ProductRequest;
+import backend.mossy.shared.market.dto.response.CartResponse;
 import backend.mossy.shared.member.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,10 @@ public class MarketFacade {
     @Transactional
     public RsData<Void> clearCart(Long userId) {
         return marketCartUseCase.clear(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public RsData<CartResponse> getCart(Long userId) {
+        return marketCartUseCase.getCart(userId);
     }
 }
