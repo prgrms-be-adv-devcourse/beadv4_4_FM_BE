@@ -7,7 +7,7 @@ import backend.mossy.boundedContext.market.out.CartRepository;
 import backend.mossy.boundedContext.market.out.MarketUserRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.rsData.RsData;
-import backend.mossy.shared.market.dto.common.MarketUserDto;
+import backend.mossy.shared.market.dto.event.MarketUserDto;
 import backend.mossy.shared.market.dto.request.CartItemAddRequest;
 import backend.mossy.shared.market.dto.request.CartItemUpdateRequest;
 import backend.mossy.shared.market.dto.response.CartItemResponse;

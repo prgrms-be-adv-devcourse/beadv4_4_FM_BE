@@ -3,7 +3,7 @@ package backend.mossy.boundedContext.market.app;
 import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.domain.Product;
 import backend.mossy.global.rsData.RsData;
-import backend.mossy.shared.market.dto.common.MarketUserDto;
+import backend.mossy.shared.market.dto.event.MarketUserDto;
 import backend.mossy.shared.market.dto.request.*;
 import backend.mossy.shared.market.dto.response.CartResponse;
 import backend.mossy.shared.member.dto.common.UserDto;

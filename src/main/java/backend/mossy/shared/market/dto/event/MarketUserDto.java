@@ -1,4 +1,4 @@
-package backend.mossy.shared.market.dto.common;
+package backend.mossy.shared.market.dto.event;
 
 import backend.mossy.shared.member.domain.user.UserStatus;
 import lombok.Builder;
