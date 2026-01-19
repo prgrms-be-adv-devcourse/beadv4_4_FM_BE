@@ -41,6 +41,10 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+# [Querydsl]
+/build/generated
+/src/main/generated/
+
 # [OS]
 .DS_Store
 Thumbs.db
