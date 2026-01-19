@@ -1,6 +1,7 @@
 package backend.mossy.boundedContext.market.in;
 
 import backend.mossy.boundedContext.market.app.product.ProductFacade;
+import backend.mossy.boundedContext.market.domain.Product;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.request.ProductCreateRequest;
 import backend.mossy.shared.market.dto.request.ProductStatusUpdateRequest;
@@ -24,12 +25,13 @@ public class ApiV1ProductController {
     // 메인 화면 상품 리스트
     @GetMapping
     @Transactional(readOnly = true)
-    public List<ProductResponse> getProductList() {
-        return productFacade
+    public RsData<List<ProductResponse>> getProductList() {
+        List<ProductResponse> productsList = productFacade
                 .getProductList()
                 .stream()
                 .map(ProductResponse::from)
                 .toList();
+        return new RsData<>("200", "", productsList);
     }
 
     // 상품 상세 정보

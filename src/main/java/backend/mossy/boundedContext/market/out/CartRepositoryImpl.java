@@ -23,7 +23,7 @@ public class CartRepositoryImpl implements CartRepositoryCustom {
                 .select(Projections.constructor(CartItemResponse.class,
                         product.id,
                         product.name,
-                        product.categoryId,
+                        product.category.id,
                         product.price,
                         productImage.imageUrl,
                         cartItem.quantity
