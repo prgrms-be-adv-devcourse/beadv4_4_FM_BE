@@ -1,7 +1,6 @@
 package backend.mossy.shared.member.domain.user;
 
 import backend.mossy.global.jpa.entity.BaseEntity;
-import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,7 +22,7 @@ public abstract class BaseUser extends BaseEntity {
     @Column(name = "rrn_encrypted", nullable = false, unique = true, length = 255)
     protected String rrnEncrypted;
 
-    @Column(name = "phone_num", nullable = false, length = 20)
+    @Column(name = "phone_num", nullable = false, length = 255)
     protected String phoneNum;
 
     @Column(name = "password", nullable = false, length = 255)
@@ -43,15 +42,21 @@ public abstract class BaseUser extends BaseEntity {
     protected String profileImage;
 
     protected BaseUser(
-            String email,
-            String name,
-            String address,
-            String nickname,
-            String profileImage,
-            UserStatus status
+        String email,
+        String name,
+        String rrnEncrypted,
+        String phoneNum,
+        String password,
+        String address,
+        String nickname,
+        String profileImage,
+        UserStatus status
     ) {
         this.email = email;
         this.name = name;
+        this.rrnEncrypted = rrnEncrypted;
+        this.phoneNum = phoneNum;
+        this.password = password;
         this.address = address;
         this.nickname = nickname;
         this.profileImage = profileImage;

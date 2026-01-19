@@ -9,7 +9,7 @@ import java.util.List;
 @Builder
 public record PayoutResponseDto(
         Long payoutId,
-        LocalDateTime createdDate,
+        LocalDateTime createdAt,
         LocalDateTime payoutDate,
         PayoutUserResponseDto payee,
         BigDecimal totalAmount,
@@ -19,7 +19,7 @@ public record PayoutResponseDto(
     public static PayoutResponseDto from(Payout payout) {
         return PayoutResponseDto.builder()
                 .payoutId(payout.getId())
-                .createdDate(payout.getCreatedAt())
+                .createdAt(payout.getCreatedAt())
                 .payoutDate(payout.getPayoutDate())
                 .payee(PayoutUserResponseDto.from(payout.getPayee()))
                 .totalAmount(payout.getAmount())

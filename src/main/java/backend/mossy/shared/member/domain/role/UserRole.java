@@ -1,9 +1,8 @@
 package backend.mossy.shared.member.domain.role;
 
 
-import backend.mossy.global.jpa.entity.BaseEntity;
+import backend.mossy.boundedContext.member.domain.User;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
-import backend.mossy.shared.member.domain.user.SourceUser;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,7 +29,7 @@ public class UserRole extends BaseIdAndTime {
     @JoinColumn(name = "role_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Role role;
 
-    public UserRole(SourceUser user, Role role) {
+    public UserRole(User user, Role role) {
         this.user = user;
         this.role = role;
     }
