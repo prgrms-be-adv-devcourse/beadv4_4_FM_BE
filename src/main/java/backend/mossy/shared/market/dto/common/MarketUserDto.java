@@ -1,4 +1,4 @@
-package backend.mossy.shared.member.dto;
+package backend.mossy.shared.market.dto.common;
 
 import backend.mossy.shared.member.domain.user.UserStatus;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record UserDto (
+public record MarketUserDto (
         Long id,
         String email,
         String name,
@@ -19,4 +19,4 @@ public record UserDto (
         UserStatus status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
-){ }
+) { }

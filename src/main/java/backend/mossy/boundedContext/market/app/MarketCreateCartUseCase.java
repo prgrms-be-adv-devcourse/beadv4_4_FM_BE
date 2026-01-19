@@ -5,7 +5,7 @@ import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.out.CartRepository;
 import backend.mossy.boundedContext.market.out.MarketUserRepository;
 import backend.mossy.global.rsData.RsData;
-import backend.mossy.shared.market.dto.MarketUserDto;
+import backend.mossy.shared.market.dto.common.MarketUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

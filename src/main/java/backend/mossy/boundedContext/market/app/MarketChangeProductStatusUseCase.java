@@ -1,9 +1,8 @@
 package backend.mossy.boundedContext.market.app;
 
 import backend.mossy.boundedContext.market.domain.Product;
-import backend.mossy.boundedContext.market.domain.ProductStatus;
 import backend.mossy.boundedContext.market.out.ProductRepository;
-import backend.mossy.shared.market.dto.requets.ProductStatusUpdateRequest;
+import backend.mossy.shared.market.dto.request.ProductStatusUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

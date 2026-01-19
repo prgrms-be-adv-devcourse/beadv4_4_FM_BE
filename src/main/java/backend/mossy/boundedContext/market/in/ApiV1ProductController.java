@@ -1,11 +1,10 @@
 package backend.mossy.boundedContext.market.in;
 
 import backend.mossy.boundedContext.market.app.MarketFacade;
-import backend.mossy.boundedContext.market.domain.Product;
 import backend.mossy.global.rsData.RsData;
-import backend.mossy.shared.market.dto.requets.ProductCreateRequest;
-import backend.mossy.shared.market.dto.requets.ProductStatusUpdateRequest;
-import backend.mossy.shared.market.dto.requets.ProductUpdateRequest;
+import backend.mossy.shared.market.dto.request.ProductCreateRequest;
+import backend.mossy.shared.market.dto.request.ProductStatusUpdateRequest;
+import backend.mossy.shared.market.dto.request.ProductUpdateRequest;
 import backend.mossy.shared.market.dto.response.ProductDetailResponse;
 import backend.mossy.shared.market.dto.response.ProductResponse;
 import jakarta.validation.Valid;
