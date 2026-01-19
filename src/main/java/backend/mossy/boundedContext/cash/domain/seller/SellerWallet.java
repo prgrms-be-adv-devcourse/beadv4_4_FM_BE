@@ -29,6 +29,7 @@ public class SellerWallet extends BaseManualIdAndTime {
 
     @Builder
     public SellerWallet(CashSeller seller) {
+        super(seller.getId());
         this.seller = seller;
         this.balance = BigDecimal.ZERO;
     }
