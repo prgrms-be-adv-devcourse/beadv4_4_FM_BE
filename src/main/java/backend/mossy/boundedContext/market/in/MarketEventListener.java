@@ -19,19 +19,19 @@ public class MarketEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(UserJoinedEvent event) {
+    public void UserCreatedEvent(UserJoinedEvent event) {
         marketFacade.syncUser(event.user());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(UserModifiedEvent event) {
+    public void UserModifiedEvent(UserModifiedEvent event) {
         marketFacade.syncUser(event.user());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(MarketUserCreatedEvent event) {
+    public void CartCreatedEvent(MarketUserCreatedEvent event) {
         marketFacade.createCart(event.buyer());
     }
 }
