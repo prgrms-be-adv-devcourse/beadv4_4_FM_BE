@@ -6,7 +6,9 @@ import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.payout.dto.event.SellerDto;
 import backend.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @RequiredArgsConstructor
 public class PayoutSyncSellerUseCase {
     private final PayoutSellerRepository payoutSellerRepository;
