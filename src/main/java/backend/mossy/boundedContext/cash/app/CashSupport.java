@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.cash.app;
 
-import backend.mossy.boundedContext.cash.out.UserWalletRepository;
+import backend.mossy.boundedContext.cash.out.user.UserWalletRepository;
 import backend.mossy.global.exception.DomainException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

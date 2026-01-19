@@ -1,6 +1,6 @@
-package backend.mossy.boundedContext.cash.app.usecase;
+package backend.mossy.boundedContext.cash.app.usecase.user;
 
-import backend.mossy.boundedContext.cash.out.UserWalletRepository;
+import backend.mossy.boundedContext.cash.out.user.UserWalletRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.shared.cash.dto.response.WalletResponseDto;
 import lombok.RequiredArgsConstructor;

@@ -1,10 +1,10 @@
-package backend.mossy.boundedContext.cash.app.usecase;
+package backend.mossy.boundedContext.cash.app.usecase.user;
 
 import backend.mossy.boundedContext.cash.app.CashSupport;
 import backend.mossy.boundedContext.cash.domain.user.CashUser;
 import backend.mossy.boundedContext.cash.domain.user.UserWallet;
-import backend.mossy.boundedContext.cash.out.CashUserRepository;
-import backend.mossy.boundedContext.cash.out.UserWalletRepository;
+import backend.mossy.boundedContext.cash.out.user.CashUserRepository;
+import backend.mossy.boundedContext.cash.out.user.UserWalletRepository;
 import backend.mossy.shared.cash.dto.common.CashUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

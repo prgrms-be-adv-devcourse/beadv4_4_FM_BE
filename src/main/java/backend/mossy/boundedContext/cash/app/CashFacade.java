@@ -1,9 +1,9 @@
 package backend.mossy.boundedContext.cash.app;
 
-import backend.mossy.boundedContext.cash.app.usecase.CashCreateWalletUseCase;
-import backend.mossy.boundedContext.cash.app.usecase.CashGetBalanceUseCase;
-import backend.mossy.boundedContext.cash.app.usecase.CashGetWalletInfoUseCase;
-import backend.mossy.boundedContext.cash.app.usecase.CashSyncUserUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.user.CashCreateWalletUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.user.CashGetBalanceUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.user.CashGetWalletInfoUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.sync.CashSyncUserUseCase;
 import backend.mossy.boundedContext.cash.domain.user.CashUser;
 import backend.mossy.boundedContext.cash.domain.user.UserWallet;
 import backend.mossy.shared.cash.dto.common.CashUserDto;

@@ -1,7 +1,7 @@
-package backend.mossy.boundedContext.cash.app.usecase;
+package backend.mossy.boundedContext.cash.app.usecase.user;
 
 import backend.mossy.boundedContext.cash.domain.user.UserWallet;
-import backend.mossy.boundedContext.cash.out.UserWalletRepository;
+import backend.mossy.boundedContext.cash.out.user.UserWalletRepository;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
