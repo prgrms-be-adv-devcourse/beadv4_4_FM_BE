@@ -4,9 +4,12 @@ import backend.mossy.boundedContext.payout.domain.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.PayoutSellerRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.payout.dto.event.SellerDto;
+import backend.mossy.shared.payout.event.PayoutSellerCreatedEvent;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class PayoutSyncSellerUseCase {
-    private PayoutSellerRepository payoutSellerRepository;
+    private final PayoutSellerRepository payoutSellerRepository;
     private final EventPublisher eventPublisher;
 
     public PayoutSeller syncSeller(SellerDto seller) {
