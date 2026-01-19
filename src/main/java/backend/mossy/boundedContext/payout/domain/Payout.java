@@ -35,21 +35,26 @@ public class Payout extends BaseIdAndTime {
         this.payee = payee;
     }
 
-    public PayoutItem addItem(PayoutEventType eventType, String relTypeCode, Long relId, LocalDateTime payDate, Long itemAmount) {
+    public PayoutItem addItem(PayoutEventType eventType, String relTypeCode, Long relId,
+                              LocalDateTime paymentDate, PayoutSeller payee, BigDecimal amount,
+                              PayoutCandidateItem candidateItem) {
         PayoutItem payoutItem = PayoutItem.builder()
                 .payout(this)
                 .sellerId(this.payee.getId())
                 .eventType(eventType)
                 .relTypeCode(relTypeCode)
                 .relId(relId)
-                .amount(BigDecimal.valueOf(itemAmount))
-                .payoutDate(payDate)
+                .amount(amount)
+                .payoutDate(paymentDate)
                 .build();
 
         this.items.add(payoutItem);
 
         // 총 정산 금액을 업데이트합니다.
         this.amount = this.amount.add(payoutItem.getAmount());
+
+        // 양방향 연결: PayoutCandidateItem과 PayoutItem을 연결
+        candidateItem.linkToPayoutItem(payoutItem);
 
         return payoutItem;
     }

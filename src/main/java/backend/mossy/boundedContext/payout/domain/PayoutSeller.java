@@ -1,9 +1,10 @@
 package backend.mossy.boundedContext.payout.domain;
 
 import backend.mossy.shared.member.domain.seller.BaseSeller;
+import backend.mossy.shared.member.domain.seller.ReplicaSeller;
 import backend.mossy.shared.member.domain.seller.SellerStatus;
 import backend.mossy.shared.member.domain.seller.SellerType;
-import backend.mossy.shared.payout.dto.response.PayoutSellerDto;
+import backend.mossy.shared.payout.dto.response.PayoutSellerResponseDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "PAYOUT_SELLER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PayoutSeller extends BaseSeller {
+public class PayoutSeller extends ReplicaSeller {
     @Id
     private Long id;
 
@@ -54,8 +55,8 @@ public class PayoutSeller extends BaseSeller {
         return id;
     }
 
-    public PayoutSellerDto toDto() {
-        return PayoutSellerDto.builder()
+    public PayoutSellerResponseDto toDto() {
+        return PayoutSellerResponseDto.builder()
                 .id(this.getId())
                 .createdAt(this.getCreatedAt())
                 .updatedAt(this.getUpdatedAt())

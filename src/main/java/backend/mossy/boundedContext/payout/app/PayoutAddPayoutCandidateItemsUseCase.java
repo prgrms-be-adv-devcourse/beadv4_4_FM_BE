@@ -65,14 +65,15 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             PayoutSeller payee,
             BigDecimal amount
     ) {
-        PayoutCandidateItem payoutCandidateItem = new PayoutCandidateItem(
-                eventType,
-                relTypeCode,
-                relId,
-                paymentDate,
-                payee,
-                amount
-        );
+        PayoutCandidateItem payoutCandidateItem = PayoutCandidateItem.builder()
+                .eventType(eventType)
+                .relTypeCode(relTypeCode)
+                .relId(relId)
+                .paymentDate(paymentDate)
+                .payer(payer)
+                .payee(payee)
+                .amount(amount)
+                .build();
 
         // 생성된 정산 후보 데이터를 DB에 저장합니다.
         // 이 데이터는 나중에 배치 작업에 의해 처리될 때까지 대기 상태가 됩니다.

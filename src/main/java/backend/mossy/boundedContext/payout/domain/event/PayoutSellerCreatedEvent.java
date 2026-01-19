@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.payout.domain.event;
 
-import backend.mossy.shared.payout.dto.response.PayoutSellerDto;
+import backend.mossy.shared.payout.dto.response.PayoutSellerResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PayoutSellerCreatedEvent {
-    private PayoutSellerDto payoutSeller;
+    private PayoutSellerResponseDto payoutSeller;
 }

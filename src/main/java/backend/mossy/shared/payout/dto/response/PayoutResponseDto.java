@@ -11,7 +11,7 @@ public record PayoutResponseDto(
         Long payoutId,
         LocalDateTime createdDate,
         LocalDateTime payoutDate,
-        PayoutUserResponseDto payee,
+        PayoutSellerResponseDto payee,
         BigDecimal totalAmount,
         List<PayoutItemResponseDto> items
 ) {
@@ -21,7 +21,7 @@ public record PayoutResponseDto(
                 .payoutId(payout.getId())
                 .createdDate(payout.getCreatedAt())
                 .payoutDate(payout.getPayoutDate())
-                .payee(PayoutUserResponseDto.from(payout.getPayee()))
+                .payee(PayoutSellerResponseDto.from(payout.getPayee()))
                 .totalAmount(payout.getAmount())
                 .items(payout.getItems().stream()
                         .map(PayoutItemResponseDto::from)

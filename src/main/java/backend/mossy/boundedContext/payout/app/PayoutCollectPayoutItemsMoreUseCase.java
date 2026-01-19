@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PayoutCollectPayoutItemsMoreUseCase {
+    private final PayoutCandidateItemRepository payoutCandidateItemRepository;
+    private final PayoutRepository payoutRepository;
+
     public RsData<Integer> collectPayoutItemsMore(int limit) {
         // 1. 정산할 준비가 된 '정산 후보' 목록을 조회합니다.
         List<PayoutCandidateItem> payoutReadyCandidateItems = findPayoutReadyCandidateItems(limit);
@@ -33,18 +36,17 @@ public class PayoutCollectPayoutItemsMoreUseCase {
                     Payout payout = findActiveByPayee(payee).get();
 
                     // 4. 각 후보(candidateItem)를 실제 정산 항목(payoutItem)으로 변환하여 Payout 객체에 추가합니다.
+                    // PayoutCandidateItem과 PayoutItem의 양방향 연결은 Payout.addItem()에서 자동으로 처리됩니다.
                     candidateItems.forEach(item -> {
-                        PayoutItem payoutItem = payout.addItem(
+                        payout.addItem(
                                 item.getEventType(),
                                 item.getRelTypeCode(),
                                 item.getRelId(),
                                 item.getPaymentDate(),
                                 item.getPayee(),
-                                item.getAmount()
+                                item.getAmount(),
+                                item  // PayoutCandidateItem 전달 - 양방향 연결이 자동으로 처리됨
                         );
-
-                        // 5. 후보 항목에 실제 정산 항목을 연결하여, 이 후보가 처리되었음을 표시합니다.
-                        item.setPayoutItem(payoutItem);
                     });
                 });
 
