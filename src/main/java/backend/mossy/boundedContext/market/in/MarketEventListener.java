@@ -1,6 +1,7 @@
 package backend.mossy.boundedContext.market.in;
 
-import backend.mossy.boundedContext.market.app.MarketFacade;
+import backend.mossy.boundedContext.market.app.cart.CartFacade;
+import backend.mossy.boundedContext.market.app.marketUser.MarketFacade;
 import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.shared.market.event.MarketUserCreatedEvent;
 import backend.mossy.shared.member.event.UserJoinedEvent;
@@ -17,6 +18,7 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 @RequiredArgsConstructor
 public class MarketEventListener {
     private final MarketFacade marketFacade;
+    private final CartFacade cartFacade;
 
 //    @TransactionalEventListener(phase = AFTER_COMMIT)
 //    @Transactional(propagation = REQUIRES_NEW)
@@ -37,6 +39,6 @@ public class MarketEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void MarketCartCreatedEvent(MarketUserCreatedEvent event) {
-        marketFacade.createCart(event.buyer());
+        cartFacade.createCart(event.buyer());
     }
 }

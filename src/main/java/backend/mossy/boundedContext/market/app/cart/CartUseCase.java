@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.app;
+package backend.mossy.boundedContext.market.app.cart;
 
 import backend.mossy.boundedContext.market.domain.Cart;
 import backend.mossy.boundedContext.market.domain.MarketPolicy;

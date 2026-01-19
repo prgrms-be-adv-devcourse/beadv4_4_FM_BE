@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.app;
+package backend.mossy.boundedContext.market.app.marketUser;
 
 import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.out.MarketUserRepository;

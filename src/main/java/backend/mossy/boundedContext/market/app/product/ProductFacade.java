@@ -1,12 +1,10 @@
-package backend.mossy.boundedContext.market.app;
+package backend.mossy.boundedContext.market.app.product;
 
-import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.domain.Product;
-import backend.mossy.shared.market.dto.event.MarketUserDto;
-import backend.mossy.shared.market.dto.request.*;
-import backend.mossy.shared.market.dto.response.CartResponse;
+import backend.mossy.shared.market.dto.request.ProductCreateRequest;
+import backend.mossy.shared.market.dto.request.ProductStatusUpdateRequest;
+import backend.mossy.shared.market.dto.request.ProductUpdateRequest;
 import backend.mossy.shared.market.dto.response.ProductDetailResponse;
-import backend.mossy.shared.member.dto.common.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MarketFacade {
+public class ProductFacade {
     private final MarketGetProductListUseCase marketGetProductListUseCase;
     private final MarketGetProductDetailUseCase marketGetProductDetailUseCase;
     private final MarketRegisterProductUseCase marketRegisterProductUseCase;
@@ -23,8 +21,6 @@ public class MarketFacade {
     private final MarketChangeProductStatusUseCase marketChangeProductStatusUseCase;
     private final MarketDecreaseStockUseCase marketDecreaseStockUseCase;
     private final MarketDeleteProductUseCase marketDeleteProductUseCase;
-    private final MarketSyncUserUseCase marketSyncUserUseCase;
-    private final CartUseCase cartUseCase;
 
     // 메인 화면 상품 리스트
     @Transactional(readOnly = true)
@@ -67,40 +63,5 @@ public class MarketFacade {
     @Transactional
     public void decreaseProductStock(Long productId, Integer quantity) {
         marketDecreaseStockUseCase.decrease(productId, quantity);
-    }
-
-    @Transactional
-    public MarketUser syncUser(UserDto user) {
-        return marketSyncUserUseCase.syncUser(user);
-    }
-
-    @Transactional
-    public void createCart(MarketUserDto buyer) {
-        cartUseCase.create(buyer);
-    }
-
-    @Transactional
-    public void addCartItem(Long userId, CartItemAddRequest request) {
-        cartUseCase.addItem(userId, request);
-    }
-
-    @Transactional
-    public void updateCartItem(Long userId, CartItemUpdateRequest request) {
-        cartUseCase.updateItem(userId, request);
-    }
-
-    @Transactional
-    public void removeCartItem(Long userId, Long productId) {
-        cartUseCase.removeItem(userId, productId);
-    }
-
-    @Transactional
-    public void clearCart(Long userId) {
-        cartUseCase.clear(userId);
-    }
-
-    @Transactional(readOnly = true)
-    public CartResponse getCart(Long userId) {
-        return cartUseCase.getCart(userId);
     }
 }

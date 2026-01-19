@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.market.in;
 
-import backend.mossy.boundedContext.market.app.MarketFacade;
+import backend.mossy.boundedContext.market.app.product.ProductFacade;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.request.ProductCreateRequest;
 import backend.mossy.shared.market.dto.request.ProductStatusUpdateRequest;
@@ -19,13 +19,13 @@ import java.util.List;
 @RequestMapping("/api/v1/product/products")
 @RequiredArgsConstructor
 public class ApiV1ProductController {
-    private final MarketFacade marketFacade;
+    private final ProductFacade productFacade;
 
     // 메인 화면 상품 리스트
     @GetMapping
     @Transactional(readOnly = true)
     public List<ProductResponse> getProductList() {
-        return marketFacade
+        return productFacade
                 .getProductList()
                 .stream()
                 .map(ProductResponse::from)
@@ -35,7 +35,7 @@ public class ApiV1ProductController {
     // 상품 상세 정보
     @GetMapping("/{productId}")
     public RsData<ProductDetailResponse> getProductById(@PathVariable Long productId) {
-        ProductDetailResponse response = marketFacade.getProductById(productId);
+        ProductDetailResponse response = productFacade.getProductById(productId);
         return new RsData<>("200", "", response);
     }
 
@@ -43,7 +43,7 @@ public class ApiV1ProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RsData<Void> createProduct(@RequestBody @Valid ProductCreateRequest request) {
-        marketFacade.registerProduct(request);
+        productFacade.registerProduct(request);
         return new RsData<>("201", "상품이 등록되었습니다");
     }
 
@@ -53,7 +53,7 @@ public class ApiV1ProductController {
             @PathVariable Long productId,
             @RequestHeader("X-Seller-Id") Long currentSellerId,
             @RequestBody @Valid ProductUpdateRequest request) {
-        marketFacade.updateProduct(productId, currentSellerId, request);
+        productFacade.updateProduct(productId, currentSellerId, request);
 
         return new RsData<>("200", "상품이 수정되었습니다.", productId);
     }
@@ -64,7 +64,7 @@ public class ApiV1ProductController {
             @PathVariable Long productId,
             @RequestHeader("X-Seller-Id") Long currentSellerId,
             @Valid @RequestBody ProductStatusUpdateRequest request) {
-        marketFacade.changeProductStatus(productId, currentSellerId, request);
+        productFacade.changeProductStatus(productId, currentSellerId, request);
 
         return new RsData<>("200", "상품 상태가 수정되었습니다.", productId);
     }
@@ -73,7 +73,7 @@ public class ApiV1ProductController {
     public RsData<Long> deleteProduct(
             @PathVariable Long productId,
             @RequestHeader("X-Seller-Id") Long currentSellerId) {
-        marketFacade.deleteProduct(productId, currentSellerId);
+        productFacade.deleteProduct(productId, currentSellerId);
 
         return new RsData<>("200", "상품이 삭제되었습니다.", productId);
     }
