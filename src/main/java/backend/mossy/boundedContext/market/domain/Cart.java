@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @AttributeOverride(name = "id", column = @Column(name = "cart_id"))
 public class Cart extends BaseIdAndTime {
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketUser buyer;
 
@@ -23,18 +23,53 @@ public class Cart extends BaseIdAndTime {
     private List<CartItem> items = new ArrayList<>();
 
     @Column(name = "total_count", nullable = false)
-    private int totalCount;
+    private int totalQuantity;
 
     public static Cart createCart(MarketUser buyer) {
         Cart cart = new Cart();
         cart.buyer = buyer;
-        cart.totalCount = 0;
+        cart.totalQuantity = 0;
         return cart;
     }
 
-    public void addItem(Long productId, int count){
-        CartItem cartItem = new CartItem(this, productId, count);
+    public void addItem(Long productId, int quantity){
+        for (CartItem item : this.items) {
+            if (item.getProductId().equals(productId)) {
+                item.addItem(quantity);
+                this.totalQuantity += quantity;
+                return;
+            }
+        }
+        CartItem cartItem = new CartItem(this, productId, quantity);
         this.getItems().add(cartItem);
-        this.totalCount += count;
+        this.totalQuantity += quantity;
+    }
+
+    public boolean updateItem(Long productId, int quantity) {
+        for (CartItem item : this.items) {
+            if (item.getProductId().equals(productId)) {
+                int diff = quantity - item.getQuantity();
+                item.updateQuantity(quantity);
+                this.totalQuantity += diff;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removeItem(Long productId) {
+        for (CartItem item : this.items) {
+            if (item.getProductId().equals(productId)) {
+                this.totalQuantity -= item.getQuantity();
+                this.items.remove(item);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void clear() {
+        this.items.clear();
+        this.totalQuantity = 0;
     }
 }

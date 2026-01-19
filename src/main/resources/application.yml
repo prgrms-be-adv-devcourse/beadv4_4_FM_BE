@@ -51,4 +51,10 @@ jwt:
 
 encryption:
   secret-key: mossy-encrypt-key-must-be-32byte
+  
+market:
+  policy:
+    cart:
+      max_quantity: 100
+
 

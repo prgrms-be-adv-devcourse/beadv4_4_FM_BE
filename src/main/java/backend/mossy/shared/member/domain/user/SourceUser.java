@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SourceUser extends BaseUser {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -25,14 +26,18 @@ public class SourceUser extends BaseUser {
     private LocalDateTime updatedAt;
 
     public SourceUser(
-            String email,
-            String name,
-            String address,
-            String nickname,
-            String profileImage,
-            UserStatus status
+        String email,
+        String name,
+        String rrnEncrypted,
+        String phoneNum,
+        String password,
+        String address,
+        String nickname,
+        String profileImage,
+        UserStatus status
     ) {
-        super(email, name, address, nickname, profileImage, status);
+        super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage,
+            status);
     }
 
     public Long getId() {

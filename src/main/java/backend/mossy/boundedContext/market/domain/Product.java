@@ -44,6 +44,7 @@ public class Product extends BaseIdAndTime {
     @Column(nullable = false)
     private Integer quantity;
 
+    @Builder.Default
     @Column(nullable = false, length = 20)
     private String status = "ON_SALE"; // 기본값 설정
 
