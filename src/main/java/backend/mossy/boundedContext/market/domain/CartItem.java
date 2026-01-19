@@ -33,4 +33,8 @@ public class CartItem extends BaseIdAndTime {
     public void addItem(int quantity) {
         this.quantity += quantity;
     }
+
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

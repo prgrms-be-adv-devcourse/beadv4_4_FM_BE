@@ -2,16 +2,10 @@ package backend.mossy.boundedContext.market.out;
 
 import backend.mossy.boundedContext.market.domain.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
 
-    @Query("SELECT c " +
-            "FROM Cart c " +
-            "LEFT JOIN FETCH c.items " +
-            "WHERE c.buyer.id = :buyerId")
-    Optional<Cart> findByBuyerIdWithItems(@Param("buyerId") Long buyerId);
+    Optional<Cart> findByBuyerId(Long buyerId);
 }
