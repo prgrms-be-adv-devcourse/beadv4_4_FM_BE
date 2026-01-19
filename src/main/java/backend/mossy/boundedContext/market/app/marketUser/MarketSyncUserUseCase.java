@@ -4,6 +4,7 @@ import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.out.MarketUserRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.market.event.MarketUserCreatedEvent;
+import backend.mossy.shared.member.dto.common.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
