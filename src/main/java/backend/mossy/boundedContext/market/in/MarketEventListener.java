@@ -4,7 +4,7 @@ import backend.mossy.boundedContext.market.app.MarketFacade;
 import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.shared.market.event.MarketUserCreatedEvent;
 import backend.mossy.shared.member.event.UserJoinedEvent;
-import backend.mossy.shared.member.event.UserModifiedEvent;
+import backend.mossy.shared.member.event.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +30,7 @@ public class MarketEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public MarketUser userUpdatedEvent(UserModifiedEvent event) {
+    public MarketUser userUpdatedEvent(UserUpdatedEvent event) {
         return marketFacade.syncUser(event.user());
     }
 

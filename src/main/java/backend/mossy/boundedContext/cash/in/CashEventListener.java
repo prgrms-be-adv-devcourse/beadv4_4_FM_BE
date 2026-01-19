@@ -5,7 +5,7 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 
 import backend.mossy.boundedContext.cash.app.CashFacade;
 import backend.mossy.shared.cash.event.CashUserCreatedEvent;
-import backend.mossy.shared.member.event.UserModifiedEvent;
+import backend.mossy.shared.member.event.UserUpdatedEvent;
 import backend.mossy.shared.member.event.UserJoinedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class CashEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handleCashMemberJoinedEvent(UserModifiedEvent event) {
+    public void handleCashMemberJoinedEvent(UserUpdatedEvent event) {
         cashFacade.syncUser(event.user());
     }
 
