@@ -1,6 +1,6 @@
 package backend.mossy.shared.cash.dto.response;
 
-import backend.mossy.boundedContext.cash.domain.wallet.Wallet;
+import backend.mossy.boundedContext.cash.domain.user.UserWallet;
 import backend.mossy.shared.cash.dto.common.CashUserDto;
 import java.math.BigDecimal;
 import lombok.Builder;
@@ -12,7 +12,7 @@ public record WalletResponseDto(
     CashUserDto user // 지갑 소유자 정보 포함
 ) {
 
-    public static WalletResponseDto from(Wallet wallet) {
+    public static WalletResponseDto from(UserWallet wallet) {
         return WalletResponseDto.builder()
             .walletId(wallet.getId())
             .balance(wallet.getBalance())

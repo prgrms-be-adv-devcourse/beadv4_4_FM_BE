@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.cash.domain.wallet;
+package backend.mossy.boundedContext.cash.domain.user;
 
 import backend.mossy.shared.cash.dto.common.CashUserDto;
 import backend.mossy.shared.member.domain.user.ReplicaUser;

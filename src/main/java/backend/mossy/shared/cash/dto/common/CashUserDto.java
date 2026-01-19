@@ -1,6 +1,6 @@
 package backend.mossy.shared.cash.dto.common;
 
-import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
+import backend.mossy.boundedContext.cash.domain.user.CashUser;
 import backend.mossy.shared.member.domain.user.UserStatus;
 import lombok.Builder;
 import java.time.LocalDateTime;
