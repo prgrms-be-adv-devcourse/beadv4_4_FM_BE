@@ -1,4 +1,4 @@
-package backend.mossy.shared.cash.dto.common;
+package backend.mossy.shared.cash.dto.event;
 
 import backend.mossy.boundedContext.cash.domain.user.CashUser;
 import backend.mossy.shared.member.domain.user.UserStatus;

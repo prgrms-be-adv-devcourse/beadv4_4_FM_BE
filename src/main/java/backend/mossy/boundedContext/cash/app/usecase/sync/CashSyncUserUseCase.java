@@ -8,7 +8,6 @@ import backend.mossy.shared.cash.event.CashUserCreatedEvent;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +17,6 @@ public class CashSyncUserUseCase {
     private final UserWalletRepository userWalletRepository;
     private final EventPublisher eventPublisher;
 
-    @Transactional
     public CashUser syncUser(UserDto user) {
         // 1. CashUser 빌더를 사용하여 엔티티 생성 및 저장
         CashUser cashUser = cashUserRepository.save(

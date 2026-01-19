@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.cash.domain.user;
 
-import backend.mossy.shared.cash.dto.common.CashUserDto;
+import backend.mossy.shared.cash.dto.event.CashUserDto;
 import backend.mossy.shared.member.domain.user.ReplicaUser;
 import backend.mossy.shared.member.domain.user.UserStatus;
 import jakarta.persistence.AttributeOverride;

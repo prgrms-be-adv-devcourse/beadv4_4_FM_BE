@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class CashGetBalanceUseCase {
     private final UserWalletRepository userWalletRepository;
 
-    public BigDecimal getBalance(Long userId) {
+    public BigDecimal getUserWalletBalance(Long userId) {
         return userWalletRepository.findWalletByUserId(userId)
             .map(UserWallet::getBalance)
             .orElse(BigDecimal.ZERO);
