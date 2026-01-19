@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -29,7 +30,7 @@ public class PayoutCompletePayoutsMoreUseCase {
         );
     }
 
-    private List<Payout> findActivePayouts(BigDecimal limit) {
-        return payoutRepository.findByPayoutDateIsNullAndAmountGreaterThanOrderByIdAsc(0, PageRequest.of(0, limit));
+    private List<Payout> findActivePayouts(int limit) {
+        return payoutRepository.findByPayoutDateIsNullAndAmountGreaterThanOrderByIdAsc(BigDecimal.ZERO, PageRequest.of(0, limit));
     }
 }

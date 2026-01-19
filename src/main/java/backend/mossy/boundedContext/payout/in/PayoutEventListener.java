@@ -2,6 +2,7 @@ package backend.mossy.boundedContext.payout.in;
 
 import backend.mossy.boundedContext.payout.app.PayoutFacade;
 import backend.mossy.shared.member.event.SellerJoinedEvent;
+import backend.mossy.shared.member.event.SellerUpdatedEvent;
 import backend.mossy.shared.payout.event.PayoutCompletedEvent;
 import backend.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
