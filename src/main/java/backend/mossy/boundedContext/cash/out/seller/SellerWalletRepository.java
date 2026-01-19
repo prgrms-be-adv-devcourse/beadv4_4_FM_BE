@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SellerWalletRepository extends JpaRepository<SellerWallet, Long> {
 
+    boolean existsBySellerId(Long sellerId);
 }
