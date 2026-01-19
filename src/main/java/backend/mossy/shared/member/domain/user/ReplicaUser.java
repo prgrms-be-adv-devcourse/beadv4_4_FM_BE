@@ -35,5 +35,8 @@ public class ReplicaUser extends BaseUser {
             UserStatus status
     ) {
         super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, status);
+        this.id = id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }
