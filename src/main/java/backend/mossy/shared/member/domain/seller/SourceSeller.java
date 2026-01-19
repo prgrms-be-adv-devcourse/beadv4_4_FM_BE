@@ -36,10 +36,23 @@ public abstract class SourceSeller extends BaseSeller {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public SourceSeller(Long userId, SellerType sellerType, String storeName, String businessNum, String representativeName, String contactEmail, String contactPhone, String address1, String address2, SellerStatus status, Long id, Long userId1, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public SourceSeller(
+            Long userId, 
+            SellerType sellerType, 
+            String storeName, 
+            String businessNum, 
+            String representativeName, 
+            String contactEmail, 
+            String contactPhone, 
+            String address1, 
+            String address2, 
+            SellerStatus status, 
+            Long id,
+            LocalDateTime createdAt, 
+            LocalDateTime updatedAt) {
         super(userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, status);
         this.id = id;
-        this.userId = userId1;
+        this.userId = userId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
