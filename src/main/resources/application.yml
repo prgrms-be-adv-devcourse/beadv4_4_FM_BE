@@ -37,4 +37,7 @@ logging:
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
 
-
+market:
+  policy:
+    cart:
+      max_quantity: 100
