@@ -1,4 +1,5 @@
 package backend.mossy.shared.member.domain.user;
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
@@ -13,8 +14,11 @@ import java.time.LocalDateTime;
 public class ReplicaUser extends BaseUser {
     @Id
     private Long id;
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
 
     public ReplicaUser(
             Long id,
@@ -31,8 +35,5 @@ public class ReplicaUser extends BaseUser {
             UserStatus status
     ) {
         super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, status);
-        this.id = id;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 }
