@@ -20,14 +20,10 @@ public abstract class ReplicaUser extends BaseUser {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-
     public ReplicaUser(
         Long id,
         String email,
         String name,
-        String rrnEncrypted,
-        String phoneNum,
-        String password,
         String address,
         String nickname,
         String profileImage,
@@ -35,7 +31,7 @@ public abstract class ReplicaUser extends BaseUser {
         LocalDateTime updatedAt,
         UserStatus status
     ) {
-        super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, status);
+        super(email, name, address, nickname, profileImage, status);
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

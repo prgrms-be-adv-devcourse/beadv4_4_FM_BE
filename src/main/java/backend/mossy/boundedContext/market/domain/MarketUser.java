@@ -25,9 +25,6 @@ public class MarketUser extends ReplicaUser {
             Long id,
             String email,
             String name,
-            String rrnEncrypted,
-            String phoneNum,
-            String password,
             String address,
             String nickname,
             String profileImage,
@@ -35,7 +32,7 @@ public class MarketUser extends ReplicaUser {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
-        super(id, email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, createdAt, updatedAt, status);
+        super(id, email, name, address, nickname, profileImage, createdAt, updatedAt, status);
     }
 
     public MarketUserDto toDto() {
@@ -43,9 +40,6 @@ public class MarketUser extends ReplicaUser {
                 .id(getId())
                 .email(getEmail())
                 .name(getName())
-                .rrnEncrypted(getRrnEncrypted())
-                .phoneNum(getPhoneNum())
-                .password(getPassword())
                 .address(getAddress())
                 .nickname(getNickname())
                 .profileImage(getProfileImage())
