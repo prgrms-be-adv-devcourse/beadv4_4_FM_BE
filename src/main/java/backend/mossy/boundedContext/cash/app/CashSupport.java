@@ -1,6 +1,10 @@
 package backend.mossy.boundedContext.cash.app;
 
+import backend.mossy.boundedContext.cash.domain.seller.CashSeller;
+import backend.mossy.boundedContext.cash.domain.user.CashUser;
+import backend.mossy.boundedContext.cash.out.seller.CashSellerRepository;
 import backend.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
+import backend.mossy.boundedContext.cash.out.user.CashUserRepository;
 import backend.mossy.boundedContext.cash.out.user.UserWalletRepository;
 import backend.mossy.global.exception.DomainException;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +16,8 @@ public class CashSupport {
 
     private final UserWalletRepository userWalletRepository;
     private final SellerWalletRepository sellerWalletRepository;
+    private final CashUserRepository cashUserRepository;
+    private final CashSellerRepository cashSellerRepository;
 
     public void validateUserWalletExists(Long userId) {
         if (userWalletRepository.existsWalletByUserId(userId)) {
@@ -25,5 +31,17 @@ public class CashSupport {
             // 추후 GlobalExceptionHandler에서 공통으로 처리할 계획
             throw new DomainException("ALREADY_EXISTS_WALLET", "이미 생성된 판매자 지갑이 존재합니다.: " + sellerId);
         }
+    }
+
+    public CashUser findCashUserById(Long userId) {
+        return cashUserRepository.findCashUserById(userId)
+            .orElseThrow(
+                () -> new DomainException("NOT_FOUND_USER", "존재하지 않는 구매자입니다.: " + userId));
+    }
+
+    public CashSeller findCashSellerById(Long sellerId) {
+        return cashSellerRepository.findCashSellerById(sellerId)
+            .orElseThrow(
+                () -> new DomainException("NOT_FOUND_SELLER", "존재하지 않는 판매자입니다.: " + sellerId));
     }
 }
