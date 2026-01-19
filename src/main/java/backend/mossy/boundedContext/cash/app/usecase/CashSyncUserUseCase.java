@@ -1,8 +1,8 @@
 package backend.mossy.boundedContext.cash.app.usecase;
 
-import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
+import backend.mossy.boundedContext.cash.domain.user.CashUser;
 import backend.mossy.boundedContext.cash.out.CashUserRepository;
-import backend.mossy.boundedContext.cash.out.WalletRepository;
+import backend.mossy.boundedContext.cash.out.UserWalletRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.cash.event.CashUserCreatedEvent;
 import backend.mossy.shared.member.dto.event.UserDto;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CashSyncUserUseCase {
 
     private final CashUserRepository cashUserRepository;
-    private final WalletRepository walletRepository;
+    private final UserWalletRepository userWalletRepository;
     private final EventPublisher eventPublisher;
 
     @Transactional
@@ -36,7 +36,7 @@ public class CashSyncUserUseCase {
         );
 
         // 2. 해당 유저의 지갑이 없는 경우에만 지갑 생성 이벤트 발행
-        if (!walletRepository.existsWalletByUserId(cashUser.getId())) {
+        if (!userWalletRepository.existsWalletByUserId(cashUser.getId())) {
             eventPublisher.publish(
                 new CashUserCreatedEvent(cashUser.toDto())
             );

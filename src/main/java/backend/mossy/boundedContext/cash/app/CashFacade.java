@@ -1,9 +1,11 @@
 package backend.mossy.boundedContext.cash.app;
 
-import backend.mossy.boundedContext.cash.app.usecase.CashUserWalletUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.CashCreateWalletUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.CashGetBalanceUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.CashGetWalletInfoUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.CashSyncUserUseCase;
-import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
-import backend.mossy.boundedContext.cash.domain.wallet.Wallet;
+import backend.mossy.boundedContext.cash.domain.user.CashUser;
+import backend.mossy.boundedContext.cash.domain.user.UserWallet;
 import backend.mossy.shared.cash.dto.common.CashUserDto;
 import backend.mossy.shared.cash.dto.response.WalletResponseDto;
 import backend.mossy.shared.member.dto.event.UserDto;
@@ -17,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class CashFacade {
 
     private final CashSyncUserUseCase cashSyncUserUseCase;
-    private final CashUserWalletUseCase cashUserWalletUseCase;
+    private final CashCreateWalletUseCase cashCreateWalletUseCase;
+    private final CashGetWalletInfoUseCase cashGetWalletInfoUseCase;
+    private final CashGetBalanceUseCase cashGetBalanceUseCase;
 
     // 구매자 정보 CashUser로 동기화
     @Transactional
@@ -27,19 +31,19 @@ public class CashFacade {
 
     // 구매자 지갑 생성
     @Transactional
-    public Wallet createWallet(CashUserDto userDto) {
-        return cashUserWalletUseCase.createWallet(userDto);
+    public UserWallet createWallet(CashUserDto userDto) {
+        return cashCreateWalletUseCase.createWallet(userDto);
     }
 
     // 지갑 정보 상세 조회
     @Transactional(readOnly = true)
     public WalletResponseDto findWalletByUserId(Long userId) {
-        return cashUserWalletUseCase.getMyWallet(userId);
+        return cashGetWalletInfoUseCase.getMyWallet(userId);
     }
 
     // 현재 사용 가능한 잔액을 조회
     @Transactional(readOnly = true)
     public BigDecimal findBalanceByUserId(Long userId) {
-        return cashUserWalletUseCase.getBalance(userId);
+        return cashGetBalanceUseCase.getBalance(userId);
     }
 }
