@@ -21,18 +21,18 @@ public class ReplicaUser extends BaseUser {
 
 
     public ReplicaUser(
-            Long id,
-            String email,
-            String name,
-            String rrnEncrypted,
-            String phoneNum,
-            String password,
-            String address,
-            String nickname,
-            String profileImage,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt,
-            UserStatus status
+        Long id,
+        String email,
+        String name,
+        String rrnEncrypted,
+        String phoneNum,
+        String password,
+        String address,
+        String nickname,
+        String profileImage,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
+        UserStatus status
     ) {
         super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, status);
         this.id = id;

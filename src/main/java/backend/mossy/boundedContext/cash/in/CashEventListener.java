@@ -27,7 +27,7 @@ public class CashEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handleCashMemberModifiedEvent(UserModifiedEvent event) {
+    public void handleCashMemberJoinedEvent(UserModifiedEvent event) {
         cashFacade.syncUser(event.user());
     }
 
