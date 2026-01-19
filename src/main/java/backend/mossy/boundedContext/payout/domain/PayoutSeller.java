@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @Table(name = "PAYOUT_USER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PayoutUser extends ReplicaUser {
+public class PayoutSeller extends ReplicaUser {
     @Builder
-    public PayoutUser(
+    public PayoutSeller(
             Long id,
             String email,
             String name,

@@ -1,7 +1,7 @@
 package backend.mossy.boundedContext.payout.out;
 
-import backend.mossy.boundedContext.payout.domain.PayoutUser;
+import backend.mossy.boundedContext.payout.domain.PayoutSeller;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PayoutMemberRepository extends JpaRepository<PayoutUser, Long> {
+public interface PayoutMemberRepository extends JpaRepository<PayoutSeller, Long> {
 }

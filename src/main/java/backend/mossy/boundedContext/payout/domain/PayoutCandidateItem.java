@@ -33,7 +33,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
      */
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private PayoutUser payee;
+    private PayoutSeller payee;
 
     @Column(name = "amount", columnDefinition = "INT DEFAULT 0")
     private BigDecimal amount;
@@ -44,7 +44,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
 
     @Builder
     public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
-                               LocalDateTime payoutDate, PayoutUser payee, BigDecimal amount) {
+                               LocalDateTime payoutDate, PayoutSeller payee, BigDecimal amount) {
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;
         this.relId = relId;
