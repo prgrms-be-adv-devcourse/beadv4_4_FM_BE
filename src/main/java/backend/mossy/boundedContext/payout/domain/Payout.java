@@ -22,7 +22,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class Payout extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id")
-    private PayoutUser payee;
+    private PayoutSeller payee;
 
     private LocalDateTime payoutDate;
 
@@ -31,7 +31,7 @@ public class Payout extends BaseIdAndTime {
     @OneToMany(mappedBy = "payout", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
     private List<PayoutItem> items = new ArrayList<>();
 
-    public Payout(PayoutUser payee) {
+    public Payout(PayoutSeller payee) {
         this.payee = payee;
     }
 

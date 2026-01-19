@@ -20,11 +20,11 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     private final PayoutSupport payoutSupport;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
 
-    public void addPayoutCandidateItems(OrderItemResponseDto order) {
+    public void addPayoutCandidateItems(OrderItemResponseDto OrderItemResponseDto) {
         // MarketApiClient를 통해 주문에 속한 개별 상품(OrderItem) 목록을 가져옵니다.
-        marketApiClient.getOrderItemResponseDto(order.getId())
+        marketApiClient.getOrderItemResponseDto(OrderItemResponseDto.getId())
                 // 각 상품별로 정산 후보 데이터를 생성합니다.
-                .forEach(orderItem -> makePayoutCandidateItems(order, orderItem));
+                .forEach(orderItem -> makePayoutCandidateItems(OrderItemResponseDto, orderItem));
     }
 
     private void makePayoutCandidateItems(
@@ -33,8 +33,8 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     ) {
 
         PayoutSeller system = payoutSupport.findSystemMember().get();
-        PayoutSeller buyer = payoutSupport.findMemberById(orderItem.getBuyerId()).get();
-        PayoutSeller seller = payoutSupport.findMemberById(orderItem.getSellerId()).get();
+        PayoutSeller buyer = payoutSupport.findSellerById(orderItem.getBuyerId()).get();
+        PayoutSeller seller = payoutSupport.findSellerById(orderItem.getSellerId()).get();
         makePayoutCandidateItem(
                 PayoutEventType.정산__상품판매_수수료,
                 orderItem.getModelTypeCode(),
@@ -63,14 +63,13 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             LocalDateTime paymentDate,
             PayoutSeller payer,
             PayoutSeller payee,
-            long amount
+            BigDecimal amount
     ) {
         PayoutCandidateItem payoutCandidateItem = new PayoutCandidateItem(
                 eventType,
                 relTypeCode,
                 relId,
                 paymentDate,
-                payer,
                 payee,
                 amount
         );

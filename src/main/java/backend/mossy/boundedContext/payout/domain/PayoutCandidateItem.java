@@ -52,4 +52,6 @@ public class PayoutCandidateItem extends BaseIdAndTime {
         this.payee = payee;
         this.amount = (amount != null) ? amount : BigDecimal.ZERO;
     }
+
+
 }

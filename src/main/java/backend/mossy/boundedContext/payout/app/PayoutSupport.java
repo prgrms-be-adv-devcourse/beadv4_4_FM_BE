@@ -18,7 +18,7 @@ public class PayoutSupport {
 
     public Optional<PayoutSeller> findSystemMember() {return payoutSellerRepository.findByName("system");
     }
-    public Optional<PayoutSeller> findMemberById(Long id) {
+    public Optional<PayoutSeller> findSellerById(Long id) {
         return payoutSellerRepository.findById(id);
     }
 
