@@ -56,7 +56,7 @@ public class ProductFacade {
     // 상품 삭제
     @Transactional
     public void deleteProduct(Long productId, Long currentSellerId) {
-        marketDeleteProductUseCase.delete(productId,  currentSellerId);
+        marketDeleteProductUseCase.delete(productId, currentSellerId);
     }
 
     // 결제 시 재고 감소
