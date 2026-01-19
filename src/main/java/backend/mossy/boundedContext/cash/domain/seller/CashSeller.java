@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.cash.domain.seller;
 
-import backend.mossy.shared.cash.dto.common.CashSellerDto;
+import backend.mossy.shared.cash.dto.event.CashSellerDto;
 import backend.mossy.shared.member.domain.seller.ReplicaSeller;
 import backend.mossy.shared.member.domain.seller.SellerStatus;
 import backend.mossy.shared.member.domain.seller.SellerType;
@@ -34,9 +34,19 @@ public class CashSeller extends ReplicaSeller {
     // Payout이나 Cash 서비스에서 사용할 DTO 변환 로직
     public CashSellerDto toDto() {
         return CashSellerDto.builder()
-            .id(getId())
+            .id(getId()) //
+            .createdAt(getCreatedAt())
+            .updatedAt(getUpdatedAt())
+            .userId(getUserId())
+            .sellerType(getSellerType())
             .storeName(getStoreName())
+            .businessNum(getBusinessNum())
             .representativeName(getRepresentativeName())
+            .contactEmail(getContactEmail())
+            .contactPhone(getContactPhone())
+            .address1(getAddress1())
+            .address2(getAddress2())
+            .status(getStatus())
             .build();
     }
 }
