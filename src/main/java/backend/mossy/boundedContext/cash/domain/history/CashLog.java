@@ -25,10 +25,10 @@ public class CashLog extends BaseIdAndTime {
     @Column(nullable = false)
     private int relId;
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private CashUser user;
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "wallet_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "wallet_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Wallet wallet;
     @Column(nullable = false)
     private long amount;
