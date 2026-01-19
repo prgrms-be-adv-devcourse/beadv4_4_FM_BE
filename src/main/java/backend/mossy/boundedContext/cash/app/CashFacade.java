@@ -1,13 +1,16 @@
 package backend.mossy.boundedContext.cash.app;
 
+import backend.mossy.boundedContext.cash.app.usecase.seller.CashCreateSellerWalletUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.sync.CashSyncSellerUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.sync.CashSyncUserUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.user.CashCreateUserWalletUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.user.CashGetBalanceUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.user.CashGetWalletInfoUseCase;
 import backend.mossy.boundedContext.cash.domain.seller.CashSeller;
+import backend.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import backend.mossy.boundedContext.cash.domain.user.CashUser;
 import backend.mossy.boundedContext.cash.domain.user.UserWallet;
+import backend.mossy.shared.cash.dto.event.CashSellerDto;
 import backend.mossy.shared.cash.dto.event.CashUserDto;
 import backend.mossy.shared.cash.dto.response.UserWalletResponseDto;
 import backend.mossy.shared.member.dto.event.SellerDto;
@@ -24,6 +27,7 @@ public class CashFacade {
     private final CashSyncUserUseCase cashSyncUserUseCase;
     private final CashSyncSellerUseCase cashSyncSellerUseCase;
     private final CashCreateUserWalletUseCase cashCreateUserWalletUseCase;
+    private final CashCreateSellerWalletUseCase cashCreateSellerWalletUseCase;
     private final CashGetWalletInfoUseCase cashGetWalletInfoUseCase;
     private final CashGetBalanceUseCase cashGetBalanceUseCase;
 
@@ -44,6 +48,11 @@ public class CashFacade {
     @Transactional
     public UserWallet createUserWallet(CashUserDto userDto) {
         return cashCreateUserWalletUseCase.createUserWallet(userDto);
+    }
+
+    @Transactional
+    public SellerWallet createSellerWallet(CashSellerDto sellerDto) {
+        return cashCreateSellerWalletUseCase.createSellerWallet(sellerDto);
     }
 
     // === [조회 영역] ===
