@@ -21,7 +21,7 @@ public class CartItem extends BaseIdAndTime {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(name = "count", nullable = false)
+    @Column(nullable = false)
     private int quantity;
 
     public CartItem(Cart cart, Long productId, int count) {
@@ -34,7 +34,7 @@ public class CartItem extends BaseIdAndTime {
         this.quantity += quantity;
     }
 
-    public void updateQuantity(int quantity) {
+    public void updateItemQuantity(int quantity) {
         this.quantity = quantity;
     }
 }

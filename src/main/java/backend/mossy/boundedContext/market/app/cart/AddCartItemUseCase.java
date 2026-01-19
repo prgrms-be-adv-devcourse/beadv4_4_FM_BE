@@ -4,6 +4,7 @@ import backend.mossy.boundedContext.market.domain.Cart;
 import backend.mossy.boundedContext.market.domain.MarketPolicy;
 import backend.mossy.boundedContext.market.out.CartRepository;
 import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.market.dto.request.CartItemAddRequest;
 import backend.mossy.shared.market.out.ProductApiClient;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,11 @@ public class AddCartItemUseCase {
         marketPolicy.validateCartItemQuantity(request.quantity());
 
         if (!productApiClient.exists(request.productId())) {
-            throw new DomainException("404", "해당 상품이 존재하지 않습니다.");
+            throw new DomainException(ErrorCode.PRODUCT_NOT_FOUND);
         }
 
         Cart cart = cartRepository.findByBuyerId(userId).orElseThrow(
-                () -> new DomainException("404", "장바구니가 존재하지 않습니다.")
-        );
+                () -> new DomainException(ErrorCode.CART_NOT_FOUND));
 
         cart.addItem(request.productId(), request.quantity());
     }

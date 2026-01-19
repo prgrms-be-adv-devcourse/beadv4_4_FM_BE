@@ -10,7 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "MARKET_CART")
+@Table(
+        name = "MARKET_CART",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_user_id", columnNames = "user_id")
+        }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @AttributeOverride(name = "id", column = @Column(name = "cart_id"))
@@ -22,13 +27,9 @@ public class Cart extends BaseIdAndTime {
     @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
 
-    @Column(name = "total_count", nullable = false)
-    private int totalQuantity;
-
     public static Cart createCart(MarketUser buyer) {
         Cart cart = new Cart();
         cart.buyer = buyer;
-        cart.totalQuantity = 0;
         return cart;
     }
 
@@ -36,21 +37,17 @@ public class Cart extends BaseIdAndTime {
         for (CartItem item : this.items) {
             if (item.getProductId().equals(productId)) {
                 item.addItem(quantity);
-                this.totalQuantity += quantity;
                 return;
             }
         }
         CartItem cartItem = new CartItem(this, productId, quantity);
         this.getItems().add(cartItem);
-        this.totalQuantity += quantity;
     }
 
-    public boolean updateItem(Long productId, int quantity) {
+    public boolean updateItemQuantity(Long productId, int quantity) {
         for (CartItem item : this.items) {
             if (item.getProductId().equals(productId)) {
-                int diff = quantity - item.getQuantity();
-                item.updateQuantity(quantity);
-                this.totalQuantity += diff;
+                item.updateItemQuantity(quantity);
                 return true;
             }
         }
@@ -60,7 +57,6 @@ public class Cart extends BaseIdAndTime {
     public boolean removeItem(Long productId) {
         for (CartItem item : this.items) {
             if (item.getProductId().equals(productId)) {
-                this.totalQuantity -= item.getQuantity();
                 this.items.remove(item);
                 return true;
             }
@@ -70,6 +66,5 @@ public class Cart extends BaseIdAndTime {
 
     public void clear() {
         this.items.clear();
-        this.totalQuantity = 0;
     }
 }

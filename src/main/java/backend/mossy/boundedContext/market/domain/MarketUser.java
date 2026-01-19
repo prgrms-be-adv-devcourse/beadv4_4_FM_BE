@@ -2,6 +2,7 @@ package backend.mossy.boundedContext.market.domain;
 
 import backend.mossy.shared.market.dto.event.MarketUserDto;
 import backend.mossy.shared.member.domain.user.ReplicaUser;
+import backend.mossy.shared.member.dto.event.UserDto;
 import backend.mossy.shared.member.domain.user.UserStatus;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -33,6 +34,20 @@ public class MarketUser extends ReplicaUser {
             LocalDateTime updatedAt
     ) {
         super(id, email, name, address, nickname, profileImage, createdAt, updatedAt, status);
+    }
+
+    public static MarketUser from(UserDto user) {
+        return MarketUser.builder()
+                .id(user.id())
+                .email(user.email())
+                .name(user.name())
+                .address(user.address())
+                .nickname(user.nickname())
+                .profileImage(user.profileImage())
+                .status(user.status())
+                .createdAt(user.createdAt())
+                .updatedAt(user.updatedAt())
+                .build();
     }
 
     public MarketUserDto toDto() {

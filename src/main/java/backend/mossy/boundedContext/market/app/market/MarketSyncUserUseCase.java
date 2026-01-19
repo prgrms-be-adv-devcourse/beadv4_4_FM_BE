@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.app.marketUser;
+package backend.mossy.boundedContext.market.app.market;
 
 import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.out.MarketUserRepository;
@@ -17,26 +17,10 @@ public class MarketSyncUserUseCase {
     public MarketUser syncUser(UserDto user) {
         boolean isNew = !marketUserRepository.existsById(user.id());
 
-        MarketUser marketUser = marketUserRepository.save(
-            MarketUser.builder()
-                    .id(user.id())
-                    .email(user.email())
-                    .name(user.name())
-                    .address(user.address())
-                    .nickname(user.nickname())
-                    .profileImage(user.profileImage())
-                    .status(user.status())
-                    .createdAt(user.createdAt())
-                    .updatedAt(user.updatedAt())
-                    .build()
-        );
+        MarketUser marketUser = marketUserRepository.save(MarketUser.from(user));
 
         if (isNew) {
-            eventPublisher.publish(
-                    new MarketUserCreatedEvent(
-                            marketUser.toDto()
-                    )
-            );
+            eventPublisher.publish(new MarketUserCreatedEvent(marketUser.toDto()));
         }
 
         return marketUser;
