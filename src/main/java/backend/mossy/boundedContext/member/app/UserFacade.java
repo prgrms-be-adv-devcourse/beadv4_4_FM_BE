@@ -1,7 +1,7 @@
-package backend.mossy.boundedContext.member.in;
+package backend.mossy.boundedContext.member.app;
 
 import backend.mossy.boundedContext.member.domain.User;
-import backend.mossy.boundedContext.member.dto.SignupRequest;
+import backend.mossy.shared.member.dto.request.SignupRequest;
 import backend.mossy.boundedContext.member.out.RoleRepository;
 import backend.mossy.boundedContext.member.out.UserRepository;
 import backend.mossy.global.exception.DomainException;

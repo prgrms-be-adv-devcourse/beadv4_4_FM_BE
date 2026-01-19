@@ -1,10 +1,10 @@
-package backend.mossy.boundedContext.market.app;
+package backend.mossy.boundedContext.market.app.marketUser;
 
 import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.boundedContext.market.out.MarketUserRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.market.event.MarketUserCreatedEvent;
-import backend.mossy.shared.member.dto.UserDto;
+import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +22,6 @@ public class MarketSyncUserUseCase {
                     .id(user.id())
                     .email(user.email())
                     .name(user.name())
-                    .rrnEncrypted(user.rrnEncrypted())
-                    .phoneNum(user.phoneNum())
-                    .password(user.password())
                     .address(user.address())
                     .nickname(user.nickname())
                     .profileImage(user.profileImage())

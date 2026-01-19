@@ -1,9 +1,9 @@
 package backend.mossy.boundedContext.market.in;
 
-import backend.mossy.boundedContext.market.app.MarketFacade;
+import backend.mossy.boundedContext.market.app.cart.CartFacade;
 import backend.mossy.global.rsData.RsData;
-import backend.mossy.shared.market.dto.requets.CartItemAddRequest;
-import backend.mossy.shared.market.dto.requets.CartItemUpdateRequest;
+import backend.mossy.shared.market.dto.request.CartItemAddRequest;
+import backend.mossy.shared.market.dto.request.CartItemUpdateRequest;
 import backend.mossy.shared.market.dto.response.CartResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/cart")
 @RequiredArgsConstructor
 public class ApiV1CartController {
-    private final MarketFacade marketFacade;
+    private final CartFacade cartFacade;
 
     @GetMapping
     public RsData<CartResponse> getCart(@RequestParam Long userId) {
-        return marketFacade.getCart(userId);
+        return new RsData<>("200", "상품 조회를 성공했습니다.", cartFacade.getCart(userId));
     }
 
     @PostMapping("/items")
@@ -24,7 +24,8 @@ public class ApiV1CartController {
             @RequestParam Long userId,
             @RequestBody CartItemAddRequest request
     ) {
-        return marketFacade.addCartItem(userId, request);
+        cartFacade.addCartItem(userId, request);
+        return new RsData<>("200", "상품이 장바구니에 추가되었습니다.");
     }
 
     @PatchMapping("/items")
@@ -32,7 +33,8 @@ public class ApiV1CartController {
             @RequestParam Long userId,
             @RequestBody CartItemUpdateRequest request
     ) {
-        return marketFacade.updateCartItem(userId, request);
+        cartFacade.updateCartItem(userId, request);
+        return new RsData<>("200", "장바구니 상품 수량이 수정되었습니다.");
     }
 
     @DeleteMapping("/items/{productId}")
@@ -40,11 +42,13 @@ public class ApiV1CartController {
             @RequestParam Long userId,
             @PathVariable Long productId
     ) {
-        return marketFacade.removeCartItem(userId, productId);
+        cartFacade.removeCartItem(userId, productId);
+        return new RsData<>("200", "장바구니에서 상품이 삭제되었습니다.");
     }
 
     @DeleteMapping
     public RsData<Void> clearCart(@RequestParam Long userId) {
-        return marketFacade.clearCart(userId);
+        cartFacade.clearCart(userId);
+        return new RsData<>("200", "장바구니가 비워졌습니다.");
     }
 }

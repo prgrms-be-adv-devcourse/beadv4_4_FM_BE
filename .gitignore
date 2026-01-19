@@ -41,6 +41,10 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+# [Querydsl]
+/build/generated
+/src/main/generated/
+
 # [OS]
 .DS_Store
 Thumbs.db
@@ -56,3 +60,4 @@ replay_pid*
 # .yml (주석 처리: 전체 차단 해제
 application-dev.yml
 .env
+src/main/generated/
