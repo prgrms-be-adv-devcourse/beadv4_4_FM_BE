@@ -31,11 +31,14 @@ public class User extends SourceUser {
    private List<UserRole> userRoles = new ArrayList<>();
 
    @Builder
-   public User(String email, String name, String rrnEncrypted, String phoneNum, String password, String address, String nickname, String profileImage, UserStatus status, String rrnEncrypted1, String phoneNum1, String password1) {
-      super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, status);
-      this.rrnEncrypted = rrnEncrypted1;
-      this.phoneNum = phoneNum1;
-      this.password = password1;
+    public User(String email, String name, String password, String nickname,
+                String address, String phoneNum, String rrnEncrypted,
+                String profileImage, UserStatus status) {
+       super(email, name, address, nickname, profileImage, status);
+
+       this.password = password;
+       this.phoneNum = phoneNum;
+       this.rrnEncrypted = rrnEncrypted;
    }
 
    public void addUserRole(UserRole userRole) {
