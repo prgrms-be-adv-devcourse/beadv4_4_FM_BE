@@ -65,7 +65,7 @@ public class Payout extends BaseIdAndTime {
                 getCreatedAt(),
                 getUpdatedAt(),
                 payee.getId(),
-                payee.getNickname(),
+                payee.getStoreName(),
                 payoutDate,
                 amount,
                 payee.isSystem()

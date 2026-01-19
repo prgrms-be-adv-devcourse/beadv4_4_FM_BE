@@ -1,7 +1,9 @@
 package backend.mossy.boundedContext.payout.domain;
 
-import backend.mossy.shared.member.domain.user.ReplicaUser;
-import backend.mossy.shared.member.domain.user.UserStatus;
+import backend.mossy.shared.member.domain.seller.ReplicaSeller;
+import backend.mossy.shared.member.domain.seller.SellerStatus;
+import backend.mossy.shared.member.domain.seller.SellerType;
+import backend.mossy.shared.payout.dto.event.SellerDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -12,27 +14,48 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "PAYOUT_USER")
+@Table(name = "PAYOUT_SELLER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PayoutSeller extends ReplicaUser {
+public class PayoutSeller extends ReplicaSeller {
     @Builder
     public PayoutSeller(
             Long id,
-            String email,
-            String name,
-            String address,
-            String nickname,
-            String profileImage,
-            UserStatus status,
             LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            LocalDateTime updatedAt,
+            Long userId,
+            SellerType sellerType,
+            String storeName,
+            String businessNum,
+            String representativeName,
+            String contactEmail,
+            String contactPhone,
+            String address1,
+            String address2,
+            SellerStatus status
     ) {
-        super(id, email, name, address, nickname, profileImage, createdAt, updatedAt, status);
+        super(id, createdAt, updatedAt, userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, status);
     }
 
-
     public boolean isSystem() {
-        return "system".equals(getName());
+        return "system".equals(getStoreName());
+    }
+
+    public SellerDto toDto() {
+        return new SellerDto(
+                getId(),
+                getCreatedAt(),
+                getUpdatedAt(),
+                getUserId(),
+                getSellerType(),
+                getStoreName(),
+                getBusinessNum(),
+                getRepresentativeName(),
+                getContactEmail(),
+                getContactPhone(),
+                getAddress1(),
+                getAddress2(),
+                getStatus()
+        );
     }
 }
