@@ -2,8 +2,6 @@ package backend.mossy.boundedContext.payout.domain;
 
 import backend.mossy.shared.member.domain.user.ReplicaUser;
 import backend.mossy.shared.member.domain.user.UserStatus;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -23,14 +21,17 @@ public class PayoutUser extends ReplicaUser {
             Long id,
             String email,
             String name,
+            String rrnEncrypted,
+            String phoneNum,
+            String password,
             String address,
             String nickname,
             String profileImage,
+            UserStatus status,
             LocalDateTime createdAt,
-            LocalDateTime updatedAt,
-            UserStatus status
+            LocalDateTime updatedAt
     ) {
-        super(id, email, name, address, nickname, profileImage, createdAt, updatedAt,status);
+        super(id, email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, createdAt, updatedAt, status);
     }
 
 

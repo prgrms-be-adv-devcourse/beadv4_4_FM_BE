@@ -1,11 +1,18 @@
 package backend.mossy.boundedContext.market.domain;
 
+import backend.mossy.shared.market.dto.MarketUserDto;
 import backend.mossy.shared.member.domain.user.ReplicaUser;
 import backend.mossy.shared.member.domain.user.UserStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "MARKET_USER")
@@ -13,27 +20,38 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
 public class MarketUser extends ReplicaUser {
+    @Builder
+    public MarketUser(
+            Long id,
+            String email,
+            String name,
+            String rrnEncrypted,
+            String phoneNum,
+            String password,
+            String address,
+            String nickname,
+            String profileImage,
+            UserStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        super(id, email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, createdAt, updatedAt, status);
+    }
 
-    private String email;
-
-    @Column(name = "rrn_encrypted")
-    private String rrnEncrypted;
-
-    @Column(name = "phone_num", nullable = false, length = 20)
-    private String phoneNum;
-
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "status", nullable = false, length = 20)
-    private UserStatus status;
-
-    @Column(name = "nickname", nullable = false, length = 50)
-    private String nickname;
-
-    @Column(name = "profile_image")
-    private String profileImage;
+    public MarketUserDto toDto() {
+        return MarketUserDto.builder()
+                .id(getId())
+                .email(getEmail())
+                .name(getName())
+                .rrnEncrypted(getRrnEncrypted())
+                .phoneNum(getPhoneNum())
+                .password(getPassword())
+                .address(getAddress())
+                .nickname(getNickname())
+                .profileImage(getProfileImage())
+                .status(getStatus())
+                .createdAt(getCreatedAt())
+                .updatedAt(getUpdatedAt())
+                .build();
+    }
 }

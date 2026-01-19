@@ -1,6 +1,5 @@
 package backend.mossy.shared.member.domain.role;
 
-
 import backend.mossy.global.jpa.entity.BaseEntity;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import backend.mossy.shared.member.domain.user.SourceUser;

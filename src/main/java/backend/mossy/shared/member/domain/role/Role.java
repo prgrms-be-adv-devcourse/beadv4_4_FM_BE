@@ -1,6 +1,5 @@
 package backend.mossy.shared.member.domain.role;
 
-import backend.mossy.global.jpa.entity.BaseEntity;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
