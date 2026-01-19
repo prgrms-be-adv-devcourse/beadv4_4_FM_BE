@@ -6,6 +6,7 @@ import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
 import backend.mossy.boundedContext.cash.domain.wallet.Wallet;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,8 +31,8 @@ public class CashLog extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "wallet_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Wallet wallet;
-    @Column(nullable = false)
-    private long amount;
-    @Column(nullable = false)
-    private long balance;
+    @Column(precision = 10, scale = 3, nullable = false)
+    private BigDecimal amount = BigDecimal.ZERO;
+    @Column(precision = 10, scale = 3, nullable = false)
+    private BigDecimal balance = BigDecimal.ZERO;
 }
