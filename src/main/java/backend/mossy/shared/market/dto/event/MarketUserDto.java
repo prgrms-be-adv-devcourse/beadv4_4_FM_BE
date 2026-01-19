@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record MarketUserDto (
+public record MarketUserDto(
         Long id,
         String email,
         String name,

@@ -28,19 +28,11 @@ public abstract class SourceUser extends BaseUser {
     public SourceUser(
         String email,
         String name,
-        String rrnEncrypted,
-        String phoneNum,
-        String password,
         String address,
         String nickname,
         String profileImage,
         UserStatus status
     ) {
-        super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage,
-            status);
-    }
-
-    public Long getId() {
-        return id;
+        super(email, name, address, nickname, profileImage, status);
     }
 }

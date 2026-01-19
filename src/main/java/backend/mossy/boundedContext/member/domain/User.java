@@ -18,10 +18,14 @@ import java.util.List;
 @Table(name = "USER_USER")
 public class User extends SourceUser {
 
+    @Column(name = "rrn_encrypted", nullable = false, unique = true)
+    protected String rrnEncrypted;
 
-   private String password;
-   private String phoneNum;
-   private String rrnEncrypted;
+    @Column(name = "phone_num", nullable = false)
+    protected String phoneNum;
+
+    @Column(name = "password", nullable = false)
+    protected String password;
 
    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
    private List<UserRole> userRoles = new ArrayList<>();
@@ -40,5 +44,9 @@ public class User extends SourceUser {
    public void addUserRole(UserRole userRole) {
       this.getUserRoles().add(userRole);
    }
+
+   public void changePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 
 }
