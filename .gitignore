@@ -56,3 +56,4 @@ replay_pid*
 # .yml (주석 처리: 전체 차단 해제
 application-dev.yml
 .env
+src/main/generated/
