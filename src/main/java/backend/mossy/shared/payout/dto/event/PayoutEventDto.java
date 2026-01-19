@@ -13,4 +13,5 @@ public record PayoutEventDto(
         BigDecimal amount,
         boolean isSystem
 ) {
+
 }
