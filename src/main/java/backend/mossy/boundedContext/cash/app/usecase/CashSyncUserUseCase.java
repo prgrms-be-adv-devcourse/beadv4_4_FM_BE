@@ -39,7 +39,7 @@ public class CashSyncUserUseCase {
         );
 
         // 2. 해당 유저의 지갑이 없는 경우에만 지갑 생성 이벤트 발행
-        if (!walletRepository.existsWalletByUser_Id(cashUser.getId())) {
+        if (!walletRepository.existsWalletByUserId(cashUser.getId())) {
             eventPublisher.publish(
                 new CashUserCreatedEvent(cashUser.toDto())
             );
