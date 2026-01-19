@@ -1,0 +1,15 @@
+package backend.mossy.boundedContext.member.dto;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+public record SignupRequest(
+        @NotBlank @Email String email,
+        @NotBlank String password,
+        @NotBlank String name,
+        @NotBlank String nickname,
+        @NotBlank String phoneNum,
+        @NotBlank String address,
+        @NotBlank String rrn //주민번호 (암호화전)
+) {
+}

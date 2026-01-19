@@ -9,18 +9,19 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "users")
+@MappedSuperclass
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AttributeOverride(name = "id", column = @Column(name = "user_id"))
 public class SourceUser extends BaseUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
+
     @CreatedDate
     private LocalDateTime createdAt;
+
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
@@ -37,5 +38,9 @@ public class SourceUser extends BaseUser {
     ) {
         super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage,
             status);
+    }
+
+    public Long getId() {
+        return id;
     }
 }

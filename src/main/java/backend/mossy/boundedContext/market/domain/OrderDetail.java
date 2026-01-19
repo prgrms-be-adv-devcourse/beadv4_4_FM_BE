@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -30,10 +32,10 @@ public class OrderDetail extends BaseIdAndTime {
     private Long productId;
 
     @Column(nullable = false)
-    private int count;
+    private int quantity;
 
-    @Column(name = "order_price", nullable = false)
-    private int orderPrice;
+    @Column(name = "order_price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal orderPrice;
 
     @Column(nullable = false)
     private String address;

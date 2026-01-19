@@ -44,8 +44,31 @@ dependencies {
 
     //Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
+
+    //JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+    //Redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    
+    //QueryDSL
+    implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
+    annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+//Q클래스 생성 경로
+sourceSets {
+    main {
+        java {
+            srcDir("build/generated/sources/annotationProcessor/java/main")
+        }
+    }
 }
