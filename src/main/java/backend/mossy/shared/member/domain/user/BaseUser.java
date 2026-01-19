@@ -1,7 +1,10 @@
 package backend.mossy.shared.member.domain.user;
 
 import backend.mossy.global.jpa.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.MappedSuperclass;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,15 +45,15 @@ public abstract class BaseUser extends BaseEntity {
     protected String profileImage;
 
     protected BaseUser(
-        String email,
-        String name,
-        String rrnEncrypted,
-        String phoneNum,
-        String password,
-        String address,
-        String nickname,
-        String profileImage,
-        UserStatus status
+            String email,
+            String name,
+            String rrnEncrypted,
+            String phoneNum,
+            String password,
+            String address,
+            String nickname,
+            String profileImage,
+            UserStatus status
     ) {
         this.email = email;
         this.name = name;

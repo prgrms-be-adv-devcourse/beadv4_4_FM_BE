@@ -25,17 +25,16 @@ public class SourceUser extends BaseUser {
     private LocalDateTime updatedAt;
 
     public SourceUser(
-        String email,
-        String name,
-        String rrnEncrypted,
-        String phoneNum,
-        String password,
-        String address,
-        String nickname,
-        String profileImage,
-        UserStatus status
+            String email,
+            String name,
+            String rrnEncrypted,
+            String phoneNum,
+            String password,
+            String address,
+            String nickname,
+            String profileImage,
+            UserStatus status
     ) {
-        super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage,
-            status);
+        super(email, name, rrnEncrypted, phoneNum, password, address, nickname, profileImage, status);
     }
 }

@@ -1,9 +1,7 @@
 package backend.mossy.shared.member.event;
 
-import backend.mossy.shared.member.dto.common.UserDto;
+import backend.mossy.shared.member.dto.UserDto;
 
 public record UserJoinedEvent(
-    UserDto user
-) {
-
-}
+        UserDto user
+) { }
