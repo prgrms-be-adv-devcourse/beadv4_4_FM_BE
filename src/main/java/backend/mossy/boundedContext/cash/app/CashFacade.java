@@ -6,7 +6,7 @@ import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
 import backend.mossy.boundedContext.cash.domain.wallet.Wallet;
 import backend.mossy.shared.cash.dto.common.CashUserDto;
 import backend.mossy.shared.cash.dto.response.WalletResponseDto;
-import backend.mossy.shared.member.dto.common.UserDto;
+import backend.mossy.shared.member.dto.event.UserDto;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

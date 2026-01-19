@@ -3,7 +3,7 @@ package backend.mossy.boundedContext.auth.in;
 import backend.mossy.boundedContext.auth.app.AuthFacade;
 import backend.mossy.boundedContext.auth.in.dto.LoginRequest;
 import backend.mossy.boundedContext.auth.in.dto.LoginResponse;
-import backend.mossy.shared.member.dto.SignupRequest;
+import backend.mossy.shared.member.dto.request.SignupRequest;
 import backend.mossy.boundedContext.member.app.UserFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
