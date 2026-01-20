@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.domain;
+package backend.mossy.boundedContext.market.domain.market;
 
 import backend.mossy.shared.market.dto.event.MarketUserDto;
 import backend.mossy.shared.member.domain.user.ReplicaUser;
