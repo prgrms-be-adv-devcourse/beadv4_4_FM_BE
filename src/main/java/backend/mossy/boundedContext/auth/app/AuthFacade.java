@@ -2,6 +2,7 @@ package backend.mossy.boundedContext.auth.app;
 
 import backend.mossy.boundedContext.auth.in.dto.LoginRequest;
 import backend.mossy.boundedContext.auth.in.dto.LoginResponse;
+import backend.mossy.boundedContext.auth.in.dto.TokenResponse;
 import backend.mossy.boundedContext.auth.infra.jwt.JwtProperties;
 import backend.mossy.boundedContext.auth.infra.jwt.JwtProvider;
 import backend.mossy.boundedContext.auth.out.RefreshTokenRepository;
@@ -27,6 +28,8 @@ public class AuthFacade {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final TokenService tokenService;
+
     @Transactional
     public LoginResponse login(LoginRequest request) {
 
@@ -43,16 +46,15 @@ public class AuthFacade {
         String role = extractRole(user);
 
         //토큰 생성
-        String accessToken = jwtProvider.createAccesToken(user.getId(), role);
-        String refreshToken = jwtProvider.createRefreshToken(user.getId());
+        TokenResponse tokens = tokenService.issueTokens(user.getId(), role);
 
         refreshTokenRepository.save(
                 String.valueOf(user.getId()),
-                refreshToken,
+                tokens.refreshToken(),
                 jwtProperties.refreshTokenExpireMs()
         );
 
-        return new LoginResponse(accessToken, refreshToken);
+        return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
     }
 
     //토큰 재발급
@@ -81,16 +83,15 @@ public class AuthFacade {
         String role = extractRole(user);
 
         // 새 토큰 발급
-        String newAccessToken = jwtProvider.createAccesToken(userId, role);
-        String newRefreshToken = jwtProvider.createRefreshToken(userId);
+        TokenResponse tokens = tokenService.issueTokens(userId, role);
 
         refreshTokenRepository.save(
                 userIdStr,
-                newRefreshToken,
+                tokens.refreshToken(),
                 jwtProperties.refreshTokenExpireMs()
         );
 
-        return new LoginResponse(newAccessToken, newRefreshToken);
+        return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
 
     }
 
