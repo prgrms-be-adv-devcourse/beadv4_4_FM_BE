@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.payout.domain;
 
+import backend.mossy.shared.payout.dto.event.CreatePayoutCandidateItemDto;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,14 +27,15 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private Long relId;
 
     @Column(name = "payout_date", nullable = false)
-    private LocalDateTime payoutDate;
+    private LocalDateTime paymentDate;
 
-    /**
-     * 돈을 받을 주체 (Seller)만 남김
-     */
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private PayoutUser payee;
+    @JoinColumn(name = "payer_seller_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private PayoutSeller payer;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "payee_seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private PayoutSeller payee;
 
     @Column(name = "amount", columnDefinition = "INT DEFAULT 0")
     private BigDecimal amount;
@@ -44,12 +46,29 @@ public class PayoutCandidateItem extends BaseIdAndTime {
 
     @Builder
     public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
-                               LocalDateTime payoutDate, PayoutUser payee, BigDecimal amount) {
+                               LocalDateTime paymentDate, PayoutSeller payer, PayoutSeller payee, BigDecimal amount) {
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;
         this.relId = relId;
-        this.payoutDate = payoutDate;
+        this.paymentDate = paymentDate;
+        this.payer = payer;
         this.payee = payee;
         this.amount = (amount != null) ? amount : BigDecimal.ZERO;
+    }
+
+    public static PayoutCandidateItem from(CreatePayoutCandidateItemDto dto) {
+        return PayoutCandidateItem.builder()
+                .eventType(dto.eventType())
+                .relTypeCode(dto.relTypeCode())
+                .relId(dto.relId())
+                .paymentDate(dto.paymentDate())
+                .payer(dto.payer())
+                .payee(dto.payee())
+                .amount(dto.amount())
+                .build();
+    }
+
+    public void setPayoutItem(PayoutItem payoutItem) {
+        this.payoutItem = payoutItem;
     }
 }

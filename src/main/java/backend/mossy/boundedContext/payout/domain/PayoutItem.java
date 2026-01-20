@@ -12,17 +12,14 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
+@Table(name = "PAYOUT_PAYOUT_ITEM")
 @Getter
-@Table(name = "PAYOUT_ITEM") // 스키마의 테이블명과 일치시킴
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PayoutItem extends BaseIdAndTime {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "payout_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Payout payout;
-
-    @Column(name = "seller_id", nullable = false)
-    private Long sellerId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type", length = 30, nullable = false)
@@ -34,24 +31,28 @@ public class PayoutItem extends BaseIdAndTime {
     @Column(name = "rel_id", nullable = false)
     private Long relId;
 
-    @Column(name = "amount", precision = 10, scale = 2, nullable = false)
+    @Column(name = "payment_date", nullable = false)
+    private LocalDateTime paymentDate;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "payer_seller_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private PayoutSeller payer;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "payee_seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private PayoutSeller payee;
+
+    @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 
-    /**
-     * 실제 정산 예정일/처리일 (DB: payout_date)
-     */
-    @Column(name = "payout_date", nullable = false)
-    private LocalDateTime payoutDate;
-
-    @Builder
-    public PayoutItem(Payout payout, Long sellerId, PayoutEventType eventType,
-                      String relTypeCode, Long relId, BigDecimal amount, LocalDateTime payoutDate) {
+    public PayoutItem(Payout payout, PayoutEventType eventType, String relTypeCode, Long relId, LocalDateTime payDate, PayoutSeller payer, PayoutSeller payee, BigDecimal amount) {
         this.payout = payout;
-        this.sellerId = sellerId;
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;
         this.relId = relId;
+        this.paymentDate = payDate;
+        this.payer = payer;
+        this.payee = payee;
         this.amount = amount;
-        this.payoutDate = payoutDate;
     }
 }
