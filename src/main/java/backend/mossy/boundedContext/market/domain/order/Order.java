@@ -4,7 +4,7 @@ import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.boundedContext.market.domain.market.MarketUser;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import backend.mossy.shared.market.dto.event.OrderDetailDto;
-import backend.mossy.shared.market.dto.event.OrderDto;
+import backend.mossy.shared.market.dto.event.PaymentOrderDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,11 +40,11 @@ public class Order extends BaseIdAndTime {
     @Builder.Default
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
-    public static Order create(MarketUser buyer, OrderDto orderDto) {
+    public static Order create(MarketUser buyer, PaymentOrderDto paymentOrderDto) {
         return Order.builder()
                 .buyer(buyer)
-                .orderNo(orderDto.orderNo())
-                .totalPrice(orderDto.totalPrice())
+                .orderNo(paymentOrderDto.orderNo())
+                .totalPrice(paymentOrderDto.totalPrice())
                 .state(OrderState.PAID)
                 .build();
     }

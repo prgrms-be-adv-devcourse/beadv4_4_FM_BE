@@ -5,8 +5,7 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record OrderDto(
-        Long orderId,
+public record PaymentOrderDto(
         Long buyerId,
         String orderNo,
         BigDecimal totalPrice
