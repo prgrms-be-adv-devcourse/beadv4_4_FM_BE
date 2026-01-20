@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.market.app.cart;
 
+import backend.mossy.boundedContext.market.domain.Cart;
 import backend.mossy.boundedContext.market.domain.MarketPolicy;
 import backend.mossy.boundedContext.market.out.CartRepository;
 import backend.mossy.global.exception.DomainException;
@@ -16,14 +17,9 @@ public class UpdateCartItemQuantityUseCase {
     private final MarketPolicy marketPolicy;
 
     public void updateItemQuantity(Long userId, CartItemUpdateRequest request) {
-        marketPolicy.validateCartItemQuantity(request.quantity());
+        Cart cart = cartRepository.findByBuyerId(userId)
+                .orElseThrow(() -> new DomainException(ErrorCode.CART_NOT_FOUND));
 
-        boolean isUpdated = cartRepository.findByBuyerId(userId)
-                .map(cart -> cart.updateItemQuantity(request.productId(), request.quantity()))
-                .orElse(false);
-
-        if (!isUpdated) {
-            throw new DomainException(ErrorCode.CART_ITEM_NOT_FOUND);
-        }
+        cart.updateItemQuantity(request.productId(), request.quantity(), marketPolicy);
     }
 }

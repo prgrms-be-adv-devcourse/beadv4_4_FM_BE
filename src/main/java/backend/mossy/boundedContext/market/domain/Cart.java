@@ -1,5 +1,7 @@
 package backend.mossy.boundedContext.market.domain;
 
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(
@@ -33,35 +36,41 @@ public class Cart extends BaseIdAndTime {
         return cart;
     }
 
-    public void addItem(Long productId, int quantity){
-        for (CartItem item : this.items) {
-            if (item.getProductId().equals(productId)) {
-                item.addItem(quantity);
-                return;
-            }
-        }
-        CartItem cartItem = new CartItem(this, productId, quantity);
-        this.getItems().add(cartItem);
+    public void addItem(Long productId, int quantity, MarketPolicy policy) {
+        Optional<CartItem> foundItem = findItem(productId);
+
+        int totalQuantity = foundItem
+                .map(item -> item.getQuantity() + quantity)
+                .orElse(quantity);
+
+        policy.validateCartItemQuantity(totalQuantity);
+
+        foundItem.ifPresentOrElse(
+                item -> item.addItem(quantity),
+                () -> this.items.add(new CartItem(this, productId, quantity))
+        );
     }
 
-    public boolean updateItemQuantity(Long productId, int quantity) {
-        for (CartItem item : this.items) {
-            if (item.getProductId().equals(productId)) {
-                item.updateItemQuantity(quantity);
-                return true;
-            }
-        }
-        return false;
+    public void updateItemQuantity(Long productId, int quantity, MarketPolicy policy) {
+        policy.validateCartItemQuantity(quantity);
+        CartItem item = getItem(productId);
+        item.updateItemQuantity(quantity);
     }
 
-    public boolean removeItem(Long productId) {
-        for (CartItem item : this.items) {
-            if (item.getProductId().equals(productId)) {
-                this.items.remove(item);
-                return true;
-            }
-        }
-        return false;
+    public void removeItem(Long productId) {
+        CartItem item = getItem(productId);
+        this.items.remove(item);
+    }
+
+    private Optional<CartItem> findItem(Long productId) {
+        return this.items.stream()
+                .filter(item -> item.getProductId().equals(productId))
+                .findFirst();
+    }
+
+    private CartItem getItem(Long productId) {
+        return findItem(productId)
+                .orElseThrow(() -> new DomainException(ErrorCode.CART_ITEM_NOT_FOUND));
     }
 
     public void clear() {

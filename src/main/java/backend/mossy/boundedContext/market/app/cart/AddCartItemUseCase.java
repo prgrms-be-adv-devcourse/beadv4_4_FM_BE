@@ -19,8 +19,6 @@ public class AddCartItemUseCase {
     private final ProductApiClient productApiClient;
 
     public void addItem(Long userId, CartItemAddRequest request) {
-        marketPolicy.validateCartItemQuantity(request.quantity());
-
         if (!productApiClient.exists(request.productId())) {
             throw new DomainException(ErrorCode.PRODUCT_NOT_FOUND);
         }
@@ -28,6 +26,6 @@ public class AddCartItemUseCase {
         Cart cart = cartRepository.findByBuyerId(userId).orElseThrow(
                 () -> new DomainException(ErrorCode.CART_NOT_FOUND));
 
-        cart.addItem(request.productId(), request.quantity());
+        cart.addItem(request.productId(), request.quantity(), marketPolicy);
     }
 }

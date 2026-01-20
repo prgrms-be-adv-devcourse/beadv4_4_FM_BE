@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.market.app.cart;
 
+import backend.mossy.boundedContext.market.domain.Cart;
 import backend.mossy.boundedContext.market.out.CartRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
@@ -13,12 +14,9 @@ public class RemoveCartItemUseCase {
     private final CartRepository cartRepository;
 
     public void removeItem(Long userId, Long productId) {
-        boolean isRemoved = cartRepository.findByBuyerId(userId)
-                .map(cart -> cart.removeItem(productId))
-                .orElse(false);
+        Cart cart = cartRepository.findByBuyerId(userId)
+                .orElseThrow(() -> new DomainException(ErrorCode.CART_NOT_FOUND));
 
-        if (!isRemoved) {
-            throw new DomainException(ErrorCode.CART_ITEM_NOT_FOUND);
-        }
+        cart.removeItem(productId);
     }
 }
