@@ -30,9 +30,7 @@ public class SellerCashLog extends BaseIdAndTime {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SellerEventType eventType;
-    @Column(nullable = false)
     private String relTypeCode;
-    @Column(nullable = false)
     private Long relId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))

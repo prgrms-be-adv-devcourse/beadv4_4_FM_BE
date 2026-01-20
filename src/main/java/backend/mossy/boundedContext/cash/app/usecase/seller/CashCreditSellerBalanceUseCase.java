@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CashDeductSellerBalanceUseCase {
-
+public class CashCreditSellerBalanceUseCase {
     private final CashSupport cashSupport;
 
-    public void deduct(SellerBalanceRequestDto request) {
-        SellerWallet wallet = cashSupport.findWalletBySellerId(request.sellerId());
+    public void credit(SellerBalanceRequestDto request) {
+        SellerWallet sellerWallet = cashSupport.findWalletBySellerId(request.sellerId());
 
-        wallet.debit(request.amount(), request.eventType(), request.relTypeCode(), request.relId());
+        //balance 증가, userCashLog가 자동 추가
+        sellerWallet.credit(request.amount(), request.eventType(), request.relTypeCode(), request.relId());
     }
 }

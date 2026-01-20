@@ -35,17 +35,19 @@ public class SellerWallet extends BaseManualIdAndTime {
         this.balance = BigDecimal.ZERO;
     }
 
+    // 충전 x, 입금/수익으로 사용
     public void credit(BigDecimal amount, SellerEventType eventType, String relTypeCode, Long relId) {
         this.balance = this.balance.add(amount);
         addSellerCashLog(amount, eventType, relTypeCode, relId);
     }
 
+    // 출금할 때 사용
     public void debit(BigDecimal amount, SellerEventType eventType, String relTypeCode, Long relId) {
         validateAmount(amount);
 
         // 추후 GlobalExceptionHandler에서 공통으로 처리할 계획
         if (this.balance.compareTo(amount) < 0) {
-            throw new DomainException("400","잔액이 부족합니다.");
+            throw new DomainException("400","출금 가능한 잔액이 부족합니다.");
         }
         this.balance = this.balance.subtract(amount);
         addSellerCashLog(amount.negate(), eventType, relTypeCode, relId);

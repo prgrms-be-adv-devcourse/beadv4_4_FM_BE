@@ -20,9 +20,7 @@ public class UserCashLog extends BaseIdAndTime {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserEventType eventType;
-    @Column(nullable = false)
     private String relTypeCode;
-    @Column(nullable = false)
     private Long relId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))

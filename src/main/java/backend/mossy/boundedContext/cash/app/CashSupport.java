@@ -1,7 +1,9 @@
 package backend.mossy.boundedContext.cash.app;
 
 import backend.mossy.boundedContext.cash.domain.seller.CashSeller;
+import backend.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import backend.mossy.boundedContext.cash.domain.user.CashUser;
+import backend.mossy.boundedContext.cash.domain.user.UserWallet;
 import backend.mossy.boundedContext.cash.out.seller.CashSellerRepository;
 import backend.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
 import backend.mossy.boundedContext.cash.out.user.CashUserRepository;
@@ -43,5 +45,19 @@ public class CashSupport {
         return cashSellerRepository.findCashSellerById(sellerId)
             .orElseThrow(
                 () -> new DomainException("NOT_FOUND_SELLER", "존재하지 않는 판매자입니다.: " + sellerId));
+    }
+
+    public UserWallet findWalletByUserId(Long userId) {
+        return userWalletRepository.findWalletByUserId(userId)
+            .orElseThrow(
+                () -> new DomainException("NOT_EXISTS_USER_WALLET", "판매자 지갑이 존재하지 않습니다.: " + userId)
+            );
+    }
+
+    public SellerWallet findWalletBySellerId(Long sellerId) {
+        return sellerWalletRepository.findWalletBySellerId(sellerId)
+            .orElseThrow(
+                () -> new DomainException("NOT_EXISTS_USER_WALLET", "판매자 지갑이 존재하지 않습니다.: " + sellerId)
+            );
     }
 }
