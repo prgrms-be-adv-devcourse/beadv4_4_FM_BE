@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static backend.mossy.boundedContext.market.domain.QCart.cart;
-import static backend.mossy.boundedContext.market.domain.QCartItem.cartItem;
-import static backend.mossy.boundedContext.market.domain.QProduct.product;
-import static backend.mossy.boundedContext.market.domain.QProductImage.productImage;
+import static backend.mossy.boundedContext.market.domain.cart.QCart.cart;
+import static backend.mossy.boundedContext.market.domain.cart.QCartItem.cartItem;
+import static backend.mossy.boundedContext.market.domain.product.QProduct.product;
+import static backend.mossy.boundedContext.market.domain.product.QProductImage.productImage;
 
 @RequiredArgsConstructor
 public class CartRepositoryImpl implements CartRepositoryCustom {
