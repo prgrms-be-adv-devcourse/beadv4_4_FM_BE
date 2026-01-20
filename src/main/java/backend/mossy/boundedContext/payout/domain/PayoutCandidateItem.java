@@ -26,11 +26,11 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private Long relId;
 
     @Column(name = "payout_date", nullable = false)
-    private LocalDateTime payoutDate;
+    private LocalDateTime paymentDate;
 
-    /**
-     * 돈을 받을 주체 (Seller)만 남김
-     */
+    @ManyToOne(fetch = LAZY)
+    private PayoutSeller payer;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private PayoutSeller payee;
@@ -44,12 +44,17 @@ public class PayoutCandidateItem extends BaseIdAndTime {
 
     @Builder
     public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
-                               LocalDateTime payoutDate, PayoutSeller payee, BigDecimal amount) {
+                               LocalDateTime paymentDate, PayoutSeller payer, PayoutSeller payee, BigDecimal amount) {
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;
         this.relId = relId;
-        this.payoutDate = payoutDate;
+        this.paymentDate = paymentDate;
+        this.payer = payer;
         this.payee = payee;
         this.amount = (amount != null) ? amount : BigDecimal.ZERO;
+    }
+
+    public void setPayoutItem(PayoutItem payoutItem) {
+        this.payoutItem = payoutItem;
     }
 }

@@ -20,7 +20,6 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
 
     public void addPayoutCandidateItems(OrderDto order) {
-        // MarketApiClient를 통해 주문에 속한 개별 상품(OrderItem) 목록을 가져옵니다.
         marketApiClient.getOrderItems(order.getId())
                 // 각 상품별로 정산 후보 데이터를 생성합니다.
                 .forEach(orderItem -> makePayoutCandidateItems(order, orderItem));

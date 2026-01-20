@@ -20,7 +20,7 @@ public class PayoutCollectPayoutItemsMoreUseCase {
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
 
     public RsData<Integer> collectPayoutItemsMore(int limit) {
-        // 1. 정산할 준비가 된 '정산 후보' 목록을 조회합니다.
+
         List<PayoutCandidateItem> payoutReadyCandidateItems = findPayoutReadyCandidateItems(limit);
 
         if (payoutReadyCandidateItems.isEmpty())
@@ -55,30 +55,17 @@ public class PayoutCollectPayoutItemsMoreUseCase {
         );
     }
 
-    /**
-     * 아직 정산되지 않은(payoutDate가 null인) 특정 판매자(payee)의 Payout 객체를 찾습니다.
-     */
     private Optional<Payout> findActiveByPayee(PayoutSeller payee) {
         return payoutRepository.findByPayeeAndPayoutDateIsNull(payee);
     }
 
-    /**
-     * 정산할 준비가 된 후보들을 조회합니다.
-     *
-     * @param limit 한 번에 조회할 최대 개수
-     * @return 정산 후보 리스트
-     */
     private List<PayoutCandidateItem> findPayoutReadyCandidateItems(int limit) {
-        // PayoutPolicy에 정의된 대기 기간(예: 7일) 이전의 후보들만 조회합니다.
-        // 이것이 바로 환불/교환 등에 대비한 '안전 대기 시간'을 구현하는 핵심 로직입니다.
         LocalDateTime daysAgo = LocalDateTime
                 .now()
                 .minusDays(PayoutPolicy.PAYOUT_READY_WAITING_DAYS)
                 .toLocalDate()
                 .atStartOfDay();
 
-        // 아직 PayoutItem으로 변환되지 않았고(payoutItem == null),
-        // 결제일이 안전 대기 기간보다 오래된 후보들을 조회합니다.
         return payoutCandidateItemRepository.findByPayoutItemIsNullAndPaymentDateBeforeOrderByPayeeAscIdAsc(
                 daysAgo,
                 PageRequest.of(0, limit)

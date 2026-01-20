@@ -15,9 +15,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "PAYOUT_PAYOUT_ITEM")
 @NoArgsConstructor
 public class PayoutItem extends BaseIdAndTime {
-    /**
-     * 이 정산 항목이 속한 전체 정산(Payout) 객체
-     */
+
     @ManyToOne(fetch = LAZY)
     private Payout payout;
 
