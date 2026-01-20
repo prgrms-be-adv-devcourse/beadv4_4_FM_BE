@@ -1,8 +1,8 @@
-package backend.mossy.boundedContext.market.out;
+package backend.mossy.boundedContext.market.out.product;
 
 
-import backend.mossy.boundedContext.market.domain.Product;
-import backend.mossy.boundedContext.market.domain.ProductStatus;
+import backend.mossy.boundedContext.market.domain.product.Product;
+import backend.mossy.boundedContext.market.domain.product.ProductStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

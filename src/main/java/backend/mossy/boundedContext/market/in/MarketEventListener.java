@@ -2,7 +2,7 @@ package backend.mossy.boundedContext.market.in;
 
 import backend.mossy.boundedContext.market.app.cart.CartFacade;
 import backend.mossy.boundedContext.market.app.market.MarketFacade;
-import backend.mossy.boundedContext.market.domain.MarketUser;
+import backend.mossy.boundedContext.market.domain.market.MarketUser;
 import backend.mossy.shared.market.event.MarketUserCreatedEvent;
 import backend.mossy.shared.member.event.UserJoinedEvent;
 import backend.mossy.shared.member.event.UserUpdatedEvent;

@@ -1,6 +1,6 @@
 package backend.mossy.shared.market.dto.response;
 
-import backend.mossy.boundedContext.market.domain.Cart;
+import backend.mossy.boundedContext.market.domain.cart.Cart;
 import lombok.Builder;
 
 import java.util.List;

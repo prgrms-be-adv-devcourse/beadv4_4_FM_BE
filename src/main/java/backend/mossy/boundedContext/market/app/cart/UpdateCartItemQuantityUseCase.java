@@ -1,8 +1,8 @@
 package backend.mossy.boundedContext.market.app.cart;
 
-import backend.mossy.boundedContext.market.domain.Cart;
-import backend.mossy.boundedContext.market.domain.MarketPolicy;
-import backend.mossy.boundedContext.market.out.CartRepository;
+import backend.mossy.boundedContext.market.domain.cart.Cart;
+import backend.mossy.boundedContext.market.domain.market.MarketPolicy;
+import backend.mossy.boundedContext.market.out.cart.CartRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.market.dto.request.CartItemUpdateRequest;

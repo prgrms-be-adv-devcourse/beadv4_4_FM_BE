@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.market.app.market;
 
-import backend.mossy.boundedContext.market.domain.MarketUser;
+import backend.mossy.boundedContext.market.domain.market.MarketUser;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

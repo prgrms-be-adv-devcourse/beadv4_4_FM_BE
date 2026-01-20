@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.domain;
+package backend.mossy.boundedContext.market.domain.product;
 
 public enum ProductStatus {
     FOR_SALE("판매 중"),

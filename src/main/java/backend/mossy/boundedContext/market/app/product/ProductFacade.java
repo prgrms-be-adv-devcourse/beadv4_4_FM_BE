@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.market.app.product;
 
-import backend.mossy.boundedContext.market.domain.Product;
+import backend.mossy.boundedContext.market.domain.product.Product;
 import backend.mossy.shared.market.dto.request.ProductCreateRequest;
 import backend.mossy.shared.market.dto.request.ProductStatusUpdateRequest;
 import backend.mossy.shared.market.dto.request.ProductUpdateRequest;

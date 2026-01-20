@@ -1,7 +1,7 @@
 package backend.mossy.boundedContext.market.app.market;
 
-import backend.mossy.boundedContext.market.domain.MarketUser;
-import backend.mossy.boundedContext.market.out.MarketUserRepository;
+import backend.mossy.boundedContext.market.domain.market.MarketUser;
+import backend.mossy.boundedContext.market.out.market.MarketUserRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.market.event.MarketUserCreatedEvent;
 import backend.mossy.shared.member.dto.event.UserDto;

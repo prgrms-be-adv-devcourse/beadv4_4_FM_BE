@@ -1,5 +1,7 @@
-package backend.mossy.boundedContext.market.domain;
+package backend.mossy.boundedContext.market.domain.cart;
 
+import backend.mossy.boundedContext.market.domain.market.MarketPolicy;
+import backend.mossy.boundedContext.market.domain.market.MarketUser;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
