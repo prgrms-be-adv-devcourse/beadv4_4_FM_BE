@@ -54,22 +54,10 @@ public class PayoutDataInit {
     public ApplicationRunner payoutDataInitApplicationRunner() {
         return args -> {
             self.createTestData();
-            self.forceMakePayoutReadyCandidatesItems();
             self.collectPayoutItemsMore();
             self.completePayoutsMore();
             // self.runCollectItemsAndCompletePayoutsBatchJob();
         };
-    }
-
-    @Transactional
-    public void forceMakePayoutReadyCandidatesItems() {
-        payoutFacade.findPayoutCandidateItems().forEach(item -> {
-            Util.reflection.setField(
-                    item,
-                    "paymentDate",
-                    LocalDateTime.now().minusDays(PayoutPolicy.PAYOUT_READY_WAITING_DAYS + 1)
-            );
-        });
     }
 
     @Transactional
@@ -186,6 +174,7 @@ public class PayoutDataInit {
         log.info("판매자2 Seller 생성 완료: ID={}", seller2.id());
 
         // 4. 주문 데이터 생성 및 정산 후보 생성
+        LocalDateTime pastPaymentDate = LocalDateTime.now().minusDays(PayoutPolicy.PAYOUT_READY_WAITING_DAYS + 1);
         OrderDto order = new OrderDto(
                 1001L,                          // id
                 LocalDateTime.now(),            // createdAt
@@ -194,11 +183,11 @@ public class PayoutDataInit {
                 "구매자상점",                      // customerName
                 new BigDecimal("15000"),        // price (총 원가)
                 new BigDecimal("15000"),        // salePrice (총 판매가)
-                LocalDateTime.now(),            // requestPaymentDate
-                LocalDateTime.now()             // paymentDate
+                pastPaymentDate,                // requestPaymentDate (과거 날짜)
+                pastPaymentDate                 // paymentDate (과거 날짜)
         );
         payoutFacade.addPayoutCandidateItems(order);
-        log.info("주문 정산 후보 생성 완료: OrderID={}", order.id());
+        log.info("주문 정산 후보 생성 완료: OrderID={}, PaymentDate={}", order.id(), pastPaymentDate);
 
         log.info("===== 테스트 데이터 생성 완료 =====");
     }

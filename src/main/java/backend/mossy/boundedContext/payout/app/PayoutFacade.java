@@ -2,6 +2,7 @@ package backend.mossy.boundedContext.payout.app;
 
 import backend.mossy.boundedContext.payout.domain.Payout;
 import backend.mossy.boundedContext.payout.domain.PayoutCandidateItem;
+import backend.mossy.boundedContext.payout.dto.response.PayoutCandidateItemResponse;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.event.OrderDto;
 import backend.mossy.shared.member.dto.event.SellerDto;
@@ -43,9 +44,11 @@ public class PayoutFacade {
     }
 
     @Transactional(readOnly = true)
-    public List<PayoutCandidateItem> findPayoutCandidateItems() {
-        return payoutSupport
-                .findPayoutCandidateItems();
+    public List<PayoutCandidateItemResponse> findPayoutCandidateItems() {
+        return payoutSupport.findPayoutCandidateItems()
+                .stream()
+                .map(PayoutCandidateItem::toResponse)
+                .toList();
     }
 
     @Transactional

@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.payout.domain;
 
+import backend.mossy.boundedContext.payout.dto.response.PayoutCandidateItemResponse;
 import backend.mossy.shared.payout.dto.event.CreatePayoutCandidateItemDto;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
@@ -65,6 +66,24 @@ public class PayoutCandidateItem extends BaseIdAndTime {
                 .payer(dto.payer())
                 .payee(dto.payee())
                 .amount(dto.amount())
+                .build();
+    }
+
+    public PayoutCandidateItemResponse toResponse() {
+        return PayoutCandidateItemResponse.builder()
+                .id(getId())
+                .createdAt(getCreatedAt())
+                .updatedAt(getUpdatedAt())
+                .eventType(eventType)
+                .relTypeCode(relTypeCode)
+                .relId(relId)
+                .paymentDate(paymentDate)
+                .payerId(payer != null ? payer.getId() : null)
+                .payerName(payer != null ? payer.getStoreName() : null)
+                .payeeId(payee.getId())
+                .payeeName(payee.getStoreName())
+                .amount(amount)
+                .payoutItemId(payoutItem != null ? payoutItem.getId() : null)
                 .build();
     }
 
