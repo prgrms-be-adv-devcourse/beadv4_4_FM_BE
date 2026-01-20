@@ -39,13 +39,16 @@ public class CreateOrderUseCase {
         for (OrderDetailDto dto : event.orderDetails()) {
             MarketSeller seller = marketSellerRepository.getReferenceById(dto.sellerId());
 
+            // 무게 등급 계산
             BigDecimal weight = productClient.getWeight(dto.productId());
             BigDecimal totalWeight = weight.multiply(BigDecimal.valueOf(dto.quantity()));
 
+            // 무게 등급 테이블 비교
             WeightGradeType gradeType = marketPolicy.getWeightGrade(totalWeight);
             WeightGrade weightGrade = weightGradeRepository.findByWeightGradeName(gradeType.name())
                     .orElseThrow(() -> new DomainException(ErrorCode.WEIGHT_GRADE_NOT_FOUND));
 
+            // 주문 상세 생성
             order.addOrderDetail(seller, weightGrade, dto);
         }
 

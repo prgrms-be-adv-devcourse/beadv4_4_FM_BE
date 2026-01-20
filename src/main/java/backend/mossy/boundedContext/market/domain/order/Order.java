@@ -57,7 +57,7 @@ public class Order extends BaseIdAndTime {
                 .productId(dto.productId())
                 .quantity(dto.quantity())
                 .orderPrice(dto.orderPrice())
-                .address(this.buyer.getAddress())
+                .address(dto.address())
                 .state(OrderState.PAID)
                 .build();
 

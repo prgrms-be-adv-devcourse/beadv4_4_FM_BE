@@ -3,10 +3,7 @@ package backend.mossy.boundedContext.market.domain.order;
 import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -17,6 +14,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @AttributeOverride(name = "id", column = @Column(name = "order_detail_id"))
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class OrderDetail extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -45,23 +44,4 @@ public class OrderDetail extends BaseIdAndTime {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderState state;
-
-    @Builder
-    OrderDetail(Order order,
-                MarketSeller seller,
-                WeightGrade weightGrade,
-                Long productId,
-                int quantity,
-                BigDecimal orderPrice,
-                String address,
-                OrderState state) {
-        this.order = order;
-        this.seller = seller;
-        this.weightGrade = weightGrade;
-        this.productId = productId;
-        this.quantity = quantity;
-        this.orderPrice = orderPrice;
-        this.address = address;
-        this.state = state;
-    }
 }
