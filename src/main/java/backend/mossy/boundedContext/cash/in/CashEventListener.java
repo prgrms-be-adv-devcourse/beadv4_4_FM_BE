@@ -6,6 +6,7 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 import backend.mossy.boundedContext.cash.app.CashFacade;
 import backend.mossy.shared.cash.event.CashSellerCreatedEvent;
 import backend.mossy.shared.cash.event.CashUserCreatedEvent;
+import backend.mossy.shared.cash.event.PaymentCompletedEvent;
 import backend.mossy.shared.member.event.SellerJoinedEvent;
 import backend.mossy.shared.member.event.SellerUpdatedEvent;
 import backend.mossy.shared.member.event.UserUpdatedEvent;
@@ -55,5 +56,11 @@ public class CashEventListener {
     @Transactional(propagation = REQUIRES_NEW)
     public void cashSellerCreatedEvent(CashSellerCreatedEvent event) {
         cashFacade.createSellerWallet(event.seller());
+    }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public void paymentCompletedEvent(PaymentCompletedEvent event) {
+        //Payment에 상태 변경 로직 구현
     }
 }
