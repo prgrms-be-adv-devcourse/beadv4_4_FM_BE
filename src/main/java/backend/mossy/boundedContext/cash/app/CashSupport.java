@@ -50,7 +50,7 @@ public class CashSupport {
     public UserWallet findWalletByUserId(Long userId) {
         return userWalletRepository.findWalletByUserId(userId)
             .orElseThrow(
-                () -> new DomainException("NOT_EXISTS_USER_WALLET", "판매자 지갑이 존재하지 않습니다.: " + userId)
+                () -> new DomainException("NOT_EXISTS_USER_WALLET", "구매자 지갑이 존재하지 않습니다.: " + userId)
             );
     }
 
