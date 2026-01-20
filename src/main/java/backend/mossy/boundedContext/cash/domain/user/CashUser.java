@@ -1,6 +1,5 @@
 package backend.mossy.boundedContext.cash.domain.user;
 
-import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.shared.cash.dto.event.CashUserDto;
 import backend.mossy.shared.member.domain.user.ReplicaUser;
 import backend.mossy.shared.member.domain.user.UserStatus;

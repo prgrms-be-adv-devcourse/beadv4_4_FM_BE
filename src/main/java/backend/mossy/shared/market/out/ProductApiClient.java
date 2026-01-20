@@ -1,6 +1,6 @@
 package backend.mossy.shared.market.out;
 
-import backend.mossy.boundedContext.market.out.ProductRepository;
+import backend.mossy.boundedContext.market.out.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

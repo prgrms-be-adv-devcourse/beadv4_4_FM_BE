@@ -1,6 +1,6 @@
 package backend.mossy.shared.market.dto.response;
 
-import backend.mossy.boundedContext.market.domain.Cart;
+import backend.mossy.boundedContext.market.domain.cart.Cart;
 import lombok.Builder;
 
 import java.util.List;
@@ -9,14 +9,14 @@ import java.util.List;
 public record CartResponse(
         Long cartId,
         Long buyerId,
-        int totalQuantity,
+        int itemCount,
         List<CartItemResponse> items
 ) {
     public static CartResponse of(Cart cart, List<CartItemResponse> items) {
         return CartResponse.builder()
                 .cartId(cart.getId())
                 .buyerId(cart.getBuyer().getId())
-                .totalQuantity(cart.getTotalQuantity())
+                .itemCount(items.size())
                 .items(items)
                 .build();
     }

@@ -1,6 +1,6 @@
 package backend.mossy.shared.market.dto.request;
 
-import backend.mossy.boundedContext.market.domain.ProductStatus;
+import backend.mossy.boundedContext.market.domain.product.ProductStatus;
 import jakarta.validation.constraints.NotNull;
 
 public record ProductStatusUpdateRequest(

@@ -1,5 +1,6 @@
-package backend.mossy.boundedContext.market.domain;
+package backend.mossy.boundedContext.market.domain.product;
 
+import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.*;

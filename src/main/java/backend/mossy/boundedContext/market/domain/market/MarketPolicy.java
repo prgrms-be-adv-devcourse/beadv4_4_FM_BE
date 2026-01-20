@@ -1,6 +1,7 @@
-package backend.mossy.boundedContext.market.domain;
+package backend.mossy.boundedContext.market.domain.market;
 
 import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ public class MarketPolicy {
 
     public void validateCartItemQuantity(int quantity) {
         if (quantity > maxQuantity) {
-            throw new DomainException("422", "수량은 최대 " + maxQuantity + "개까지 가능합니다.");
+            throw new DomainException(ErrorCode.QUANTITY_LIMIT_EXCEEDED);
         }
     }
 }

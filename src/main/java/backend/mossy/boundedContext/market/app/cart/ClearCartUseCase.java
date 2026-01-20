@@ -1,7 +1,7 @@
 package backend.mossy.boundedContext.market.app.cart;
 
-import backend.mossy.boundedContext.market.domain.Cart;
-import backend.mossy.boundedContext.market.out.CartRepository;
+import backend.mossy.boundedContext.market.domain.cart.Cart;
+import backend.mossy.boundedContext.market.out.cart.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
