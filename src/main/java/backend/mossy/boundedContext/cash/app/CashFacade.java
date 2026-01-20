@@ -1,11 +1,22 @@
 package backend.mossy.boundedContext.cash.app;
 
-import backend.mossy.boundedContext.cash.app.usecase.CashUserWalletUseCase;
-import backend.mossy.boundedContext.cash.app.usecase.CashSyncUserUseCase;
-import backend.mossy.boundedContext.cash.domain.wallet.CashUser;
-import backend.mossy.boundedContext.cash.domain.wallet.Wallet;
-import backend.mossy.shared.cash.dto.common.CashUserDto;
-import backend.mossy.shared.cash.dto.response.WalletResponseDto;
+import backend.mossy.boundedContext.cash.app.usecase.seller.CashCreateSellerWalletUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerBalanceUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerWalletInfoUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.sync.CashSyncSellerUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.sync.CashSyncUserUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.user.CashCreateUserWalletUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.user.CashGetBalanceUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.user.CashGetWalletInfoUseCase;
+import backend.mossy.boundedContext.cash.domain.seller.CashSeller;
+import backend.mossy.boundedContext.cash.domain.seller.SellerWallet;
+import backend.mossy.boundedContext.cash.domain.user.CashUser;
+import backend.mossy.boundedContext.cash.domain.user.UserWallet;
+import backend.mossy.shared.cash.dto.event.CashSellerDto;
+import backend.mossy.shared.cash.dto.event.CashUserDto;
+import backend.mossy.shared.cash.dto.response.SellerWalletResponseDto;
+import backend.mossy.shared.cash.dto.response.UserWalletResponseDto;
+import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.member.dto.event.UserDto;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
@@ -17,29 +28,56 @@ import org.springframework.transaction.annotation.Transactional;
 public class CashFacade {
 
     private final CashSyncUserUseCase cashSyncUserUseCase;
-    private final CashUserWalletUseCase cashUserWalletUseCase;
+    private final CashSyncSellerUseCase cashSyncSellerUseCase;
+    private final CashCreateUserWalletUseCase cashCreateUserWalletUseCase;
+    private final CashCreateSellerWalletUseCase cashCreateSellerWalletUseCase;
+    private final CashGetWalletInfoUseCase cashGetWalletInfoUseCase;
+    private final CashGetBalanceUseCase cashGetBalanceUseCase;
+    private final CashGetSellerWalletInfoUseCase cashGetSellerWalletInfoUseCase;
+    private final CashGetSellerBalanceUseCase cashGetSellerBalanceUseCase;
+    // === [동기화 영역] ===
 
-    // 구매자 정보 CashUser로 동기화
     @Transactional
     public CashUser syncUser(UserDto userDto) {
         return cashSyncUserUseCase.syncUser(userDto);
     }
 
-    // 구매자 지갑 생성
     @Transactional
-    public Wallet createWallet(CashUserDto userDto) {
-        return cashUserWalletUseCase.createWallet(userDto);
+    public CashSeller syncSeller(SellerDto sellerDto) {
+        return cashSyncSellerUseCase.syncSeller(sellerDto);
     }
 
-    // 지갑 정보 상세 조회
-    @Transactional(readOnly = true)
-    public WalletResponseDto findWalletByUserId(Long userId) {
-        return cashUserWalletUseCase.getMyWallet(userId);
+    // === [지갑 생성 영역] ===
+
+    @Transactional
+    public UserWallet createUserWallet(CashUserDto userDto) {
+        return cashCreateUserWalletUseCase.createUserWallet(userDto);
     }
 
-    // 현재 사용 가능한 잔액을 조회
+    @Transactional
+    public SellerWallet createSellerWallet(CashSellerDto sellerDto) {
+        return cashCreateSellerWalletUseCase.createSellerWallet(sellerDto);
+    }
+
+    // === [조회 영역] ===
+
     @Transactional(readOnly = true)
-    public BigDecimal findBalanceByUserId(Long userId) {
-        return cashUserWalletUseCase.getBalance(userId);
+    public UserWalletResponseDto findUserWallet(Long userId) {
+        return cashGetWalletInfoUseCase.getUserWalletInfo(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal findUserBalance(Long userId) {
+        return cashGetBalanceUseCase.getUserWalletBalance(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public SellerWalletResponseDto findSellerWallet(Long sellerId) {
+        return cashGetSellerWalletInfoUseCase.getSellerWalletInfo(sellerId);
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal findSellerBalance(Long sellerId) {
+        return cashGetSellerBalanceUseCase.getSellerBalance(sellerId);
     }
 }
