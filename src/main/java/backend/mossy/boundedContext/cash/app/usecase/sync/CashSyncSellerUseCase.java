@@ -18,24 +18,8 @@ public class CashSyncSellerUseCase {
     private final EventPublisher eventPublisher;
 
     public CashSeller syncSeller(SellerDto seller) {
-        // 1. CashSeller 빌더를 사용하여 엔티티 생성 및 저장
-        CashSeller cashSeller = cashSellerRepository.save(
-            CashSeller.builder()
-                .id(seller.id())
-                .createdAt(seller.createdAt())
-                .updatedAt(seller.updatedAt())
-                .userId(seller.userId())
-                .sellerType(seller.sellerType())
-                .storeName(seller.storeName())
-                .businessNum(seller.businessNum())
-                .representativeName(seller.representativeName())
-                .contactEmail(seller.contactEmail())
-                .contactPhone(seller.contactPhone())
-                .address1(seller.address1())
-                .address2(seller.address2())
-                .status(seller.status())
-                .build()
-        );
+        // 1. CashSeller from 메서드를 사용하여 엔티티 생성 및 저장
+        CashSeller cashSeller = cashSellerRepository.save(CashSeller.from(seller));
 
         // 2. 해당 판매자의 지갑이 없는 경우에만 지갑 생성 이벤트 발행
         if (!sellerWalletRepository.existsBySellerId(cashSeller.getId())) {

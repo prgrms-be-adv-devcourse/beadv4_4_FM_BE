@@ -18,20 +18,8 @@ public class CashSyncUserUseCase {
     private final EventPublisher eventPublisher;
 
     public CashUser syncUser(UserDto user) {
-        // 1. CashUser 빌더를 사용하여 엔티티 생성 및 저장
-        CashUser cashUser = cashUserRepository.save(
-            CashUser.builder()
-                .id(user.id())
-                .email(user.email())
-                .name(user.name())
-                .address(user.address())
-                .nickname(user.nickname())
-                .profileImage(user.profileImage())
-                .status(user.status())
-                .createdAt(user.createdAt())
-                .updatedAt(user.updatedAt())
-                .build()
-        );
+        // 1. CashUser from 메서드를 사용하여 엔티티 생성 및 저장
+        CashUser cashUser = cashUserRepository.save(CashUser.from(user));
 
         // 2. 해당 유저의 지갑이 없는 경우에만 지갑 생성 이벤트 발행
         if (!userWalletRepository.existsWalletByUserId(cashUser.getId())) {

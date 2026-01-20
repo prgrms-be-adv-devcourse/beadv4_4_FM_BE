@@ -1,8 +1,10 @@
 package backend.mossy.boundedContext.cash.domain.user;
 
+import backend.mossy.boundedContext.market.domain.MarketUser;
 import backend.mossy.shared.cash.dto.event.CashUserDto;
 import backend.mossy.shared.member.domain.user.ReplicaUser;
 import backend.mossy.shared.member.domain.user.UserStatus;
+import backend.mossy.shared.member.dto.event.UserDto;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,6 +37,20 @@ public class CashUser extends ReplicaUser {
     ) {
         super(id, email, name, address, nickname, profileImage,
             createdAt, updatedAt, status);
+    }
+
+    public static CashUser from(UserDto user) {
+        return CashUser.builder()
+            .id(user.id())
+            .email(user.email())
+            .name(user.name())
+            .address(user.address())
+            .nickname(user.nickname())
+            .profileImage(user.profileImage())
+            .status(user.status())
+            .createdAt(user.createdAt())
+            .updatedAt(user.updatedAt())
+            .build();
     }
 
     public CashUserDto toDto() {
