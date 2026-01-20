@@ -1,9 +1,9 @@
 package backend.mossy.boundedContext.market.app.cart;
 
-import backend.mossy.boundedContext.market.domain.Cart;
-import backend.mossy.boundedContext.market.domain.MarketUser;
-import backend.mossy.boundedContext.market.out.CartRepository;
-import backend.mossy.boundedContext.market.out.MarketUserRepository;
+import backend.mossy.boundedContext.market.domain.cart.Cart;
+import backend.mossy.boundedContext.market.domain.market.MarketUser;
+import backend.mossy.boundedContext.market.out.cart.CartRepository;
+import backend.mossy.boundedContext.market.out.market.MarketUserRepository;
 import backend.mossy.shared.market.dto.event.MarketUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

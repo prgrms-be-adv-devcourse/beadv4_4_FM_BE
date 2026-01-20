@@ -1,9 +1,8 @@
-package backend.mossy.boundedContext.market.domain;
+package backend.mossy.boundedContext.market.domain.product;
 
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

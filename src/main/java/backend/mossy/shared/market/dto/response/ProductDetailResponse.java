@@ -1,7 +1,7 @@
 package backend.mossy.shared.market.dto.response;
 
-import backend.mossy.boundedContext.market.domain.Product;
-import backend.mossy.boundedContext.market.domain.ProductImage;
+import backend.mossy.boundedContext.market.domain.product.Product;
+import backend.mossy.boundedContext.market.domain.product.ProductImage;
 import lombok.Builder;
 
 import java.math.BigDecimal;

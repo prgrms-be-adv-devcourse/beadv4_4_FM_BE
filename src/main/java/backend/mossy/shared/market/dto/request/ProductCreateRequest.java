@@ -1,9 +1,9 @@
 package backend.mossy.shared.market.dto.request;
 
-import backend.mossy.boundedContext.market.domain.Category;
-import backend.mossy.boundedContext.market.domain.MarketSeller;
-import backend.mossy.boundedContext.market.domain.Product;
-import backend.mossy.boundedContext.market.domain.ProductStatus;
+import backend.mossy.boundedContext.market.domain.product.Category;
+import backend.mossy.boundedContext.market.domain.market.MarketSeller;
+import backend.mossy.boundedContext.market.domain.product.Product;
+import backend.mossy.boundedContext.market.domain.product.ProductStatus;
 
 import java.math.BigDecimal;
 import java.util.List;

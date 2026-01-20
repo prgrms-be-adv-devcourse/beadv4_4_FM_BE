@@ -2,7 +2,6 @@ package backend.mossy.global.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
@@ -19,7 +18,13 @@ public enum ErrorCode {
     INVALID_PASSWORD(401, "비밀번호가 일치하지 않습니다."),
 
     //404 NOT FOUND
-    USER_NOT_FOUND(404, "존재하지 않는 회원입니다.");
+    USER_NOT_FOUND(404, "존재하지 않는 회원입니다."),
+    CART_NOT_FOUND(404, "장바구니가 존재하지 않습니다."),
+    CART_ITEM_NOT_FOUND(404, "장바구니에 해당 상품이 없습니다."),
+    PRODUCT_NOT_FOUND(404, "해당 상품이 존재하지 않습니다."),
+
+    //422 Unprocessable Entity (비즈니스 규칙 위배)
+    QUANTITY_LIMIT_EXCEEDED(422, "수량 제한을 초과했습니다.");
 
     private final int status;
     private final String msg;

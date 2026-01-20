@@ -35,7 +35,7 @@ public class SellerWallet extends BaseManualIdAndTime {
         this.balance = BigDecimal.ZERO;
     }
 
-    // 충전 x, 입금/수익으로 사용
+    // 입금/수익으로 사용
     public void credit(BigDecimal amount, SellerEventType eventType, String relTypeCode, Long relId) {
         this.balance = this.balance.add(amount);
         addSellerCashLog(amount, eventType, relTypeCode, relId);
