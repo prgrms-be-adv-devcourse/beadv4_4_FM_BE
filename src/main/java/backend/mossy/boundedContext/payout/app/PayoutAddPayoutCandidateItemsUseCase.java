@@ -46,7 +46,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     ) {
         makePayoutCandidateItem(CreatePayoutCandidateItemDto.builder()
                 .eventType(eventType)
-                .relTypeCode(orderItem.modelTypeCode())
+                .relTypeCode(orderItem.getModelTypeCode())
                 .relId(orderItem.id())
                 .paymentDate(order.paymentDate())
                 .payer(payer)

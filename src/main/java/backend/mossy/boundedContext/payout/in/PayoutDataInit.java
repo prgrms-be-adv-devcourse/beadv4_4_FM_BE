@@ -25,6 +25,7 @@ import backend.mossy.shared.market.dto.event.OrderDto;
 import backend.mossy.shared.member.domain.seller.SellerStatus;
 import backend.mossy.shared.member.domain.seller.SellerType;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -186,10 +187,15 @@ public class PayoutDataInit {
 
         // 4. 주문 데이터 생성 및 정산 후보 생성
         OrderDto order = new OrderDto(
-                1001L,
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                LocalDateTime.now()
+                1001L,                          // id
+                LocalDateTime.now(),            // createdAt
+                LocalDateTime.now(),            // updatedAt
+                1000L,                          // customerId (buyer의 userId)
+                "구매자상점",                      // customerName
+                new BigDecimal("15000"),        // price (총 원가)
+                new BigDecimal("15000"),        // salePrice (총 판매가)
+                LocalDateTime.now(),            // requestPaymentDate
+                LocalDateTime.now()             // paymentDate
         );
         payoutFacade.addPayoutCandidateItems(order);
         log.info("주문 정산 후보 생성 완료: OrderID={}", order.id());
