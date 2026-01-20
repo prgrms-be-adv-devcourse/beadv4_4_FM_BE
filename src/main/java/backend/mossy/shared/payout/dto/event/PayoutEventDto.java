@@ -1,8 +1,11 @@
 package backend.mossy.shared.payout.dto.event;
 
+import lombok.Builder;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Builder
 public record PayoutEventDto(
         Long id,
         LocalDateTime createdAt,

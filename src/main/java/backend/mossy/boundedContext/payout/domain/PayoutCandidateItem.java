@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.payout.domain;
 
+import backend.mossy.shared.payout.dto.event.CreatePayoutCandidateItemDto;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.*;
@@ -53,6 +54,18 @@ public class PayoutCandidateItem extends BaseIdAndTime {
         this.payer = payer;
         this.payee = payee;
         this.amount = (amount != null) ? amount : BigDecimal.ZERO;
+    }
+
+    public static PayoutCandidateItem from(CreatePayoutCandidateItemDto dto) {
+        return PayoutCandidateItem.builder()
+                .eventType(dto.eventType())
+                .relTypeCode(dto.relTypeCode())
+                .relId(dto.relId())
+                .paymentDate(dto.paymentDate())
+                .payer(dto.payer())
+                .payee(dto.payee())
+                .amount(dto.amount())
+                .build();
     }
 
     public void setPayoutItem(PayoutItem payoutItem) {

@@ -65,15 +65,15 @@ public class Payout extends BaseIdAndTime {
     }
 
     public PayoutEventDto toDto() {
-        return new PayoutEventDto(
-                getId(),
-                getCreatedAt(),
-                getUpdatedAt(),
-                payee.getId(),
-                payee.getStoreName(),
-                payoutDate,
-                amount,
-                payee.isSystem()
-        );
+        return PayoutEventDto.builder()
+                .id(getId())
+                .createdAt(getCreatedAt())
+                .updatedAt(getUpdatedAt())
+                .payeeId(payee.getId())
+                .payeeNickname(payee.getStoreName())
+                .payoutDate(payoutDate)
+                .amount(amount)
+                .isSystem(payee.isSystem())
+                .build();
     }
 }

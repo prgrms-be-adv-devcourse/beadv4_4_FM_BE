@@ -42,20 +42,20 @@ public class PayoutSeller extends ReplicaSeller {
     }
 
     public SellerDto toDto() {
-        return new SellerDto(
-                getId(),
-                getCreatedAt(),
-                getUpdatedAt(),
-                getUserId(),
-                getSellerType(),
-                getStoreName(),
-                getBusinessNum(),
-                getRepresentativeName(),
-                getContactEmail(),
-                getContactPhone(),
-                getAddress1(),
-                getAddress2(),
-                getStatus()
-        );
+        return SellerDto.builder()
+                .id(getId())
+                .createdAt(getCreatedAt())
+                .updatedAt(getUpdatedAt())
+                .userId(getUserId())
+                .sellerType(getSellerType())
+                .storeName(getStoreName())
+                .businessNum(getBusinessNum())
+                .representativeName(getRepresentativeName())
+                .contactEmail(getContactEmail())
+                .contactPhone(getContactPhone())
+                .address1(getAddress1())
+                .address2(getAddress2())
+                .status(getStatus())
+                .build();
     }
 }
