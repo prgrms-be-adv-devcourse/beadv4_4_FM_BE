@@ -21,13 +21,13 @@ public class PayoutEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void handle(SellerJoinedEvent event) {
-        payoutFacade.syncSeller(event.getSeller());
+        payoutFacade.syncSeller(event.seller());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void handle(SellerUpdatedEvent event) {
-        payoutFacade.syncSeller(event.getSeller());
+        payoutFacade.syncSeller(event.seller());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
