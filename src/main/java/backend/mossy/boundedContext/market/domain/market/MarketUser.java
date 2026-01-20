@@ -2,8 +2,8 @@ package backend.mossy.boundedContext.market.domain.market;
 
 import backend.mossy.shared.market.dto.event.MarketUserDto;
 import backend.mossy.shared.member.domain.user.ReplicaUser;
-import backend.mossy.shared.member.dto.event.UserDto;
 import backend.mossy.shared.member.domain.user.UserStatus;
+import backend.mossy.shared.member.dto.event.UserDto;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
