@@ -47,7 +47,7 @@ public class PayoutFacade {
     public List<PayoutCandidateItemResponse> findPayoutCandidateItems() {
         return payoutSupport.findPayoutCandidateItems()
                 .stream()
-                .map(PayoutCandidateItem::toResponse)
+                .map(PayoutCandidateItemResponse::from)
                 .toList();
     }
 
