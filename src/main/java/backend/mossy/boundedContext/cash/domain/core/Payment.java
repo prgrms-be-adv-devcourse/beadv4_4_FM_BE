@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.cash.domain.payment;
+package backend.mossy.boundedContext.cash.domain.core;
 
 import backend.mossy.global.jpa.entity.BaseManualIdAndTime;
 import jakarta.persistence.*;

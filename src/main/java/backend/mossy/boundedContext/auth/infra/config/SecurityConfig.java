@@ -60,7 +60,10 @@ public class SecurityConfig {
                                 "/api/auth/signup",
                                 "/api/auth/login",
                                 "/api/auth/reissue",
-                                "/api/auth/logout"
+                                "/api/auth/logout",
+
+                                //Cash API Check
+                                "/api/v1/cash/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

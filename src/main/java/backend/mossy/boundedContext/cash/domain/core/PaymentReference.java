@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.cash.domain.payment;
+package backend.mossy.boundedContext.cash.domain.core;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
