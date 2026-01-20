@@ -41,6 +41,9 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
+    implementation("org.springframework.boot:spring-boot-starter-batch")
+    testImplementation("org.springframework.batch:spring-batch-test")
+
 
     //Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")

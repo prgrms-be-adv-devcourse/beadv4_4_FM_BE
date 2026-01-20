@@ -17,11 +17,6 @@ public class PayoutSupport {
     private final PayoutSellerRepository payoutSellerRepository;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
 
-    /**
-     * 시스템 멤버(예: 플랫폼 자체)를 조회합니다.
-     * 시스템 멤버는 수수료 정산의 수취인(payee)이 될 수 있습니다.
-     * @return 시스템 멤버 PayoutMember (Optional)
-     */
     public Optional<PayoutSeller> findSystemSeller() {
         return payoutSellerRepository.findByStoreName("system");
     }

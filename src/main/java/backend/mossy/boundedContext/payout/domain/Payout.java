@@ -36,6 +36,7 @@ public class Payout extends BaseIdAndTime {
 
     public Payout(PayoutSeller payee) {
         this.payee = payee;
+        this.amount = BigDecimal.ZERO;
     }
 
     public PayoutItem addItem(PayoutEventType eventType, String relTypeCode, Long relId, LocalDateTime payDate, PayoutSeller payer, PayoutSeller payee, BigDecimal amount) {
@@ -46,6 +47,9 @@ public class Payout extends BaseIdAndTime {
         items.add(payoutItem);
 
         // 총 정산 금액을 업데이트합니다.
+        if (this.amount == null) {
+            this.amount = BigDecimal.ZERO;
+        }
         this.amount = this.amount.add(amount);
 
         return payoutItem;

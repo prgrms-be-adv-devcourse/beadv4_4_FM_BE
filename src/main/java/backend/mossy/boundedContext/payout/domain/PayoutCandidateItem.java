@@ -29,10 +29,11 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private LocalDateTime paymentDate;
 
     @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "payer_seller_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private PayoutSeller payer;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "payee_seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private PayoutSeller payee;
 
     @Column(name = "amount", columnDefinition = "INT DEFAULT 0")

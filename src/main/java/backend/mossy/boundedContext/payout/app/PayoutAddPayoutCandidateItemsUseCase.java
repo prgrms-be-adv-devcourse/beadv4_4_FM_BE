@@ -20,8 +20,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
 
     public void addPayoutCandidateItems(OrderDto order) {
-        marketApiClient.getOrderItems(order.getId())
-                // 각 상품별로 정산 후보 데이터를 생성합니다.
+        marketApiClient.getOrderItems(order.id())
                 .forEach(orderItem -> makePayoutCandidateItems(order, orderItem));
     }
 
@@ -29,29 +28,28 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             OrderDto order,
             OrderItemDto orderItem
     ) {
-        // 정산에 필요한 주체들(시스템, 구매자, 판매자)의 정보를 조회합니다.
         PayoutSeller system = payoutSupport.findSystemSeller().get();
-        PayoutSeller buyer = payoutSupport.findSellerById(orderItem.getBuyerId()).get();
-        PayoutSeller seller = payoutSupport.findSellerById(orderItem.getSellerId()).get();
+        PayoutSeller buyer = payoutSupport.findSellerById(orderItem.buyerId()).get();
+        PayoutSeller seller = payoutSupport.findSellerById(orderItem.sellerId()).get();
 
         makePayoutCandidateItem(
                 PayoutEventType.정산__상품판매_수수료,
-                orderItem.getModelTypeCode(),
-                orderItem.getId(),
-                order.getPaymentDate(),
+                orderItem.modelTypeCode(),
+                orderItem.id(),
+                order.paymentDate(),
                 buyer,
                 system,
-                orderItem.getPayoutFee()
+                orderItem.payoutFee()
         );
 
         makePayoutCandidateItem(
                 PayoutEventType.정산__상품판매_대금,
-                orderItem.getModelTypeCode(),
-                orderItem.getId(),
-                order.getPaymentDate(),
+                orderItem.modelTypeCode(),
+                orderItem.id(),
+                order.paymentDate(),
                 buyer,
                 seller,
-                orderItem.getSalePriceWithoutFee()
+                orderItem.salePriceWithoutFee()
         );
     }
 
