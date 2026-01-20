@@ -13,10 +13,30 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<RsData<Void>> handleDomainException(DomainException e) {
 
-        ErrorCode errorCode = e.getErrorCode();
+        // RsData 전환 과정에서 기존 DomainException 사용 코드도 함께 지원하기 위한 처리
+        // TODO: RsData 전환 완료 후 DomainException 단일 방식으로 정리 예정
+
+
+        if (e.getErrorCode() != null) {
+            ErrorCode errorCode = e.getErrorCode();
+
+            return ResponseEntity
+                    .status(errorCode.getStatus())
+                    .body(RsData.fail(errorCode));
+        }
+
+        int status = 400;
+        try {
+            status = Integer.parseInt(e.getResultCode().replace("F-", ""));
+        } catch (Exception ignored) {}
 
         return ResponseEntity
-                .status(errorCode.getStatus())
-                .body(RsData.fail(errorCode));
+                .status(status)
+                .body(
+                        RsData.fail(
+                                e.getResultCode(),
+                                e.getMsg()
+                        )
+                );
     }
 }

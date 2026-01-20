@@ -17,7 +17,6 @@ public class RsData<T> implements ResultType {
         this(resultCode, msg, null);
     }
 
-
     //성공할 경우
     public static <T> RsData<T> success(String msg, T data) {
         return new RsData<>("S-200", msg, data);
@@ -35,4 +34,9 @@ public class RsData<T> implements ResultType {
                 null
         );
     }
+
+    public static <T> RsData<T> fail(String resultCode, String msg) {
+        return new RsData<>(resultCode, msg, null);
+    }
+
 }
