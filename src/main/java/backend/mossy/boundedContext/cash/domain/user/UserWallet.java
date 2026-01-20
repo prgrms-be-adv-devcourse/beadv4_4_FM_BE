@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.cash.domain.user;
 
+import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.jpa.entity.BaseManualIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,11 +28,48 @@ public class UserWallet extends BaseManualIdAndTime {
     private BigDecimal balance = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "wallet", cascade = {PERSIST, REMOVE}, orphanRemoval = true)
-    private List<UserCashLog> cashLogs = new ArrayList<>();
+    private List<UserCashLog> userCashLogs = new ArrayList<>();
 
     public UserWallet(CashUser user) {
         super(user.getId());
         this.user = user;
         this.balance = BigDecimal.ZERO;
+    }
+
+    public void credit(BigDecimal amount, UserEventType eventType, String relTypeCode, Long relId) {
+        this.balance = this.balance.add(amount);
+        addUserCashLog(amount, eventType, relTypeCode, relId);
+    }
+
+    public void debit(BigDecimal amount, UserEventType eventType, String relTypeCode, Long relId) {
+        validateAmount(amount);
+
+        // 추후 GlobalExceptionHandler에서 공통으로 처리할 계획
+        if (this.balance.compareTo(amount) < 0) {
+            throw new RuntimeException("잔액이 부족합니다.");
+        }
+        this.balance = this.balance.subtract(amount);
+        addUserCashLog(amount.negate(), eventType, relTypeCode, relId);
+    }
+
+    private void addUserCashLog(BigDecimal amount, UserEventType eventType, String relTypeCode, Long relId) {
+        UserCashLog cashLog = UserCashLog.builder()
+            .wallet(this)
+            .user(this.user)
+            .amount(amount)
+            .balance(this.balance) // 변동 후 최종 잔액 기록
+            .eventType(eventType)
+            .relTypeCode(relTypeCode)
+            .relId(relId)
+            .build();
+
+        this.userCashLogs.add(cashLog);
+    }
+
+    private void validateAmount(BigDecimal amount) {
+        // 금액이 null이거나 0 또는 마이너스인 경우 예외 발생
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DomainException("400", "잘못된 금액입니다. (0원 이하 또는 null)");
+        }
     }
 }
