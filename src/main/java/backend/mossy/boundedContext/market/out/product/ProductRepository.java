@@ -30,4 +30,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             "where p.id = :id")
     Optional<Product> findByIdWithDetails(@Param("id") Long id);
 
+    @Query("SELECT p FROM Product p WHERE p.id IN :ids")
+    List<Product> findByIdIn(@Param("ids") List<Long> ids);
 }

@@ -2,6 +2,7 @@ package backend.mossy.boundedContext.market.domain.order;
 
 import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
+import backend.mossy.shared.market.dto.event.OrderDetailDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,4 +45,22 @@ public class OrderDetail extends BaseIdAndTime {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderState state;
+
+    static OrderDetail create(
+            Order order,
+            MarketSeller seller,
+            WeightGrade weightGrade,
+            OrderDetailDto dto
+    ) {
+        return OrderDetail.builder()
+                .order(order)
+                .seller(seller)
+                .weightGrade(weightGrade)
+                .productId(dto.productId())
+                .quantity(dto.quantity())
+                .orderPrice(dto.orderPrice())
+                .address(dto.address())
+                .state(OrderState.PAID)
+                .build();
+    }
 }

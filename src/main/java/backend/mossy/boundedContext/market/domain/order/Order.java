@@ -40,7 +40,10 @@ public class Order extends BaseIdAndTime {
     @Builder.Default
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
-    public static Order create(MarketUser buyer, PaymentOrderDto paymentOrderDto) {
+    public static Order create(
+            MarketUser buyer,
+            PaymentOrderDto paymentOrderDto
+    ) {
         return Order.builder()
                 .buyer(buyer)
                 .orderNo(paymentOrderDto.orderNo())
@@ -49,18 +52,11 @@ public class Order extends BaseIdAndTime {
                 .build();
     }
 
-    public void addOrderDetail(MarketSeller seller, WeightGrade weightGrade, OrderDetailDto dto) {
-        OrderDetail detail = OrderDetail.builder()
-                .order(this)
-                .seller(seller)
-                .weightGrade(weightGrade)
-                .productId(dto.productId())
-                .quantity(dto.quantity())
-                .orderPrice(dto.orderPrice())
-                .address(dto.address())
-                .state(OrderState.PAID)
-                .build();
-
-        this.orderDetails.add(detail);
+    public void addOrderDetail(
+            MarketSeller seller,
+            WeightGrade weightGrade,
+            OrderDetailDto dto
+    ) {
+        this.orderDetails.add(OrderDetail.create(this, seller, weightGrade, dto));
     }
 }

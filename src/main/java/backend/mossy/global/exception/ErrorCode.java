@@ -24,7 +24,7 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND(404, "해당 상품이 존재하지 않습니다."),
     WEIGHT_GRADE_NOT_FOUND(404, "무게 등급이 존재하지 않습니다."),
 
-            //422 Unprocessable Entity (비즈니스 규칙 위배)
+    //422 Unprocessable Entity (비즈니스 규칙 위배)
     QUANTITY_LIMIT_EXCEEDED(422, "수량 제한을 초과했습니다.");
 
     private final int status;

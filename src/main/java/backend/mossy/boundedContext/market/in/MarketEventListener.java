@@ -62,7 +62,14 @@ public class MarketEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void PayoutCompletedEvent(PaymentCompletedEvent event) {
+    public void PaymentCompletedForOrder(PaymentCompletedEvent event) {
         orderFacade.createOrder(event);
     }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public void PaymentCompletedForCart(PaymentCompletedEvent event) {
+        cartFacade.removeCartItems(event);
+    }
+
 }

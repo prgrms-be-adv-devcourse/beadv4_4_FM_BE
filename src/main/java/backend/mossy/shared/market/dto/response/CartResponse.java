@@ -8,12 +8,16 @@ import java.util.List;
 @Builder
 public record CartResponse(
         Long cartId,
+        String buyerName,
+        String address,
         int itemCount,
         List<CartItemResponse> items
 ) {
     public static CartResponse of(Cart cart, List<CartItemResponse> items) {
         return CartResponse.builder()
                 .cartId(cart.getId())
+                .buyerName(cart.getBuyer().getName())
+                .address(cart.getBuyer().getAddress())
                 .itemCount(items.size())
                 .items(items)
                 .build();

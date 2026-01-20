@@ -64,6 +64,10 @@ public class Cart extends BaseIdAndTime {
         this.items.remove(item);
     }
 
+    public void removeItems(List<Long> productIds) {
+        this.items.removeIf(item -> productIds.contains(item.getProductId()));
+    }
+
     private Optional<CartItem> findItem(Long productId) {
         return this.items.stream()
                 .filter(item -> item.getProductId().equals(productId))
