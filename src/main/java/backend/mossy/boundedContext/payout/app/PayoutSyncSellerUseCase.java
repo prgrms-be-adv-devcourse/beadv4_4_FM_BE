@@ -3,7 +3,7 @@ package backend.mossy.boundedContext.payout.app;
 import backend.mossy.boundedContext.payout.domain.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.PayoutSellerRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
-import backend.mossy.shared.payout.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

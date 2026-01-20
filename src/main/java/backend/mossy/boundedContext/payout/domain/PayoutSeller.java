@@ -3,7 +3,7 @@ package backend.mossy.boundedContext.payout.domain;
 import backend.mossy.shared.member.domain.seller.ReplicaSeller;
 import backend.mossy.shared.member.domain.seller.SellerStatus;
 import backend.mossy.shared.member.domain.seller.SellerType;
-import backend.mossy.shared.payout.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -44,8 +44,6 @@ public class PayoutSeller extends ReplicaSeller {
     public SellerDto toDto() {
         return SellerDto.builder()
                 .id(getId())
-                .createdAt(getCreatedAt())
-                .updatedAt(getUpdatedAt())
                 .userId(getUserId())
                 .sellerType(getSellerType())
                 .storeName(getStoreName())
@@ -56,6 +54,8 @@ public class PayoutSeller extends ReplicaSeller {
                 .address1(getAddress1())
                 .address2(getAddress2())
                 .status(getStatus())
+                .createdAt(getCreatedAt())
+                .updatedAt(getUpdatedAt())
                 .build();
     }
 }

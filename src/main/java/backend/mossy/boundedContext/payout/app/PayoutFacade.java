@@ -4,7 +4,7 @@ import backend.mossy.boundedContext.payout.domain.Payout;
 import backend.mossy.boundedContext.payout.domain.PayoutCandidateItem;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.event.OrderDto;
-import backend.mossy.shared.payout.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

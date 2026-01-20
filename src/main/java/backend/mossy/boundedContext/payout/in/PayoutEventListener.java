@@ -20,31 +20,31 @@ public class PayoutEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(SellerJoinedEvent event) {
+    public void sellerJoinedEvent(SellerJoinedEvent event) {
         payoutFacade.syncSeller(event.seller());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(SellerUpdatedEvent event) {
+    public void sellerUpdatedEvent(SellerUpdatedEvent event) {
         payoutFacade.syncSeller(event.seller());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(PayoutSellerCreatedEvent event) {
+    public void payoutSellerCreatedEvent(PayoutSellerCreatedEvent event) {
         payoutFacade.createPayout(event.getSeller().id());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(MarketOrderPaymentCompletedEvent event) {
+    public void marketOrderPaymentCompletedEvent(MarketOrderPaymentCompletedEvent event) {
         payoutFacade.addPayoutCandidateItems(event.getOrder());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void handle(PayoutCompletedEvent event) {
+    public void payoutCompletedEvent(PayoutCompletedEvent event) {
         payoutFacade.createPayout(event.getPayout().payeeId());
     }
 }
