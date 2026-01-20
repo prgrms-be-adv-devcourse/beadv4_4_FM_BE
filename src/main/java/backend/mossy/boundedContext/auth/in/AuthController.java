@@ -3,6 +3,7 @@ package backend.mossy.boundedContext.auth.in;
 import backend.mossy.boundedContext.auth.app.AuthFacade;
 import backend.mossy.boundedContext.auth.in.dto.LoginRequest;
 import backend.mossy.boundedContext.auth.in.dto.LoginResponse;
+import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.member.dto.request.SignupRequest;
 import backend.mossy.boundedContext.member.app.UserFacade;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,16 +24,14 @@ public class AuthController {
 
     @Operation(summary = "회원가입", description = "일반 유저(USER)로 가입합니다.")
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequest request) {
-        Long userId = userFacade.signup(request);
-        return ResponseEntity.ok("회원가입 성공! User ID: " + userId);
+    public RsData<Long> signup(@RequestBody SignupRequest request) {
+        return RsData.success("회원가입 성공", userFacade.signup(request));
     }
 
     @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인합니다.")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        LoginResponse response = authFacade.login(request);
-        return ResponseEntity.ok(response);
+    public RsData<LoginResponse> login(@RequestBody LoginRequest request) {
+        return RsData.success("로그인 성공", authFacade.login(request));
     }
 
     @Operation(
@@ -40,9 +39,9 @@ public class AuthController {
             description = "Refresh Token으로 Access Token 갱신"
     )
     @PostMapping("/reissue")
-    public ResponseEntity<LoginResponse> reissue(@RequestHeader("RefreshToken") String refreshToken) {
-        LoginResponse response = authFacade.reissue(refreshToken);
-        return ResponseEntity.ok(response);
+    public RsData<LoginResponse> reissue(@RequestHeader("RefreshToken") String refreshToken) {
+        return RsData.success("토큰 재발급 성공",authFacade.reissue(refreshToken));
+
     }
 
     @Operation(
@@ -50,9 +49,9 @@ public class AuthController {
             description = "Refresh Token 삭제"
     )
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("RefreshToken") String refreshToken) {
+    public RsData<Void> logout(@RequestHeader("RefreshToken") String refreshToken) {
         authFacade.logout(refreshToken);
-        return ResponseEntity.ok().build();
+        return RsData.success("로그아웃 성공");
     }
 
 }
