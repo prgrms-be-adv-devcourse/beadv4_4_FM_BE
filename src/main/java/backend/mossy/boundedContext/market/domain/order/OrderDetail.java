@@ -4,6 +4,7 @@ import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,7 @@ public class OrderDetail extends BaseIdAndTime {
     @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
-    @OneToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketSeller seller;
 
@@ -44,4 +45,23 @@ public class OrderDetail extends BaseIdAndTime {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderState state;
+
+    @Builder
+    OrderDetail(Order order,
+                MarketSeller seller,
+                WeightGrade weightGrade,
+                Long productId,
+                int quantity,
+                BigDecimal orderPrice,
+                String address,
+                OrderState state) {
+        this.order = order;
+        this.seller = seller;
+        this.weightGrade = weightGrade;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.orderPrice = orderPrice;
+        this.address = address;
+        this.state = state;
+    }
 }

@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.out.cart;
+package backend.mossy.boundedContext.market.out.product;
 
 import backend.mossy.shared.market.dto.response.CartItemResponse;
 import com.querydsl.core.types.Projections;
@@ -13,7 +13,7 @@ import static backend.mossy.boundedContext.market.domain.product.QProduct.produc
 import static backend.mossy.boundedContext.market.domain.product.QProductImage.productImage;
 
 @RequiredArgsConstructor
-public class CartRepositoryImpl implements CartRepositoryCustom {
+public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 

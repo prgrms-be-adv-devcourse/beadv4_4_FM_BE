@@ -1,13 +1,16 @@
 package backend.mossy.boundedContext.market.domain.order;
 
+import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.boundedContext.market.domain.market.MarketUser;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
+import backend.mossy.shared.market.dto.event.OrderDetailDto;
+import backend.mossy.shared.market.dto.event.OrderDto;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -16,6 +19,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @AttributeOverride(name = "id", column = @Column(name = "order_id"))
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class Order extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -30,4 +35,32 @@ public class Order extends BaseIdAndTime {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderState state;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @Builder.Default
+    private List<OrderDetail> orderDetails = new ArrayList<>();
+
+    public static Order create(MarketUser buyer, OrderDto orderDto) {
+        return Order.builder()
+                .buyer(buyer)
+                .orderNo(orderDto.orderNo())
+                .totalPrice(orderDto.totalPrice())
+                .state(OrderState.PAID)
+                .build();
+    }
+
+    public void addOrderDetail(MarketSeller seller, WeightGrade weightGrade, OrderDetailDto dto) {
+        OrderDetail detail = OrderDetail.builder()
+                .order(this)
+                .seller(seller)
+                .weightGrade(weightGrade)
+                .productId(dto.productId())
+                .quantity(dto.quantity())
+                .orderPrice(dto.orderPrice())
+                .address(this.buyer.getAddress())
+                .state(OrderState.PAID)
+                .build();
+
+        this.orderDetails.add(detail);
+    }
 }

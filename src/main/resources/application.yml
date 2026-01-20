@@ -56,5 +56,9 @@ market:
   policy:
     cart:
       max_quantity: 100
+    weight:
+      small_max: 1
+      medium_small_max: 5
+      medium_max: 10
 
 

@@ -2,8 +2,13 @@ package backend.mossy.boundedContext.market.in;
 
 import backend.mossy.boundedContext.market.app.cart.CartFacade;
 import backend.mossy.boundedContext.market.app.market.MarketFacade;
+import backend.mossy.boundedContext.market.app.order.OrderFacade;
+import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.boundedContext.market.domain.market.MarketUser;
 import backend.mossy.shared.market.event.MarketUserCreatedEvent;
+import backend.mossy.shared.market.event.PaymentCompletedEvent;
+import backend.mossy.shared.member.event.SellerJoinedEvent;
+import backend.mossy.shared.member.event.SellerUpdatedEvent;
 import backend.mossy.shared.member.event.UserJoinedEvent;
 import backend.mossy.shared.member.event.UserUpdatedEvent;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +24,7 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 public class MarketEventListener {
     private final MarketFacade marketFacade;
     private final CartFacade cartFacade;
+    private final OrderFacade orderFacade;
 
 //    @TransactionalEventListener(phase = AFTER_COMMIT)
 //    @Transactional(propagation = REQUIRES_NEW)
@@ -38,7 +44,25 @@ public class MarketEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
+    public MarketSeller userCreatedEvent(SellerJoinedEvent event) {
+        return marketFacade.syncSeller(event.seller());
+    }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public MarketSeller userUpdatedEvent(SellerUpdatedEvent event) {
+        return marketFacade.syncSeller(event.seller());
+    }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
     public void MarketCartCreatedEvent(MarketUserCreatedEvent event) {
         cartFacade.createCart(event.buyer());
+    }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public void PayoutCompletedEvent(PaymentCompletedEvent event) {
+        orderFacade.createOrder(event);
     }
 }
