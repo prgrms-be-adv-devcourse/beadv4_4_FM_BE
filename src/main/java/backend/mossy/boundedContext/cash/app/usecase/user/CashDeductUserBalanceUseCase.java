@@ -4,7 +4,7 @@ import backend.mossy.boundedContext.cash.app.CashSupport;
 import backend.mossy.boundedContext.cash.domain.user.UserWallet;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.cash.dto.request.UserBalanceRequestDto;
-import backend.mossy.shared.cash.event.PaymentCompletedEvent;
+import backend.mossy.shared.market.event.PaymentCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

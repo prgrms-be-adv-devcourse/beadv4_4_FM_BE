@@ -24,6 +24,7 @@ public record UserBalanceRequestDto(
     }
 
     public UserBalanceRequestDto {
+        if (userId == null) throw new IllegalArgumentException("구매자 ID는 필수입니다.");
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("금액은 0보다 커야 합니다.");
         }

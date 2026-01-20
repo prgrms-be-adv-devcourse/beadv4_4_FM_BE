@@ -67,9 +67,8 @@ public class UserWallet extends BaseManualIdAndTime {
     }
 
     private void validateAmount(BigDecimal amount) {
-        // 금액이 null이거나 0 또는 마이너스인 경우 예외 발생
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new DomainException("400", "잘못된 금액입니다. (0원 이하 또는 null)");
+            throw new DomainException("400", "잘못된 금액입니다.");
         }
     }
 }
