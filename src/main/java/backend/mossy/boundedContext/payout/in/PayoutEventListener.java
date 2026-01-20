@@ -33,7 +33,7 @@ public class PayoutEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void handle(PayoutSellerCreatedEvent event) {
-        payoutFacade.createPayout(event.getSeller().getId());
+        payoutFacade.createPayout(event.getSeller().id());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
@@ -45,6 +45,6 @@ public class PayoutEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void handle(PayoutCompletedEvent event) {
-        payoutFacade.createPayout(event.getPayout().getPayeeId());
+        payoutFacade.createPayout(event.getPayout().payeeId());
     }
 }
