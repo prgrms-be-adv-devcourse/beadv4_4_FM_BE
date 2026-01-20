@@ -13,7 +13,7 @@ public class CashGetSellerBalanceUseCase {
     private final SellerWalletRepository sellerWalletRepository;
 
     public BigDecimal getSellerBalance(Long sellerId) {
-        return sellerWalletRepository.findBySellerId(sellerId)
+        return sellerWalletRepository.findWalletBySellerId(sellerId)
             .map(SellerWallet::getBalance)
             .orElse(BigDecimal.ZERO);
     }
