@@ -61,6 +61,10 @@ public class SecurityConfig {
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/reissue",
                                 "/api/v1/auth/logout",
+                                "/api/v1/auth/ping",
+
+                                //User 테스트 (마이페이지)
+                                "/api/v1/users/me",
 
                                 //Cash API Check
                                 "/api/v1/cash/**",

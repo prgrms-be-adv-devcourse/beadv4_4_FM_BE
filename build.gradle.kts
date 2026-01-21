@@ -52,6 +52,9 @@ dependencies {
 
     //Redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+    //ObjectMapper
+    implementation("org.springframework.boot:spring-boot-starter-web")
     
     //QueryDSL
     implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")

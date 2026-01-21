@@ -34,7 +34,7 @@ public class AuthFacade {
     public LoginResponse login(LoginRequest request) {
 
         //이메일로 유저 찾기
-        User user = userRepository.findByEmail(request.email())
+        User user = userRepository.findByEmailWithRoles(request.email())
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
         //비밀번호 대조

@@ -16,6 +16,7 @@ public enum ErrorCode {
     EXPIRED_TOKEN(401, "만료된 토큰입니다."),
     TOKEN_SIGNATURE_ERROR(401, "토큰 서명이 일치하지 않습니다."),
     INVALID_PASSWORD(401, "비밀번호가 일치하지 않습니다."),
+    ACCOUNT_DISABLED(401, "탈퇴했거나 계정이 정지된 회원입니다."),
 
     //404 NOT FOUND
     USER_NOT_FOUND(404, "존재하지 않는 회원입니다."),
