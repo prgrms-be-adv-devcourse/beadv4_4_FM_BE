@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.payout.dto.response;
+package backend.mossy.shared.payout.dto.response;
 
 import backend.mossy.boundedContext.payout.domain.PayoutCandidateItem;
 import backend.mossy.boundedContext.payout.domain.PayoutEventType;
