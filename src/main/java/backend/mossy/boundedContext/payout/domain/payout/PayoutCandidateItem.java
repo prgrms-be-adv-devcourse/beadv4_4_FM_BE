@@ -1,6 +1,7 @@
 package backend.mossy.boundedContext.payout.domain.payout;
 
 import backend.mossy.boundedContext.payout.domain.PayoutSeller;
+import backend.mossy.boundedContext.payout.domain.PayoutUser;
 import backend.mossy.shared.payout.dto.event.CreatePayoutCandidateItemDto;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
@@ -31,8 +32,8 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private LocalDateTime paymentDate;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "payer_seller_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private PayoutSeller payer;
+    @JoinColumn(name = "payer_user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private PayoutUser payer;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "payee_seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -47,7 +48,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
 
     @Builder
     public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
-                               LocalDateTime paymentDate, PayoutSeller payer, PayoutSeller payee, BigDecimal amount) {
+                               LocalDateTime paymentDate, PayoutUser payer, PayoutSeller payee, BigDecimal amount) {
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;
         this.relId = relId;

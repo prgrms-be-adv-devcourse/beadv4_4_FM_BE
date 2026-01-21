@@ -29,8 +29,9 @@ public class MarketApiClient {
 
     public List<OrderItemDto> getOrderItems(Long orderId) {
         // TODO: 실제 Market API 호출로 교체
-        // 임시 테스트 데이터
+        // 임시 테스트 데이터 - 각 탄소 등급(A, B, C, D)별 테스트
         return List.of(
+                // A등급 테스트: 0~10kg 탄소, 10% 기부
                 new OrderItemDto(
                         1L,                           // id
                         LocalDateTime.now(),          // createdAt
@@ -41,15 +42,16 @@ public class MarketApiClient {
                         200L,                         // sellerId
                         "판매자상점1",                   // sellerName
                         1001L,                        // productId
-                        "테스트 상품1",                  // productName
+                        "A등급상품(저탄소)",              // productName
                         new BigDecimal("10000"),      // price (원가)
                         new BigDecimal("10000"),      // salePrice (판매가)
                         new BigDecimal("0.1"),        // payoutRate (수수료율 10%)
-                        new BigDecimal("1000"),       // payoutFee (수수료)
-                        new BigDecimal("9000"),       // salePriceWithoutFee (판매가 - 수수료)
-                        new BigDecimal("1"),          // weight (무게 1kg)
-                        new BigDecimal("20")          // deliveryDistance (거리 20km) -> 탄소 20kg (B등급, 20% 기부)
+                        new BigDecimal("1000"),       // payoutFee (수수료 1000원)
+                        new BigDecimal("9000"),       // salePriceWithoutFee
+                        new BigDecimal("0.5"),        // weight (0.5kg)
+                        new BigDecimal("10")          // deliveryDistance (10km) -> 탄소 5kg (A등급, 10% 기부 = 100원)
                 ),
+                // B등급 테스트: 10~30kg 탄소, 20% 기부
                 new OrderItemDto(
                         2L,                           // id
                         LocalDateTime.now(),          // createdAt
@@ -57,17 +59,57 @@ public class MarketApiClient {
                         orderId,                      // orderId
                         1000L,                        // buyerId (User ID)
                         "김구매",                       // buyerName
+                        200L,                         // sellerId
+                        "판매자상점1",                   // sellerName
+                        1002L,                        // productId
+                        "B등급상품(중저탄소)",            // productName
+                        new BigDecimal("20000"),      // price (원가)
+                        new BigDecimal("20000"),      // salePrice (판매가)
+                        new BigDecimal("0.1"),        // payoutRate (수수료율 10%)
+                        new BigDecimal("2000"),       // payoutFee (수수료 2000원)
+                        new BigDecimal("18000"),      // salePriceWithoutFee
+                        new BigDecimal("2"),          // weight (2kg)
+                        new BigDecimal("10")          // deliveryDistance (10km) -> 탄소 20kg (B등급, 20% 기부 = 400원)
+                ),
+                // C등급 테스트: 30~50kg 탄소, 30% 기부
+                new OrderItemDto(
+                        3L,                           // id
+                        LocalDateTime.now(),          // createdAt
+                        LocalDateTime.now(),          // updatedAt
+                        orderId,                      // orderId
+                        1000L,                        // buyerId (User ID)
+                        "김구매",                       // buyerName
                         300L,                         // sellerId (다른 판매자)
                         "판매자상점2",                   // sellerName
-                        1002L,                        // productId
-                        "테스트 상품2",                  // productName
-                        new BigDecimal("5000"),       // price (원가)
-                        new BigDecimal("5000"),       // salePrice (판매가)
+                        1003L,                        // productId
+                        "C등급상품(중탄소)",              // productName
+                        new BigDecimal("30000"),      // price (원가)
+                        new BigDecimal("30000"),      // salePrice (판매가)
                         new BigDecimal("0.1"),        // payoutRate (수수료율 10%)
-                        new BigDecimal("500"),        // payoutFee (수수료)
-                        new BigDecimal("4500"),       // salePriceWithoutFee (판매가 - 수수료)
-                        new BigDecimal("2"),          // weight (무게 2kg)
-                        new BigDecimal("50")          // deliveryDistance (거리 50km) -> 탄소 100kg (D등급, 40% 기부)
+                        new BigDecimal("3000"),       // payoutFee (수수료 3000원)
+                        new BigDecimal("27000"),      // salePriceWithoutFee
+                        new BigDecimal("5"),          // weight (5kg)
+                        new BigDecimal("8")           // deliveryDistance (8km) -> 탄소 40kg (C등급, 30% 기부 = 900원)
+                ),
+                // D등급 테스트: 50kg~ 탄소, 40% 기부
+                new OrderItemDto(
+                        4L,                           // id
+                        LocalDateTime.now(),          // createdAt
+                        LocalDateTime.now(),          // updatedAt
+                        orderId,                      // orderId
+                        1000L,                        // buyerId (User ID)
+                        "김구매",                       // buyerName
+                        300L,                         // sellerId (다른 판매자)
+                        "판매자상점2",                   // sellerName
+                        1004L,                        // productId
+                        "D등급상품(고탄소)",              // productName
+                        new BigDecimal("50000"),      // price (원가)
+                        new BigDecimal("50000"),      // salePrice (판매가)
+                        new BigDecimal("0.1"),        // payoutRate (수수료율 10%)
+                        new BigDecimal("5000"),       // payoutFee (수수료 5000원)
+                        new BigDecimal("45000"),      // salePriceWithoutFee
+                        new BigDecimal("10"),         // weight (10kg)
+                        new BigDecimal("10")          // deliveryDistance (10km) -> 탄소 100kg (D등급, 40% 기부 = 2000원)
                 )
         );
     }

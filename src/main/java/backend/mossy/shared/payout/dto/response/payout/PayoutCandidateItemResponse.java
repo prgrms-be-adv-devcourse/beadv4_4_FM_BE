@@ -33,7 +33,7 @@ public record PayoutCandidateItemResponse(
                 .relId(item.getRelId())
                 .paymentDate(item.getPaymentDate())
                 .payerId(item.getPayer() != null ? item.getPayer().getId() : null)
-                .payerName(item.getPayer() != null ? item.getPayer().getStoreName() : null)
+                .payerName(item.getPayer() != null ? item.getPayer().getName() : null)
                 .payeeId(item.getPayee().getId())
                 .payeeName(item.getPayee().getStoreName())
                 .amount(item.getAmount())

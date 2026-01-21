@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.payout.app.payout;
 
+import backend.mossy.boundedContext.payout.domain.PayoutUser;
 import backend.mossy.boundedContext.payout.domain.donation.DonationCalculator;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutEventType;
@@ -32,7 +33,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     ) {
         PayoutSeller system = payoutSupport.findSystemSeller().get();
         PayoutSeller donation = payoutSupport.findDonationSeller().get();
-        PayoutSeller buyer = payoutSupport.findSellerById(orderItem.buyerId()).get();
+        PayoutUser buyer = payoutSupport.findUserById(orderItem.buyerId()).get();
         PayoutSeller seller = payoutSupport.findSellerById(orderItem.sellerId()).get();
 
         // 1. 기부금 계산
@@ -51,7 +52,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             OrderDto order,
             OrderItemDto orderItem,
             PayoutEventType eventType,
-            PayoutSeller payer,
+            PayoutUser payer,
             PayoutSeller payee,
             BigDecimal amount
     ) {

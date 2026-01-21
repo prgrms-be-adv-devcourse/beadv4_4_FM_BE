@@ -121,7 +121,7 @@ public class PayoutDataInit {
                 .userId(2L)
                 .sellerType(SellerType.SYSTEM)
                 .storeName("DONATION")
-                .businessNum("0")
+                .businessNum("DONATION-0")
                 .representativeName("기부금수령자")
                 .contactEmail("donation@ssys.com")
                 .contactPhone("010-0000-0001")

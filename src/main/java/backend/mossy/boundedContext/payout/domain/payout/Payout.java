@@ -1,6 +1,7 @@
 package backend.mossy.boundedContext.payout.domain.payout;
 
 import backend.mossy.boundedContext.payout.domain.PayoutSeller;
+import backend.mossy.boundedContext.payout.domain.PayoutUser;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import backend.mossy.shared.payout.dto.event.PayoutEventDto;
 import backend.mossy.shared.payout.event.PayoutCompletedEvent;
@@ -40,9 +41,24 @@ public class Payout extends BaseIdAndTime {
         this.amount = BigDecimal.ZERO;
     }
 
-    public PayoutItem addItem(PayoutEventType eventType, String relTypeCode, Long relId, LocalDateTime payDate, PayoutSeller payer, PayoutSeller payee, BigDecimal amount) {
+
+    public PayoutItem addItem(
+            PayoutEventType eventType,
+            String relTypeCode,
+            Long relId,
+            LocalDateTime payDate,
+            PayoutUser payer,
+            PayoutSeller payee, BigDecimal amount
+    ) {
         PayoutItem payoutItem = new PayoutItem(
-                this, eventType, relTypeCode, relId, payDate, payer, payee, amount
+                this,
+                eventType,
+                relTypeCode,
+                relId,
+                payDate,
+                payer,
+                this.payee,
+                amount
         );
 
         items.add(payoutItem);
