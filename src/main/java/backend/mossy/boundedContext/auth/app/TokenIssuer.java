@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TokenService {
+public class TokenIssuer {
 
     private final JwtProvider jwtProvider;
 

@@ -21,44 +21,11 @@ import org.springframework.stereotype.Service;
 public class UserFacade {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final EncryptionUtils encryptionUtils;
+    private final SignupUseCase signupUseCase;
 
     @Transactional
-    public Long signup(SignupRequest req) {
-        if (userRepository.existsByEmail(req.email())) {
-            throw new DomainException(ErrorCode.DUPLICATE_EMAIL);
-        }
-        if(userRepository.existsByNickname(req.nickname())) {
-            throw new DomainException(ErrorCode.DUPLICATE_NICKNAME);
-        }
-
-        // 암호화
-        String encodedPwd = passwordEncoder.encode(req.password());
-        String encryptedRrn = encryptionUtils.encrypt(req.rrn());
-        String encryptedPhone = encryptionUtils.encrypt(req.phoneNum());
-        String encrytedAddress = encryptionUtils.encrypt(req.address());
-
-        User user = User.builder()
-                .email(req.email())
-                .password(encodedPwd)
-                .name(req.name())
-                .nickname(req.nickname())
-                .phoneNum(encryptedPhone)
-                .address(encrytedAddress)
-                .rrnEncrypted(encryptedRrn)
-                .profileImage("default.png")
-                .status(UserStatus.ACTIVE)
-                .build();
-
-        Role roleUser =roleRepository.findByCode(RoleCode.USER)
-                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
-
-        UserRole userRole = new UserRole(user, roleUser);
-
-        user.addUserRole(userRole);
-
+    public Long signup(SignupRequest req){
+        User user = signupUseCase.execute(req);
         return userRepository.save(user).getId();
     }
 }
