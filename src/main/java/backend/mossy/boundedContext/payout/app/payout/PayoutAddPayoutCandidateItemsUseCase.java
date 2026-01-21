@@ -1,10 +1,11 @@
-package backend.mossy.boundedContext.payout.app;
+package backend.mossy.boundedContext.payout.app.payout;
 
-import backend.mossy.boundedContext.payout.domain.PayoutCandidateItem;
-import backend.mossy.boundedContext.payout.domain.PayoutEventType;
+import backend.mossy.boundedContext.payout.domain.donation.DonationCalculator;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutEventType;
 import backend.mossy.boundedContext.payout.domain.PayoutSeller;
 import backend.mossy.shared.payout.dto.event.CreatePayoutCandidateItemDto;
-import backend.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
+import backend.mossy.boundedContext.payout.out.payout.PayoutCandidateItemRepository;
 import backend.mossy.shared.market.dto.event.OrderDto;
 import backend.mossy.shared.market.dto.event.OrderItemDto;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     private final MarketApiClient marketApiClient;
     private final PayoutSupport payoutSupport;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
+    private final DonationCalculator donationCalculator;
 
     public void addPayoutCandidateItems(OrderDto order) {
         marketApiClient.getOrderItems(order.id())
@@ -29,11 +31,20 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             OrderItemDto orderItem
     ) {
         PayoutSeller system = payoutSupport.findSystemSeller().get();
+        PayoutSeller donation = payoutSupport.findDonationSeller().get();
         PayoutSeller buyer = payoutSupport.findSellerById(orderItem.buyerId()).get();
         PayoutSeller seller = payoutSupport.findSellerById(orderItem.sellerId()).get();
 
-        makePayoutCandidateItem(order, orderItem, PayoutEventType.정산__상품판매_수수료, buyer, system, orderItem.payoutFee());
+        // 1. 기부금 계산
+        BigDecimal donationAmount = donationCalculator.calculate(orderItem);
+
+        // 2. 조정된 수수료 = 원래 수수료 - 기부금
+        BigDecimal adjustedFee = orderItem.payoutFee().subtract(donationAmount);
+
+        // 3. 정산 후보 항목 생성
+        makePayoutCandidateItem(order, orderItem, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee);
         makePayoutCandidateItem(order, orderItem, PayoutEventType.정산__상품판매_대금, buyer, seller, orderItem.salePriceWithoutFee());
+        makePayoutCandidateItem(order, orderItem, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount);
     }
 
     private void makePayoutCandidateItem(

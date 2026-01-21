@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.payout.app;
+package backend.mossy.boundedContext.payout.app.payout;
 
 import backend.mossy.boundedContext.payout.domain.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.PayoutSellerRepository;

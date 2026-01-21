@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.payout.domain;
+package backend.mossy.boundedContext.payout.domain.payout;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

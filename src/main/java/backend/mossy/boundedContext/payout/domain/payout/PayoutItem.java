@@ -1,9 +1,9 @@
-package backend.mossy.boundedContext.payout.domain;
+package backend.mossy.boundedContext.payout.domain.payout;
 
+import backend.mossy.boundedContext.payout.domain.PayoutSeller;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;

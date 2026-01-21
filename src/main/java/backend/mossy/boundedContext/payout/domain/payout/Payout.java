@@ -1,5 +1,6 @@
-package backend.mossy.boundedContext.payout.domain;
+package backend.mossy.boundedContext.payout.domain.payout;
 
+import backend.mossy.boundedContext.payout.domain.PayoutSeller;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import backend.mossy.shared.payout.dto.event.PayoutEventDto;
 import backend.mossy.shared.payout.event.PayoutCompletedEvent;

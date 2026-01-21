@@ -1,7 +1,7 @@
-package backend.mossy.shared.payout.dto.response;
+package backend.mossy.shared.payout.dto.response.payout;
 
-import backend.mossy.boundedContext.payout.domain.PayoutCandidateItem;
-import backend.mossy.boundedContext.payout.domain.PayoutEventType;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutEventType;
 import lombok.Builder;
 
 import java.math.BigDecimal;

@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.payout.domain;
+package backend.mossy.boundedContext.payout.domain.donation;
 
 import java.math.BigDecimal;
 

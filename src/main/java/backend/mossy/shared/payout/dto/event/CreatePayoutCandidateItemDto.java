@@ -1,6 +1,6 @@
 package backend.mossy.shared.payout.dto.event;
 
-import backend.mossy.boundedContext.payout.domain.PayoutEventType;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutEventType;
 import backend.mossy.boundedContext.payout.domain.PayoutSeller;
 import lombok.Builder;
 
