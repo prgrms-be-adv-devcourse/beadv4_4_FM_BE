@@ -1,10 +1,13 @@
 package backend.mossy.boundedContext.payout.domain.donation;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 
 /**
  * 탄소 배출량에 따른 등급
  */
+@Getter
 public enum CarbonGrade {
     A(new BigDecimal("0"),   new BigDecimal("10"),  new BigDecimal("0.10")),  // 0~10kg: 10%
     B(new BigDecimal("10"),  new BigDecimal("30"),  new BigDecimal("0.20")),  // 10~30kg: 20%
@@ -19,18 +22,6 @@ public enum CarbonGrade {
         this.minCarbon = minCarbon;
         this.maxCarbon = maxCarbon;
         this.donationRate = donationRate;
-    }
-
-    public BigDecimal getDonationRate() {
-        return donationRate;
-    }
-
-    public BigDecimal getMinCarbon() {
-        return minCarbon;
-    }
-
-    public BigDecimal getMaxCarbon() {
-        return maxCarbon;
     }
 
     /**

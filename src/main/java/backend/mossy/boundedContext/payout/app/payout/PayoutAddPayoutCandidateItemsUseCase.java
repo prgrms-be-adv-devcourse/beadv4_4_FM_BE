@@ -1,11 +1,11 @@
 package backend.mossy.boundedContext.payout.app.payout;
 
-import backend.mossy.boundedContext.payout.domain.PayoutUser;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
 import backend.mossy.boundedContext.payout.domain.donation.DonationCalculator;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutEventType;
-import backend.mossy.boundedContext.payout.domain.PayoutSeller;
-import backend.mossy.shared.payout.dto.event.CreatePayoutCandidateItemDto;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
+import backend.mossy.shared.payout.dto.event.payout.CreatePayoutCandidateItemDto;
 import backend.mossy.boundedContext.payout.out.payout.PayoutCandidateItemRepository;
 import backend.mossy.shared.market.dto.event.OrderDto;
 import backend.mossy.shared.market.dto.event.OrderItemDto;

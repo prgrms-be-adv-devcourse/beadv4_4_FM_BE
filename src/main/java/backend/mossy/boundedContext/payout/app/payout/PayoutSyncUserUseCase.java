@@ -1,7 +1,7 @@
 package backend.mossy.boundedContext.payout.app.payout;
 
-import backend.mossy.boundedContext.payout.domain.PayoutUser;
-import backend.mossy.boundedContext.payout.out.PayoutUserRepository;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
+import backend.mossy.boundedContext.payout.out.payout.PayoutUserRepository;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

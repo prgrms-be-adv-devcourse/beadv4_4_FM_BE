@@ -3,7 +3,6 @@ package backend.mossy.boundedContext.payout.in.payout;
 import backend.mossy.boundedContext.payout.app.donation.DonationFacade;
 import backend.mossy.boundedContext.payout.app.payout.MarketApiClient;
 import backend.mossy.boundedContext.payout.app.payout.PayoutFacade;
-import backend.mossy.boundedContext.payout.in.MarketOrderPaymentCompletedEvent;
 import backend.mossy.shared.member.event.SellerJoinedEvent;
 import backend.mossy.shared.member.event.SellerUpdatedEvent;
 import backend.mossy.shared.member.event.UserJoinedEvent;
@@ -52,7 +51,7 @@ public class PayoutEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void payoutSellerCreatedEvent(PayoutSellerCreatedEvent event) {
-        payoutFacade.createPayout(event.getSeller().id());
+        payoutFacade.createPayout(event.seller().id());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
@@ -69,6 +68,10 @@ public class PayoutEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void payoutCompletedEvent(PayoutCompletedEvent event) {
-        payoutFacade.createPayout(event.getPayout().payeeId());
+        // 1. 정산 완료된 기부 로그 업데이트
+        donationFacade.settleDonationLogs(event.payout().id());
+
+        // 2. 다음 정산을 위한 새 Payout 생성
+        payoutFacade.createPayout(event.payout().payeeId());
     }
 }

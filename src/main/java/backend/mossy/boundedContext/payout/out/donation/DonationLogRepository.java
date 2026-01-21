@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.payout.out.donation;
 
-import backend.mossy.boundedContext.payout.domain.PayoutUser;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
 import backend.mossy.boundedContext.payout.domain.donation.DonationLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 

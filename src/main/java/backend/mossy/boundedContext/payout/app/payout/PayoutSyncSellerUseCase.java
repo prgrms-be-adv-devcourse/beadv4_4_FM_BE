@@ -1,7 +1,7 @@
 package backend.mossy.boundedContext.payout.app.payout;
 
-import backend.mossy.boundedContext.payout.domain.PayoutSeller;
-import backend.mossy.boundedContext.payout.out.PayoutSellerRepository;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
+import backend.mossy.boundedContext.payout.out.payout.PayoutSellerRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.payout.event.PayoutSellerCreatedEvent;

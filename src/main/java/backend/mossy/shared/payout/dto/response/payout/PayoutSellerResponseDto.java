@@ -1,6 +1,6 @@
-package backend.mossy.shared.payout.dto.response;
+package backend.mossy.shared.payout.dto.response.payout;
 
-import backend.mossy.boundedContext.payout.domain.PayoutSeller;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
 import backend.mossy.shared.member.domain.seller.SellerStatus;
 import backend.mossy.shared.member.domain.seller.SellerType;
 

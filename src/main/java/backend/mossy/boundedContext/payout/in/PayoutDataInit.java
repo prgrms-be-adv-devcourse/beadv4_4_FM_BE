@@ -1,5 +1,7 @@
 package backend.mossy.boundedContext.payout.in;
 
+import backend.mossy.boundedContext.payout.app.donation.DonationFacade;
+import backend.mossy.boundedContext.payout.app.payout.MarketApiClient;
 import backend.mossy.boundedContext.payout.app.payout.PayoutFacade;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutPolicy;
 import backend.mossy.shared.member.domain.user.UserStatus;
@@ -36,16 +38,22 @@ import java.time.format.DateTimeFormatter;
 public class PayoutDataInit {
     private final PayoutDataInit self;
     private final PayoutFacade payoutFacade;
+    private final DonationFacade donationFacade;
+    private final MarketApiClient marketApiClient;
     private final JobOperator jobOperator;
     private Job payoutCollectItemsAndCompletePayoutsJob;
 
     public PayoutDataInit(
             @Lazy PayoutDataInit self,
             PayoutFacade payoutFacade,
+            DonationFacade donationFacade,
+            MarketApiClient marketApiClient,
             JobOperator jobOperator
     ) {
         this.self = self;
         this.payoutFacade = payoutFacade;
+        this.donationFacade = donationFacade;
+        this.marketApiClient = marketApiClient;
         this.jobOperator = jobOperator;
         this.payoutCollectItemsAndCompletePayoutsJob = null;
     }
@@ -63,12 +71,12 @@ public class PayoutDataInit {
 
     @Transactional
     public void collectPayoutItemsMore() {
-        payoutFacade.collectPayoutItemsMore(2);
+        payoutFacade.collectPayoutItemsMore(100);  // 모든 정산 후보 처리
     }
 
     @Transactional
     public void completePayoutsMore() {
-        payoutFacade.completePayoutsMore(1);
+        payoutFacade.completePayoutsMore(10);  // 모든 Payout 완료
     }
 
     public void runCollectItemsAndCompletePayoutsBatchJob() {
@@ -201,8 +209,14 @@ public class PayoutDataInit {
                 pastPaymentDate,                // requestPaymentDate (과거 날짜)
                 pastPaymentDate                 // paymentDate (과거 날짜)
         );
+        // 정산 후보 항목 생성
         payoutFacade.addPayoutCandidateItems(order);
         log.info("주문 정산 후보 생성 완료: OrderID={}, PaymentDate={}", order.id(), pastPaymentDate);
+
+        // 기부 로그 생성 (주문 아이템별)
+        marketApiClient.getOrderItems(order.id())
+                .forEach(orderItem -> donationFacade.createDonationLog(order, orderItem));
+        log.info("기부 로그 생성 완료: OrderID={}", order.id());
 
         log.info("===== 테스트 데이터 생성 완료 =====");
     }

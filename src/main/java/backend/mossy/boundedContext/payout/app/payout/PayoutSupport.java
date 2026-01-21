@@ -1,11 +1,11 @@
 package backend.mossy.boundedContext.payout.app.payout;
 
-import backend.mossy.boundedContext.payout.domain.PayoutUser;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
-import backend.mossy.boundedContext.payout.domain.PayoutSeller;
-import backend.mossy.boundedContext.payout.out.PayoutUserRepository;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
+import backend.mossy.boundedContext.payout.out.payout.PayoutUserRepository;
 import backend.mossy.boundedContext.payout.out.payout.PayoutCandidateItemRepository;
-import backend.mossy.boundedContext.payout.out.PayoutSellerRepository;
+import backend.mossy.boundedContext.payout.out.payout.PayoutSellerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

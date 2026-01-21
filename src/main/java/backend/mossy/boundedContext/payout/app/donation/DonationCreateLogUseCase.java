@@ -1,7 +1,7 @@
 package backend.mossy.boundedContext.payout.app.donation;
 
 import backend.mossy.boundedContext.payout.app.payout.PayoutSupport;
-import backend.mossy.boundedContext.payout.domain.PayoutUser;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
 import backend.mossy.boundedContext.payout.domain.donation.DonationCalculator;
 import backend.mossy.boundedContext.payout.domain.donation.DonationLog;
 import backend.mossy.boundedContext.payout.out.donation.DonationLogRepository;

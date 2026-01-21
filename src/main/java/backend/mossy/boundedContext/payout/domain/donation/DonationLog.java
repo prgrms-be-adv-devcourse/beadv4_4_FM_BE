@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.payout.domain.donation;
 
-import backend.mossy.boundedContext.payout.domain.PayoutUser;
+import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

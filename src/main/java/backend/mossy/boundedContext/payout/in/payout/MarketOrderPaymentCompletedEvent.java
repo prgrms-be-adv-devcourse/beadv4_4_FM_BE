@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.payout.in;
+package backend.mossy.boundedContext.payout.in.payout;
 
 import backend.mossy.shared.market.dto.event.OrderDto;
 import lombok.AllArgsConstructor;
