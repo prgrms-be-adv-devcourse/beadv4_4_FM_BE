@@ -17,6 +17,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    //스프링 부트 4버전과 jackson 3 + jackson 2을 혼합해서 사용시 꼬여서 Bean으로 만들지 못해서 급하게 이렇게 밖에 못함
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -30,8 +31,11 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
             return;
         }
 
-        ErrorCode errorCode = (ErrorCode) request.getAttribute("AUTH_ERROR");
-        if (errorCode == null) errorCode = ErrorCode.INVALID_TOKEN;
+        Object attr = request.getAttribute("AUTH_ERROR");
+        ErrorCode errorCode = (attr instanceof ErrorCode ec)
+                ? ec
+                : ErrorCode.INVALID_TOKEN;
+
 
 
         response.setStatus(errorCode.getStatus());
@@ -40,5 +44,6 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         RsData <Object> body = RsData.fail(errorCode);
         objectMapper.writeValue(response.getWriter(), body);
+
     }
 }

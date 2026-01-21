@@ -24,9 +24,6 @@ public class UserController {
     )
     @GetMapping("/me")
     public RsData<Long> me(@AuthenticationPrincipal UserDetailsImpl principal) {
-        if (principal == null) {
-            throw new DomainException(ErrorCode.INVALID_TOKEN);
-        }
         return RsData.success("내 정보 조회 성공", principal.getUserId());
     }
 }

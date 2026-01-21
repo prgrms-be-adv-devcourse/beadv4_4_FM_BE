@@ -35,11 +35,11 @@ public class AuthFacade {
 
         //이메일로 유저 찾기
         User user = userRepository.findByEmailWithRoles(request.email())
-                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ErrorCode.INVALID_CREDENTIALS));
 
         //비밀번호 대조
         if(!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new DomainException(ErrorCode.INVALID_PASSWORD);
+            throw new DomainException(ErrorCode.INVALID_CREDENTIALS);
         }
 
         //권한 꺼내기
