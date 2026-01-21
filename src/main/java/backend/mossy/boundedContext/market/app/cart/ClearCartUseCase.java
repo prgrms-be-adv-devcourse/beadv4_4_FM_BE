@@ -14,5 +14,4 @@ public class ClearCartUseCase {
     public void clear(Long userId) {
         cartRepository.findByBuyerId(userId).ifPresent(Cart::clear);
     }
-
 }

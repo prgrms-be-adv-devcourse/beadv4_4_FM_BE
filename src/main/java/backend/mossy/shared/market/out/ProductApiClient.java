@@ -2,14 +2,14 @@ package backend.mossy.shared.market.out;
 
 import backend.mossy.boundedContext.market.domain.product.Product;
 import backend.mossy.boundedContext.market.out.product.ProductRepository;
-import backend.mossy.shared.market.dto.response.CartItemResponse;
+import backend.mossy.shared.market.dto.response.ProductInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -20,12 +20,16 @@ public class ProductApiClient {
         return productRepository.existsById(productId);
     }
 
-    public List<CartItemResponse> findCartItemsByBuyerId(Long userId) {
+    public List<ProductInfoResponse> findCartItemsByBuyerId(Long userId) {
         return productRepository.findCartItemsByBuyerId(userId);
     }
 
     public Map<Long, BigDecimal> getWeights(List<Long> productIds) {
-        return productRepository.findByIdIn(productIds).stream()
-                .collect(Collectors.toMap(Product::getId, Product::getWeight));
+        List<Product> products = productRepository.findByIdIn(productIds);
+        Map<Long, BigDecimal> weightMap = new HashMap<>();
+        for (Product product : products) {
+            weightMap.put(product.getId(), product.getWeight());
+        }
+        return weightMap;
     }
 }

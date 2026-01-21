@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.market.out.product;
 
-import backend.mossy.shared.market.dto.response.CartItemResponse;
+import backend.mossy.shared.market.dto.response.ProductInfoResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +18,11 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<CartItemResponse> findCartItemsByBuyerId(Long buyerId) {
+    public List<ProductInfoResponse> findCartItemsByBuyerId(Long buyerId) {
         return queryFactory
-                .select(Projections.constructor(CartItemResponse.class,
+                .select(Projections.constructor(ProductInfoResponse.class,
                         product.id,
+                        product.seller.id,
                         product.name,
                         product.category.id,
                         product.price,

@@ -3,14 +3,13 @@ package backend.mossy.boundedContext.market.domain.order;
 import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.boundedContext.market.domain.market.MarketUser;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
-import backend.mossy.shared.market.dto.event.OrderDetailDto;
-import backend.mossy.shared.market.dto.event.PaymentOrderDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -32,6 +31,9 @@ public class Order extends BaseIdAndTime {
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal totalPrice;
 
+    @Column(nullable = false)
+    private String address;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderState state;
@@ -42,21 +44,45 @@ public class Order extends BaseIdAndTime {
 
     public static Order create(
             MarketUser buyer,
-            PaymentOrderDto paymentOrderDto
+            String orderNo,
+            String address
     ) {
         return Order.builder()
                 .buyer(buyer)
-                .orderNo(paymentOrderDto.orderNo())
-                .totalPrice(paymentOrderDto.totalPrice())
-                .state(OrderState.PAID)
+                .orderNo(orderNo)
+                .address(address)
+                .totalPrice(BigDecimal.ZERO)
+                .state(OrderState.PENDING)
                 .build();
     }
 
     public void addOrderDetail(
             MarketSeller seller,
-            WeightGrade weightGrade,
-            OrderDetailDto dto
+            Long productId,
+            int quantity,
+            BigDecimal price
     ) {
-        this.orderDetails.add(OrderDetail.create(this, seller, weightGrade, dto));
+        BigDecimal orderPrice = price.multiply(BigDecimal.valueOf(quantity));
+        this.orderDetails.add(OrderDetail.create(this, seller, productId, quantity, orderPrice));
+        this.totalPrice = this.totalPrice.add(orderPrice);
+    }
+
+    public List<Long> getProductIds() {
+        List<Long> productIds = new ArrayList<>();
+        for (OrderDetail detail : this.orderDetails) {
+            productIds.add(detail.getProductId());
+        }
+        return productIds;
+    }
+
+    public void calculateWeightGrades(Map<Long, BigDecimal> weightMap, List<WeightGrade> grades) {
+        for (OrderDetail detail : this.orderDetails) {
+            BigDecimal weight = weightMap.get(detail.getProductId());
+            detail.calculateWeightGrade(weight, grades);
+        }
+    }
+
+    public void completePayment() {
+        this.state = OrderState.PAID;
     }
 }

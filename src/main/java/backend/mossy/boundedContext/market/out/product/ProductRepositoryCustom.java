@@ -1,9 +1,9 @@
 package backend.mossy.boundedContext.market.out.product;
 
-import backend.mossy.shared.market.dto.response.CartItemResponse;
+import backend.mossy.shared.market.dto.response.ProductInfoResponse;
 
 import java.util.List;
 
 public interface ProductRepositoryCustom {
-    List<CartItemResponse> findCartItemsByBuyerId(Long buyerId);
+    List<ProductInfoResponse> findCartItemsByBuyerId(Long buyerId);
 }

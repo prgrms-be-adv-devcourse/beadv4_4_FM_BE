@@ -4,8 +4,8 @@ import backend.mossy.boundedContext.market.domain.cart.Cart;
 import backend.mossy.boundedContext.market.out.cart.CartRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
-import backend.mossy.shared.market.dto.response.CartItemResponse;
 import backend.mossy.shared.market.dto.response.CartResponse;
+import backend.mossy.shared.market.dto.response.ProductInfoResponse;
 import backend.mossy.shared.market.out.ProductApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class GetCartItemListUseCase {
         Cart cart = cartRepository.findByBuyerId(userId).orElseThrow(
                 () -> new DomainException(ErrorCode.CART_NOT_FOUND));
 
-        List<CartItemResponse> items = productApiClient.findCartItemsByBuyerId(userId);
+        List<ProductInfoResponse> items = productApiClient.findCartItemsByBuyerId(userId);
 
         return CartResponse.of(cart, items);
     }

@@ -4,7 +4,6 @@ import backend.mossy.shared.market.dto.event.MarketUserDto;
 import backend.mossy.shared.market.dto.request.CartItemAddRequest;
 import backend.mossy.shared.market.dto.request.CartItemUpdateRequest;
 import backend.mossy.shared.market.dto.response.CartResponse;
-import backend.mossy.shared.market.event.PaymentCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,11 +41,6 @@ public class CartFacade {
     @Transactional
     public void removeCartItem(Long userId, Long productId) {
         removeCartItemUseCase.removeItem(userId, productId);
-    }
-
-    @Transactional
-    public void removeCartItems(PaymentCompletedEvent event) {
-        removeCartItemUseCase.removeItems(event);
     }
 
     @Transactional

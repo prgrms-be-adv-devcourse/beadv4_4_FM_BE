@@ -11,9 +11,9 @@ public record CartResponse(
         String buyerName,
         String address,
         int itemCount,
-        List<CartItemResponse> items
+        List<ProductInfoResponse> items
 ) {
-    public static CartResponse of(Cart cart, List<CartItemResponse> items) {
+    public static CartResponse of(Cart cart, List<ProductInfoResponse> items) {
         return CartResponse.builder()
                 .cartId(cart.getId())
                 .buyerName(cart.getBuyer().getName())

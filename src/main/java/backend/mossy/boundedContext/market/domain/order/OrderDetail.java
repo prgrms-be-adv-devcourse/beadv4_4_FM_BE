@@ -2,11 +2,11 @@ package backend.mossy.boundedContext.market.domain.order;
 
 import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
-import backend.mossy.shared.market.dto.event.OrderDetailDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -27,7 +27,7 @@ public class OrderDetail extends BaseIdAndTime {
     private MarketSeller seller;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "weight_grade_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "weight_grade_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private WeightGrade weightGrade;
 
     @Column(name = "product_id", nullable = false)
@@ -39,28 +39,24 @@ public class OrderDetail extends BaseIdAndTime {
     @Column(name = "order_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal orderPrice;
 
-    @Column(nullable = false)
-    private String address;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OrderState state;
-
     static OrderDetail create(
             Order order,
             MarketSeller seller,
-            WeightGrade weightGrade,
-            OrderDetailDto dto
+            Long productId,
+            int quantity,
+            BigDecimal orderPrice
     ) {
         return OrderDetail.builder()
                 .order(order)
                 .seller(seller)
-                .weightGrade(weightGrade)
-                .productId(dto.productId())
-                .quantity(dto.quantity())
-                .orderPrice(dto.orderPrice())
-                .address(dto.address())
-                .state(OrderState.PAID)
+                .productId(productId)
+                .quantity(quantity)
+                .orderPrice(orderPrice)
                 .build();
+    }
+
+    public void calculateWeightGrade(BigDecimal weight, List<WeightGrade> grades) {
+        BigDecimal totalWeight = weight.multiply(BigDecimal.valueOf(this.quantity));
+        this.weightGrade = WeightGrade.findByWeight(grades, totalWeight);
     }
 }
