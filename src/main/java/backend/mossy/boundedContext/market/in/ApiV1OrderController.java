@@ -24,7 +24,7 @@ public class ApiV1OrderController {
 
     @GetMapping("/{orderId}")
     public RsData<OrderResponse> getOrder(@PathVariable Long orderId) {
-        return new RsData<>("200", "주문 조회 성공", orderFacade.getOrder(orderId));
+        return new RsData<>("200", "주문 조회를 성공했습니다.", orderFacade.getOrder(orderId));
     }
 
     @DeleteMapping("/{orderId}")
@@ -33,6 +33,6 @@ public class ApiV1OrderController {
             @RequestParam Long userId
     ) {
         orderFacade.deleteOrder(orderId, userId);
-        return new RsData<>("200", "주문 삭제 성공");
+        return new RsData<>("200", "주문 삭제를 성공했습니다.");
     }
 }
