@@ -1,9 +1,6 @@
 package backend.mossy.global.jpa.entity;
 
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,7 +19,9 @@ public abstract class BaseIdAndTime extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @CreatedDate
+    @Column(updatable = false, columnDefinition = "DATETIME(0)")
     private LocalDateTime createdAt;
     @LastModifiedDate
+    @Column(updatable = false, columnDefinition = "DATETIME(0)")
     private LocalDateTime updatedAt;
 }

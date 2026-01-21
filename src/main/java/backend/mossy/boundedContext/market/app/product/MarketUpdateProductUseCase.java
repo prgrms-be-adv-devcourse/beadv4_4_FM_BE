@@ -2,8 +2,10 @@ package backend.mossy.boundedContext.market.app.product;
 
 import backend.mossy.boundedContext.market.domain.product.Category;
 import backend.mossy.boundedContext.market.domain.product.Product;
+import backend.mossy.boundedContext.market.domain.product.event.ProductUpdatedEvent;
 import backend.mossy.boundedContext.market.out.product.ProductRepository;
 import backend.mossy.boundedContext.market.out.product.categoryRepository;
+import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.market.dto.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MarketUpdateProductUseCase {
     private final ProductRepository productRepository;
     private final categoryRepository categoryRepository;
+    private final EventPublisher eventPublisher;
 
     @Transactional
     public void update(Long productId, Long currentSellerId, ProductUpdateRequest request) {
@@ -39,5 +42,7 @@ public class MarketUpdateProductUseCase {
                 request.status(),
                 request.imageUrls() // 이미지 목록 추가
         );
+
+        eventPublisher.publish(new ProductUpdatedEvent(product.getId()));
     }
 }

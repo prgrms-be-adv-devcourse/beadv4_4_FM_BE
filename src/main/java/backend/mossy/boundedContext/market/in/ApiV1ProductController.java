@@ -9,6 +9,10 @@ import backend.mossy.shared.market.dto.response.ProductDetailResponse;
 import backend.mossy.shared.market.dto.response.ProductResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +28,14 @@ public class ApiV1ProductController {
     // 메인 화면 상품 리스트
     @GetMapping
     @Transactional(readOnly = true)
-    public RsData<List<ProductResponse>> getProductList() {
-        List<ProductResponse> productsList = productFacade
-                .getProductList()
-                .stream()
-                .map(ProductResponse::from)
-                .toList();
+    public RsData<Page<ProductResponse>> getProductList(
+            @RequestParam (defaultValue = "0") int page,
+            @RequestParam (defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<ProductResponse> productsList = productFacade
+                .getProductList(pageable)
+                .map(ProductResponse::from);
         return new RsData<>("200", "", productsList);
     }
 

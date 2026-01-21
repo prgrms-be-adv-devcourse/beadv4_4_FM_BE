@@ -1,0 +1,22 @@
+{
+  "index": {
+    "analysis": {
+      "tokenizer": {
+        "nori_none_tokenizer": {
+          "type": "nori_tokenizer",
+          "decompound_mode": "none"
+        }
+      },
+      "analyzer": {
+        "mossy_nori_analyzer": {
+          "type": "custom",
+          "tokenizer": "nori_none_tokenizer",
+          "filter": [
+            "nori_part_of_speech",
+            "lowercase"
+          ]
+        }
+      }
+    }
+  }
+}
