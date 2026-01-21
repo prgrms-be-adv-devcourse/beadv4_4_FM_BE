@@ -7,7 +7,6 @@ import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +14,6 @@ public class DeleteOrderUseCase {
 
     private final OrderRepository orderRepository;
 
-    @Transactional
     public void deleteOrder(Long orderId, Long userId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));

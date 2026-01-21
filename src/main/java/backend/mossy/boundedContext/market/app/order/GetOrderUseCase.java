@@ -15,7 +15,7 @@ public class GetOrderUseCase {
     private final OrderRepository orderRepository;
 
     public OrderResponse getOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findWithBuyerById(orderId)
                 .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
 
         return OrderResponse.of(order);
