@@ -4,13 +4,14 @@ import backend.mossy.boundedContext.payout.domain.payout.Payout;
 import backend.mossy.shared.payout.dto.response.payout.PayoutCandidateItemResponse;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.event.OrderDto;
+import backend.mossy.shared.market.dto.event.OrderItemDto;
 import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -73,6 +74,17 @@ public class PayoutFacade {
     @Transactional
     public void addPayoutCandidateItems(OrderDto order) {
         payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItems(order);
+    }
+
+    /**
+     * [흐름 1] 단일 주문 아이템을 바탕으로 정산 후보 아이템(PayoutCandidateItem)을 추가
+     * Payment 컨텍스트에서 결제가 완료될 때 호출
+     * @param orderItem 주문 아이템 DTO
+     * @param paymentDate 결제 완료 일시
+     */
+    @Transactional
+    public void addPayoutCandidateItem(OrderItemDto orderItem, LocalDateTime paymentDate) {
+        payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(orderItem, paymentDate);
     }
 
     /**

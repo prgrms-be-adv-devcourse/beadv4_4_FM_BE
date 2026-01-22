@@ -35,6 +35,18 @@ public class DonationFacade {
     }
 
     /**
+     * [1단계: 기부 로그 생성]
+     * 주문 아이템 정보를 기반으로 기부 로그(DonationLog)를 생성
+     * (OrderDto 없이 OrderItemDto만으로 처리)
+     *
+     * @param orderItem 기부금이 발생한 특정 주문 아이템 DTO
+     */
+    @Transactional
+    public void createDonationLog(OrderItemDto orderItem) {
+        donationCreateLogUseCase.createDonationLog(orderItem);
+    }
+
+    /**
      * [2단계: 기부 로그 정산 처리]
      * 정산(Payout)이 완료되었을 때, 해당 정산에 포함된 기부 로그들을 '정산 완료' 상태로 변경
      * 이 메서드는 PayoutCompletedEvent를 처리하는 DonationEventListener에 의해 호출

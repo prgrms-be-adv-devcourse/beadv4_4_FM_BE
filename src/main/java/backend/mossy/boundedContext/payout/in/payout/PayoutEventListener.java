@@ -3,6 +3,7 @@ package backend.mossy.boundedContext.payout.in.payout;
 import backend.mossy.boundedContext.payout.app.donation.DonationFacade;
 import backend.mossy.boundedContext.payout.app.payout.MarketApiClient;
 import backend.mossy.boundedContext.payout.app.payout.PayoutFacade;
+import backend.mossy.shared.cash.event.PaymentCompletedEvent;
 import backend.mossy.shared.member.event.SellerJoinedEvent;
 import backend.mossy.shared.member.event.SellerUpdatedEvent;
 import backend.mossy.shared.member.event.UserJoinedEvent;
@@ -63,6 +64,21 @@ public class PayoutEventListener {
         // 2. 기부 로그 생성 (주문 아이템별)
         marketApiClient.getOrderItems(event.getOrder().id())
                 .forEach(orderItem -> donationFacade.createDonationLog(event.getOrder(), orderItem));
+    }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public void paymentCompletedEvent(PaymentCompletedEvent event) {
+        // Payment 도메인에서 결제 완료 시 발행되는 이벤트 처리
+        // API로 OrderItem들을 조회하여 정산 후보 생성 및 기부 로그 생성
+        marketApiClient.getOrderItems(event.order().id())
+                .forEach(orderItem -> {
+                    // 1. 정산 후보 항목 생성 (수수료, 판매 대금, 기부금)
+                    payoutFacade.addPayoutCandidateItem(orderItem, event.order().paymentDate());
+
+                    // 2. 기부 로그 생성
+                    donationFacade.createDonationLog(orderItem);
+                });
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)

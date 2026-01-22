@@ -40,6 +40,16 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     }
 
     /**
+     * 단일 주문 아이템(OrderItem)에 대해 정산 후보 항목을 생성
+     * @param orderItem 주문 아이템 DTO
+     * @param paymentDate 결제 완료 일시
+     */
+    @Transactional
+    public void addPayoutCandidateItem(OrderItemDto orderItem, java.time.LocalDateTime paymentDate) {
+        makePayoutCandidateItems(orderItem, paymentDate);
+    }
+
+    /**
      * 하나의 주문 아이템(OrderItem)을 여러 개의 정산 후보 아이템(PayoutCandidateItem)으로 분해하여 생성
      * 예를 들어, 하나의 상품 판매는 (1)판매자에게 갈 판매대금, (2)플랫폼의 수수료, (3)기부금
      *
@@ -73,6 +83,39 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     }
 
     /**
+     * 하나의 주문 아이템(OrderItem)을 여러 개의 정산 후보 아이템(PayoutCandidateItem)으로 분해하여 생성
+     * (OrderDto 없이 OrderItemDto와 paymentDate만으로 처리)
+     *
+     * @param orderItem 처리할 개별 주문 아이템
+     * @param paymentDate 결제 완료 일시
+     */
+    private void makePayoutCandidateItems(
+            OrderItemDto orderItem,
+            java.time.LocalDateTime paymentDate
+    ) {
+        // --- 정산에 필요한 주요 주체(Actor)들을 조회 ---
+        PayoutSeller system = payoutSupport.findSystemSeller().get(); // 시스템(플랫폼)
+        PayoutSeller donation = payoutSupport.findDonationSeller().get(); // 기부금 수령처(가상 판매자)
+        PayoutUser buyer = payoutSupport.findUserById(orderItem.buyerId()).get(); // 구매자
+        PayoutSeller seller = payoutSupport.findSellerById(orderItem.sellerId()).get(); // 판매자
+
+        // --- 금액을 계산 ---
+        // 1. 이 상품 판매로 인해 발생한 기부금을 계산
+        BigDecimal donationAmount = donationCalculator.calculate(orderItem);
+
+        // 2. 조정된 수수료를 계산합니다. (원래 수수료 - 기부금)
+        BigDecimal adjustedFee = orderItem.payoutFee().subtract(donationAmount);
+
+        // --- 계산된 금액을 바탕으로 3가지 종류의 정산 후보 아이템을 생성 ---
+        // 아이템 1: 플랫폼 수수료 (구매자 -> 시스템)
+        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee);
+        // 아이템 2: 판매 대금 (구매자 -> 판매자)
+        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_대금, buyer, seller, orderItem.salePriceWithoutFee());
+        // 아이템 3: 기부금 (구매자 -> 기부금 수령처)
+        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount);
+    }
+
+    /**
      * 정산 후보 아이템 생성을 위한 DTO를 받아 실제 엔티티를 생성하는 헬퍼 메서드
      */
     private void makePayoutCandidateItem(
@@ -88,6 +131,29 @@ public class PayoutAddPayoutCandidateItemsUseCase {
                 .relTypeCode(orderItem.getModelTypeCode())
                 .relId(orderItem.id())
                 .paymentDate(order.paymentDate())
+                .payer(payer)
+                .payee(payee)
+                .amount(amount)
+                .build());
+    }
+
+    /**
+     * 정산 후보 아이템 생성을 위한 DTO를 받아 실제 엔티티를 생성하는 헬퍼 메서드
+     * (OrderDto 없이 paymentDate를 직접 받는 버전)
+     */
+    private void makePayoutCandidateItem(
+            java.time.LocalDateTime paymentDate,
+            OrderItemDto orderItem,
+            PayoutEventType eventType,
+            PayoutUser payer,
+            PayoutSeller payee,
+            BigDecimal amount
+    ) {
+        makePayoutCandidateItem(CreatePayoutCandidateItemDto.builder()
+                .eventType(eventType)
+                .relTypeCode(orderItem.getModelTypeCode())
+                .relId(orderItem.id())
+                .paymentDate(paymentDate)
                 .payer(payer)
                 .payee(payee)
                 .amount(amount)
