@@ -3,7 +3,6 @@ package backend.mossy.boundedContext.payout.app.payout;
 import backend.mossy.boundedContext.payout.domain.payout.Payout;
 import backend.mossy.shared.payout.dto.response.payout.PayoutCandidateItemResponse;
 import backend.mossy.global.rsData.RsData;
-import backend.mossy.shared.market.dto.event.OrderDto;
 import backend.mossy.shared.market.dto.event.OrderItemDto;
 import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.member.dto.event.UserDto;
@@ -64,16 +63,6 @@ public class PayoutFacade {
     @Transactional
     public Payout createPayout(Long payeeId) {
         return payoutCreatePayoutUseCase.createPayout(payeeId);
-    }
-
-    /**
-     * [흐름 1] 주문 정보를 바탕으로 정산 후보 아이템(PayoutCandidateItem)을 추가
-     * Market 컨텍스트에서 주문이 완료될 때 호출
-     * @param order 완료된 주문 정보 DTO
-     */
-    @Transactional
-    public void addPayoutCandidateItems(OrderDto order) {
-        payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItems(order);
     }
 
     /**

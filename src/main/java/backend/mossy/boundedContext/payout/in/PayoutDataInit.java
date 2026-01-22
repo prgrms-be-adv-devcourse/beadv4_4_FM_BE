@@ -262,15 +262,16 @@ public class PayoutDataInit {
                 pastPaymentDate,                // requestPaymentDate (과거 날짜)
                 pastPaymentDate                 // paymentDate (과거 날짜)
         );
-        // 정산 후보 항목 생성 (Payout Flow 1단계)
-        payoutFacade.addPayoutCandidateItems(order);
-        log.info("주문 정산 후보 생성 완료: OrderID={}, PaymentDate={}", order.id(), pastPaymentDate);
-
-        // 기부 로그 생성 (Donation Flow 1단계)
-        // MarketApiClient를 통해 Mock 주문 아이템들을 가져와서 각 아이템에 대한 기부 로그를 생성합니다.
+        // 정산 후보 항목 생성 및 기부 로그 생성 (Payout Flow 1단계)
+        // MarketApiClient를 통해 Mock 주문 아이템들을 가져와서 각 아이템에 대해 처리
         marketApiClient.getOrderItems(order.id())
-                .forEach(orderItem -> donationFacade.createDonationLog(order, orderItem));
-        log.info("기부 로그 생성 완료: OrderID={}", order.id());
+                .forEach(orderItem -> {
+                    // 정산 후보 항목 생성
+                    payoutFacade.addPayoutCandidateItem(orderItem, order.paymentDate());
+                    // 기부 로그 생성
+                    donationFacade.createDonationLog(orderItem);
+                });
+        log.info("주문 정산 후보 및 기부 로그 생성 완료: OrderID={}, PaymentDate={}", order.id(), pastPaymentDate);
 
         log.info("===== 테스트 데이터 생성 완료 =====");
     }
