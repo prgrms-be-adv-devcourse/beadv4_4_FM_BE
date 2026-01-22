@@ -1,6 +1,11 @@
 package backend.mossy.shared.payout.event;
 
-import backend.mossy.shared.payout.dto.event.payout.PayoutEventDto;
+import backend.mossy.shared.payout.dto.event.PayoutEventDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-public record PayoutCompletedEvent(PayoutEventDto payout) {
+@Getter
+@AllArgsConstructor
+public class PayoutCompletedEvent {
+    private final PayoutEventDto payout;
 }

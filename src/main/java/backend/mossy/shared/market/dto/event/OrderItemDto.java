@@ -20,9 +20,7 @@ public record OrderItemDto(
         BigDecimal salePrice,
         BigDecimal payoutRate,
         BigDecimal payoutFee,
-        BigDecimal salePriceWithoutFee,
-        BigDecimal weight,
-        BigDecimal deliveryDistance
+        BigDecimal salePriceWithoutFee
 ) implements HashModelTypeCode {
 
     @Override
