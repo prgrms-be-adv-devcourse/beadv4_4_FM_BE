@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -42,10 +43,12 @@ public class PayoutSeller extends ReplicaSeller {
             String contactPhone,
             String address1,
             String address2,
-            SellerStatus status
-    ) {
-        super(id, createdAt, updatedAt, userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, status);
+            BigDecimal latitude,
+            BigDecimal longitude,
+            SellerStatus status) {
+        super(id, createdAt, updatedAt, userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, latitude, longitude, status);
     }
+
 
     /**
      * 이 PayoutSeller가 시스템 자체를 나타내는 판매자인지 여부를 확인

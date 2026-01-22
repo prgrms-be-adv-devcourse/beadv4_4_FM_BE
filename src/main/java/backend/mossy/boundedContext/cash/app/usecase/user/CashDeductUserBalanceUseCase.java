@@ -21,6 +21,6 @@ public class CashDeductUserBalanceUseCase {
         wallet.debit(request.amount(), request.eventType(), request.relTypeCode(), request.relId());
 
         // 성공 이벤트 발행 (이후 Payment 상태를 PAID로 변경)
-        eventPublisher.publish(new PaymentCompletedEvent(request.relId()));
+//        eventPublisher.publish(new PaymentCompletedEvent(request.relId()));
     }
 }
