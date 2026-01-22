@@ -8,5 +8,5 @@ public interface SellerWalletRepository extends JpaRepository<SellerWallet, Long
 
     boolean existsBySellerId(Long sellerId);
 
-    Optional<SellerWallet> findBySellerId(Long sellerId);
+    Optional<SellerWallet> findWalletBySellerId(Long sellerId);
 }

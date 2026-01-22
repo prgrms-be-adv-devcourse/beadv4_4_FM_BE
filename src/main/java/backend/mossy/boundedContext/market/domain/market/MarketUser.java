@@ -38,16 +38,16 @@ public class MarketUser extends ReplicaUser {
 
     public static MarketUser from(UserDto user) {
         return MarketUser.builder()
-                .id(user.id())
-                .email(user.email())
-                .name(user.name())
-                .address(user.address())
-                .nickname(user.nickname())
-                .profileImage(user.profileImage())
-                .status(user.status())
-                .createdAt(user.createdAt())
-                .updatedAt(user.updatedAt())
-                .build();
+            .id(user.id())
+            .email(user.email())
+            .name(user.name())
+            .address(user.address())
+            .nickname(user.nickname())
+            .profileImage(user.profileImage())
+            .status(user.status())
+            .createdAt(user.createdAt())
+            .updatedAt(user.updatedAt())
+            .build();
     }
 
     public MarketUserDto toDto() {

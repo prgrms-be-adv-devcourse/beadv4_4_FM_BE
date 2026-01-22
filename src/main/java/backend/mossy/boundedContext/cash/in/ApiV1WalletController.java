@@ -2,6 +2,8 @@ package backend.mossy.boundedContext.cash.in;
 
 import backend.mossy.boundedContext.cash.app.CashFacade;
 import backend.mossy.global.rsData.RsData;
+import backend.mossy.shared.cash.dto.request.SellerBalanceRequestDto;
+import backend.mossy.shared.cash.dto.request.UserBalanceRequestDto;
 import backend.mossy.shared.cash.dto.response.SellerWalletResponseDto;
 import backend.mossy.shared.cash.dto.response.UserWalletResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +11,8 @@ import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,13 +23,22 @@ public class ApiV1WalletController {
 
     private final CashFacade cashFacade;
 
-    /**
-     * [최종 개선 형태] Spring Security 통합 방식
-     *
-     * @AuthenticationPrincipal을 통해 세션/토큰에 저장된 유저 정보를 안전하게 주입받을 예정
-     */
-
     // --- [구매자(User) 관련 API] ---
+
+    @PostMapping("/users/{userId}/credit")
+    @Operation(summary = "구매자 예치금 충전", description = "구매자의 지갑에 특정 금액을 충전하고 이력을 남깁니다.")
+    public RsData<Void> creditUserBalance(@PathVariable("userId") Long userId, @RequestBody UserBalanceRequestDto request) {
+        cashFacade.creditUserBalance(request.withUserId(userId));
+        return new RsData<>("C-200", "예치금이 성공적으로 충전되었습니다.");
+    }
+
+    @PostMapping("/users/{userId}/deduct")
+    @Operation(summary = "구매자 예치금 차감", description = "결제 등의 사유로 구매자의 예치금을 차감합니다.")
+    public RsData<Void> deductUserBalance(@PathVariable("userId") Long userId, @RequestBody UserBalanceRequestDto request) {
+        cashFacade.deductUserBalance(request.withUserId(userId));
+        return new RsData<>("C-200", "예치금 차감이 완료되었습니다.");
+    }
+
     @GetMapping("/users/{userId}")
     @Operation(
         summary = "구매자 지갑 상세 조회",
@@ -47,6 +60,20 @@ public class ApiV1WalletController {
     }
 
     // --- [판매자(Seller) 관련 API] ---
+
+    @PostMapping("/sellers/{sellerId}/credit")
+    @Operation(summary = "판매자 대금 입금", description = "판매 수익 또는 정산 대금을 판매자 지갑에 입금합니다.")
+    public RsData<Void> creditSellerBalance(@PathVariable("sellerId") Long sellerId, @RequestBody SellerBalanceRequestDto request) {
+        cashFacade.creditSellerBalance(request.withSellerId(sellerId));
+        return new RsData<>("C-200", "판매 대금 입금이 완료되었습니다.");
+    }
+
+    @PostMapping("/sellers/{sellerId}/deduct")
+    @Operation(summary = "판매자 정산금 출금", description = "판매자가 정산 신청을 하여 지갑에서 금액을 차감합니다.")
+    public RsData<Void> deductSellerBalance(@PathVariable("sellerId") Long sellerId, @RequestBody SellerBalanceRequestDto request) {
+        cashFacade.deductSellerBalance(request.withSellerId(sellerId));
+        return new RsData<>("C-200", "정산용 잔액 차감이 완료되었습니다.");
+    }
 
     @GetMapping("/sellers/{sellerId}")
     @Operation(
