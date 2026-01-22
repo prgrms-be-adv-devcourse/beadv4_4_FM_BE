@@ -18,7 +18,7 @@ public class MarketApiClient {
                 .build();
     }
 
-    public List<OrderItemDto> getOrderItems(int id) {
+    public List<OrderItemDto> getOrderItems(Long id) {
         return restClient
                 .get()
                 .uri("/orders/%d/items".formatted(id))

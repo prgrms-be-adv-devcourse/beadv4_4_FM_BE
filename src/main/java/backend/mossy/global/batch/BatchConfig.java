@@ -12,8 +12,6 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableBatchProcessing
-@EnableJdbcJobRepository
 public class BatchConfig {
 
     @Bean
