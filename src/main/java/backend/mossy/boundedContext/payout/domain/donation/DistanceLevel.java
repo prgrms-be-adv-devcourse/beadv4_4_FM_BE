@@ -5,65 +5,43 @@ import lombok.Getter;
 import java.math.BigDecimal;
 
 /**
- * [Domain Model] 배송 거리를 레벨로 변환하는 Enum 클래스
- * 실제 거리(km)를 레벨별 대표값으로 매핑하여 탄소 배출량 계산에 사용
+ * [Domain Model] 배송 거리를 레벨로 변환하는 Enum
+ * <p>
+ * 거리 범위 (km):
+ * - LEVEL1: 0~50km → 대표값 50km (근거리)
+ * - LEVEL2: 50~150km → 대표값 150km (중거리)
+ * - LEVEL3: 150~300km → 대표값 300km (장거리)
+ * - LEVEL4: 300km~ → 대표값 500km (도서/제주)
  */
 @Getter
 public enum DistanceLevel {
-    /**
-     * Level 1 (근거리): 0km 초과 50km 이하 → 대표값 50km
-     */
-    LEVEL1(new BigDecimal("0"), new BigDecimal("50"), new BigDecimal("50")),
+    LEVEL1("0", "50", "50"),
+    LEVEL2("50", "150", "150"),
+    LEVEL3("150", "300", "300"),
+    LEVEL4("300", "99999", "500");
 
-    /**
-     * Level 2 (중거리): 50km 초과 150km 이하 → 대표값 150km
-     */
-    LEVEL2(new BigDecimal("50"), new BigDecimal("150"), new BigDecimal("150")),
+    private final BigDecimal minDistance;
+    private final BigDecimal maxDistance;
+    private final BigDecimal representativeValue;
 
-    /**
-     * Level 3 (장거리): 150km 초과 300km 이하 → 대표값 300km
-     */
-    LEVEL3(new BigDecimal("150"), new BigDecimal("300"), new BigDecimal("300")),
-
-    /**
-     * Level 4 (도서/제주): 300km 초과 → 대표값 500km
-     */
-    LEVEL4(new BigDecimal("300"), new BigDecimal("99999"), new BigDecimal("500"));
-
-    private final BigDecimal minDistance;        // 최소 거리 (km)
-    private final BigDecimal maxDistance;        // 최대 거리 (km)
-    private final BigDecimal representativeValue; // 레벨 대표값 (km)
-
-    /**
-     * DistanceLevel 생성자
-     *
-     * @param minDistance 최소 거리
-     * @param maxDistance 최대 거리
-     * @param representativeValue 레벨 대표값
-     */
-    DistanceLevel(BigDecimal minDistance, BigDecimal maxDistance, BigDecimal representativeValue) {
-        this.minDistance = minDistance;
-        this.maxDistance = maxDistance;
-        this.representativeValue = representativeValue;
+    DistanceLevel(String min, String max, String representative) {
+        this.minDistance = new BigDecimal(min);
+        this.maxDistance = new BigDecimal(max);
+        this.representativeValue = new BigDecimal(representative);
     }
 
     /**
-     * 주어진 거리(km)에 해당하는 거리 레벨을 판정하여 반환
+     * 거리를 레벨로 변환
      *
-     * @param distance 판정할 거리 (km)
-     * @return 해당 거리에 맞는 DistanceLevel
+     * @param distance 거리 (km)
+     * @return 해당 레벨
      */
     public static DistanceLevel fromDistance(BigDecimal distance) {
-        if (distance == null) {
-            return LEVEL1;
-        }
+        if (distance == null) return LEVEL1;
 
-        for (DistanceLevel level : values()) {
-            if (distance.compareTo(level.minDistance) > 0 &&    // distance > minDistance
-                distance.compareTo(level.maxDistance) <= 0) {   // distance <= maxDistance
-                return level;
-            }
-        }
-        return LEVEL4; // 범위를 벗어나면 최대 레벨로 처리
+        return java.util.Arrays.stream(values())
+                .filter(l -> distance.compareTo(l.minDistance) > 0 && distance.compareTo(l.maxDistance) <= 0)
+                .findFirst()
+                .orElse(LEVEL4);
     }
 }
