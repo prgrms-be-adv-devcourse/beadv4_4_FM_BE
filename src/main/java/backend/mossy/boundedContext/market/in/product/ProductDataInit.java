@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.in;
+package backend.mossy.boundedContext.market.in.product;
 
 import backend.mossy.boundedContext.market.domain.product.Product;
 import backend.mossy.boundedContext.market.domain.product.ProductDocument;
@@ -11,7 +11,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.ZoneOffset;
 import java.util.List;
 
 @Configuration
