@@ -3,9 +3,7 @@ package backend.mossy.boundedContext.market.domain.order;
 import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -16,18 +14,24 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @AttributeOverride(name = "id", column = @Column(name = "order_detail_id"))
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class OrderDetail extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
-    @OneToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketSeller seller;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "weight_grade_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "weight_grade_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private WeightGrade weightGrade;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "delivery_distance_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private DeliveryDistance deliveryDistance;
 
     @Column(name = "product_id", nullable = false)
     private Long productId;
@@ -38,10 +42,23 @@ public class OrderDetail extends BaseIdAndTime {
     @Column(name = "order_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal orderPrice;
 
-    @Column(nullable = false)
-    private String address;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OrderState state;
+    static OrderDetail create(
+            Order order,
+            MarketSeller seller,
+            Long productId,
+            int quantity,
+            BigDecimal orderPrice,
+            DeliveryDistance deliveryDistance,
+            WeightGrade weightGrade
+    ) {
+        return OrderDetail.builder()
+                .order(order)
+                .seller(seller)
+                .productId(productId)
+                .quantity(quantity)
+                .orderPrice(orderPrice)
+                .deliveryDistance(deliveryDistance)
+                .weightGrade(weightGrade)
+                .build();
+    }
 }
