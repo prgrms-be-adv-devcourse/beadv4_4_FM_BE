@@ -11,7 +11,6 @@ import backend.mossy.boundedContext.market.out.market.MarketUserRepository;
 import backend.mossy.boundedContext.market.out.order.DeliveryDistanceRepository;
 import backend.mossy.boundedContext.market.out.order.OrderRepository;
 import backend.mossy.boundedContext.market.out.order.WeightGradeRepository;
-import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.market.dto.request.OrderCreatedRequest;
@@ -37,7 +36,6 @@ public class CreateOrderUseCase {
     private final DeliveryDistanceRepository deliveryDistanceRepository;
     private final WeightGradeRepository weightGradeRepository;
     private final MarketPolicy marketPolicy;
-    private final EventPublisher eventPublisher;
 
     public OrderCreatedResponse createOrder(Long userId, OrderCreatedRequest request) {
         MarketUser buyer = marketUserRepository.findById(userId)
