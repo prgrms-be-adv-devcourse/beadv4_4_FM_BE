@@ -2,9 +2,6 @@ package backend.mossy.boundedContext.cash.domain.seller;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-import backend.mossy.boundedContext.cash.domain.user.CashUser;
-import backend.mossy.boundedContext.cash.domain.user.UserEventType;
-import backend.mossy.boundedContext.cash.domain.user.UserWallet;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -18,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,11 +29,9 @@ public class SellerCashLog extends BaseIdAndTime {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserEventType eventType;
-    @Column(nullable = false)
+    private SellerEventType eventType;
     private String relTypeCode;
-    @Column(nullable = false)
-    private int relId;
+    private Long relId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private CashSeller user;
@@ -46,6 +42,18 @@ public class SellerCashLog extends BaseIdAndTime {
     private BigDecimal amount = BigDecimal.ZERO;
     @Column(precision = 10, scale = 3, nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
+
+    @Builder
+    public SellerCashLog(BigDecimal amount, BigDecimal balance, SellerEventType eventType, Long relId,
+        String relTypeCode, CashSeller user, SellerWallet wallet) {
+        this.amount = amount;
+        this.balance = balance;
+        this.eventType = eventType;
+        this.relId = relId;
+        this.relTypeCode = relTypeCode;
+        this.user = user;
+        this.wallet = wallet;
+    }
 }
 
 

@@ -57,9 +57,14 @@ public class SecurityConfig {
                                 "/error",
 
                                 //Auth 테스트 (토큰)
-                                "/api/auth/signup",
-                                "/api/auth/login",
-                                "/api/auth/reissue",
+                                "/api/v1/auth/signup",
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/reissue",
+                                "/api/v1/auth/logout",
+                                "/api/v1/auth/ping",
+
+                                //Cash API Check
+                                "/api/v1/cash/**",
                                 "/api/auth/logout",
 
                                 //Cash API Check
@@ -68,6 +73,8 @@ public class SecurityConfig {
                                 //Cart API
                                 "/api/v1/cart/**",
                                 "/api/v1/orders/**"
+
+                                "/api/v1/product/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

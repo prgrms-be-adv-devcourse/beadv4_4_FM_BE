@@ -1,5 +1,6 @@
 server:
   port: 8080
+
 spring:
   application:
     name: Mossy
@@ -29,6 +30,9 @@ spring:
       host: localhost
       port: 6379
 
+  cache:
+    type: redis
+
 ##swagger
 springdoc:
   swagger-ui:
@@ -45,7 +49,7 @@ logging:
 
 jwt:
   secret: mossy-secret-key-change-later-32bytes-minimum!!
-  access-token-expire-ms: 1800000
+  access-token-expire-ms: 180000
   refresh-token-expire-ms: 1209600000
 
 

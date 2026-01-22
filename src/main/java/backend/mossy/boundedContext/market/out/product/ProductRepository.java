@@ -4,6 +4,8 @@ package backend.mossy.boundedContext.market.out.product;
 import backend.mossy.boundedContext.market.domain.product.Product;
 import backend.mossy.boundedContext.market.domain.product.ProductStatus;
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -14,9 +16,15 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
-    List<Product> findTop10ByStatusOrderByCreatedAtDesc(ProductStatus status);
+    Page<Product> findByStatus(ProductStatus status, Pageable pageable);
 
-    Optional<Product> findById(Long productId);
+    @Query("SELECT p FROM Product p " +
+            "JOIN FETCH p.category " +
+            "WHERE p.id = :productId")
+    Optional<Product> findById(@Param("productId") Long productId);
+
+    @Query("SELECT p FROM Product p JOIN FETCH p.category")
+    List<Product> findAllWithCategory(ProductStatus status);
 
     // 비관적 락
     @Lock(LockModeType.PESSIMISTIC_WRITE)

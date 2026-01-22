@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.auth.infra.security;
 
+import backend.mossy.global.rsData.RsData;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,17 +19,19 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+    public void handle(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AccessDeniedException accessDeniedException
+    ) throws IOException {
 
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
 
-        objectMapper.writeValue(response.getWriter(), Map.of(
-                "success", false,
-                "code", "AUTH_403",
-                "message", "접근 권한이 없습니다",
-                "path", request.getRequestURI()
-        ));
+        objectMapper.writeValue(
+                response.getWriter(),
+                RsData.fail("F-403", "접근 권한이 없습니다.")
+        );
     }
 }
