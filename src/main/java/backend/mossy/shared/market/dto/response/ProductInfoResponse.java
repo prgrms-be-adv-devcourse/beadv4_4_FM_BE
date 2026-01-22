@@ -9,8 +9,9 @@ public record ProductInfoResponse(
         Long productId,
         Long sellerId,
         String productName,
-        Long categoryId,
+        String categoryName,
         BigDecimal price,
+        BigDecimal weight,
         String thumbnailUrl,
         Integer quantity
 ) { }

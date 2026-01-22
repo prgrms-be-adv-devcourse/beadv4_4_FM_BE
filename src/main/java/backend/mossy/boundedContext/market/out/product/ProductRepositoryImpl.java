@@ -9,6 +9,7 @@ import java.util.List;
 
 import static backend.mossy.boundedContext.market.domain.cart.QCart.cart;
 import static backend.mossy.boundedContext.market.domain.cart.QCartItem.cartItem;
+import static backend.mossy.boundedContext.market.domain.product.QCategory.category;
 import static backend.mossy.boundedContext.market.domain.product.QProduct.product;
 import static backend.mossy.boundedContext.market.domain.product.QProductImage.productImage;
 
@@ -24,8 +25,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         product.id,
                         product.seller.id,
                         product.name,
-                        product.category.id,
+                        category.name,
                         product.price,
+                        product.weight,
                         productImage.imageUrl,
                         cartItem.quantity
                 ))
@@ -33,6 +35,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .join(cart.items, cartItem)
                 .join(product)
                     .on(product.id.eq(cartItem.productId))
+                .join(product.category, category)
                 .join(productImage)
                     .on(productImage.product.eq(product)
                     .and(productImage.isThumbnail.isTrue()))

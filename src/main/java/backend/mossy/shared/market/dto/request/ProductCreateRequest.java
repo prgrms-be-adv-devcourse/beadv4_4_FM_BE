@@ -10,7 +10,6 @@ import java.util.List;
 
 public record ProductCreateRequest(
         Long sellerId,
-        Long userId,
         Long categoryId,
         String name,
         String description,
@@ -23,7 +22,6 @@ public record ProductCreateRequest(
     public Product toEntity(MarketSeller seller, Category category) {
         return Product.builder()
                 .seller(seller)
-                .userId(this.userId)
                 .category(category)
                 .name(this.name)
                 .description(this.description)

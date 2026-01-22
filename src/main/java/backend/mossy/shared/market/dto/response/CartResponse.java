@@ -9,15 +9,18 @@ import java.util.List;
 public record CartResponse(
         Long cartId,
         String buyerName,
-        String address,
+        String buyerAddress,
         int itemCount,
         List<ProductInfoResponse> items
 ) {
-    public static CartResponse of(Cart cart, List<ProductInfoResponse> items) {
+    public static CartResponse of(
+            Cart cart,
+            List<ProductInfoResponse> items
+    ) {
         return CartResponse.builder()
                 .cartId(cart.getId())
                 .buyerName(cart.getBuyer().getName())
-                .address(cart.getBuyer().getAddress())
+                .buyerAddress(cart.getBuyer().getAddress())
                 .itemCount(items.size())
                 .items(items)
                 .build();

@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,6 +37,8 @@ public class MarketSeller extends ReplicaSeller {
             String contactPhone,
             String address1,
             String address2,
+            BigDecimal latitude,
+            BigDecimal longitude,
             SellerStatus sellerStatus) {
         super(
                 id,
@@ -50,6 +53,8 @@ public class MarketSeller extends ReplicaSeller {
                 contactPhone,
                 address1,
                 address2,
+                latitude,
+                longitude,
                 sellerStatus);
     }
 
@@ -65,6 +70,8 @@ public class MarketSeller extends ReplicaSeller {
                 .contactPhone(seller.contactPhone())
                 .address1(seller.address1())
                 .address2(seller.address2())
+                .latitude(seller.latitude())
+                .longitude(seller.longitude())
                 .sellerStatus(seller.status())
                 .createdAt(seller.createdAt())
                 .updatedAt(seller.updatedAt())
@@ -83,6 +90,8 @@ public class MarketSeller extends ReplicaSeller {
                 .contactPhone(getContactPhone())
                 .address1(getAddress1())
                 .address2(getAddress2())
+                .latitude(getLatitude())
+                .longitude(getLongitude())
                 .createdAt(getCreatedAt())
                 .updatedAt(getUpdatedAt())
                 .build();

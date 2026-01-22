@@ -44,13 +44,12 @@ public class Order extends BaseIdAndTime {
 
     public static Order create(
             MarketUser buyer,
-            String orderNo,
-            String address
+            String orderNo
     ) {
         return Order.builder()
                 .buyer(buyer)
                 .orderNo(orderNo)
-                .address(address)
+                .address(buyer.getAddress())
                 .totalPrice(BigDecimal.ZERO)
                 .state(OrderState.PENDING)
                 .build();
@@ -60,10 +59,20 @@ public class Order extends BaseIdAndTime {
             MarketSeller seller,
             Long productId,
             int quantity,
-            BigDecimal price
+            BigDecimal price,
+            DeliveryDistance deliveryDistance
     ) {
         BigDecimal orderPrice = price.multiply(BigDecimal.valueOf(quantity));
-        this.orderDetails.add(OrderDetail.create(this, seller, productId, quantity, orderPrice));
+        this.orderDetails.add(
+                OrderDetail.create(
+                        this,
+                        seller,
+                        productId,
+                        quantity,
+                        orderPrice,
+                        deliveryDistance
+                )
+        );
         this.totalPrice = this.totalPrice.add(orderPrice);
     }
 

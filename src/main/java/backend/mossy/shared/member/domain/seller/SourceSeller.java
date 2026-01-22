@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -37,20 +38,22 @@ public abstract class SourceSeller extends BaseSeller {
     private LocalDateTime updatedAt;
 
     public SourceSeller(
-            Long userId, 
-            SellerType sellerType, 
-            String storeName, 
-            String businessNum, 
-            String representativeName, 
-            String contactEmail, 
-            String contactPhone, 
-            String address1, 
-            String address2, 
-            SellerStatus status, 
+            Long userId,
+            SellerType sellerType,
+            String storeName,
+            String businessNum,
+            String representativeName,
+            String contactEmail,
+            String contactPhone,
+            String address1,
+            String address2,
+            BigDecimal latitude,
+            BigDecimal longitude,
+            SellerStatus status,
             Long id,
-            LocalDateTime createdAt, 
+            LocalDateTime createdAt,
             LocalDateTime updatedAt) {
-        super(userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, status);
+        super(userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, latitude, longitude, status);
         this.id = id;
         this.userId = userId;
         this.createdAt = createdAt;

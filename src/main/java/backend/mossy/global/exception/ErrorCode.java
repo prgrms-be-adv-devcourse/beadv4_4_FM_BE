@@ -22,10 +22,12 @@ public enum ErrorCode {
 
     //404 NOT FOUND
     USER_NOT_FOUND(404, "존재하지 않는 회원입니다."),
+    SELLER_NOT_FOUND(404, "존재하지 않는 판매자입니다."),
     CART_NOT_FOUND(404, "장바구니가 존재하지 않습니다."),
     CART_ITEM_NOT_FOUND(404, "장바구니에 해당 상품이 없습니다."),
     PRODUCT_NOT_FOUND(404, "해당 상품이 존재하지 않습니다."),
     WEIGHT_GRADE_NOT_FOUND(404, "무게 등급이 존재하지 않습니다."),
+    DELIVERY_DISTANCE_NOT_FOUND(404, "배송 거리 등급이 존재하지 않습니다."),
     ORDER_NOT_FOUND(404, "주문이 존재하지 않습니다."),
 
     //422 Unprocessable Entity (비즈니스 규칙 위배)

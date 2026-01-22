@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @MappedSuperclass
 @Getter
 @Setter(AccessLevel.PROTECTED)
@@ -43,11 +45,17 @@ public abstract class BaseSeller extends BaseEntity {
     @Column(name = "address2", length = 200)
     protected String address2;
 
+    @Column(precision = 10, scale = 7)
+    protected BigDecimal latitude;
+
+    @Column(precision = 10, scale = 7)
+    protected BigDecimal longitude;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     protected SellerStatus status = SellerStatus.PENDING;
 
-    public BaseSeller(Long userId, SellerType sellerType, String storeName, String businessNum, String representativeName, String contactEmail, String contactPhone, String address1, String address2, SellerStatus status) {
+    public BaseSeller(Long userId, SellerType sellerType, String storeName, String businessNum, String representativeName, String contactEmail, String contactPhone, String address1, String address2, BigDecimal latitude, BigDecimal longitude, SellerStatus status) {
         this.userId = userId;
         this.sellerType = sellerType;
         this.storeName = storeName;
@@ -57,6 +65,8 @@ public abstract class BaseSeller extends BaseEntity {
         this.contactPhone = contactPhone;
         this.address1 = address1;
         this.address2 = address2;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.status = status;
     }
 }

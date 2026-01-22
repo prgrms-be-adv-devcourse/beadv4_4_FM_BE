@@ -30,6 +30,10 @@ public class OrderDetail extends BaseIdAndTime {
     @JoinColumn(name = "weight_grade_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private WeightGrade weightGrade;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "delivery_distance_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private DeliveryDistance deliveryDistance;
+
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
@@ -44,7 +48,8 @@ public class OrderDetail extends BaseIdAndTime {
             MarketSeller seller,
             Long productId,
             int quantity,
-            BigDecimal orderPrice
+            BigDecimal orderPrice,
+            DeliveryDistance deliveryDistance
     ) {
         return OrderDetail.builder()
                 .order(order)
@@ -52,6 +57,7 @@ public class OrderDetail extends BaseIdAndTime {
                 .productId(productId)
                 .quantity(quantity)
                 .orderPrice(orderPrice)
+                .deliveryDistance(deliveryDistance)
                 .build();
     }
 
