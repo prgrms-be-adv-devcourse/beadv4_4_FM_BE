@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -49,7 +48,8 @@ public class OrderDetail extends BaseIdAndTime {
             Long productId,
             int quantity,
             BigDecimal orderPrice,
-            DeliveryDistance deliveryDistance
+            DeliveryDistance deliveryDistance,
+            WeightGrade weightGrade
     ) {
         return OrderDetail.builder()
                 .order(order)
@@ -58,11 +58,7 @@ public class OrderDetail extends BaseIdAndTime {
                 .quantity(quantity)
                 .orderPrice(orderPrice)
                 .deliveryDistance(deliveryDistance)
+                .weightGrade(weightGrade)
                 .build();
-    }
-
-    public void calculateWeightGrade(BigDecimal weight, List<WeightGrade> grades) {
-        BigDecimal totalWeight = weight.multiply(BigDecimal.valueOf(this.quantity));
-        this.weightGrade = WeightGrade.findByWeight(grades, totalWeight);
     }
 }

@@ -55,4 +55,13 @@ public class DeliveryDistance extends BaseIdAndTime {
         }
         throw new DomainException(ErrorCode.DELIVERY_DISTANCE_NOT_FOUND);
     }
+
+    public static DeliveryDistance resolve(
+            List<DeliveryDistance> grades,
+            BigDecimal buyerLat, BigDecimal buyerLon,
+            BigDecimal sellerLat, BigDecimal sellerLon
+    ) {
+        int distance = calculateDistance(buyerLat, buyerLon, sellerLat, sellerLon);
+        return findByDistance(grades, distance);
+    }
 }

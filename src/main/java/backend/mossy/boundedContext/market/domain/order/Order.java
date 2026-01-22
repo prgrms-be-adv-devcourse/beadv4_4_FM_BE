@@ -9,7 +9,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -60,7 +59,8 @@ public class Order extends BaseIdAndTime {
             Long productId,
             int quantity,
             BigDecimal price,
-            DeliveryDistance deliveryDistance
+            DeliveryDistance deliveryDistance,
+            WeightGrade weightGrade
     ) {
         BigDecimal orderPrice = price.multiply(BigDecimal.valueOf(quantity));
         this.orderDetails.add(
@@ -70,25 +70,11 @@ public class Order extends BaseIdAndTime {
                         productId,
                         quantity,
                         orderPrice,
-                        deliveryDistance
+                        deliveryDistance,
+                        weightGrade
                 )
         );
         this.totalPrice = this.totalPrice.add(orderPrice);
-    }
-
-    public List<Long> getProductIds() {
-        List<Long> productIds = new ArrayList<>();
-        for (OrderDetail detail : this.orderDetails) {
-            productIds.add(detail.getProductId());
-        }
-        return productIds;
-    }
-
-    public void calculateWeightGrades(Map<Long, BigDecimal> weightMap, List<WeightGrade> grades) {
-        for (OrderDetail detail : this.orderDetails) {
-            BigDecimal weight = weightMap.get(detail.getProductId());
-            detail.calculateWeightGrade(weight, grades);
-        }
     }
 
     public void completePayment() {
