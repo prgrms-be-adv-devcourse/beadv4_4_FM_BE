@@ -14,11 +14,9 @@ import backend.mossy.boundedContext.market.out.order.WeightGradeRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
-import backend.mossy.shared.market.dto.event.OrderCreateDto;
 import backend.mossy.shared.market.dto.request.OrderCreatedRequest;
 import backend.mossy.shared.market.dto.response.OrderCreatedResponse;
 import backend.mossy.shared.market.dto.response.ProductInfoResponse;
-import backend.mossy.shared.market.event.OrderCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -87,17 +85,6 @@ public class CreateOrderUseCase {
 
         // 7. 저장
         Order savedOrder = orderRepository.save(order);
-
-
-        // 8. 이벤트 발행
-        eventPublisher.publish(new OrderCreatedEvent(
-                new OrderCreateDto(
-                        savedOrder.getId(),
-                        orderNo,
-                        savedOrder.getTotalPrice(),
-                        request.paymentType()
-                )
-        ));
 
         return OrderCreatedResponse.builder()
                 .orderId(savedOrder.getId())
