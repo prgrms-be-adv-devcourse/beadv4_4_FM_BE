@@ -6,6 +6,8 @@ import backend.mossy.shared.market.dto.request.ProductStatusUpdateRequest;
 import backend.mossy.shared.market.dto.request.ProductUpdateRequest;
 import backend.mossy.shared.market.dto.response.ProductDetailResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +26,8 @@ public class ProductFacade {
 
     // 메인 화면 상품 리스트
     @Transactional(readOnly = true)
-    public List<Product> getProductList() {
-        return marketGetProductListUseCase.getProductList();
+    public Page<Product> getProductList(Pageable pageable) {
+        return marketGetProductListUseCase.getProductList(pageable);
     }
 
     // 상품 상세 정보 조회

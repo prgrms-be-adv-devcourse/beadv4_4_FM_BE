@@ -1,7 +1,9 @@
 package backend.mossy.boundedContext.market.app.product;
 
 import backend.mossy.boundedContext.market.domain.product.Product;
+import backend.mossy.boundedContext.market.domain.product.event.ProductDeletedEvent;
 import backend.mossy.boundedContext.market.out.product.ProductRepository;
+import backend.mossy.global.eventPublisher.EventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MarketDeleteProductUseCase {
     private final ProductRepository productRepository;
+    private final EventPublisher eventPublisher;
 
     @Transactional
     public void delete(Long productId, Long currentSellerId) {
@@ -18,5 +21,7 @@ public class MarketDeleteProductUseCase {
 
         product.validateOwner(currentSellerId);
         product.delete();
+
+        eventPublisher.publish(new ProductDeletedEvent(productId));
     }
 }
