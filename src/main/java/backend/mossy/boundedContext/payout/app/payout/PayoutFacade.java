@@ -30,7 +30,7 @@ public class PayoutFacade {
     private final PayoutSyncUserUseCase payoutSyncUserUseCase;
     private final PayoutCreatePayoutUseCase payoutCreatePayoutUseCase;
     private final PayoutAddPayoutCandidateItemsUseCase payoutAddPayoutCandidateItemsUseCase;
-    private final MarketApiClient.PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
+    private final PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
     private final PayoutCompletePayoutsMoreUseCase payoutCompletePayoutsMoreUseCase;
     private final PayoutSupport payoutSupport;
 
