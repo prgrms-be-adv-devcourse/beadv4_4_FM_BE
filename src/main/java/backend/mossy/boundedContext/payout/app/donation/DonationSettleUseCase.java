@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * 정산 완료 시 기부 로그를 정산 완료 상태로 변경하는 UseCase
+ * [UseCase] 기부금을 정산 처리하는 서비스 클래스
+ * DonationFacade의 '2단계: 기부 로그 정산 처리' 흐름에서 호출
+ * 정산(Payout)이 완료된 후, 해당 정산에 포함된 기부 항목들을 '정산 완료' 상태로 변경
  */
 @Service
 @RequiredArgsConstructor
@@ -25,26 +27,31 @@ public class DonationSettleUseCase {
     private final PayoutSupport payoutSupport;
 
     /**
-     * Payout 완료 시 해당 기부 로그들을 정산 완료 처리
-     * @param payoutId 완료된 Payout ID
+     * 특정 정산(Payout)이 완료되었을 때, 관련된 모든 기부 로그(DonationLog)를 '정산 완료' 상태로 업데이트
+     *
+     * @param payoutId 완료된 Payout의 ID
      */
     @Transactional
     public void settleDonationLogs(Long payoutId) {
-        // 1. Payout 조회
+        // 1. 정산 완료된 Payout 객체를 조회
         Payout payout = payoutRepository.findById(payoutId)
                 .orElseThrow(() -> new IllegalArgumentException("Payout not found: " + payoutId));
 
-        // 2. DONATION seller 조회
+        // 2. 시스템에 정의된 '기부금 수령 판매자(DONATION seller)' 정보를 조회
+        //    기부금은 이 가상의 판매자에게 지급되는 형식으로 처리
         PayoutSeller donationSeller = payoutSupport.findDonationSeller()
                 .orElseThrow(() -> new IllegalStateException("DONATION seller not found"));
 
-        // 3. Payout에서 DONATION payee인 PayoutItem들의 orderItemId 추출
+        // 3. 완료된 Payout에 포함된 항목(PayoutItem)들 중에서,
+        //    수령인이 '기부금 수령 판매자'인 항목들만 필터링
+        //    그 후, 해당 항목들의 'relId' (여기서는 orderItemId에 해당)를 추출
         List<Long> orderItemIds = payout.getItems().stream()
                 .filter(item -> item.getPayee().getId().equals(donationSeller.getId()))
-                .map(PayoutItem::getRelId)  // relId = orderItemId
+                .map(PayoutItem::getRelId)  // relId는 PayoutItem의 관련 ID이며, 기부 항목의 경우 orderItemId를 저장
                 .toList();
 
-        // 4. 해당 orderItemId들의 DonationLog를 정산 완료 처리
+        // 4. 추출된 orderItemId 목록을 순회하면서, 각 ID에 해당하는 DonationLog를 찾아 '정산 완료' 처리
+        //    DonationLog의 settle() 메서드는 해당 로그의 상태를 변경
         orderItemIds.forEach(orderItemId -> {
             List<DonationLog> donationLogs = donationLogRepository.findByOrderItemId(orderItemId);
             donationLogs.forEach(DonationLog::settle);

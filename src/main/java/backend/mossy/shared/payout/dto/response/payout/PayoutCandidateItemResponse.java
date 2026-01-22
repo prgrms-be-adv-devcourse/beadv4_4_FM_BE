@@ -7,6 +7,9 @@ import lombok.Builder;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Payout 후보 항목에 대한 응답 데이터 전송 객체(DTO)
+ */
 @Builder
 public record PayoutCandidateItemResponse(
         Long id,
