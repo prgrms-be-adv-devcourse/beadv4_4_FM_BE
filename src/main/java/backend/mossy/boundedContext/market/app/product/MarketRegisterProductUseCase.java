@@ -6,7 +6,7 @@ import backend.mossy.boundedContext.market.domain.product.Product;
 import backend.mossy.boundedContext.market.domain.product.event.ProductRegisteredEvent;
 import backend.mossy.boundedContext.market.out.market.MarketSellerRepository;
 import backend.mossy.boundedContext.market.out.product.ProductRepository;
-import backend.mossy.boundedContext.market.out.product.categoryRepository;
+import backend.mossy.boundedContext.market.out.product.CategoryRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.market.dto.request.ProductCreateRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MarketRegisterProductUseCase {
     private final ProductRepository productRepository;
     private final MarketSellerRepository marketSellerRepository;
-    private final categoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     private final EventPublisher eventPublisher;
 
     @Transactional

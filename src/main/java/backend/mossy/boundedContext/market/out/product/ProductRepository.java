@@ -14,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
     Page<Product> findByStatus(ProductStatus status, Pageable pageable);
 
@@ -38,4 +38,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "where p.id = :id")
     Optional<Product> findByIdWithDetails(@Param("id") Long id);
 
+    @Query("SELECT p FROM Product p WHERE p.id IN :ids")
+    List<Product> findByIdIn(@Param("ids") List<Long> ids);
 }

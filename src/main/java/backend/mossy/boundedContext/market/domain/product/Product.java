@@ -27,9 +27,6 @@ public class Product extends BaseIdAndTime {
     @JoinColumn(name = "seller_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketSeller seller;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Category category;

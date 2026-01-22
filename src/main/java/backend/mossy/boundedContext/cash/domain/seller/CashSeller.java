@@ -11,6 +11,7 @@ import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,10 +29,10 @@ public class CashSeller extends ReplicaSeller {
     public CashSeller(Long id, LocalDateTime createdAt, LocalDateTime updatedAt,
         Long userId, SellerType sellerType, String storeName, String businessNum,
         String representativeName, String contactEmail, String contactPhone, String address1,
-        String address2, SellerStatus status) {
+        String address2, BigDecimal latitude, BigDecimal longitude, SellerStatus status) {
         super(id, createdAt, updatedAt, userId, sellerType, storeName, businessNum,
             representativeName,
-            contactEmail, contactPhone, address1, address2, status);
+            contactEmail, contactPhone, address1, address2, latitude, longitude, status);
     }
 
     public static CashSeller from(SellerDto seller) {
@@ -48,14 +49,15 @@ public class CashSeller extends ReplicaSeller {
             .contactPhone(seller.contactPhone())
             .address1(seller.address1())
             .address2(seller.address2())
+            .latitude(seller.latitude())
+            .longitude(seller.longitude())
             .status(seller.status())
             .build();
     }
 
-    // Payout이나 Cash 서비스에서 사용할 DTO 변환 로직
     public CashSellerDto toDto() {
         return CashSellerDto.builder()
-            .id(getId()) //
+            .id(getId())
             .createdAt(getCreatedAt())
             .updatedAt(getUpdatedAt())
             .userId(getUserId())
@@ -67,6 +69,8 @@ public class CashSeller extends ReplicaSeller {
             .contactPhone(getContactPhone())
             .address1(getAddress1())
             .address2(getAddress2())
+            .latitude(getLatitude())
+            .longitude(getLongitude())
             .status(getStatus())
             .build();
     }

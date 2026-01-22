@@ -4,7 +4,7 @@ import backend.mossy.boundedContext.market.domain.product.Category;
 import backend.mossy.boundedContext.market.domain.product.Product;
 import backend.mossy.boundedContext.market.domain.product.event.ProductUpdatedEvent;
 import backend.mossy.boundedContext.market.out.product.ProductRepository;
-import backend.mossy.boundedContext.market.out.product.categoryRepository;
+import backend.mossy.boundedContext.market.out.product.CategoryRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.market.dto.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MarketUpdateProductUseCase {
     private final ProductRepository productRepository;
-    private final categoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     private final EventPublisher eventPublisher;
 
     @Transactional

@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
@@ -33,9 +34,11 @@ public abstract class ReplicaSeller extends BaseSeller {
             String contactPhone,
             String address1,
             String address2,
+            BigDecimal latitude,
+            BigDecimal longitude,
             SellerStatus status
             ) {
-        super(userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, status);
+        super(userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, latitude, longitude, status);
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
