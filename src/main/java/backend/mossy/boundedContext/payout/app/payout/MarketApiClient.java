@@ -37,9 +37,9 @@ public class MarketApiClient {
      */
     public List<OrderItemDto> getOrderItems(Long orderId) {
         // TODO: 실제 Market API 호출로 교체
-        // 임시 테스트 데이터 - 각 탄소 등급(A, B, C, D)별 테스트
+        // 임시 테스트 데이터 - 무게등급 × 거리레벨 × 탄소계수(0.1) 시스템으로 다양한 탄소 등급 테스트
         return List.of(
-                // A등급 테스트: 0~10kg 탄소, 10% 기부
+                // A등급 테스트: 무게 0.5kg (등급1) × 거리 10km (레벨1=50km) × 0.1 = 5kg 탄소
                 new OrderItemDto(
                         1L,                           // id
                         LocalDateTime.now(),          // createdAt
@@ -56,10 +56,10 @@ public class MarketApiClient {
                         new BigDecimal("0.1"),        // payoutRate (수수료율 10%)
                         new BigDecimal("1000"),       // payoutFee (수수료 1000원)
                         new BigDecimal("9000"),       // salePriceWithoutFee
-                        new BigDecimal("0.5"),        // weight (0.5kg)
-                        new BigDecimal("10")          // deliveryDistance (10km) -> 탄소 5kg (A등급, 10% 기부 = 100원)
+                        new BigDecimal("0.5"),        // weight (0.5kg → 무게등급1)
+                        new BigDecimal("10")          // deliveryDistance (10km → 거리레벨1=50km) → 탄소: 1×50×0.1=5kg (A등급, 10% 기부 = 100원)
                 ),
-                // B등급 테스트: 10~30kg 탄소, 20% 기부
+                // B등급 테스트: 무게 0.8kg (등급1) × 거리 100km (레벨2=150km) × 0.1 = 15kg 탄소
                 new OrderItemDto(
                         2L,                           // id
                         LocalDateTime.now(),          // createdAt
@@ -76,10 +76,10 @@ public class MarketApiClient {
                         new BigDecimal("0.1"),        // payoutRate (수수료율 10%)
                         new BigDecimal("2000"),       // payoutFee (수수료 2000원)
                         new BigDecimal("18000"),      // salePriceWithoutFee
-                        new BigDecimal("2"),          // weight (2kg)
-                        new BigDecimal("10")          // deliveryDistance (10km) -> 탄소 20kg (B등급, 20% 기부 = 400원)
+                        new BigDecimal("0.8"),        // weight (0.8kg → 무게등급1)
+                        new BigDecimal("100")         // deliveryDistance (100km → 거리레벨2=150km) → 탄소: 1×150×0.1=15kg (B등급, 20% 기부 = 400원)
                 ),
-                // C등급 테스트: 30~50kg 탄소, 30% 기부
+                // C등급 테스트: 무게 2kg (등급2) × 거리 100km (레벨2=150km) × 0.1 = 30kg 탄소
                 new OrderItemDto(
                         3L,                           // id
                         LocalDateTime.now(),          // createdAt
@@ -96,10 +96,10 @@ public class MarketApiClient {
                         new BigDecimal("0.1"),        // payoutRate (수수료율 10%)
                         new BigDecimal("3000"),       // payoutFee (수수료 3000원)
                         new BigDecimal("27000"),      // salePriceWithoutFee
-                        new BigDecimal("5"),          // weight (5kg)
-                        new BigDecimal("8")           // deliveryDistance (8km) -> 탄소 40kg (C등급, 30% 기부 = 900원)
+                        new BigDecimal("2"),          // weight (2kg → 무게등급2)
+                        new BigDecimal("100")         // deliveryDistance (100km → 거리레벨2=150km) → 탄소: 2×150×0.1=30kg (C등급, 30% 기부 = 900원)
                 ),
-                // D등급 테스트: 50kg~ 탄소, 40% 기부
+                // D등급 테스트: 무게 11kg (등급4) × 거리 100km (레벨2=150km) × 0.1 = 60kg 탄소
                 new OrderItemDto(
                         4L,                           // id
                         LocalDateTime.now(),          // createdAt
@@ -116,8 +116,8 @@ public class MarketApiClient {
                         new BigDecimal("0.1"),        // payoutRate (수수료율 10%)
                         new BigDecimal("5000"),       // payoutFee (수수료 5000원)
                         new BigDecimal("45000"),      // salePriceWithoutFee
-                        new BigDecimal("10"),         // weight (10kg)
-                        new BigDecimal("10")          // deliveryDistance (10km) -> 탄소 100kg (D등급, 40% 기부 = 2000원)
+                        new BigDecimal("11"),         // weight (11kg → 무게등급4)
+                        new BigDecimal("100")         // deliveryDistance (100km → 거리레벨2=150km) → 탄소: 4×150×0.1=60kg (D등급, 40% 기부 = 2000원)
                 )
         );
     }

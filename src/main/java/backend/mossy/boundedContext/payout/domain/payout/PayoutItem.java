@@ -3,6 +3,8 @@ package backend.mossy.boundedContext.payout.domain.payout;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
@@ -19,6 +21,8 @@ import static jakarta.persistence.FetchType.LAZY;
 @Table(name = "PAYOUT_PAYOUT_ITEM") // Payout 테이블과 구분을 위해 PayoutItem 테이블은 PAYOUT_PAYOUT_ITEM으로 명명
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class PayoutItem extends BaseIdAndTime {
 
     /**
@@ -78,27 +82,4 @@ public class PayoutItem extends BaseIdAndTime {
      */
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
-
-    /**
-     * PayoutItem 엔티티를 생성하는 생성자
-     *
-     * @param payout      이 항목이 속할 주 Payout
-     * @param eventType   정산 이벤트 타입
-     * @param relTypeCode 관련 엔티티 타입 코드
-     * @param relId       관련 엔티티 ID
-     * @param payDate     결제 발생일
-     * @param payer       지불자 (PayoutUser)
-     * @param payee       수취인 (PayoutSeller)
-     * @param amount      금액
-     */
-    public PayoutItem(Payout payout, PayoutEventType eventType, String relTypeCode, Long relId, LocalDateTime payDate, PayoutUser payer, PayoutSeller payee, BigDecimal amount) {
-        this.payout = payout;
-        this.eventType = eventType;
-        this.relTypeCode = relTypeCode;
-        this.relId = relId;
-        this.paymentDate = payDate;
-        this.payer = payer;
-        this.payee = payee;
-        this.amount = amount;
-    }
 }

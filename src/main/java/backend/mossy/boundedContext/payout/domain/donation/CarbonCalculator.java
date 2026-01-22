@@ -8,12 +8,13 @@ import java.math.BigDecimal;
 
 /**
  * [Domain Service] 상품의 무게와 배송 거리를 기반으로 탄소 배출량(kg)을 계산하는 도메인 서비스
+ * 무게를 등급(1~4)으로, 거리를 레벨 대표값(50, 150, 300, 500km)으로 변환하여 계산
  * 외부 설정 가능한 탄소 계수(CARBON_COEFFICIENT)를 사용하여 계산의 유연성을 제공
  */
 @Component
 public class CarbonCalculator {
 
-    // 탄소 계수 (설정 파일에서 변경 가능하며, 기본값은 1. 무게(kg) * 거리(km) * 계수 = 탄소량(kg) 공식에 사용)
+    // 탄소 계수 (설정 파일에서 변경 가능하며, 기본값은 1. 무게등급 * 거리대표값 * 계수 = 탄소량(kg) 공식에 사용)
     private static BigDecimal CARBON_COEFFICIENT;
 
     /**
@@ -27,7 +28,7 @@ public class CarbonCalculator {
 
     /**
      * 상품의 무게와 배송 거리를 이용하여 탄소 배출량을 계산
-     * 탄소 배출량 = 무게(kg) * 거리(km) * 탄소 계수
+     * 탄소 배출량 = 무게등급(1~4) × 거리대표값(50,150,300,500) × 탄소 계수
      *
      * @param weight 상품의 무게 (kg)
      * @param distance 상품의 배송 거리 (km)
@@ -38,8 +39,15 @@ public class CarbonCalculator {
             return BigDecimal.ZERO;
         }
 
-        return weight
-                .multiply(distance)
+        // 1. 무게를 등급으로 변환 (1~4)
+        WeightGrade weightGrade = WeightGrade.fromWeight(weight);
+
+        // 2. 거리를 레벨로 변환하고 대표값 가져오기 (50, 150, 300, 500)
+        DistanceLevel distanceLevel = DistanceLevel.fromDistance(distance);
+
+        // 3. 탄소 계산: 무게등급 × 거리대표값 × 계수
+        return BigDecimal.valueOf(weightGrade.getGradeValue())
+                .multiply(distanceLevel.getRepresentativeValue())
                 .multiply(CARBON_COEFFICIENT);
     }
 

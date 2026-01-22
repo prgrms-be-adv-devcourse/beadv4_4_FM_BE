@@ -53,7 +53,7 @@ public class PayoutSeller extends ReplicaSeller {
      * @return storeName이 "system"이면 true, 그렇지 않으면 false
      */
     public boolean isSystem() {
-        return "system".equals(getStoreName());
+        return "SYSTEM".equals(getStoreName());
     }
 
     /**

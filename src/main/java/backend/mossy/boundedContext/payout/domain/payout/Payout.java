@@ -86,16 +86,16 @@ public class Payout extends BaseIdAndTime {
             PayoutUser payer,
             PayoutSeller payee, BigDecimal amount
     ) {
-        PayoutItem payoutItem = new PayoutItem(
-                this, // 현재 Payout과 연결
-                eventType,
-                relTypeCode,
-                relId,
-                payDate,
-                payer,
-                this.payee, // 이 Payout의 수취인으로 설정
-                amount
-        );
+        PayoutItem payoutItem = PayoutItem.builder()
+                .payout(this)            // 현재 Payout과 연결
+                .eventType(eventType)
+                .relTypeCode(relTypeCode)
+                .relId(relId)
+                .paymentDate(payDate)
+                .payer(payer)
+                .payee(this.payee)       // 이 Payout의 수취인으로 설정
+                .amount(amount)
+                .build();
 
         items.add(payoutItem);
 
