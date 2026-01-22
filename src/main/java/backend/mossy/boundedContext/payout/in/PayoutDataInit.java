@@ -4,6 +4,8 @@ import backend.mossy.boundedContext.payout.app.donation.DonationFacade;
 import backend.mossy.boundedContext.payout.app.payout.MarketApiClient;
 import backend.mossy.boundedContext.payout.app.payout.PayoutFacade;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutPolicy;
+import backend.mossy.global.eventPublisher.EventPublisher;
+import backend.mossy.shared.cash.event.PaymentCompletedEvent;
 import backend.mossy.shared.member.domain.user.UserStatus;
 import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.member.dto.event.UserDto;
@@ -45,6 +47,7 @@ public class PayoutDataInit {
     private final PayoutFacade payoutFacade;
     private final DonationFacade donationFacade;
     private final MarketApiClient marketApiClient;
+    private final EventPublisher eventPublisher;
     private final JobOperator jobOperator; // Spring Batch Job을 수동으로 실행하기 위한 오퍼레이터
     private Job payoutCollectItemsAndCompletePayoutsJob; // 실행할 배치 Job (주입 예정)
 
@@ -57,12 +60,14 @@ public class PayoutDataInit {
             PayoutFacade payoutFacade,
             DonationFacade donationFacade,
             MarketApiClient marketApiClient,
+            EventPublisher eventPublisher,
             JobOperator jobOperator
     ) {
         this.self = self;
         this.payoutFacade = payoutFacade;
         this.donationFacade = donationFacade;
         this.marketApiClient = marketApiClient;
+        this.eventPublisher = eventPublisher;
         this.jobOperator = jobOperator;
         this.payoutCollectItemsAndCompletePayoutsJob = null; // 실제 Job은 `@Autowired` 또는 `@Bean`으로 주입받아야 함
     }
@@ -247,32 +252,28 @@ public class PayoutDataInit {
         payoutFacade.createPayout(seller2.id());
         log.info("판매자2 Seller 생성 완료: ID={}", seller2.id());
 
-        // 5. 주문 데이터 생성 및 정산/기부 후보 생성
+        // 5. PaymentCompletedEvent 발행하여 정산/기부 흐름 테스트
         // PayoutPolicy.PAYOUT_READY_WAITING_DAYS + 1 일 전으로 설정하여,
         // 이 주문에 대한 정산 후보 아이템이 바로 정산 준비 상태가 되도록 합니다.
         LocalDateTime pastPaymentDate = LocalDateTime.now().minusDays(PayoutPolicy.PAYOUT_READY_WAITING_DAYS + 1);
-        OrderDto order = new OrderDto(
-                1001L,                          // id
-                LocalDateTime.now(),            // createdAt
-                LocalDateTime.now(),            // updatedAt
-                1000L,                          // customerId (buyer의 userId)
-                "구매자상점",                      // customerName
-                new BigDecimal("15000"),        // price (총 원가)
-                new BigDecimal("15000"),        // salePrice (총 판매가)
-                pastPaymentDate,                // requestPaymentDate (과거 날짜)
-                pastPaymentDate                 // paymentDate (과거 날짜)
-        );
-        // 정산 후보 항목 생성 및 기부 로그 생성 (Payout Flow 1단계)
-        // MarketApiClient를 통해 Mock 주문 아이템들을 가져와서 각 아이템에 대해 처리
-        marketApiClient.getOrderItems(order.id())
-                .forEach(orderItem -> {
-                    // 정산 후보 항목 생성
-                    payoutFacade.addPayoutCandidateItem(orderItem, order.paymentDate());
-                    // 기부 로그 생성
-                    donationFacade.createDonationLog(orderItem);
-                });
-        log.info("주문 정산 후보 및 기부 로그 생성 완료: OrderID={}, PaymentDate={}", order.id(), pastPaymentDate);
+        Long testOrderId = 1001L;
 
+        log.info("===== PaymentCompletedEvent 발행 테스트 시작 =====");
+        log.info("OrderID: {}, PaymentDate: {}", testOrderId, pastPaymentDate);
+
+        // PaymentCompletedEvent 발행
+        // Payment 담당자가 실제로 이런 식으로 발행하게 됩니다
+        PaymentCompletedEvent paymentEvent = new PaymentCompletedEvent(
+                testOrderId,
+                pastPaymentDate
+        );
+        eventPublisher.publish(paymentEvent);
+
+        log.info("PaymentCompletedEvent 발행 완료");
+        log.info("이벤트 리스너가 자동으로 처리:");
+        log.info("  1. API로 OrderItem 조회 (Mock)");
+        log.info("  2. 정산 후보 항목 생성 (수수료, 판매대금, 기부금)");
+        log.info("  3. 기부 로그 생성");
         log.info("===== 테스트 데이터 생성 완료 =====");
     }
 }
