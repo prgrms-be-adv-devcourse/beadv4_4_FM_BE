@@ -26,13 +26,30 @@ import lombok.NoArgsConstructor;
 public class CashSeller extends ReplicaSeller {
 
     @Builder
-    public CashSeller(Long id, LocalDateTime createdAt, LocalDateTime updatedAt,
-        Long userId, SellerType sellerType, String storeName, String businessNum,
-        String representativeName, String contactEmail, String contactPhone, String address1,
-        String address2, BigDecimal latitude, BigDecimal longitude, SellerStatus status) {
-        super(id, createdAt, updatedAt, userId, sellerType, storeName, businessNum,
-            representativeName,
-            contactEmail, contactPhone, address1, address2, latitude, longitude, status);
+    public CashSeller(
+            Long id,
+            Long userId,
+            SellerType sellerType,
+            String storeName,
+            String businessNum,
+            BigDecimal latitude,
+            BigDecimal longitude,
+            SellerStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        super(
+                id,
+                userId,
+                sellerType,
+                storeName,
+                businessNum,
+                latitude,
+                longitude,
+                status,
+                createdAt,
+                updatedAt
+        );
     }
 
     public static CashSeller from(SellerDto seller) {
@@ -44,11 +61,6 @@ public class CashSeller extends ReplicaSeller {
             .sellerType(seller.sellerType())
             .storeName(seller.storeName())
             .businessNum(seller.businessNum())
-            .representativeName(seller.representativeName())
-            .contactEmail(seller.contactEmail())
-            .contactPhone(seller.contactPhone())
-            .address1(seller.address1())
-            .address2(seller.address2())
             .latitude(seller.latitude())
             .longitude(seller.longitude())
             .status(seller.status())
@@ -64,11 +76,6 @@ public class CashSeller extends ReplicaSeller {
             .sellerType(getSellerType())
             .storeName(getStoreName())
             .businessNum(getBusinessNum())
-            .representativeName(getRepresentativeName())
-            .contactEmail(getContactEmail())
-            .contactPhone(getContactPhone())
-            .address1(getAddress1())
-            .address2(getAddress2())
             .latitude(getLatitude())
             .longitude(getLongitude())
             .status(getStatus())

@@ -42,11 +42,6 @@ public class PayoutSyncSellerUseCase {
                         .sellerType(seller.sellerType())
                         .storeName(seller.storeName())
                         .businessNum(seller.businessNum())
-                        .representativeName(seller.representativeName())
-                        .contactEmail(seller.contactEmail())
-                        .contactPhone(seller.contactPhone())
-                        .address1(seller.address1())
-                        .address2(seller.address2())
                         .status(seller.status())
                         .build()
         );

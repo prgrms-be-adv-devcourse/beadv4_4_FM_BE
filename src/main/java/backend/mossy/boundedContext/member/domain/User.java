@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "USER_USER")
+@Table(name = "USER")
 public class User extends SourceUser {
 
     @Column(name = "rrn_encrypted", nullable = false, unique = true)

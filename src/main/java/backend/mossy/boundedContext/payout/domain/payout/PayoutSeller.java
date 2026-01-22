@@ -32,21 +32,28 @@ public class PayoutSeller extends ReplicaSeller {
     @Builder
     public PayoutSeller(
             Long id,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt,
             Long userId,
             SellerType sellerType,
             String storeName,
             String businessNum,
-            String representativeName,
-            String contactEmail,
-            String contactPhone,
-            String address1,
-            String address2,
             BigDecimal latitude,
             BigDecimal longitude,
-            SellerStatus status) {
-        super(id, createdAt, updatedAt, userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, latitude, longitude, status);
+            SellerStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        super(
+                id,
+                userId,
+                sellerType,
+                storeName,
+                businessNum,
+                latitude,
+                longitude,
+                status,
+                createdAt,
+                updatedAt
+        );
     }
 
 
@@ -71,11 +78,6 @@ public class PayoutSeller extends ReplicaSeller {
                 .sellerType(getSellerType())
                 .storeName(getStoreName())
                 .businessNum(getBusinessNum())
-                .representativeName(getRepresentativeName())
-                .contactEmail(getContactEmail())
-                .contactPhone(getContactPhone())
-                .address1(getAddress1())
-                .address2(getAddress2())
                 .status(getStatus())
                 .createdAt(getCreatedAt())
                 .updatedAt(getUpdatedAt())

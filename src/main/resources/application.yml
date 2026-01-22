@@ -49,7 +49,7 @@ logging:
 
 jwt:
   secret: mossy-secret-key-change-later-32bytes-minimum!!
-  access-token-expire-ms: 180000
+  access-token-expire-ms: 1800000
   refresh-token-expire-ms: 1209600000
 
 

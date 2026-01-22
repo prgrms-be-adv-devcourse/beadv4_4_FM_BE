@@ -2,10 +2,12 @@ package backend.mossy.global.rsData;
 
 import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.standard.resultType.ResultType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
 @Getter
 @JsonPropertyOrder({"resultCode", "msg", "data"})

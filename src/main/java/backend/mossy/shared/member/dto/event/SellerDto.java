@@ -8,21 +8,17 @@ import lombok.Builder;
 
 @Builder
 public record SellerDto(
-    Long id,
-    Long userId,
-    SellerType sellerType,
-    String storeName,
-    String businessNum,
-    String representativeName,
-    String contactEmail,
-    String contactPhone,
-    String address1,
-    String address2,
-    BigDecimal latitude,
-    BigDecimal longitude,
-    SellerStatus status,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
+        Long id,
+        Long userId,
+        SellerType sellerType,
+        String storeName,
+        String businessNum,
+        BigDecimal latitude,
+        BigDecimal longitude,
+        SellerStatus status,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
+
 ) {
 
 }

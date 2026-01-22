@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @MappedSuperclass
 @Getter
 @Setter(AccessLevel.PROTECTED)
@@ -32,6 +34,12 @@ public abstract class BaseUser extends BaseEntity {
     @Column(name = "profile_image", nullable = false, length = 500)
     protected String profileImage;
 
+    @Column(name = "latitude", nullable = false, precision = 10, scale = 7)
+    protected BigDecimal latitude;
+
+    @Column(name = "longitude", nullable = true, precision = 10, scale = 7)
+    protected BigDecimal longitude;
+
     protected BaseUser(
         String email,
         String name,
@@ -46,6 +54,11 @@ public abstract class BaseUser extends BaseEntity {
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.status = status;
+    }
+
+    public void changeGeo(BigDecimal latitude, BigDecimal longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     // ===== 의미 있는 변경 메서드 =====
