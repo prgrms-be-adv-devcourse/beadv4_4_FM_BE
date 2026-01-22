@@ -7,7 +7,6 @@ import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.member.domain.role.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
