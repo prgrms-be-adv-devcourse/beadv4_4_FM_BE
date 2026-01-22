@@ -4,14 +4,16 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
 
 import backend.mossy.boundedContext.cash.app.CashFacade;
+import backend.mossy.shared.cash.dto.request.UserBalanceRequestDto;
 import backend.mossy.shared.cash.event.CashSellerCreatedEvent;
 import backend.mossy.shared.cash.event.CashUserCreatedEvent;
-import backend.mossy.shared.cash.event.PaymentCompletedEvent;
+import backend.mossy.shared.market.event.OrderCashPrePaymentEvent;
 import backend.mossy.shared.member.event.SellerJoinedEvent;
 import backend.mossy.shared.member.event.SellerUpdatedEvent;
 import backend.mossy.shared.member.event.UserUpdatedEvent;
 import backend.mossy.shared.member.event.UserJoinedEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -58,9 +60,9 @@ public class CashEventListener {
         cashFacade.createSellerWallet(event.seller());
     }
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void paymentCompletedEvent(PaymentCompletedEvent event) {
-        //Payment에 상태 변경 로직 구현
+    @EventListener
+    public void orderCashPrePaymentEvent(OrderCashPrePaymentEvent event) {
+        UserBalanceRequestDto request = event.toUserBalanceRequestDto();
+        cashFacade.deductUserBalance(request);
     }
 }
