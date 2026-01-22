@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.auth.app; // 패키지 확인 (usecase 패키지로 옮기셔도 됨)
+package backend.mossy.boundedContext.auth.app;
 
 import backend.mossy.boundedContext.member.domain.User;
 import backend.mossy.boundedContext.member.out.UserRepository;
@@ -8,10 +8,11 @@ import backend.mossy.shared.member.domain.role.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class LoginUseCase {
 
