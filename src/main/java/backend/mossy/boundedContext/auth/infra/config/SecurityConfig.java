@@ -57,10 +57,11 @@ public class SecurityConfig {
                                 "/error",
 
                                 //Auth 테스트 (토큰)
-                                "/api/auth/signup",
-                                "/api/auth/login",
-                                "/api/auth/reissue",
-                                "/api/auth/logout",
+                                "/api/v1/auth/signup",
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/reissue",
+                                "/api/v1/auth/logout",
+                                "/api/v1/auth/ping",
 
                                 //Cash API Check
                                 "/api/v1/cash/**",
