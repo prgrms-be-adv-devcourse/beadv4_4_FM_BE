@@ -70,4 +70,8 @@ market:
     cart:
       max_quantity: 100
 
+batch:
+  payout:
+    chunk-size: 10  # 배치 처리 시 한 번에 처리할 데이터 묶음 크기
+
 

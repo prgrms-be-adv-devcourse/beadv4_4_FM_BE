@@ -31,13 +31,31 @@ public class MarketApiClient {
 
     /**
      * [Mock] 특정 주문 ID에 해당하는 주문 아이템 목록을 반환합니다.
-     * TODO: 실제 Market API를 호출하여 데이터를 가져오도록 수정해야 합니다. (현재 임시 구현)
+     *
+     * TODO: 실제 Market Bounded Context의 API를 호출하여 데이터를 가져오도록 구현 필요
+     *
+     * 실제 구현 방법:
+     * 1. Market의 OrderFacade에 getOrderItems(Long orderId) 메서드 추가
+     * 2. Order 조회 시 orderDetails를 join fetch로 함께 조회
+     * 3. OrderDetail에서 필요한 정보 추출:
+     *    - OrderDetail의 id, orderId, quantity, orderPrice
+     *    - Order의 buyer 정보 (id, name)
+     *    - OrderDetail의 seller 정보 (id, storeName)
+     *    - OrderDetail의 productId로 Product 조회하여 name, price, weight
+     *    - OrderDetail의 weightGrade, deliveryDistance
+     * 4. 수수료 계산: payoutRate = 0.1 (10%), payoutFee = salePrice * 0.1
+     * 5. OrderItemDto로 변환하여 반환
+     *
+     * 참고: 현재는 Market 담당자 구현 지연으로 임시 Mock 데이터 사용 중
+     *
      * @param orderId 주문 ID
      * @return 주문 아이템 DTO 리스트 (현재는 하드코딩된 테스트 데이터)
      */
     public List<OrderItemDto> getOrderItems(Long orderId) {
-        // TODO: 실제 Market API 호출로 교체
-        // 임시 테스트 데이터 - 각 탄소 등급(A, B, C, D)별 테스트
+        // TODO: 실제 구현 예시
+        // return marketOrderFacade.getOrderItems(orderId);
+
+        // 임시 Mock 데이터 - 각 탄소 등급(A, B, C, D)별 테스트
         return List.of(
                 // A등급 테스트: 0~10kg 탄소, 10% 기부
                 new OrderItemDto(
