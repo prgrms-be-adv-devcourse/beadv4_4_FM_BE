@@ -41,6 +41,9 @@ spring:
       enabled: false  # 스케줄러로만 실행하기 위해 애플리케이션 시작 시 Job 자동 실행 방지
     jdbc:
       initialize-schema: embedded  # embedded: 내장 DB만 스키마 자동 생성 / always: 항상 생성 / never: 생성 안함
+      isolation-level-for-create: default  # 트랜잭션 격리 수준
+    # Spring Batch 6.0 권장 설정
+    isolation-level: default
 
 ##swagger
 springdoc:
@@ -72,6 +75,10 @@ market:
 
 batch:
   payout:
-    chunk-size: 10  # 배치 처리 시 한 번에 처리할 데이터 묶음 크기
+    chunk-size: 100  # 배치 처리 시 한 번에 처리할 데이터 묶음 크기 (권장: 100-1000)
+    # chunk-size 설정 가이드:
+    # - 작은 값(10-50): 트랜잭션이 빠르게 커밋되지만, DB 왕복 횟수 증가
+    # - 큰 값(500-1000): DB 왕복 횟수 감소하지만, 메모리 사용량 증가 및 롤백 시 손실 커짐
+    # - 권장: 100-200 (적절한 균형)
 
 

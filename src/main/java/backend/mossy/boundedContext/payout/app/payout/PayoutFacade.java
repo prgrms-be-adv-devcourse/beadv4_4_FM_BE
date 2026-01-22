@@ -78,10 +78,11 @@ public class PayoutFacade {
 
     /**
      * [흐름 2] 정산 후보 아이템을 집계하여 실제 정산(Payout)에 포함될 PayoutItem으로 변환하는 배치를 실행
+     * Spring Batch의 트랜잭션을 사용하므로 MANDATORY 전파 레벨 사용
      * @param limit 한 번에 처리할 개수
      * @return 처리 결과 (성공/실패, 처리된 개수 등)
      */
-    @Transactional
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
     public RsData<Integer> collectPayoutItemsMore(int limit) {
         return payoutCollectPayoutItemsMoreUseCase.collectPayoutItemsMore(limit);
     }
@@ -101,10 +102,11 @@ public class PayoutFacade {
     /**
      * [흐름 3] 생성된 정산(Payout)들을 실제로 실행하고 완료 처리하는 배치를 실행
      * 이 과정이 성공적으로 끝나면 PayoutCompletedEvent가 발행되어, 기부금 정산 등 후속 조치가 이어짐
+     * Spring Batch의 트랜잭션을 사용하므로 MANDATORY 전파 레벨 사용
      * @param limit 한 번에 처리할 개수
      * @return 처리 결과 (성공/실패, 처리된 개수 등)
      */
-    @Transactional
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
     public RsData<Integer> completePayoutsMore(int limit) {
         return payoutCompletePayoutsMoreUseCase.completePayoutsMore(limit);
     }
