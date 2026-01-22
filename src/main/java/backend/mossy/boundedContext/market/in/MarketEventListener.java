@@ -20,10 +20,6 @@ public class MarketEventListener {
     private final MarketFacade marketFacade;
     private final CartFacade cartFacade;
 
-//    @TransactionalEventListener(phase = AFTER_COMMIT)
-//    @Transactional(propagation = REQUIRES_NEW)
-//    public void handle(결제 이벤트) { marketFacade.decreaseProductStock(productId, 1);}
-
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public MarketUser userCreatedEvent(UserJoinedEvent event) {
