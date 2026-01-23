@@ -20,7 +20,7 @@ public class Payment extends BaseIdAndTime {
     @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
-    @Column(name = "payment_key", unique = true)
+    @Column(name = "payment_key")
     private String paymentKey; // PG사 거래 고유 번호
 
     @Column(name = "order_no", nullable = false)

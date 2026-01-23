@@ -55,13 +55,9 @@ public class PaymentSupport {
     }
 
     public Order findOrderForCancel(String orderNo) {
-        Order order = orderRepository.findByOrderNo(orderNo)
-            .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
-
-        if (order.getState() != OrderState.PAID) {
-            throw new DomainException(ErrorCode.INVALID_ORDER_STATE);
-        }
-        return order;
+        return orderRepository.findByOrderNo(orderNo)
+            .filter(order -> order.getState() == OrderState.PAID)
+            .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND)); // 또는 적절한 에러코드
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
