@@ -53,7 +53,8 @@ public class PaymentConfirmTossUseCase {
                 order.getId(),
                 order.getBuyer().getId(),
                 paymentDate,
-                order.getTotalPrice()
+                order.getTotalPrice(),
+                String.valueOf(request.payMethod())
             ));
         } catch (Exception e) {
             // 시스템 오류 시 PG 결제 취소

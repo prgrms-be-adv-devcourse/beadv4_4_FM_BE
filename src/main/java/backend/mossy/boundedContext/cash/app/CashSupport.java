@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.cash.app;
 
+import backend.mossy.boundedContext.cash.domain.CashPolicy;
 import backend.mossy.boundedContext.cash.domain.seller.CashSeller;
 import backend.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import backend.mossy.boundedContext.cash.domain.user.CashUser;
@@ -59,5 +60,11 @@ public class CashSupport {
             .orElseThrow(
                 () -> new DomainException("NOT_EXISTS_USER_WALLET", "판매자 지갑이 존재하지 않습니다.: " + sellerId)
             );
+    }
+
+    public SellerWallet findHoldingWallet() {
+        return sellerWalletRepository.findByHolderId(CashPolicy.HOLDING_MEMBER_ID)  .orElseThrow(
+            () -> new DomainException("NOT_EXISTS_USER_WALLET", "판매자 지갑이 존재하지 않습니다.")
+        );
     }
 }

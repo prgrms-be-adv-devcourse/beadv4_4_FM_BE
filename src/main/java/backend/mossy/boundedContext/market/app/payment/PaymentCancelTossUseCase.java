@@ -21,8 +21,7 @@ public class PaymentCancelTossUseCase {
         BigDecimal cancelAmount = request.cancelAmount();
         String cancelReason = request.cancelReason();
 
-        Order order = paymentSupport.findOrder(orderNo);
-
+        paymentSupport.findOrder(orderNo);
         paymentSupport.requestTossCancel(paymentKey, cancelReason);
         paymentSupport.processCancel(orderNo, paymentKey,cancelAmount, PayMethod.CARD, cancelReason);
     }

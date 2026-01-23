@@ -8,6 +8,7 @@ import backend.mossy.shared.cash.dto.request.UserBalanceRequestDto;
 import backend.mossy.shared.cash.event.CashSellerCreatedEvent;
 import backend.mossy.shared.cash.event.CashUserCreatedEvent;
 import backend.mossy.shared.market.event.OrderCashPrePaymentEvent;
+import backend.mossy.shared.market.event.PaymentCompletedEvent;
 import backend.mossy.shared.member.event.SellerJoinedEvent;
 import backend.mossy.shared.member.event.SellerUpdatedEvent;
 import backend.mossy.shared.member.event.UserUpdatedEvent;
@@ -64,5 +65,11 @@ public class CashEventListener {
     public void orderCashPrePaymentEvent(OrderCashPrePaymentEvent event) {
         UserBalanceRequestDto request = event.toUserBalanceRequestDto();
         cashFacade.deductUserBalance(request);
+    }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public void paymentCompletedEvent(PaymentCompletedEvent event) {
+        cashFacade.cashHolding(event);
     }
 }

@@ -42,7 +42,8 @@ public class PaymentConfirmCashUseCase {
                 order.getId(),
                 order.getBuyer().getId(),
                 paymentDate,
-                request.amount()
+                request.amount(),
+                String.valueOf(request.payMethod())
             ));
         } catch (DomainException e) {
             paymentSupport.saveFailure(

@@ -16,11 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.*;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -94,14 +90,6 @@ public class Order extends BaseIdAndTime {
 
     public void completePayment() {
         this.state = OrderState.PAID;
-    }
-
-    @Builder
-    public Order(MarketUser buyer, String orderNo, OrderState state, BigDecimal totalPrice) {
-        this.buyer = buyer;
-        this.orderNo = orderNo;
-        this.state = state;
-        this.totalPrice = totalPrice;
     }
 
     public void validateAmount(BigDecimal requestAmount) {

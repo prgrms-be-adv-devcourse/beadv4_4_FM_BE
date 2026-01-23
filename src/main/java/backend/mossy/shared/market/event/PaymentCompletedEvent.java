@@ -7,6 +7,7 @@ public record PaymentCompletedEvent(
     Long orderId,
     Long buyerId,
     LocalDateTime paymentDate,
-    BigDecimal amount
+    BigDecimal amount,
+    String payMethod
 ) {
 }
