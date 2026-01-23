@@ -1,6 +1,7 @@
 package backend.mossy.boundedContext.market.app.payment;
 
 import backend.mossy.boundedContext.market.domain.order.Order;
+import backend.mossy.boundedContext.market.domain.order.OrderState;
 import backend.mossy.boundedContext.market.domain.payment.PayMethod;
 import backend.mossy.boundedContext.market.out.order.OrderRepository;
 import backend.mossy.global.exception.DomainException;
@@ -51,6 +52,16 @@ public class PaymentSupport {
         } catch (Exception e) {
             eventPublisher.publishEvent(new PaymentCancelFailedEvent(paymentKey, cancelReason));
         }
+    }
+
+    public Order findOrderForCancel(String orderNo) {
+        Order order = orderRepository.findByOrderNo(orderNo)
+            .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
+
+        if (order.getState() != OrderState.PAID) {
+            throw new DomainException(ErrorCode.INVALID_ORDER_STATE);
+        }
+        return order;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

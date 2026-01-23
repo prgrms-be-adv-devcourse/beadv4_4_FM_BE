@@ -114,8 +114,8 @@ public class Order extends BaseIdAndTime {
     public LocalDateTime createTossPayment(String paymentKey, String orderNo, BigDecimal amount, PayMethod method) {
         validateNotPaid();
         validateAmount(amount);
-
         Payment newPayment = Payment.createTossPaid(this, paymentKey, orderNo, amount, method);
+        this.orderNo = orderNo;
         this.payments.add(newPayment);
         // this.state = OrderState.PAID; (결제완료 이벤트 수신하고 처리)
 
