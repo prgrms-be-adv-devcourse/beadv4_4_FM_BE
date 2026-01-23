@@ -93,7 +93,6 @@ public class ApiV1PaymentController {
     )
     @GetMapping("/order/{orderId}") //
     public RsData<List<PaymentResponse>> getPaymentsByOrder(@PathVariable("orderId") Long orderId) {
-        // [수정] 단건 조회가 아닌 리스트 조회를 위해 Facade 호출
         List<PaymentResponse> responses = paymentFacade.findAllPayments(orderId);
         return new RsData<>("200", "주문 결제 이력 조회 성공", responses);
     }

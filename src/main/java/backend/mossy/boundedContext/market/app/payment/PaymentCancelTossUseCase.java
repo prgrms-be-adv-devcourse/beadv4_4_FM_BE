@@ -1,6 +1,5 @@
 package backend.mossy.boundedContext.market.app.payment;
 
-import backend.mossy.boundedContext.market.domain.order.Order;
 import backend.mossy.boundedContext.market.domain.payment.PayMethod;
 import backend.mossy.shared.market.dto.toss.PaymentCancelTossRequestDto;
 import java.math.BigDecimal;
