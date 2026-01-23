@@ -7,6 +7,7 @@ import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -81,7 +82,7 @@ public class PayoutFacade {
      * @param limit 한 번에 처리할 개수
      * @return 처리 결과 (성공/실패, 처리된 개수 등)
      */
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
+    @Transactional(propagation = Propagation.MANDATORY)
     public RsData<Integer> collectPayoutItemsMore(int limit) {
         return payoutCollectPayoutItemsMoreUseCase.collectPayoutItemsMore(limit);
     }
@@ -105,7 +106,7 @@ public class PayoutFacade {
      * @param limit 한 번에 처리할 개수
      * @return 처리 결과 (성공/실패, 처리된 개수 등)
      */
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
+    @Transactional(propagation = Propagation.MANDATORY)
     public RsData<Integer> completePayoutsMore(int limit) {
         return payoutCompletePayoutsMoreUseCase.completePayoutsMore(limit);
     }
