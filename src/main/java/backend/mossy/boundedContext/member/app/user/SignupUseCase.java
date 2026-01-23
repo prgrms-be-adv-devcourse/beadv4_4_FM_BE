@@ -54,7 +54,7 @@ public class SignupUseCase {
         System.out.println(">>> ENTITY latitude  = " + user.getLatitude());
 
         Role roleUser = roleRepository.findByCode(RoleCode.USER)
-                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ErrorCode.ROLE_NOT_FOUND));
 
         user.addUserRole(new UserRole(user, roleUser));
 

@@ -31,7 +31,7 @@ public class UserFacade {
         eventPublisher.publish(new UserJoinedEvent (userDto));
         log.info("UserJoinedEvent 발행 완료: userId ={}", user.getId());
 
-        return userRepository.save(user).getId();
+        return saved.getId();
 
 
     }
