@@ -12,21 +12,45 @@ import java.math.BigDecimal;
 @Getter
 public enum CarbonGrade {
     /**
-     * A 등급: 탄소 배출량 0kg 초과 10kg 이하, 수수료의 10% 기부
+     * 1등급 (S): 탄소 배출량 0~0.5kg, 수수료의 5% 기부 (최우수 친환경)
      */
-    A(new BigDecimal("0"),   new BigDecimal("10"),  new BigDecimal("0.10")),  // 0~10kg: 10%
+    GRADE_1(new BigDecimal("0"),     new BigDecimal("0.5"),   new BigDecimal("0.05")),   // 0~0.5kg: 5%
     /**
-     * B 등급: 탄소 배출량 10kg 초과 30kg 이하, 수수료의 20% 기부
+     * 2등급 (A): 탄소 배출량 0.5~1kg, 수수료의 10% 기부
      */
-    B(new BigDecimal("10"),  new BigDecimal("30"),  new BigDecimal("0.20")),  // 10~30kg: 20%
+    GRADE_2(new BigDecimal("0.5"),   new BigDecimal("1"),     new BigDecimal("0.10")),   // 0.5~1kg: 10%
     /**
-     * C 등급: 탄소 배출량 30kg 초과 50kg 이하, 수수료의 30% 기부
+     * 3등급 (B): 탄소 배출량 1~2kg, 수수료의 15% 기부
      */
-    C(new BigDecimal("30"),  new BigDecimal("50"),  new BigDecimal("0.30")),  // 30~50kg: 30%
+    GRADE_3(new BigDecimal("1"),     new BigDecimal("2"),     new BigDecimal("0.15")),   // 1~2kg: 15%
     /**
-     * D 등급: 탄소 배출량 50kg 초과, 수수료의 40% 기부 (최고 등급)
+     * 4등급 (C): 탄소 배출량 2~5kg, 수수료의 20% 기부
      */
-    D(new BigDecimal("50"),  new BigDecimal("99999"), new BigDecimal("0.40")); // 50kg~: 40%
+    GRADE_4(new BigDecimal("2"),     new BigDecimal("5"),     new BigDecimal("0.20")),   // 2~5kg: 20%
+    /**
+     * 5등급 (D): 탄소 배출량 5~10kg, 수수료의 25% 기부
+     */
+    GRADE_5(new BigDecimal("5"),     new BigDecimal("10"),    new BigDecimal("0.25")),   // 5~10kg: 25%
+    /**
+     * 6등급 (E): 탄소 배출량 10~15kg, 수수료의 30% 기부
+     */
+    GRADE_6(new BigDecimal("10"),    new BigDecimal("15"),    new BigDecimal("0.30")),   // 10~15kg: 30%
+    /**
+     * 7등급 (F): 탄소 배출량 15~25kg, 수수료의 35% 기부
+     */
+    GRADE_7(new BigDecimal("15"),    new BigDecimal("25"),    new BigDecimal("0.35")),   // 15~25kg: 35%
+    /**
+     * 8등급 (G): 탄소 배출량 25~40kg, 수수료의 40% 기부
+     */
+    GRADE_8(new BigDecimal("25"),    new BigDecimal("40"),    new BigDecimal("0.40")),   // 25~40kg: 40%
+    /**
+     * 9등급 (H): 탄소 배출량 40~60kg, 수수료의 45% 기부
+     */
+    GRADE_9(new BigDecimal("40"),    new BigDecimal("60"),    new BigDecimal("0.45")),   // 40~60kg: 45%
+    /**
+     * 10등급 (I): 탄소 배출량 60kg 초과, 수수료의 50% 기부 (탄소 배출 최다)
+     */
+    GRADE_10(new BigDecimal("60"),   new BigDecimal("99999"), new BigDecimal("0.50"));   // 60kg~: 50%
 
     private final BigDecimal minCarbon;     // 해당 등급의 최소 탄소 배출량 (kg)
     private final BigDecimal maxCarbon;     // 해당 등급의 최대 탄소 배출량 (kg)
