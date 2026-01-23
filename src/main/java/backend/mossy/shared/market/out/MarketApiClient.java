@@ -1,6 +1,6 @@
 package backend.mossy.shared.market.out;
 
-import backend.mossy.shared.market.dto.event.OrderItemDto;
+import backend.mossy.shared.market.dto.event.OrderPayoutDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class MarketApiClient {
                 .build();
     }
 
-    public List<OrderItemDto> getOrderItems(Long id) {
+    public List<OrderPayoutDto> getOrderItems(Long id) {
         return restClient
                 .get()
                 .uri("/orders/%d/items".formatted(id))

@@ -2,7 +2,7 @@ package backend.mossy.boundedContext.payout.domain.donation;
 
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
-import backend.mossy.shared.market.dto.event.OrderItemDto;
+import backend.mossy.shared.market.dto.event.OrderPayoutDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -36,13 +36,13 @@ public class DonationCalculator {
     }
 
     /**
-     * 주어진 주문 아이템(OrderItemDto)에 대한 최종 기부금액을 계산
+     * 주어진 주문 아이템(OrderPayoutDto)에 대한 최종 기부금액을 계산
      * 계산 과정은 탄소 배출량 등급에 따른 비율 적용 및 최대 기부금 비율 제한을 포함
      *
-     * @param orderItem 기부금 계산의 기준이 되는 주문 아이템 DTO
+     * @param orderItem 기부금 계산의 기준이 되는 주문 정산 DTO
      * @return 계산된 기부금 (원 단위로 반올림됨)
      */
-    public BigDecimal calculate(OrderItemDto orderItem) {
+    public BigDecimal calculate(OrderPayoutDto orderItem) {
         // 1. 탄소 배출량 기반으로 수수료를 계산
         BigDecimal payoutFee = feeCalculator.calculate(orderItem);
 
@@ -70,32 +70,34 @@ public class DonationCalculator {
     }
 
     /**
-     * 주어진 주문 아이템(OrderItemDto)의 탄소 배출량을 기반으로 해당 아이템의 탄소 등급(CarbonGrade)을 조회
+     * 주어진 주문 아이템(OrderPayoutDto)의 탄소 배출량을 기반으로 해당 아이템의 탄소 등급(CarbonGrade)을 조회
      *
-     * @param orderItem 탄소 등급을 조회할 주문 아이템 DTO
+     * @param orderItem 탄소 등급을 조회할 주문 정산 DTO
      * @return 계산된 탄소 등급
      */
-    public CarbonGrade getGrade(OrderItemDto orderItem) {
+    public CarbonGrade getGrade(OrderPayoutDto orderItem) {
         BigDecimal carbon = carbonCalculator.calculate(orderItem);
         return CarbonGrade.fromCarbon(carbon);
     }
 
     /**
-     * 주어진 주문 아이템(OrderItemDto)에 대한 총 탄소 배출량(kg 단위)을 계산하여 반환
+     * 주어진 주문 아이템(OrderPayoutDto)에 대한 총 탄소 배출량(kg 단위)을 계산하여 반환
      *
-     * @param orderItem 탄소 배출량을 계산할 주문 아이템 DTO
+     * @param orderItem 탄소 배출량을 계산할 주문 정산 DTO
      * @return 계산된 탄소 배출량 (kg 단위)
      */
-    public BigDecimal getCarbon(OrderItemDto orderItem) {
+    public BigDecimal getCarbon(OrderPayoutDto orderItem) {
         return carbonCalculator.calculate(orderItem);
     }
 
-    private void validateOrderItem(OrderItemDto orderItem) {
+    /**
+    private void validateOrderItem(OrderPayoutDto orderItem) {
         if (orderItem == null) {
             throw new DomainException(ErrorCode.INVALID_DONATION_CALCULATION_INPUT);
         }
-        if (orderItem.payoutFee() == null) {
+        if (orderItem.orderPrice() == null) {
             throw new DomainException(ErrorCode.INVALID_PAYOUT_FEE);
         }
     }
+     **/
 }

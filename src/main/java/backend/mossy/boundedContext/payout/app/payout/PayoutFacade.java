@@ -1,8 +1,8 @@
 package backend.mossy.boundedContext.payout.app.payout;
 
+import backend.mossy.shared.market.dto.event.OrderPayoutDto;
 import backend.mossy.shared.payout.dto.response.payout.PayoutCandidateItemResponse;
 import backend.mossy.global.rsData.RsData;
-import backend.mossy.shared.market.dto.event.OrderItemDto;
 import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +72,7 @@ public class PayoutFacade {
      * @param paymentDate 결제 완료 일시
      */
     @Transactional
-    public void addPayoutCandidateItem(OrderItemDto orderItem, LocalDateTime paymentDate) {
+    public void addPayoutCandidateItem(OrderPayoutDto orderItem, LocalDateTime paymentDate) {
         payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(orderItem, paymentDate);
     }
 

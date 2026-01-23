@@ -2,7 +2,7 @@ package backend.mossy.boundedContext.payout.domain.donation;
 
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
-import backend.mossy.shared.market.dto.event.OrderItemDto;
+import backend.mossy.shared.market.dto.event.OrderPayoutDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,47 +28,24 @@ public class CarbonCalculator {
     }
 
     /**
-     * 상품의 무게와 배송 거리를 이용하여 탄소 배출량을 계산
-     * 무게와 거리를 각각 등급별 대표값으로 변환 후 계산
-     * 탄소 배출량 = 무게대표값(kg) * 거리대표값(km) * 탄소 계수
-     *
-     * @param weight 상품의 무게 (kg)
-     * @param distance 상품의 배송 거리 (km)
-     * @return 계산된 탄소 배출량 (kg 단위), 입력값이 null인 경우 0을 반환
+     * 무게 등급명을 대표값으로 변환
+     * - 소형: 0.5kg
+     * - 중소형: 3kg
+     * - 중형: 7.5kg
+     * - 대형: 15kg
      */
-    public BigDecimal calculate(BigDecimal weight, BigDecimal distance) {
-        if (weight == null || distance == null) {
+    private BigDecimal getRepresentativeWeightByGrade(String weightGrade) {
+        if (weightGrade == null) {
             throw new DomainException(ErrorCode.INVALID_CARBON_CALCULATION_INPUT);
         }
 
-        // 무게를 등급별 대표값으로 변환
-        BigDecimal representativeWeight = getRepresentativeWeight(weight);
-
-        // 거리를 등급별 대표값으로 변환
-        BigDecimal representativeDistance = getRepresentativeDistance(distance);
-
-        return representativeWeight
-                .multiply(representativeDistance)
-                .multiply(CARBON_COEFFICIENT);
-    }
-
-    /**
-     * 무게를 등급별 대표값으로 변환
-     * - 소형 (0~1kg): 0.5kg
-     * - 중소형 (1~5kg): 3kg
-     * - 중형 (5~10kg): 7.5kg
-     * - 대형 (10kg 초과): 15kg
-     */
-    private BigDecimal getRepresentativeWeight(BigDecimal weight) {
-        if (weight.compareTo(new BigDecimal("1")) <= 0) {
-            return new BigDecimal("0.5");
-        } else if (weight.compareTo(new BigDecimal("5")) <= 0) {
-            return new BigDecimal("3");
-        } else if (weight.compareTo(new BigDecimal("10")) <= 0) {
-            return new BigDecimal("7.5");
-        } else {
-            return new BigDecimal("15");
-        }
+        return switch (weightGrade) {
+            case "소형" -> new BigDecimal("0.5");
+            case "중소형" -> new BigDecimal("3");
+            case "중형" -> new BigDecimal("7.5");
+            case "대형" -> new BigDecimal("15");
+            default -> throw new DomainException(ErrorCode.INVALID_CARBON_CALCULATION_INPUT);
+        };
     }
 
     /**
@@ -91,17 +68,26 @@ public class CarbonCalculator {
     }
 
     /**
-     * OrderItemDto로부터 무게(weight)와 배송 거리(deliveryDistance)를 추출하여 탄소 배출량을 계산
-     * 내부적으로 {@link #calculate(BigDecimal, BigDecimal)} 메서드를 호출
+     * OrderPayoutDto로부터 무게 등급(weightGrade)과 배송 거리(deliveryDistance)를 추출하여 탄소 배출량을 계산
+     * 무게 등급을 대표값으로 변환 후 계산
      *
-     * @param orderItem 탄소 배출량을 계산할 주문 아이템 DTO
+     * @param orderItem 탄소 배출량을 계산할 주문 정산 DTO
      * @return 계산된 탄소 배출량 (kg 단위)
      */
-    public BigDecimal calculate(OrderItemDto orderItem) {
+    public BigDecimal calculate(OrderPayoutDto orderItem) {
         if (orderItem == null) {
             throw new DomainException(ErrorCode.INVALID_CARBON_CALCULATION_INPUT);
         }
-        return calculate(orderItem.weight(), orderItem.deliveryDistance());
+
+        // 무게 등급명을 대표값으로 변환
+        BigDecimal representativeWeight = getRepresentativeWeightByGrade(orderItem.weightGrade());
+
+        // 거리를 등급별 대표값으로 변환
+        BigDecimal representativeDistance = getRepresentativeDistance(orderItem.deliveryDistance());
+
+        return representativeWeight
+                .multiply(representativeDistance)
+                .multiply(CARBON_COEFFICIENT);
     }
 
     /**

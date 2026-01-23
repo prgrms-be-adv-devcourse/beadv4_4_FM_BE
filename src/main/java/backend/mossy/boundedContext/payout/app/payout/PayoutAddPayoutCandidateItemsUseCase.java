@@ -6,11 +6,14 @@ import backend.mossy.boundedContext.payout.domain.donation.FeeCalculator;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutEventType;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
+
+import backend.mossy.shared.market.dto.event.OrderItemDto;
+import backend.mossy.shared.market.dto.event.OrderPayoutDto;
 import backend.mossy.shared.payout.dto.event.payout.CreatePayoutCandidateItemDto;
 import backend.mossy.boundedContext.payout.out.payout.PayoutCandidateItemRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
-import backend.mossy.shared.market.dto.event.OrderItemDto;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +36,11 @@ public class PayoutAddPayoutCandidateItemsUseCase {
 
     /**
      * 단일 주문 아이템(OrderItem)에 대해 정산 후보 항목을 생성
-     * @param orderItem 주문 아이템 DTO
+     * @param OrderPayoutDto 주문 아이템 DTO
      * @param paymentDate 결제 완료 일시
      */
     @Transactional
-    public void addPayoutCandidateItem(OrderItemDto orderItem, LocalDateTime paymentDate) {
+    public void addPayoutCandidateItem(OrderPayoutDto orderItem, LocalDateTime paymentDate) {
         if (orderItem == null) {
             throw new DomainException(ErrorCode.ORDERITEM_IS_NULL);
         }
@@ -51,11 +54,11 @@ public class PayoutAddPayoutCandidateItemsUseCase {
      * 하나의 주문 아이템(OrderItem)을 여러 개의 정산 후보 아이템(PayoutCandidateItem)으로 분해하여 생성
      * 예를 들어, 하나의 상품 판매는 (1)판매자에게 갈 판매대금, (2)플랫폼의 수수료, (3)기부금
      *
-     * @param orderItem 처리할 개별 주문 아이템
+     * @param orderItem 처리할 개별 주문 정산 DTO
      * @param paymentDate 결제 완료 일시
      */
     private void makePayoutCandidateItems(
-            OrderItemDto orderItem,
+            OrderPayoutDto orderItem,
             LocalDateTime paymentDate
     ) {
         // --- 정산에 필요한 주요 주체(Actor)들을 조회 ---
@@ -87,8 +90,8 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             throw new DomainException(ErrorCode.INVALID_PAYOUT_FEE);
         }
 
-        // 4. 판매 대금 계산 (판매가 - 수수료)
-        BigDecimal salePriceWithoutFee = orderItem.salePrice().subtract(payoutFee);
+        // 4. 판매 대금 계산 (주문금액 - 수수료)
+        BigDecimal salePriceWithoutFee = orderItem.orderPrice().subtract(payoutFee);
         if (salePriceWithoutFee.signum() < 0) {
             throw new DomainException(ErrorCode.INVALID_PAYOUT_FEE);
         }
@@ -107,7 +110,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
      */
     private void makePayoutCandidateItem(
             LocalDateTime paymentDate,
-            OrderItemDto orderItem,
+            OrderPayoutDto orderItem,
             PayoutEventType eventType,
             PayoutUser payer,
             PayoutSeller payee,
@@ -115,7 +118,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     ) {
         makePayoutCandidateItem(CreatePayoutCandidateItemDto.builder()
                 .eventType(eventType)
-                .relTypeCode(orderItem.getModelTypeCode())
+                .relTypeCode("OrderDetail")
                 .relId(orderItem.id())
                 .paymentDate(paymentDate)
                 .payer(payer)

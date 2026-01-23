@@ -6,7 +6,7 @@ import backend.mossy.boundedContext.payout.domain.donation.DonationCalculator;
 import backend.mossy.boundedContext.payout.domain.donation.DonationLog;
 import backend.mossy.boundedContext.payout.out.donation.DonationLogRepository;
 import backend.mossy.global.exception.ErrorCode;
-import backend.mossy.shared.market.dto.event.OrderItemDto;
+import backend.mossy.shared.market.dto.event.OrderPayoutDto;
 import lombok.RequiredArgsConstructor;
 import backend.mossy.global.exception.DomainException;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class DonationCreateLogUseCase {
      * @param orderItem 기부금이 발생한 특정 주문 아이템 DTO
      */
     @Transactional
-    public void createDonationLog(OrderItemDto orderItem) {
+    public void createDonationLog(OrderPayoutDto orderItem) {
         if (orderItem == null) {
             throw new DomainException(ErrorCode.ORDERITEM_IS_NULL);
         }
