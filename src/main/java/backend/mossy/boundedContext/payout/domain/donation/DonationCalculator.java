@@ -19,6 +19,7 @@ import java.math.RoundingMode;
 public class DonationCalculator {
 
     private final CarbonCalculator carbonCalculator;
+    private final FeeCalculator feeCalculator;
 
     // 최대 기부금 비율 (수수료의 50%)
     private static BigDecimal MAX_DONATION_RATE;
@@ -42,25 +43,28 @@ public class DonationCalculator {
      * @return 계산된 기부금 (원 단위로 반올림됨)
      */
     public BigDecimal calculate(OrderItemDto orderItem) {
-        // 1. 주문 아이템의 배송 정보 등을 바탕으로 탄소 배출량(kg)을 계산
+        // 1. 탄소 배출량 기반으로 수수료를 계산
+        BigDecimal payoutFee = feeCalculator.calculate(orderItem);
+
+        // 2. 주문 아이템의 배송 정보 등을 바탕으로 탄소 배출량(kg)을 계산
         BigDecimal carbon = carbonCalculator.calculate(orderItem);
 
-        // 2. 계산된 탄소 배출량에 따라 탄소 등급(CarbonGrade)을 판정합니다.
+        // 3. 계산된 탄소 배출량에 따라 탄소 등급(CarbonGrade)을 판정합니다.
         CarbonGrade grade = CarbonGrade.fromCarbon(carbon);
 
-        // 3. 주문 아이템의 수수료(payoutFee)에 탄소 등급별 기부 비율을 적용하여 기본 기부금을 계산
+        // 4. 수수료에 탄소 등급별 기부 비율을 적용하여 기본 기부금을 계산
         //    원 단위로 반올림 처리
-        BigDecimal calculatedDonation = orderItem.payoutFee()
+        BigDecimal calculatedDonation = payoutFee
                 .multiply(grade.getDonationRate())
                 .setScale(0, RoundingMode.HALF_UP); // 원단위 반올림
 
-        // 4. 수수료에 '최대 기부금 비율'을 적용하여 기부금의 상한선을 계산
+        // 5. 수수료에 '최대 기부금 비율'을 적용하여 기부금의 상한선을 계산
         //    이 또한 원 단위로 반올림 처리
-        BigDecimal maxDonation = orderItem.payoutFee()
+        BigDecimal maxDonation = payoutFee
                 .multiply(MAX_DONATION_RATE)
                 .setScale(0, RoundingMode.HALF_UP);
 
-        // 5. 계산된 기본 기부금과 최대 기부금 제한 중 더 작은 값을 최종 기부금으로 결정하여 반환
+        // 6. 계산된 기본 기부금과 최대 기부금 제한 중 더 작은 값을 최종 기부금으로 결정하여 반환
         //    이는 기부금이 특정 비율(예: 수수료의 50%)을 초과하지 않도록 보장
         return calculatedDonation.min(maxDonation);
     }

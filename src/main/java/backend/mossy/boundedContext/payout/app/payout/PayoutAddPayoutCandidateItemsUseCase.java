@@ -2,6 +2,7 @@ package backend.mossy.boundedContext.payout.app.payout;
 
 import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
 import backend.mossy.boundedContext.payout.domain.donation.DonationCalculator;
+import backend.mossy.boundedContext.payout.domain.donation.FeeCalculator;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutEventType;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
@@ -28,6 +29,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     private final PayoutSupport payoutSupport;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
     private final DonationCalculator donationCalculator;
+    private final FeeCalculator feeCalculator;
 
     /**
      * 단일 주문 아이템(OrderItem)에 대해 정산 후보 항목을 생성
@@ -67,15 +69,27 @@ public class PayoutAddPayoutCandidateItemsUseCase {
                 .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND)); // 판매자
 
         // --- 금액을 계산 ---
-        // 1. 이 상품 판매로 인해 발생한 기부금을 계산
+        // 1. 탄소 배출량 기반으로 수수료를 계산
+        BigDecimal payoutFee = feeCalculator.calculate(orderItem);
+        if (payoutFee == null || payoutFee.signum() < 0) {
+            throw new DomainException(ErrorCode.INVALID_PAYOUT_FEE);
+        }
+
+        // 2. 이 상품 판매로 인해 발생한 기부금을 계산
         BigDecimal donationAmount = donationCalculator.calculate(orderItem);
         if (donationAmount == null || donationAmount.signum() < 0) {
             throw new DomainException(ErrorCode.INVALID_DONATION_AMOUNT);
         }
 
-        // 2. 조정된 수수료를 계산합니다. (원래 수수료 - 기부금)
-        BigDecimal adjustedFee = orderItem.payoutFee().subtract(donationAmount);
+        // 3. 조정된 수수료를 계산합니다. (원래 수수료 - 기부금)
+        BigDecimal adjustedFee = payoutFee.subtract(donationAmount);
         if (adjustedFee.signum() < 0) {
+            throw new DomainException(ErrorCode.INVALID_PAYOUT_FEE);
+        }
+
+        // 4. 판매 대금 계산 (판매가 - 수수료)
+        BigDecimal salePriceWithoutFee = orderItem.salePrice().subtract(payoutFee);
+        if (salePriceWithoutFee.signum() < 0) {
             throw new DomainException(ErrorCode.INVALID_PAYOUT_FEE);
         }
 
@@ -83,7 +97,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
         // 아이템 1: 플랫폼 수수료 (구매자 -> 시스템)
         makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee);
         // 아이템 2: 판매 대금 (구매자 -> 판매자)
-        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_대금, buyer, seller, orderItem.salePriceWithoutFee());
+        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee);
         // 아이템 3: 기부금 (구매자 -> 기부금 수령처)
         makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount);
     }
