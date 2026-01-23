@@ -1,5 +1,7 @@
 package backend.mossy.boundedContext.payout.domain.payout;
 
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -92,6 +94,27 @@ public class PayoutItem extends BaseIdAndTime {
      * @param amount      금액
      */
     public PayoutItem(Payout payout, PayoutEventType eventType, String relTypeCode, Long relId, LocalDateTime payDate, PayoutUser payer, PayoutSeller payee, BigDecimal amount) {
+        if (payout == null) {
+            throw new DomainException(ErrorCode.PAYOUT_IS_NULL);
+        }
+        if (eventType == null) {
+            throw new DomainException(ErrorCode.PAYOUT_EVENT_TYPE_IS_NULL);
+        }
+        if (relTypeCode == null || relTypeCode.isBlank()) {
+            throw new DomainException(ErrorCode.REL_TYPE_CODE_IS_NULL);
+        }
+        if (relId == null) {
+            throw new DomainException(ErrorCode.REL_ID_IS_NULL);
+        }
+        if (payDate == null) {
+            throw new DomainException(ErrorCode.PAYMENT_DATE_IS_NULL);
+        }
+        if (payee == null) {
+            throw new DomainException(ErrorCode.PAYEE_IS_NULL);
+        }
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new DomainException(ErrorCode.INVALID_AMOUNT);
+        }
         this.payout = payout;
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;

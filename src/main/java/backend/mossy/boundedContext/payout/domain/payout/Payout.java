@@ -1,5 +1,7 @@
 package backend.mossy.boundedContext.payout.domain.payout;
 
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import backend.mossy.shared.payout.dto.event.payout.PayoutEventDto;
 import backend.mossy.shared.payout.event.PayoutCompletedEvent;
@@ -39,7 +41,6 @@ public class Payout extends BaseIdAndTime {
      * 정산이 완료된 일시를 기록(정산이 완료되지 않았다면 null)
      * 정산 완료 여부를 판단하는 중요한 기준
      */
-    @Setter
     private LocalDateTime payoutDate;
 
     /**
@@ -121,6 +122,9 @@ public class Payout extends BaseIdAndTime {
         );
     }
 
+    public boolean isCompleted() {
+        return this.payoutDate != null;
+    }
     /**
      * 현재 Payout 엔티티의 핵심 정보를 담은 DTO로 변환하여 반환
      * 주로 이벤트 발행 시 이벤트 데이터로 활용

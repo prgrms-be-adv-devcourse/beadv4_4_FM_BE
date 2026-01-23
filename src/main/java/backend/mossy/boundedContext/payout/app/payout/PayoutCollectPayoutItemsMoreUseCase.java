@@ -3,6 +3,8 @@ package backend.mossy.boundedContext.payout.app.payout;
 import backend.mossy.boundedContext.payout.domain.payout.*;
 import backend.mossy.boundedContext.payout.out.payout.PayoutCandidateItemRepository;
 import backend.mossy.boundedContext.payout.out.payout.PayoutRepository;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +35,8 @@ public class PayoutCollectPayoutItemsMoreUseCase {
                 .collect(Collectors.groupingBy(PayoutCandidateItem::getPayee))
                 .forEach((payee, candidateItems) -> {
                     // 3. 해당 판매자의 현재 진행중인(아직 정산되지 않은) Payout 객체를 찾습니다.
-                    Payout payout = findActiveByPayee(payee).get();
+                    Payout payout = findActiveByPayee(payee)
+                            .orElseThrow(() -> new DomainException(ErrorCode.PAYOUT_NOT_FOUND));
 
                     // 4. 각 후보(candidateItem)를 실제 정산 항목(payoutItem)으로 변환하여 Payout 객체에 추가합니다.
                     candidateItems.forEach(item -> {

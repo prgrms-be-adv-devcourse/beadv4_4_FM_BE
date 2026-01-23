@@ -1,5 +1,7 @@
 package backend.mossy.boundedContext.payout.domain.donation;
 
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.market.dto.event.OrderItemDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,7 +37,7 @@ public class CarbonCalculator {
      */
     public BigDecimal calculate(BigDecimal weight, BigDecimal distance) {
         if (weight == null || distance == null) {
-            return BigDecimal.ZERO;
+            throw new DomainException(ErrorCode.INVALID_CARBON_CALCULATION_INPUT);
         }
 
         return weight
@@ -51,6 +53,9 @@ public class CarbonCalculator {
      * @return 계산된 탄소 배출량 (kg 단위)
      */
     public BigDecimal calculate(OrderItemDto orderItem) {
+        if (orderItem == null) {
+            throw new DomainException(ErrorCode.INVALID_CARBON_CALCULATION_INPUT);
+        }
         return calculate(orderItem.weight(), orderItem.deliveryDistance());
     }
 

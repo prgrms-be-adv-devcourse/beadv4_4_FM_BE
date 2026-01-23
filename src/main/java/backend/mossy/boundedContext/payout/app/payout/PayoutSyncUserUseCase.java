@@ -2,6 +2,8 @@ package backend.mossy.boundedContext.payout.app.payout;
 
 import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
 import backend.mossy.boundedContext.payout.out.payout.PayoutUserRepository;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,9 @@ public class PayoutSyncUserUseCase {
      */
     @Transactional
     public PayoutUser syncUser(UserDto user) {
+        if (user == null || user.id() == null) {
+            throw new DomainException(ErrorCode.INVALID_USER_DATA);
+        }
         return payoutUserRepository.save(
                 PayoutUser.builder()
                         .id(user.id())

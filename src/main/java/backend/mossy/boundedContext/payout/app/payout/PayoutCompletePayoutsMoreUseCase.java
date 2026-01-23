@@ -2,6 +2,8 @@ package backend.mossy.boundedContext.payout.app.payout;
 
 import backend.mossy.boundedContext.payout.domain.payout.Payout;
 import backend.mossy.boundedContext.payout.out.payout.PayoutRepository;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,9 @@ public class PayoutCompletePayoutsMoreUseCase {
      * @return 처리 결과 RsData
      */
     public RsData<Integer> completePayoutsMore(int limit) {
+        if (limit <= 0) {
+            throw new DomainException(ErrorCode.INVALID_BATCH_LIMIT);
+        }
         // 1. 현재 활성화되어 있는 (아직 정산일이 지정되지 않은) Payout들을 조회
         List<Payout> activePayouts = findActivePayouts(limit);
 

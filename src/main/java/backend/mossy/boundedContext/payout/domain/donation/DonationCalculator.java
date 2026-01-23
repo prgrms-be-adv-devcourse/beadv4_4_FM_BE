@@ -1,5 +1,7 @@
 package backend.mossy.boundedContext.payout.domain.donation;
 
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.market.dto.event.OrderItemDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,7 @@ public class DonationCalculator {
     /**
      * 외부 설정(application.yml 등)으로부터 최대 기부금 비율을 주입받는 setter 메서드
      * 이 비율은 수수료에 대한 최대 기부금액 제한을 설정하는 데 사용
+     *
      * @param rate 설정 파일로부터 주입될 최대 기부금 비율 (기본값: 0.50)
      */
     @Value("${custom.donation.maxDonationRate:0.50}")
@@ -81,5 +84,14 @@ public class DonationCalculator {
      */
     public BigDecimal getCarbon(OrderItemDto orderItem) {
         return carbonCalculator.calculate(orderItem);
+    }
+
+    private void validateOrderItem(OrderItemDto orderItem) {
+        if (orderItem == null) {
+            throw new DomainException(ErrorCode.INVALID_DONATION_CALCULATION_INPUT);
+        }
+        if (orderItem.payoutFee() == null) {
+            throw new DomainException(ErrorCode.INVALID_PAYOUT_FEE);
+        }
     }
 }

@@ -7,6 +7,8 @@ import backend.mossy.boundedContext.payout.domain.payout.PayoutEventType;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
 import backend.mossy.shared.payout.dto.event.payout.CreatePayoutCandidateItemDto;
 import backend.mossy.boundedContext.payout.out.payout.PayoutCandidateItemRepository;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.market.dto.event.OrderItemDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,12 @@ public class PayoutAddPayoutCandidateItemsUseCase {
      */
     @Transactional
     public void addPayoutCandidateItem(OrderItemDto orderItem, LocalDateTime paymentDate) {
+        if (orderItem == null) {
+            throw new DomainException(ErrorCode.ORDERITEM_IS_NULL);
+        }
+        if (paymentDate == null) {
+            throw new DomainException(ErrorCode.PAYMENT_DATE_IS_NULL);
+        }
         makePayoutCandidateItems(orderItem, paymentDate);
     }
 
@@ -49,17 +57,27 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             LocalDateTime paymentDate
     ) {
         // --- 정산에 필요한 주요 주체(Actor)들을 조회 ---
-        PayoutSeller system = payoutSupport.findSystemSeller().get(); // 시스템(플랫폼)
-        PayoutSeller donation = payoutSupport.findDonationSeller().get(); // 기부금 수령처(가상 판매자)
-        PayoutUser buyer = payoutSupport.findUserById(orderItem.buyerId()).get(); // 구매자
-        PayoutSeller seller = payoutSupport.findSellerById(orderItem.sellerId()).get(); // 판매자
+        PayoutSeller system = payoutSupport.findSystemSeller()
+                .orElseThrow(() -> new DomainException(ErrorCode.SYSTEM_SELLER_NOT_FOUND)); // 시스템(플랫폼)
+        PayoutSeller donation = payoutSupport.findDonationSeller()
+                .orElseThrow(() -> new DomainException(ErrorCode.DONATION_SELLER_NOT_FOUND)); // 기부금 수령처(가상 판매자)
+        PayoutUser buyer = payoutSupport.findUserById(orderItem.buyerId())
+                .orElseThrow(() -> new DomainException(ErrorCode.BUYER_NOT_FOUND)); // 구매자
+        PayoutSeller seller = payoutSupport.findSellerById(orderItem.sellerId())
+                .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND)); // 판매자
 
         // --- 금액을 계산 ---
         // 1. 이 상품 판매로 인해 발생한 기부금을 계산
         BigDecimal donationAmount = donationCalculator.calculate(orderItem);
+        if (donationAmount == null || donationAmount.signum() < 0) {
+            throw new DomainException(ErrorCode.INVALID_DONATION_AMOUNT);
+        }
 
         // 2. 조정된 수수료를 계산합니다. (원래 수수료 - 기부금)
         BigDecimal adjustedFee = orderItem.payoutFee().subtract(donationAmount);
+        if (adjustedFee.signum() < 0) {
+            throw new DomainException(ErrorCode.INVALID_PAYOUT_FEE);
+        }
 
         // --- 계산된 금액을 바탕으로 3가지 종류의 정산 후보 아이템을 생성 ---
         // 아이템 1: 플랫폼 수수료 (구매자 -> 시스템)
@@ -96,6 +114,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
      * DTO를 PayoutCandidateItem 엔티티로 변환하고 저장
      */
     private void makePayoutCandidateItem(CreatePayoutCandidateItemDto dto) {
+
         PayoutCandidateItem payoutCandidateItem = PayoutCandidateItem.from(dto);
         payoutCandidateItemRepository.save(payoutCandidateItem);
     }
