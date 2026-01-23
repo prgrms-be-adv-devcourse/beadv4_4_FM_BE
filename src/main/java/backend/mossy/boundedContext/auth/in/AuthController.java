@@ -5,12 +5,11 @@ import backend.mossy.boundedContext.auth.in.dto.LoginRequest;
 import backend.mossy.boundedContext.auth.in.dto.LoginResponse;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.member.dto.request.SignupRequest;
-import backend.mossy.boundedContext.member.app.UserFacade;
+import backend.mossy.boundedContext.member.app.user.UserFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth", description = "임시 인증 API (개발용)")
@@ -27,6 +26,9 @@ public class AuthController {
             description = "일반 유저(USER)로 가입")
     @PostMapping("/signup")
     public RsData<Long> signup(@RequestBody SignupRequest request) {
+        System.out.println(">>> request.longitude = " + request.longitude());
+        System.out.println(">>> request.latitude = " + request.latitude());
+
         return RsData.success("회원가입 성공", userFacade.signup(request));
     }
 

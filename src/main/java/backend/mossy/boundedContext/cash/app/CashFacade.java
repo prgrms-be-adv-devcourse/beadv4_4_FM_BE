@@ -23,8 +23,8 @@ import backend.mossy.shared.cash.dto.request.SellerBalanceRequestDto;
 import backend.mossy.shared.cash.dto.request.UserBalanceRequestDto;
 import backend.mossy.shared.cash.dto.response.SellerWalletResponseDto;
 import backend.mossy.shared.cash.dto.response.UserWalletResponseDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import backend.mossy.shared.market.event.PaymentCompletedEvent;
-import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.member.dto.event.UserDto;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,6 @@ public class CashFacade {
     private final CashCreditSellerBalanceUseCase cashCreditSellerBalanceUseCase;
     private final CashDeductUserBalanceUseCase cashDeductUserBalanceUseCase;
     private final CashDeductSellerBalanceUseCase cashDeductSellerBalanceUseCase;
-    private final CashHoldingUseCase cashHoldingUseCase;
 
     // === [동기화 영역] ===
 
@@ -57,8 +56,8 @@ public class CashFacade {
     }
 
     @Transactional
-    public CashSeller syncSeller(SellerDto sellerDto) {
-        return cashSyncSellerUseCase.syncSeller(sellerDto);
+    public CashSeller syncSeller(SellerApprovedEvent sellerApprovedEvent) {
+        return cashSyncSellerUseCase.syncSeller(sellerApprovedEvent);
     }
 
     // === [지갑 영역] ===
@@ -91,11 +90,6 @@ public class CashFacade {
     @Transactional
     public void deductSellerBalance(SellerBalanceRequestDto request) {
         cashDeductSellerBalanceUseCase.deduct(request);
-    }
-
-    @Transactional
-    public void cashHolding(PaymentCompletedEvent request) {
-        cashHoldingUseCase.holdPaymentAmount(request);
     }
 
     // === [조회 영역] ===

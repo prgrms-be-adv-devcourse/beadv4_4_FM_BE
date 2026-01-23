@@ -1,7 +1,7 @@
 package backend.mossy.boundedContext.auth.infra.security;
 
 import backend.mossy.boundedContext.member.domain.User;
-import backend.mossy.boundedContext.member.out.UserRepository;
+import backend.mossy.boundedContext.member.out.user.UserRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

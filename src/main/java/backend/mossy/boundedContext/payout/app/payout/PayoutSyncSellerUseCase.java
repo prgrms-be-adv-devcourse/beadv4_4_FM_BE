@@ -3,9 +3,9 @@ package backend.mossy.boundedContext.payout.app.payout;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.payout.PayoutSellerRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
-import backend.mossy.shared.member.dto.event.SellerDto;
 import backend.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class PayoutSyncSellerUseCase {
      * @return 동기화(생성 또는 업데이트)된 PayoutSeller 엔티티
      */
     @Transactional
-    public PayoutSeller syncSeller(SellerDto seller) {
+    public PayoutSeller syncSeller(SellerApprovedEvent seller) {
         if (seller == null || seller.id() == null) {
             throw new DomainException(ErrorCode.INVALID_SELLER_DATA);
         }
@@ -47,11 +47,6 @@ public class PayoutSyncSellerUseCase {
                         .sellerType(seller.sellerType())
                         .storeName(seller.storeName())
                         .businessNum(seller.businessNum())
-                        .representativeName(seller.representativeName())
-                        .contactEmail(seller.contactEmail())
-                        .contactPhone(seller.contactPhone())
-                        .address1(seller.address1())
-                        .address2(seller.address2())
                         .status(seller.status())
                         .build()
         );

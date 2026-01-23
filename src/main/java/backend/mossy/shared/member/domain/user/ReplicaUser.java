@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
@@ -21,17 +22,19 @@ public abstract class ReplicaUser extends BaseUser {
     private LocalDateTime updatedAt;
 
     public ReplicaUser(
-        Long id,
-        String email,
-        String name,
-        String address,
-        String nickname,
-        String profileImage,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
-        UserStatus status
+            Long id,
+            String email,
+            String name,
+            String address,
+            String nickname,
+            String profileImage,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
+            UserStatus status,
+            BigDecimal longitude,
+            BigDecimal latitude
     ) {
-        super(email, name, address, nickname, profileImage, status);
+        super(email, name, address, nickname, profileImage, status,  longitude, latitude);
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

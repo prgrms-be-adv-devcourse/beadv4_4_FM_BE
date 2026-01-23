@@ -15,6 +15,12 @@ public enum ErrorCode {
     DUPLICATE_EMAIL(400, "이미 존재하는 이메일입니다."),
     DUPLICATE_NICKNAME(400, "이미 존재하는 닉네임입니다."),
 
+    // 판매자 신청 및 등록 관련
+    DUPLICATE_SELLER_REQUEST(400, "이미 판매자 신청이 진행중입니다."),
+    DUPLICATE_BUSINESS_NUMBER(400, "이미 판매자로 등록되어 있습니다."),
+    DUPLICATE_SELLER(400, "이미 판매자로 등록되어 있습니다."),
+    SELLER_REQUEST_NOT_PENDING(400, "판매자 신청이 '대기 중' 상태가 아닙니다."),
+
     // 지갑 및 잔액 변경 관련 검증
     USER_ID_REQUIRED(400, "사용자 식별자(ID)는 필수입니다."),
     SELLER_ID_REQUIRED(400, "판매자 식별자(ID)는 필수입니다."),
@@ -77,6 +83,9 @@ public enum ErrorCode {
 
     WEIGHT_GRADE_NOT_FOUND(404, "무게 등급이 존재하지 않습니다."),
     DELIVERY_DISTANCE_NOT_FOUND(404, "배송 거리 등급이 존재하지 않습니다."),
+
+    SELLER_REQUEST_NOT_FOUND(404, "판매자 신청서를 찾을 수 없습니다."),
+    ROLE_NOT_FOUND(404, "권한 정보를 찾을 수 없습니다."),
 
     // 지갑 및 정산 도메인 상세
     USER_WALLET_NOT_FOUND(404, "구매자 지갑이 존재하지 않습니다."),

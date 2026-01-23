@@ -4,7 +4,7 @@ import backend.mossy.shared.market.dto.event.MarketSellerDto;
 import backend.mossy.shared.member.domain.seller.ReplicaSeller;
 import backend.mossy.shared.member.domain.seller.SellerStatus;
 import backend.mossy.shared.member.domain.seller.SellerType;
-import backend.mossy.shared.member.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,53 +26,41 @@ public class MarketSeller extends ReplicaSeller {
     @Builder
     public MarketSeller(
             Long id,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt,
             Long userId,
             SellerType sellerType,
             String storeName,
             String businessNum,
-            String representativeName,
-            String contactEmail,
-            String contactPhone,
-            String address1,
-            String address2,
             BigDecimal latitude,
             BigDecimal longitude,
-            SellerStatus sellerStatus) {
+            SellerStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+
+    ) {
         super(
                 id,
-                createdAt,
-                updatedAt,
                 userId,
                 sellerType,
                 storeName,
                 businessNum,
-                representativeName,
-                contactEmail,
-                contactPhone,
-                address1,
-                address2,
                 latitude,
                 longitude,
-                sellerStatus);
+                status,
+                createdAt,
+                updatedAt
+        );
     }
 
-    public static MarketSeller from(SellerDto seller) {
+    public static MarketSeller from(SellerApprovedEvent seller) {
         return MarketSeller.builder()
                 .id(seller.id())
                 .userId(seller.userId())
                 .sellerType(seller.sellerType())
                 .storeName(seller.storeName())
                 .businessNum(seller.businessNum())
-                .representativeName(seller.representativeName())
-                .contactEmail(seller.contactEmail())
-                .contactPhone(seller.contactPhone())
-                .address1(seller.address1())
-                .address2(seller.address2())
                 .latitude(seller.latitude())
                 .longitude(seller.longitude())
-                .sellerStatus(seller.status())
+                .status(seller.status())
                 .createdAt(seller.createdAt())
                 .updatedAt(seller.updatedAt())
                 .build();
@@ -85,11 +73,6 @@ public class MarketSeller extends ReplicaSeller {
                 .sellerType(getSellerType())
                 .storeName(getStoreName())
                 .businessNum(getBusinessNum())
-                .representativeName(getRepresentativeName())
-                .contactEmail(getContactEmail())
-                .contactPhone(getContactPhone())
-                .address1(getAddress1())
-                .address2(getAddress2())
                 .latitude(getLatitude())
                 .longitude(getLongitude())
                 .createdAt(getCreatedAt())

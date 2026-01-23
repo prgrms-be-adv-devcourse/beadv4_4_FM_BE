@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
@@ -20,9 +21,11 @@ public abstract class SourceUser extends BaseUser {
     private Long id;
 
     @CreatedDate
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public SourceUser(
@@ -31,8 +34,10 @@ public abstract class SourceUser extends BaseUser {
         String address,
         String nickname,
         String profileImage,
-        UserStatus status
+        UserStatus status,
+        BigDecimal longitude,
+        BigDecimal latitude
     ) {
-        super(email, name, address, nickname, profileImage, status);
+        super(email, name, address, nickname, profileImage, status, longitude, latitude);
     }
 }

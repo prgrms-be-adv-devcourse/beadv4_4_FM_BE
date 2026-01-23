@@ -1,4 +1,4 @@
-package backend.mossy.shared.member.event;
+package backend.mossy.shared.member.dto.event;
 
 import backend.mossy.boundedContext.member.domain.User;
 import backend.mossy.shared.member.dto.event.UserDto;
@@ -18,6 +18,8 @@ public class UserDtoMapper {
                 .status(user.getStatus())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+                .latitude(user.getLatitude())
+                .longitude(user.getLongitude())
                 .build();
     }
 }
