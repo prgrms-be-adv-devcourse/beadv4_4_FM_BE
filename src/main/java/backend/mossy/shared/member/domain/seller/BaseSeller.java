@@ -30,21 +30,6 @@ public abstract class BaseSeller extends BaseEntity {
     @Column(name = "business_num", unique = true, length = 20)
     protected String businessNum;
 
-    @Column(name = "representative_name", nullable = false, length = 100)
-    protected String representativeName;
-
-    @Column(name = "contact_email", length = 255)
-    protected String contactEmail;
-
-    @Column(name = "contact_phone", length = 20)
-    protected String contactPhone;
-
-    @Column(name = "address1", nullable = false, length = 200)
-    protected String address1;
-
-    @Column(name = "address2", length = 200)
-    protected String address2;
-
     @Column(precision = 10, scale = 7)
     protected BigDecimal latitude;
 
@@ -53,21 +38,32 @@ public abstract class BaseSeller extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    protected SellerStatus status = SellerStatus.PENDING;
+    protected SellerStatus status = SellerStatus.ACTIVE;
 
-    public BaseSeller(Long userId, SellerType sellerType, String storeName, String businessNum, String representativeName, String contactEmail, String contactPhone, String address1, String address2, BigDecimal latitude, BigDecimal longitude, SellerStatus status) {
+    public BaseSeller(
+            Long userId,
+            SellerType sellerType,
+            String storeName,
+            String businessNum,
+            BigDecimal latitude,
+            BigDecimal longitude,
+            SellerStatus status
+    ) {
         this.userId = userId;
         this.sellerType = sellerType;
         this.storeName = storeName;
         this.businessNum = businessNum;
-        this.representativeName = representativeName;
-        this.contactEmail = contactEmail;
-        this.contactPhone = contactPhone;
-        this.address1 = address1;
-        this.address2 = address2;
         this.latitude = latitude;
         this.longitude = longitude;
         this.status = status;
+    }
+
+    public void suspend() {
+        this.status = SellerStatus.SUSPENDED;
+    }
+
+    public void activate() {
+        this.status = SellerStatus.ACTIVE;
     }
 }
 

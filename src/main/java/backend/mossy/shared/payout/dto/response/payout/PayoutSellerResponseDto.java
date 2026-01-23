@@ -16,8 +16,6 @@ public record PayoutSellerResponseDto(
         Long userId,
         SellerType sellerType,
         String storeName,
-        String representativeName,
-        String contactEmail,
         SellerStatus status
 ) {
     public static PayoutSellerResponseDto from(PayoutSeller seller) {
@@ -28,8 +26,6 @@ public record PayoutSellerResponseDto(
                 seller.getUserId(),
                 seller.getSellerType(),
                 seller.getStoreName(),
-                seller.getRepresentativeName(),
-                seller.getContactEmail(),
                 seller.getStatus()
         );
     }

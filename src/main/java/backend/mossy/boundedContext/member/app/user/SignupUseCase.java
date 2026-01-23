@@ -1,8 +1,8 @@
-package backend.mossy.boundedContext.member.app;
+package backend.mossy.boundedContext.member.app.user;
 
 import backend.mossy.boundedContext.member.domain.User;
-import backend.mossy.boundedContext.member.out.RoleRepository;
-import backend.mossy.boundedContext.member.out.UserRepository;
+import backend.mossy.boundedContext.member.out.user.RoleRepository;
+import backend.mossy.boundedContext.member.out.user.UserRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.member.domain.role.Role;
@@ -33,6 +33,9 @@ public class SignupUseCase {
             throw new DomainException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
+        System.out.println(">>> DTO longitude = " + req.longitude());
+        System.out.println(">>> DTO latitude  = " + req.latitude());
+
         User user = User.builder()
                 .email(req.email())
                 .password(passwordEncoder.encode(req.password()))
@@ -41,9 +44,14 @@ public class SignupUseCase {
                 .phoneNum(encryptionUtils.encrypt(req.phoneNum()))
                 .address(encryptionUtils.encrypt(req.address()))
                 .rrnEncrypted(encryptionUtils.encrypt(req.rrn()))
+                .longitude(req.longitude())
+                .latitude(req.latitude())
                 .profileImage("default.png")
                 .status(UserStatus.ACTIVE)
                 .build();
+
+        System.out.println(">>> ENTITY longitude = " + user.getLongitude());
+        System.out.println(">>> ENTITY latitude  = " + user.getLatitude());
 
         Role roleUser = roleRepository.findByCode(RoleCode.USER)
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));

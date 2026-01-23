@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -38,9 +39,11 @@ public class PayoutUser extends ReplicaUser {
             String profileImage,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
-            UserStatus status
+            UserStatus status,
+            BigDecimal longitude,
+            BigDecimal latitude
     ) {
-        super(id, email, name, address, nickname, profileImage, createdAt, updatedAt, status);
+        super(id, email, name, address, nickname, profileImage, createdAt, updatedAt, status, longitude, latitude);
     }
 
     /**
@@ -57,6 +60,8 @@ public class PayoutUser extends ReplicaUser {
                 .nickname(getNickname())
                 .profileImage(getProfileImage())
                 .status(getStatus())
+                .longitude(getLongitude())
+                .latitude(getLatitude())
                 .createdAt(getCreatedAt())
                 .updatedAt(getUpdatedAt())
                 .build();

@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,18 +25,20 @@ public class CashUser extends ReplicaUser {
 
     @Builder
     public CashUser(
-        Long id,
-        String email,
-        String name,
-        String address,
-        String nickname,
-        String profileImage,
-        UserStatus status,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+            Long id,
+            String email,
+            String name,
+            String address,
+            String nickname,
+            String profileImage,
+            UserStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt,
+            BigDecimal longitude,
+            BigDecimal latitude
     ) {
         super(id, email, name, address, nickname, profileImage,
-            createdAt, updatedAt, status);
+            createdAt, updatedAt, status, longitude, latitude);
     }
 
     public static CashUser from(UserDto user) {
@@ -47,6 +50,8 @@ public class CashUser extends ReplicaUser {
             .nickname(user.nickname())
             .profileImage(user.profileImage())
             .status(user.status())
+                .longitude(user.longitude())
+                .latitude(user.latitude())
             .createdAt(user.createdAt())
             .updatedAt(user.updatedAt())
             .build();

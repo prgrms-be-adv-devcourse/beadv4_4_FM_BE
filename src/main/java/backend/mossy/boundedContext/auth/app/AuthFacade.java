@@ -5,7 +5,7 @@ import backend.mossy.boundedContext.auth.in.dto.LoginResponse;
 import backend.mossy.boundedContext.auth.in.dto.TokenResponse;
 import backend.mossy.boundedContext.auth.out.RefreshTokenRepository;
 import backend.mossy.boundedContext.member.domain.User;
-import backend.mossy.boundedContext.member.out.UserRepository;
+import backend.mossy.boundedContext.member.out.user.UserRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;

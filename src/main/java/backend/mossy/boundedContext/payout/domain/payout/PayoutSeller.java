@@ -3,7 +3,7 @@ package backend.mossy.boundedContext.payout.domain.payout;
 import backend.mossy.shared.member.domain.seller.ReplicaSeller;
 import backend.mossy.shared.member.domain.seller.SellerStatus;
 import backend.mossy.shared.member.domain.seller.SellerType;
-import backend.mossy.shared.member.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
@@ -31,13 +31,30 @@ public class PayoutSeller extends ReplicaSeller {
      * {@link ReplicaSeller}의 생성자를 호출하여 판매자 기본 정보를 초기화
      */
     @Builder
-    public PayoutSeller(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, Long userId,
-        SellerType sellerType, String storeName, String businessNum, String representativeName,
-        String contactEmail, String contactPhone, String address1, String address2,
-        BigDecimal latitude, BigDecimal longitude, SellerStatus status) {
-        super(id, createdAt, updatedAt, userId, sellerType, storeName, businessNum,
-            representativeName,
-            contactEmail, contactPhone, address1, address2, latitude, longitude, status);
+    public PayoutSeller(
+            Long id,
+            Long userId,
+            SellerType sellerType,
+            String storeName,
+            String businessNum,
+            BigDecimal latitude,
+            BigDecimal longitude,
+            SellerStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        super(
+                id,
+                userId,
+                sellerType,
+                storeName,
+                businessNum,
+                latitude,
+                longitude,
+                status,
+                createdAt,
+                updatedAt
+        );
     }
 
     /**
@@ -54,19 +71,16 @@ public class PayoutSeller extends ReplicaSeller {
      * 주로 이벤트 발행 시 이벤트 데이터로 활용되거나 다른 서비스에 정보를 전달할 때 사용
      * @return PayoutSeller의 정보를 담은 SellerDto
      */
-    public SellerDto toDto() {
-        return SellerDto.builder()
+    public SellerApprovedEvent toDto() {
+        return SellerApprovedEvent.builder()
                 .id(getId())
                 .userId(getUserId())
                 .sellerType(getSellerType())
                 .storeName(getStoreName())
                 .businessNum(getBusinessNum())
-                .representativeName(getRepresentativeName())
-                .contactEmail(getContactEmail())
-                .contactPhone(getContactPhone())
-                .address1(getAddress1())
-                .address2(getAddress2())
                 .status(getStatus())
+                .latitude(getLatitude())
+                .longitude(getLongitude())
                 .createdAt(getCreatedAt())
                 .updatedAt(getUpdatedAt())
                 .build();
