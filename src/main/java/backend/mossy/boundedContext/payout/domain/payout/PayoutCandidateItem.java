@@ -1,6 +1,8 @@
 package backend.mossy.boundedContext.payout.domain.payout;
 
 import backend.mossy.boundedContext.payout.app.payout.PayoutAddPayoutCandidateItemsUseCase;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.payout.dto.event.payout.CreatePayoutCandidateItemDto;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
@@ -96,6 +98,25 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     @Builder
     public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
                                LocalDateTime paymentDate, PayoutUser payer, PayoutSeller payee, BigDecimal amount) {
+
+        if (eventType == null) {
+            throw new DomainException(ErrorCode.PAYOUT_EVENT_TYPE_IS_NULL); // status: 400
+        }
+        if (relTypeCode == null || relTypeCode.isBlank()) {
+            throw new DomainException(ErrorCode.REL_TYPE_CODE_IS_NULL); // status: 400
+        }
+        if (relId == null) {
+            throw new DomainException(ErrorCode.REL_ID_IS_NULL); // status: 400
+        }
+        if (paymentDate == null) {
+            throw new DomainException(ErrorCode.PAYMENT_DATE_IS_NULL); // status: 400
+        }
+        if (payee == null) {
+            throw new DomainException(ErrorCode.PAYEE_IS_NULL); // status: 400
+        }
+        if (amount != null && amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new DomainException(ErrorCode.INVALID_AMOUNT); // status: 400
+        }
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;
         this.relId = relId;

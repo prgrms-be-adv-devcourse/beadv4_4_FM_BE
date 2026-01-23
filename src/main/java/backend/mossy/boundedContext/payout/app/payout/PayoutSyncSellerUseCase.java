@@ -4,6 +4,8 @@ import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.payout.PayoutSellerRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,9 @@ public class PayoutSyncSellerUseCase {
      */
     @Transactional
     public PayoutSeller syncSeller(SellerApprovedEvent seller) {
+        if (seller == null || seller.id() == null) {
+            throw new DomainException(ErrorCode.INVALID_SELLER_DATA);
+        }
         // PayoutSeller가 새로 생성되는 경우인지 확인
         boolean isNew = !payoutSellerRepository.existsById(seller.id());
 

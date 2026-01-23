@@ -7,6 +7,8 @@ import backend.mossy.boundedContext.payout.domain.payout.PayoutItem;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.donation.DonationLogRepository;
 import backend.mossy.boundedContext.payout.out.payout.PayoutRepository;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,14 +35,17 @@ public class DonationSettleUseCase {
      */
     @Transactional
     public void settleDonationLogs(Long payoutId) {
+        if (payoutId == null) {
+            throw new DomainException(ErrorCode.PAYOUT_NOT_FOUND);
+        }
         // 1. 정산 완료된 Payout 객체를 조회
         Payout payout = payoutRepository.findById(payoutId)
-                .orElseThrow(() -> new IllegalArgumentException("Payout not found: " + payoutId));
+                .orElseThrow(() -> new DomainException(ErrorCode.PAYOUT_NOT_FOUND));
 
         // 2. 시스템에 정의된 '기부금 수령 판매자(DONATION seller)' 정보를 조회
         //    기부금은 이 가상의 판매자에게 지급되는 형식으로 처리
         PayoutSeller donationSeller = payoutSupport.findDonationSeller()
-                .orElseThrow(() -> new IllegalStateException("DONATION seller not found"));
+                .orElseThrow(() -> new DomainException(ErrorCode.DONATION_SELLER_NOT_FOUND));
 
         // 3. 완료된 Payout에 포함된 항목(PayoutItem)들 중에서,
         //    수령인이 '기부금 수령 판매자'인 항목들만 필터링
@@ -49,11 +54,17 @@ public class DonationSettleUseCase {
                 .filter(item -> item.getPayee().getId().equals(donationSeller.getId()))
                 .map(PayoutItem::getRelId)  // relId는 PayoutItem의 관련 ID이며, 기부 항목의 경우 orderItemId를 저장
                 .toList();
+        if (orderItemIds.isEmpty()) {
+            throw new DomainException(ErrorCode.DONATION_PAYOUT_ITEM_NOT_FOUND);
+        }
 
         // 4. 추출된 orderItemId 목록을 순회하면서, 각 ID에 해당하는 DonationLog를 찾아 '정산 완료' 처리
         //    DonationLog의 settle() 메서드는 해당 로그의 상태를 변경
         orderItemIds.forEach(orderItemId -> {
             List<DonationLog> donationLogs = donationLogRepository.findByOrderItemId(orderItemId);
+            if (donationLogs.isEmpty()) {
+                throw new DomainException(ErrorCode.DONATION_LOG_NOT_FOUND);
+            }
             donationLogs.forEach(DonationLog::settle);
         });
     }

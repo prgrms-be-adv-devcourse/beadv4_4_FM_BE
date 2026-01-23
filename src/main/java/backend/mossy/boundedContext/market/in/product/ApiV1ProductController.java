@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.in;
+package backend.mossy.boundedContext.market.in.product;
 
 import backend.mossy.boundedContext.market.app.product.ProductFacade;
 import backend.mossy.global.rsData.RsData;
@@ -16,8 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product/products")

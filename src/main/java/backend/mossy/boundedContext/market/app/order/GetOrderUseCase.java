@@ -1,12 +1,14 @@
 package backend.mossy.boundedContext.market.app.order;
 
-import backend.mossy.boundedContext.market.domain.order.Order;
 import backend.mossy.boundedContext.market.out.order.OrderRepository;
-import backend.mossy.global.exception.DomainException;
-import backend.mossy.global.exception.ErrorCode;
-import backend.mossy.shared.market.dto.response.OrderResponse;
+import backend.mossy.shared.market.dto.response.OrderDetailResponse;
+import backend.mossy.shared.market.dto.response.OrderListResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -14,10 +16,14 @@ public class GetOrderUseCase {
 
     private final OrderRepository orderRepository;
 
-    public OrderResponse getOrder(Long orderId) {
-        Order order = orderRepository.findByIdWithBuyer(orderId)
-                .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
+    public Page<OrderListResponse> getOrderListByUserId(
+            Long userId,
+            Pageable pageable
+    ) {
+        return orderRepository.findOrderListByUserId(userId, pageable);
+    }
 
-        return OrderResponse.of(order);
+    public List<OrderDetailResponse> getOrderDetails(Long orderId) {
+        return orderRepository.findOrderDetailsByOrderId(orderId);
     }
 }
