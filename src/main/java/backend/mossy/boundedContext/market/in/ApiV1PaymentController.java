@@ -8,7 +8,6 @@ import backend.mossy.shared.market.dto.toss.PaymentCancelTossRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentConfirmCashRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentConfirmTossRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
