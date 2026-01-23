@@ -8,7 +8,7 @@ import lombok.Builder;
 
 @Builder
 public record SellerApprovedEvent(
-        Long sellerId,
+        Long id,
         Long userId,
         SellerType sellerType,
         String storeName,

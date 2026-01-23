@@ -16,4 +16,6 @@ public interface SellerRequestRepository extends JpaRepository<SellerRequest, Lo
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select sr from SellerRequest sr where sr.id = :id")
     Optional<SellerRequest> findByIdForUpdate(@Param("id") Long id);
+
+    boolean existsByBusinessNum(String businessNum);
 }

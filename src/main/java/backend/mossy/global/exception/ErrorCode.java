@@ -10,6 +10,10 @@ public enum ErrorCode {
     //400 Bad Request
     DUPLICATE_EMAIL(400, "이미 존재하는 이메일입니다."),
     DUPLICATE_NICKNAME(400, "이미 존재하는 닉네임입니다."),
+    DUPLICATE_SELLER_REQUEST(400, "이미 판매자 신청이 진행중입니다."),
+    DUPLICATE_BUSINESS_NUMBER(400, "이미 판매자로 등록되어 있습니다."),
+    DUPLICATE_SELLER(400, "이미 판매자로 등록되어 있습니다."),
+    SELLER_REQUEST_NOT_PENDING(400, "판매자 신청이 '대기 중' 상태가 아닙니다."),
 
     //401 Unauthorized (토큰 관련)
     INVALID_TOKEN(401, "유효하지 않은 토큰입니다."),
@@ -30,6 +34,8 @@ public enum ErrorCode {
     WEIGHT_GRADE_NOT_FOUND(404, "무게 등급이 존재하지 않습니다."),
     DELIVERY_DISTANCE_NOT_FOUND(404, "배송 거리 등급이 존재하지 않습니다."),
     ORDER_NOT_FOUND(404, "주문이 존재하지 않습니다."),
+    SELLER_REQUEST_NOT_FOUND(404, "판매자 신청서를 찾을 수 없습니다."),
+    ROLE_NOT_FOUND(404, "권한 정보를 찾을 수 없습니다."),
 
     //422 Unprocessable Entity (비즈니스 규칙 위배)
     QUANTITY_LIMIT_EXCEEDED(422, "수량 제한을 초과했습니다."),

@@ -5,6 +5,8 @@ import backend.mossy.boundedContext.member.domain.User;
 import backend.mossy.boundedContext.member.out.seller.SellerRepository;
 import backend.mossy.boundedContext.member.out.user.RoleRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.member.domain.role.Role;
 import backend.mossy.shared.member.domain.role.RoleCode;
 import backend.mossy.shared.member.domain.role.UserRole;
@@ -29,18 +31,18 @@ public class SellerRequestAdminFacade {
         SellerRequest req = lockUseCase.lockAndGet(requestId);
 
         if (req.getStatus() != SellerRequestStatus.PENDING) {
-            throw new IllegalArgumentException("판매자 신청이 '대기중'이 아닙니다.");
+            throw new DomainException(ErrorCode.SELLER_REQUEST_NOT_PENDING);
         }
 
         User user = req.getUser();
         Long userId = user.getId();
 
         if (sellerRepository.existsByUserId(userId)) {
-            throw new IllegalArgumentException("이미 판매자 등록이 되었습니다.");
+            throw new DomainException(ErrorCode.DUPLICATE_SELLER);
         }
 
         if (sellerRepository.existsByBusinessNum(req.getBusinessNum())) {
-            throw new IllegalArgumentException("이미 등록된 사업자번호입니다,");
+            throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 
         req.approve();
@@ -48,7 +50,7 @@ public class SellerRequestAdminFacade {
         Seller seller = sellerRepository.save(Seller.createFromRequest(req));
 
         Role sellerRole = roleRepository.findByCode(RoleCode.SELLER)
-                .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
+                .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND));
 
         boolean hasSellerRole = user.getUserRoles().stream()
                 .anyMatch(r -> r.getRole() != null && r.getRole().getCode() == RoleCode.SELLER);
@@ -78,7 +80,7 @@ public class SellerRequestAdminFacade {
         SellerRequest req = lockUseCase.lockAndGet(requestId);
 
         if (req.getStatus() != SellerRequestStatus.PENDING) {
-            throw new IllegalArgumentException("판매자 신청 '대기중'이 아닙니다.");
+            throw new DomainException(ErrorCode.SELLER_REQUEST_NOT_PENDING);
         }
 
         req.reject();

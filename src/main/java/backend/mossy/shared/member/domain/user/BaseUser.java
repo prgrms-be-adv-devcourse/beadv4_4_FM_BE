@@ -46,7 +46,9 @@ public abstract class BaseUser extends BaseEntity {
         String address,
         String nickname,
         String profileImage,
-        UserStatus status
+        UserStatus status,
+        BigDecimal longitude,
+        BigDecimal latitude
     ) {
         this.email = email;
         this.name = name;
@@ -54,6 +56,8 @@ public abstract class BaseUser extends BaseEntity {
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.status = status;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public void changeGeo(BigDecimal latitude, BigDecimal longitude) {

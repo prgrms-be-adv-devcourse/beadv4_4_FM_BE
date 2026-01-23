@@ -79,6 +79,8 @@ public class PayoutSeller extends ReplicaSeller {
                 .storeName(getStoreName())
                 .businessNum(getBusinessNum())
                 .status(getStatus())
+                .latitude(getLatitude())
+                .longitude(getLongitude())
                 .createdAt(getCreatedAt())
                 .updatedAt(getUpdatedAt())
                 .build();

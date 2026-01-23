@@ -3,14 +3,15 @@ package backend.mossy.boundedContext.member.app.user;
 import backend.mossy.boundedContext.member.domain.User;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.member.dto.event.UserDto;
+import backend.mossy.shared.member.dto.event.UserDtoMapper;
 import backend.mossy.shared.member.dto.request.SignupRequest;
 import backend.mossy.boundedContext.member.out.user.UserRepository;
-import backend.mossy.shared.member.event.UserDtoMapper;
+
 import backend.mossy.shared.member.event.UserJoinedEvent;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service

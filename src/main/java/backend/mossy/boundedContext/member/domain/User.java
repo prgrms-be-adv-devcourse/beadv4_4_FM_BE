@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +28,15 @@ public class User extends SourceUser {
     @Column(name = "password", nullable = false)
     protected String password;
 
-   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true ,fetch = FetchType.LAZY)
    private List<UserRole> userRoles = new ArrayList<>();
 
    @Builder
     public User(String email, String name, String password, String nickname,
                 String address, String phoneNum, String rrnEncrypted,
-                String profileImage, UserStatus status) {
-       super(email, name, address, nickname, profileImage, status);
+                String profileImage, UserStatus status,
+                BigDecimal longitude, BigDecimal latitude ) {
+       super(email, name, address, nickname, profileImage, status, longitude, latitude);
 
        this.password = password;
        this.phoneNum = phoneNum;
