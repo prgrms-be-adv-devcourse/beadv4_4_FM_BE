@@ -4,6 +4,7 @@ import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 
 import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.global.jpa.entity.BaseManualIdAndTime;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -45,9 +46,8 @@ public class SellerWallet extends BaseManualIdAndTime {
     public void debit(BigDecimal amount, SellerEventType eventType, String relTypeCode, Long relId) {
         validateAmount(amount);
 
-        // 추후 GlobalExceptionHandler에서 공통으로 처리할 계획
         if (this.balance.compareTo(amount) < 0) {
-            throw new DomainException("400","출금 가능한 잔액이 부족합니다.");
+            throw new DomainException(ErrorCode.INSUFFICIENT_WITHDRAW_BALANCE);
         }
         this.balance = this.balance.subtract(amount);
         addSellerCashLog(amount.negate(), eventType, relTypeCode, relId);
@@ -69,7 +69,7 @@ public class SellerWallet extends BaseManualIdAndTime {
 
     private void validateAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new DomainException("400", "잘못된 금액입니다.");
+            throw new DomainException(ErrorCode.INVALID_AMOUNT);
         }
     }
 }

@@ -94,9 +94,7 @@ public class Order extends BaseIdAndTime {
 
     public void validateAmount(BigDecimal requestAmount) {
         if (this.totalPrice.compareTo(requestAmount) != 0) {
-            throw new IllegalStateException(
-                String.format("주문 금액 불일치: 주문금액=%s, 요청금액=%s", this.totalPrice, requestAmount)
-            );
+            throw new DomainException(ErrorCode.ORDER_AMOUNT_MISMATCH);
         }
     }
 
@@ -108,7 +106,7 @@ public class Order extends BaseIdAndTime {
 
     private void validateNotPaid() {
         if (this.state == OrderState.PAID) {
-            throw new DomainException("409", "이미 결제가 완료된 주문입니다.");
+            throw new DomainException(ErrorCode.ORDER_ALREADY_PAID);
         }
     }
 

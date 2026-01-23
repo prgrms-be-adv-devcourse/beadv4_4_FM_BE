@@ -5,6 +5,8 @@ import backend.mossy.boundedContext.cash.domain.seller.SellerEventType;
 import backend.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import backend.mossy.boundedContext.cash.domain.user.UserEventType;
 import backend.mossy.boundedContext.cash.domain.user.UserWallet;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.market.event.PaymentCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,7 @@ public class CashHoldingUseCase {
         BigDecimal orderAmount = request.amount();
 
         if (buyerWallet.getBalance().compareTo(orderAmount) < 0) {
-            throw new IllegalStateException("잔액이 부족하여 홀딩 처리를 할 수 없습니다.");
+            throw new DomainException(ErrorCode.INSUFFICIENT_BALANCE);
         }
 
         // 구매자 지갑에서 주문 금액 차감
