@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.in;
+package backend.mossy.boundedContext.market.in.product;
 
 import backend.mossy.boundedContext.market.app.product.ProductSearchUseCase;
 import backend.mossy.boundedContext.market.domain.product.ProductDocument;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product/search")
