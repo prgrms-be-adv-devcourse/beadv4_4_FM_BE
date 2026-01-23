@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class PaymentGetInfoUseCase {
+public class PaymentFindAllUseCase {
 
     private final PaymentRepository paymentRepository;
 
-    public List<PaymentResponse> findAllPayment(Long orderId) {
-        return paymentRepository.findAllByOrderId(orderId)
+    public List<PaymentResponse> findAllPayment(String orderNo) {
+        return paymentRepository.findAllByOrderNo(orderNo)
             .orElseThrow(() -> new DomainException("404", "주문 관련 결제 정보가 없습니다."))
             .stream()
             .map(PaymentResponse::from)

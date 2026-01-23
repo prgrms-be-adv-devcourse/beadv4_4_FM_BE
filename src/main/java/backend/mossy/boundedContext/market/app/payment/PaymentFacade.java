@@ -5,6 +5,7 @@ import backend.mossy.shared.market.dto.toss.PaymentCancelCashRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentCancelTossRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentConfirmCashRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentConfirmTossRequestDto;
+import backend.mossy.shared.market.dto.toss.TossPaymentResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,8 @@ public class PaymentFacade {
     private final PaymentCancelCashUseCase paymentCancelUserUseCase;
     private final PaymentConfirmCashUseCase paymentConfirmCashUserCase;
     private final PaymentCancelTossUseCase paymentCancelTossUseCase;
-    private final PaymentGetInfoUseCase paymentGetInfoUseCase;
+    private final PaymentFindAllUseCase paymentGetInfoUseCase;
+    private final PaymentRetrieveUseCase paymentRetrieveUseCase;
 
     // PG 결제 승인
     @Transactional
@@ -44,9 +46,15 @@ public class PaymentFacade {
         paymentCancelUserUseCase.cancelCashPayment(request);
     }
 
+    // PG-승인된 결제 내역 조회
+    @Transactional(readOnly = true)
+    public TossPaymentResponse findTossPayment(String orderNo) {
+        return paymentRetrieveUseCase.getTossPaymentInfo(orderNo);
+    }
+
     // 주문별 결제 내역 조회
     @Transactional(readOnly = true)
-    public List<PaymentResponse> findAllPayments(Long orderId) {
-        return paymentGetInfoUseCase.findAllPayment(orderId);
+    public List<PaymentResponse> findAllPayments(String orderNo) {
+        return paymentGetInfoUseCase.findAllPayment(orderNo);
     }
 }

@@ -66,7 +66,9 @@ public enum ErrorCode {
     // 502 Bad Gateway (외부 서비스 오류)
     // ========================================
     TOSS_PAYMENT_CONFIRM_FAILED(502, "토스페이먼츠 결제 승인에 실패했습니다."),
-    TOSS_PAYMENT_CANCEL_FAILED(502, "토스페이먼츠 결제 취소에 실패했습니다.");
+    TOSS_PAYMENT_CANCEL_FAILED(502, "토스페이먼츠 결제 취소에 실패했습니다."),
+    TOSS_PAYMENT_NOT_FOUND(502, "토스페이먼츠에서 결제 내역을 찾을 수 없습니다."),
+    TOSS_API_ERROR(502, "토스페이먼츠 API 통신 중 오류가 발생했습니다.");
 
     private final int status;
     private final String msg;

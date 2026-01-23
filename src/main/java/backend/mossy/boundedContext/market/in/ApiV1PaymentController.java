@@ -7,7 +7,9 @@ import backend.mossy.shared.market.dto.toss.PaymentCancelCashRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentCancelTossRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentConfirmCashRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentConfirmTossRequestDto;
+import backend.mossy.shared.market.dto.toss.TossPaymentResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -91,9 +93,27 @@ public class ApiV1PaymentController {
             @ApiResponse(responseCode = "404", description = "해당 주문의 결제 내역 없음")
         }
     )
-    @GetMapping("/order/{orderId}") //
-    public RsData<List<PaymentResponse>> getPaymentsByOrder(@PathVariable("orderId") Long orderId) {
-        List<PaymentResponse> responses = paymentFacade.findAllPayments(orderId);
+    @GetMapping("/orders/{orderNo}")
+    public RsData<List<PaymentResponse>> getPaymentsByOrder(@PathVariable String orderNo) {
+        List<PaymentResponse> responses = paymentFacade.findAllPayments(orderNo);
         return new RsData<>("200", "주문 결제 이력 조회 성공", responses);
+    }
+
+    @Operation(
+        summary = "토스 결제 원본 정보 조회",
+        description = "우리 시스템의 주문 번호(orderNo)를 이용해 토스페이먼츠 서버에 기록된 원본 결제 상세 정보를 직접 조회합니다.",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "토스 결제 정보 조회 성공"),
+            @ApiResponse(responseCode = "502", description = "토스 API 통신 실패 또는 내역 없음")
+        }
+    )
+    @GetMapping("/toss/orders/{orderNo}")
+    public RsData<TossPaymentResponse> getTossPaymentInfo(
+        @Parameter(description = "주문 고유 번호", example = "ORD_20240123_abc123")
+        @PathVariable String orderNo
+    ) {
+        TossPaymentResponse response = paymentFacade.findTossPayment(orderNo);
+
+        return new RsData<>("200", "토스 결제 원본 정보 조회 성공", response);
     }
 }

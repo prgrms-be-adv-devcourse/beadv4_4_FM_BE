@@ -33,6 +33,7 @@ public class Order extends BaseIdAndTime {
     private MarketUser buyer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Payment> payments = new ArrayList<>();
 
     @Column(name = "order_no", nullable = false, unique = true)
