@@ -47,8 +47,8 @@ public class OrderFacade {
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderListSellerResponse> getSellerOrderList(Long userId, Pageable pageable) {
-        return getSellerOrderUseCase.getSellerOrderList(userId, pageable);
+    public Page<OrderListSellerResponse> getSellerOrderList(Long sellerId, Pageable pageable) {
+        return getSellerOrderUseCase.getSellerOrderList(sellerId, pageable);
     }
 
     @Transactional(readOnly = true)
