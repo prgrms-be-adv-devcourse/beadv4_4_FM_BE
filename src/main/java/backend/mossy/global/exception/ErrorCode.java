@@ -78,10 +78,8 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(404, "주문이 존재하지 않습니다."),
     PENDING_ORDER_NOT_FOUND(404, "결제 대기 중인 주문을 찾을 수 없습니다."),
     ORDERITEM_IS_NULL(404, "주문 목록이 없습니다."),
-
     WEIGHT_GRADE_NOT_FOUND(404, "무게 등급이 존재하지 않습니다."),
     DELIVERY_DISTANCE_NOT_FOUND(404, "배송 거리 등급이 존재하지 않습니다."),
-    ORDER_NOT_FOUND(404, "주문이 존재하지 않습니다."),
     SELLER_REQUEST_NOT_FOUND(404, "판매자 신청서를 찾을 수 없습니다."),
     ROLE_NOT_FOUND(404, "권한 정보를 찾을 수 없습니다."),
 
