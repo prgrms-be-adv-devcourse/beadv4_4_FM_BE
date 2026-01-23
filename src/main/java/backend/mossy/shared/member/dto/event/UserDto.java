@@ -1,6 +1,8 @@
 package backend.mossy.shared.member.dto.event;
 
 import backend.mossy.shared.member.domain.user.UserStatus;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
@@ -14,7 +16,9 @@ public record UserDto(
     String profileImage,
     UserStatus status,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    LocalDateTime updatedAt,
+    BigDecimal latitude,
+    BigDecimal longitude
 ) {
 
 }

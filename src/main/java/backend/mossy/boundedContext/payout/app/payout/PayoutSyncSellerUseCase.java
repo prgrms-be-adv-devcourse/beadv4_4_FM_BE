@@ -3,7 +3,9 @@ package backend.mossy.boundedContext.payout.app.payout;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.payout.PayoutSellerRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
-import backend.mossy.shared.member.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,10 +27,12 @@ public class PayoutSyncSellerUseCase {
      * 이를 통해 Payout 컨텍스트는 정산에 필요한 판매자 정보를 자체적으로 갖게 됨
      *
      * @param seller Member 컨텍스트에서 전달된 판매자 정보 DTO
-     * @return 동기화(생성 또는 업데이트)된 PayoutSeller 엔티티
      */
     @Transactional
-    public PayoutSeller syncSeller(SellerDto seller) {
+    public void syncSeller(SellerApprovedEvent seller) {
+        if (seller == null || seller.id() == null) {
+            throw new DomainException(ErrorCode.INVALID_SELLER_DATA);
+        }
         // PayoutSeller가 새로 생성되는 경우인지 확인
         boolean isNew = !payoutSellerRepository.existsById(seller.id());
 
@@ -42,11 +46,6 @@ public class PayoutSyncSellerUseCase {
                         .sellerType(seller.sellerType())
                         .storeName(seller.storeName())
                         .businessNum(seller.businessNum())
-                        .representativeName(seller.representativeName())
-                        .contactEmail(seller.contactEmail())
-                        .contactPhone(seller.contactPhone())
-                        .address1(seller.address1())
-                        .address2(seller.address2())
                         .status(seller.status())
                         .build()
         );
@@ -60,7 +59,6 @@ public class PayoutSyncSellerUseCase {
                     )
             );
         }
-        return _seller;
     }
 }
 

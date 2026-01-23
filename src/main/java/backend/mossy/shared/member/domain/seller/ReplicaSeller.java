@@ -18,27 +18,35 @@ public abstract class ReplicaSeller extends BaseSeller {
     @Id
     @Column(name = "seller_id", nullable = false)
     private Long id;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public ReplicaSeller(
             Long id,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt,
             Long userId,
             SellerType sellerType,
             String storeName,
             String businessNum,
-            String representativeName,
-            String contactEmail,
-            String contactPhone,
-            String address1,
-            String address2,
             BigDecimal latitude,
             BigDecimal longitude,
-            SellerStatus status
-            ) {
-        super(userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, latitude, longitude, status);
+            SellerStatus status,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+
+    ) {
+        super(
+                userId,
+                sellerType,
+                storeName,
+                businessNum,
+                latitude,
+                longitude,
+                status
+        );
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

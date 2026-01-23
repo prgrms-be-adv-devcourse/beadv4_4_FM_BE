@@ -8,6 +8,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +19,9 @@ import java.util.List;
 @Entity
 @Table(name = "MARKET_DELIVERY_DISTANCE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Builder
 @AttributeOverride(name = "id", column = @Column(name = "delivery_distance_id"))
 public class DeliveryDistance extends BaseIdAndTime {
 

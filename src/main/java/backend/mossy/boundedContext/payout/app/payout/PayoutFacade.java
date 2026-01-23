@@ -1,13 +1,14 @@
 package backend.mossy.boundedContext.payout.app.payout;
 
-import backend.mossy.boundedContext.payout.domain.payout.Payout;
+import backend.mossy.shared.market.dto.event.OrderPayoutDto;
 import backend.mossy.shared.payout.dto.response.payout.PayoutCandidateItemResponse;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.event.OrderItemDto;
-import backend.mossy.shared.member.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public class PayoutFacade {
     private final PayoutSyncUserUseCase payoutSyncUserUseCase;
     private final PayoutCreatePayoutUseCase payoutCreatePayoutUseCase;
     private final PayoutAddPayoutCandidateItemsUseCase payoutAddPayoutCandidateItemsUseCase;
-    private final MarketApiClient.PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
+    private final PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
     private final PayoutCompletePayoutsMoreUseCase payoutCompletePayoutsMoreUseCase;
     private final PayoutSupport payoutSupport;
 
@@ -40,7 +41,7 @@ public class PayoutFacade {
      * @param seller 변경된 판매자 정보 DTO
      */
     @Transactional
-    public void syncSeller(SellerDto seller) {
+    public void syncSeller(SellerApprovedEvent seller) {
         payoutSyncSellerUseCase.syncSeller(seller);
     }
 
@@ -57,12 +58,12 @@ public class PayoutFacade {
     /**
      * [수동] 특정 수취인(payee)에 대한 정산을 수동으로 생성
      * 자동화된 배치 프로세스와는 별개의 흐름
+     *
      * @param payeeId 수취인의 ID
-     * @return 생성된 Payout 객체
      */
     @Transactional
-    public Payout createPayout(Long payeeId) {
-        return payoutCreatePayoutUseCase.createPayout(payeeId);
+    public void createPayout(Long payeeId) {
+        payoutCreatePayoutUseCase.createPayout(payeeId);
     }
 
     /**
@@ -72,16 +73,17 @@ public class PayoutFacade {
      * @param paymentDate 결제 완료 일시
      */
     @Transactional
-    public void addPayoutCandidateItem(OrderItemDto orderItem, LocalDateTime paymentDate) {
+    public void addPayoutCandidateItem(OrderPayoutDto orderItem, LocalDateTime paymentDate) {
         payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(orderItem, paymentDate);
     }
 
     /**
      * [흐름 2] 정산 후보 아이템을 집계하여 실제 정산(Payout)에 포함될 PayoutItem으로 변환하는 배치를 실행
+     * Spring Batch의 트랜잭션을 사용하므로 MANDATORY 전파 레벨 사용
      * @param limit 한 번에 처리할 개수
      * @return 처리 결과 (성공/실패, 처리된 개수 등)
      */
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     public RsData<Integer> collectPayoutItemsMore(int limit) {
         return payoutCollectPayoutItemsMoreUseCase.collectPayoutItemsMore(limit);
     }
@@ -101,10 +103,11 @@ public class PayoutFacade {
     /**
      * [흐름 3] 생성된 정산(Payout)들을 실제로 실행하고 완료 처리하는 배치를 실행
      * 이 과정이 성공적으로 끝나면 PayoutCompletedEvent가 발행되어, 기부금 정산 등 후속 조치가 이어짐
+     * Spring Batch의 트랜잭션을 사용하므로 MANDATORY 전파 레벨 사용
      * @param limit 한 번에 처리할 개수
      * @return 처리 결과 (성공/실패, 처리된 개수 등)
      */
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY)
     public RsData<Integer> completePayoutsMore(int limit) {
         return payoutCompletePayoutsMoreUseCase.completePayoutsMore(limit);
     }

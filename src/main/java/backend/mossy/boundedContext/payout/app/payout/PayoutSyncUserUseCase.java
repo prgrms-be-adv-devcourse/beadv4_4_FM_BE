@@ -2,6 +2,8 @@ package backend.mossy.boundedContext.payout.app.payout;
 
 import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
 import backend.mossy.boundedContext.payout.out.payout.PayoutUserRepository;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,13 @@ public class PayoutSyncUserUseCase {
      * 이를 통해 Payout 컨텍스트는 기부자(구매자) 정보를 자체적으로 갖게 됨
      *
      * @param user Member 컨텍스트에서 전달된 사용자 정보 DTO
-     * @return 동기화(생성 또는 업데이트)된 PayoutUser 엔티티
      */
     @Transactional
-    public PayoutUser syncUser(UserDto user) {
-        return payoutUserRepository.save(
+    public void syncUser(UserDto user) {
+        if (user == null || user.id() == null) {
+            throw new DomainException(ErrorCode.INVALID_USER_DATA);
+        }
+        payoutUserRepository.save(
                 PayoutUser.builder()
                         .id(user.id())
                         .email(user.email())

@@ -1,6 +1,6 @@
 package backend.mossy.boundedContext.payout.app.donation;
 
-import backend.mossy.shared.market.dto.event.OrderItemDto;
+import backend.mossy.shared.market.dto.event.OrderPayoutDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ public class DonationFacade {
      * @param orderItem 기부금이 발생한 특정 주문 아이템 DTO
      */
     @Transactional
-    public void createDonationLog(OrderItemDto orderItem) {
+    public void createDonationLog(OrderPayoutDto orderItem) {
         donationCreateLogUseCase.createDonationLog(orderItem);
     }
 

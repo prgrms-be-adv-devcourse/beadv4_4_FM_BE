@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,9 +32,11 @@ public class MarketUser extends ReplicaUser {
             String profileImage,
             UserStatus status,
             LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            LocalDateTime updatedAt,
+            BigDecimal longitude,
+            BigDecimal latitude
     ) {
-        super(id, email, name, address, nickname, profileImage, createdAt, updatedAt, status);
+        super(id, email, name, address, nickname, profileImage, createdAt, updatedAt, status, longitude, latitude);
     }
 
     public static MarketUser from(UserDto user) {

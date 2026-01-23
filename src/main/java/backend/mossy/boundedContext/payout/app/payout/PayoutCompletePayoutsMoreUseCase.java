@@ -2,6 +2,8 @@ package backend.mossy.boundedContext.payout.app.payout;
 
 import backend.mossy.boundedContext.payout.domain.payout.Payout;
 import backend.mossy.boundedContext.payout.out.payout.PayoutRepository;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -24,12 +26,15 @@ public class PayoutCompletePayoutsMoreUseCase {
     /**
      * 아직 완료되지 않은 Payout들을 조회하여, '정산 완료' 상태로 처리
      * Payout의 completePayout() 메서드 호출을 통해 상태 변경 및 PayoutCompletedEvent 발행이 이루어짐
+     * Spring Batch에서 트랜잭션을 관리하므로 별도 트랜잭션 어노테이션 제거
      *
      * @param limit 한 번의 배치 작업에서 처리할 최대 Payout 수
      * @return 처리 결과 RsData
      */
-    @Transactional
     public RsData<Integer> completePayoutsMore(int limit) {
+        if (limit <= 0) {
+            throw new DomainException(ErrorCode.INVALID_BATCH_LIMIT);
+        }
         // 1. 현재 활성화되어 있는 (아직 정산일이 지정되지 않은) Payout들을 조회
         List<Payout> activePayouts = findActivePayouts(limit);
 

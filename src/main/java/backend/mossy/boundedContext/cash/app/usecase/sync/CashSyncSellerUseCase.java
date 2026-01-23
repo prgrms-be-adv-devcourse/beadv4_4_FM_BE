@@ -5,7 +5,7 @@ import backend.mossy.boundedContext.cash.out.seller.CashSellerRepository;
 import backend.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.shared.cash.event.CashSellerCreatedEvent;
-import backend.mossy.shared.member.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class CashSyncSellerUseCase {
     private final SellerWalletRepository sellerWalletRepository;
     private final EventPublisher eventPublisher;
 
-    public CashSeller syncSeller(SellerDto seller) {
+    public CashSeller syncSeller(SellerApprovedEvent seller) {
         // 1. CashSeller from 메서드를 사용하여 엔티티 생성 및 저장
         CashSeller cashSeller = cashSellerRepository.save(CashSeller.from(seller));
 

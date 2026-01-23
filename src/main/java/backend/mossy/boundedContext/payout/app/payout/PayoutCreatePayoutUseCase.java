@@ -4,6 +4,8 @@ import backend.mossy.boundedContext.payout.domain.payout.Payout;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.payout.PayoutRepository;
 import backend.mossy.boundedContext.payout.out.payout.PayoutSellerRepository;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,16 +26,19 @@ public class PayoutCreatePayoutUseCase {
      * 이미 해당 수취인에 대해 활성화된 (아직 정산일이 지정되지 않은) Payout 객체가 있다면 그것을 반환
      *
      * @param payeeId 정산 대상 수취인(PayoutSeller)의 ID
-     * @return 생성되거나 조회된 Payout 객체
      */
     @Transactional
-    public Payout createPayout(Long payeeId) {
-        // 1. 주어진 payeeId를 사용하여 PayoutSeller 엔티티를 조회 (getReferenceById는 엔티티가 존재함을 가정)
-        PayoutSeller _payee = payoutSellerRepository.getReferenceById(payeeId);
+    public void createPayout(Long payeeId) {
+        if (payeeId == null) {
+            throw new DomainException(ErrorCode.INVALID_PAYEE_ID);
+        }
+        // 1. 주어진 payeeId를 사용하여 PayoutSeller 엔티티를 조회
+        PayoutSeller _payee = payoutSellerRepository.findById(payeeId)
+                .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND));
 
         // 2. 해당 수취인(_payee)에 대해 아직 정산일(payoutDate)이 지정되지 않은(NULL) 활성화된 Payout이 있는지 확인
         //    만약 있다면 기존 Payout을 반환하고, 없다면 새로운 Payout을 생성하여 저장
-        return payoutRepository.findByPayeeAndPayoutDateIsNull(_payee)
+        payoutRepository.findByPayeeAndPayoutDateIsNull(_payee)
                 .orElseGet(() -> payoutRepository.save(new Payout(_payee)));
     }
 }

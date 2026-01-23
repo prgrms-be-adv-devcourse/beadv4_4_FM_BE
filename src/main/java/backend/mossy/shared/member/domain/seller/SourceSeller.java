@@ -11,30 +11,23 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(
-        name = "SELLER",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uk_sellers_user_id", columnNames = "user_id")
-        }
-)
+@MappedSuperclass
 @Getter
-@Setter(AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AttributeOverride(name = "id", column = @Column(name = "seller_id"))
 public abstract class SourceSeller extends BaseSeller {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "seller_id", nullable = false)
+    @Column(name = "seller_id")
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
-
     @CreatedDate
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public SourceSeller(
@@ -42,25 +35,14 @@ public abstract class SourceSeller extends BaseSeller {
             SellerType sellerType,
             String storeName,
             String businessNum,
-            String representativeName,
-            String contactEmail,
-            String contactPhone,
-            String address1,
-            String address2,
             BigDecimal latitude,
             BigDecimal longitude,
-            SellerStatus status,
-            Long id,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt) {
-        super(userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, latitude, longitude, status);
-        this.id = id;
-        this.userId = userId;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+            SellerStatus status
+    ) {
+        super(
+                userId, sellerType, storeName, businessNum,
+                latitude, longitude, status
 
-    public boolean isApproved() {
-        return this.status == SellerStatus.APPROVED;
+        );
     }
 }
