@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.cash.domain.core;
+package backend.mossy.boundedContext.market.domain.payment;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

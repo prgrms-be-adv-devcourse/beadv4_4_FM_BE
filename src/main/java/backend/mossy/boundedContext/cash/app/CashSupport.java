@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.cash.app;
 
+import backend.mossy.boundedContext.cash.domain.CashPolicy;
 import backend.mossy.boundedContext.cash.domain.seller.CashSeller;
 import backend.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import backend.mossy.boundedContext.cash.domain.user.CashUser;
@@ -9,6 +10,7 @@ import backend.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
 import backend.mossy.boundedContext.cash.out.user.CashUserRepository;
 import backend.mossy.boundedContext.cash.out.user.UserWalletRepository;
 import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,41 +25,38 @@ public class CashSupport {
 
     public void validateUserWalletExists(Long userId) {
         if (userWalletRepository.existsWalletByUserId(userId)) {
-            // 추후 GlobalExceptionHandler에서 공통으로 처리할 계획
-            throw new DomainException("ALREADY_EXISTS_WALLET", "이미 생성된 구매자 지갑이 존재합니다.: " + userId);
+            throw new DomainException(ErrorCode.WALLET_ALREADY_EXISTS);
         }
     }
 
     public void validateSellerWalletExists(Long sellerId) {
         if (sellerWalletRepository.existsBySellerId(sellerId)) {
-            // 추후 GlobalExceptionHandler에서 공통으로 처리할 계획
-            throw new DomainException("ALREADY_EXISTS_WALLET", "이미 생성된 판매자 지갑이 존재합니다.: " + sellerId);
+            throw new DomainException(ErrorCode.WALLET_ALREADY_EXISTS);
         }
     }
 
     public CashUser findCashUserById(Long userId) {
         return cashUserRepository.findCashUserById(userId)
-            .orElseThrow(
-                () -> new DomainException("NOT_FOUND_USER", "존재하지 않는 구매자입니다.: " + userId));
+            .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
     }
 
     public CashSeller findCashSellerById(Long sellerId) {
         return cashSellerRepository.findCashSellerById(sellerId)
-            .orElseThrow(
-                () -> new DomainException("NOT_FOUND_SELLER", "존재하지 않는 판매자입니다.: " + sellerId));
+            .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND));
     }
 
     public UserWallet findWalletByUserId(Long userId) {
         return userWalletRepository.findWalletByUserId(userId)
-            .orElseThrow(
-                () -> new DomainException("NOT_EXISTS_USER_WALLET", "구매자 지갑이 존재하지 않습니다.: " + userId)
-            );
+            .orElseThrow(() -> new DomainException(ErrorCode.USER_WALLET_NOT_FOUND));
     }
 
     public SellerWallet findWalletBySellerId(Long sellerId) {
         return sellerWalletRepository.findWalletBySellerId(sellerId)
-            .orElseThrow(
-                () -> new DomainException("NOT_EXISTS_USER_WALLET", "판매자 지갑이 존재하지 않습니다.: " + sellerId)
-            );
+            .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
+    }
+
+    public SellerWallet findHoldingWallet() {
+        return sellerWalletRepository.findBySellerId(CashPolicy.HOLDING_MEMBER_ID)
+            .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
     }
 }

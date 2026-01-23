@@ -1,6 +1,8 @@
 package backend.mossy.shared.cash.dto.request;
 
 import backend.mossy.boundedContext.cash.domain.user.UserEventType;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import java.math.BigDecimal;
 import lombok.Builder;
 
@@ -24,9 +26,9 @@ public record UserBalanceRequestDto(
     }
 
     public UserBalanceRequestDto {
-        if (userId == null) throw new IllegalArgumentException("구매자 ID는 필수입니다.");
+        if (userId == null) throw new DomainException(ErrorCode.USER_ID_REQUIRED);
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("금액은 0보다 커야 합니다.");
+            throw new DomainException(ErrorCode.AMOUNT_MUST_BE_POSITIVE);
         }
     }
 }

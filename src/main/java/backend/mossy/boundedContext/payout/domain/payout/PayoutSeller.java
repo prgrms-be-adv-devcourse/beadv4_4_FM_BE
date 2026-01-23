@@ -6,12 +6,12 @@ import backend.mossy.shared.member.domain.seller.SellerType;
 import backend.mossy.shared.member.dto.event.SellerDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -25,30 +25,20 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PayoutSeller extends ReplicaSeller {
+
     /**
      * PayoutSeller 엔티티를 생성하는 빌더 패턴 생성자
      * {@link ReplicaSeller}의 생성자를 호출하여 판매자 기본 정보를 초기화
      */
     @Builder
-    public PayoutSeller(
-            Long id,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt,
-            Long userId,
-            SellerType sellerType,
-            String storeName,
-            String businessNum,
-            String representativeName,
-            String contactEmail,
-            String contactPhone,
-            String address1,
-            String address2,
-            BigDecimal latitude,
-            BigDecimal longitude,
-            SellerStatus status) {
-        super(id, createdAt, updatedAt, userId, sellerType, storeName, businessNum, representativeName, contactEmail, contactPhone, address1, address2, latitude, longitude, status);
+    public PayoutSeller(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, Long userId,
+        SellerType sellerType, String storeName, String businessNum, String representativeName,
+        String contactEmail, String contactPhone, String address1, String address2,
+        BigDecimal latitude, BigDecimal longitude, SellerStatus status) {
+        super(id, createdAt, updatedAt, userId, sellerType, storeName, businessNum,
+            representativeName,
+            contactEmail, contactPhone, address1, address2, latitude, longitude, status);
     }
-
 
     /**
      * 이 PayoutSeller가 시스템 자체를 나타내는 판매자인지 여부를 확인

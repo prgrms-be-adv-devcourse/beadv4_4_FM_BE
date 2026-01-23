@@ -81,4 +81,10 @@ batch:
     # - 큰 값(500-1000): DB 왕복 횟수 감소하지만, 메모리 사용량 증가 및 롤백 시 손실 커짐
     # - 권장: 100-200 (적절한 균형)
 
+toss:
+  payments:
+    base-url: https://api.tosspayments.com
+    secret-key: ${TOSS_SECRET_KEY:test_sk_*******************}
+
+
 
