@@ -1,6 +1,8 @@
 package backend.mossy.boundedContext.payout.domain.donation;
 
 import backend.mossy.boundedContext.payout.domain.payout.PayoutUser;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -65,18 +67,30 @@ public class DonationLog extends BaseIdAndTime {
      */
     @Builder
     public DonationLog(PayoutUser user, Long orderItemId, BigDecimal amount, Double carbonOffsetG) {
+        validateDonation(user, orderItemId, amount);
         this.user = user;
         this.orderItemId = orderItemId;
         this.amount = amount;
         this.carbonOffsetG = carbonOffsetG;
         this.isSettled = false; // 새로 생성된 기부 로그는 기본적으로 정산되지 않은 상태입니다.
     }
+    private void validateDonation(PayoutUser user, Long orderItemId, BigDecimal amount) {
+        if (user == null) throw new DomainException(ErrorCode.PAYOUT_USER_NOT_FOUND);
+        if (orderItemId == null) throw new DomainException(ErrorCode.ORDER_NOT_FOUND);
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new DomainException(ErrorCode.INVALID_DONATION_AMOUNT);
+        }
+    }
+
 
     /**
      * 이 기부 로그의 정산 상태를 '정산 완료(true)'로 변경
      * Payout 프로세스에 의해 호출
      */
     public void settle() {
+        if (Boolean.TRUE.equals(this.isSettled)) {
+            throw new DomainException(ErrorCode.ALREADY_SETTLED_DONATION);
+        }
         this.isSettled = true;
     }
 }
