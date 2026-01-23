@@ -50,6 +50,8 @@ public class MarketUser extends ReplicaUser {
             .status(user.status())
             .createdAt(user.createdAt())
             .updatedAt(user.updatedAt())
+            .latitude(user.latitude())
+            .longitude(user.longitude())
             .build();
     }
 
