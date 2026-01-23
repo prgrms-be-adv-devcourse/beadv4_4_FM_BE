@@ -26,13 +26,13 @@ public class ApiV1SellerOrderController {
     )
     @GetMapping
     public Page<OrderListSellerResponse> getSellerOrders(
-            @Parameter(description = "판매자 사용자 ID", required = true)
-            @RequestParam Long userId,
+            @Parameter(description = "판매자 ID", required = true)
+            @RequestParam Long sellerId,
 
             @Parameter(hidden = true)
             @PageableDefault(size = 5) Pageable pageable
     ) {
-        return orderFacade.getSellerOrderList(userId, pageable);
+        return orderFacade.getSellerOrderList(sellerId, pageable);
     }
 
     @Operation(

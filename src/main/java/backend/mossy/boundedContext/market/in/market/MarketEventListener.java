@@ -6,6 +6,7 @@ import backend.mossy.boundedContext.market.app.order.OrderFacade;
 import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.boundedContext.market.domain.market.MarketUser;
 import backend.mossy.shared.market.event.MarketUserCreatedEvent;
+import backend.mossy.shared.market.event.OrderPaidEvent;
 import backend.mossy.shared.market.event.PaymentCompletedEvent;
 import backend.mossy.shared.member.event.SellerJoinedEvent;
 import backend.mossy.shared.member.event.SellerUpdatedEvent;
@@ -64,7 +65,7 @@ public class MarketEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void PaymentCompletedForCart(PaymentCompletedEvent event) {
+    public void PaymentCompletedForCart(OrderPaidEvent event) {
         cartFacade.clearCart(event.buyerId());
     }
 }
