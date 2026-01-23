@@ -15,6 +15,18 @@ public enum ErrorCode {
     DUPLICATE_EMAIL(400, "이미 존재하는 이메일입니다."),
     DUPLICATE_NICKNAME(400, "이미 존재하는 닉네임입니다."),
 
+    // 지갑 및 잔액 변경 관련 검증
+    USER_ID_REQUIRED(400, "사용자 식별자(ID)는 필수입니다."),
+    SELLER_ID_REQUIRED(400, "판매자 식별자(ID)는 필수입니다."),
+    AMOUNT_MUST_BE_POSITIVE(400, "금액은 0보다 커야 합니다."),
+
+    // 결제 관련 검증
+    PAYMENT_KEY_REQUIRED(400, "paymentKey는 필수입니다."),
+    ORDER_ID_REQUIRED(400, "주문번호(orderId)는 필수입니다."),
+    PAY_METHOD_REQUIRED(400, "결제 수단(payMethod)은 필수입니다."),
+    CANCEL_AMOUNT_MUST_BE_POSITIVE(400, "취소 금액은 0보다 커야 합니다."),
+    CANCEL_REASON_REQUIRED(400, "취소 사유는 필수입니다."),
+
     // 정산/기부 관련 입력 검증
     REL_TYPE_CODE_IS_NULL(400, "참조 타입 코드가 없습니다."),
     REL_ID_IS_NULL(400, "참조 엔티티 ID가 없습니다."),
@@ -66,7 +78,7 @@ public enum ErrorCode {
     WEIGHT_GRADE_NOT_FOUND(404, "무게 등급이 존재하지 않습니다."),
     DELIVERY_DISTANCE_NOT_FOUND(404, "배송 거리 등급이 존재하지 않습니다."),
 
-    // 지갑 및 정산 관련
+    // 지갑 및 정산 도메인 상세
     USER_WALLET_NOT_FOUND(404, "구매자 지갑이 존재하지 않습니다."),
     SELLER_WALLET_NOT_FOUND(404, "판매자 지갑이 존재하지 않습니다."),
     PAYOUT_NOT_FOUND(404, "해당 판매자의 활성 정산을 찾을 수 없습니다."),

@@ -1,6 +1,8 @@
 package backend.mossy.shared.market.dto.toss;
 
 import backend.mossy.boundedContext.market.domain.payment.PayMethod;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
 import java.math.BigDecimal;
 import lombok.Builder;
 
@@ -14,16 +16,16 @@ public record PaymentConfirmTossRequestDto(
 ) {
     public PaymentConfirmTossRequestDto {
         if (paymentKey == null || paymentKey.isBlank()) {
-            throw new IllegalArgumentException("paymentKey는 필수입니다.");
+            throw new DomainException(ErrorCode.PAYMENT_KEY_REQUIRED);
         }
         if (orderId == null || orderId.isBlank()) {
-            throw new IllegalArgumentException("orderId(orderNo)는 필수입니다.");
+            throw new DomainException(ErrorCode.ORDER_ID_REQUIRED);
         }
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("금액은 0보다 커야 합니다.");
+            throw new DomainException(ErrorCode.AMOUNT_MUST_BE_POSITIVE);
         }
         if (payMethod == null) {
-            throw new IllegalArgumentException("결제 수단(payMethod)은 필수 선택 사항입니다.");
+            throw new DomainException(ErrorCode.PAY_METHOD_REQUIRED);
         }
     }
 }
