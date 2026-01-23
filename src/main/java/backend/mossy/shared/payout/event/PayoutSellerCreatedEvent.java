@@ -1,8 +1,7 @@
 package backend.mossy.shared.payout.event;
 
-import backend.mossy.shared.member.dto.event.SellerDto;
-import lombok.AllArgsConstructor;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 
 
-public record PayoutSellerCreatedEvent(SellerDto seller) {
+public record PayoutSellerCreatedEvent(SellerApprovedEvent seller) {
 }

@@ -3,7 +3,7 @@ package backend.mossy.boundedContext.payout.domain.payout;
 import backend.mossy.shared.member.domain.seller.ReplicaSeller;
 import backend.mossy.shared.member.domain.seller.SellerStatus;
 import backend.mossy.shared.member.domain.seller.SellerType;
-import backend.mossy.shared.member.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -71,8 +71,8 @@ public class PayoutSeller extends ReplicaSeller {
      * 주로 이벤트 발행 시 이벤트 데이터로 활용되거나 다른 서비스에 정보를 전달할 때 사용
      * @return PayoutSeller의 정보를 담은 SellerDto
      */
-    public SellerDto toDto() {
-        return SellerDto.builder()
+    public SellerApprovedEvent toDto() {
+        return SellerApprovedEvent.builder()
                 .id(getId())
                 .userId(getUserId())
                 .sellerType(getSellerType())

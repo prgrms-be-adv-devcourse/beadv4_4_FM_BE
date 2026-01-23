@@ -42,7 +42,7 @@ public class Seller extends SourceSeller {
                 );
         }
 
-        public static Seller fromRequest(SellerRequest req) {
+        public static Seller createFromRequest(SellerRequest req) {
                 return new Seller(
                         req.getUser().getId(),
                         req.getSellerType(),

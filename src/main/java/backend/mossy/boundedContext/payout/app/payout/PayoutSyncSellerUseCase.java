@@ -3,7 +3,7 @@ package backend.mossy.boundedContext.payout.app.payout;
 import backend.mossy.boundedContext.payout.domain.payout.PayoutSeller;
 import backend.mossy.boundedContext.payout.out.payout.PayoutSellerRepository;
 import backend.mossy.global.eventPublisher.EventPublisher;
-import backend.mossy.shared.member.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import backend.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class PayoutSyncSellerUseCase {
      * @return 동기화(생성 또는 업데이트)된 PayoutSeller 엔티티
      */
     @Transactional
-    public PayoutSeller syncSeller(SellerDto seller) {
+    public PayoutSeller syncSeller(SellerApprovedEvent seller) {
         // PayoutSeller가 새로 생성되는 경우인지 확인
         boolean isNew = !payoutSellerRepository.existsById(seller.id());
 

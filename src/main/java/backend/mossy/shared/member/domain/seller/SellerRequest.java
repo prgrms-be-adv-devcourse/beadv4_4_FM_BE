@@ -117,6 +117,7 @@ public class SellerRequest extends BaseIdAndTime {
 
     private void validatePending() {
         if (this.status != SellerRequestStatus.PENDING) {
+            //TODO: Errorcode로 바꿀예정
             throw new IllegalStateException("판매자 요청이 '대기 중'상태가 아닙니다.");
         }
     }

@@ -4,7 +4,7 @@ import backend.mossy.boundedContext.payout.domain.payout.Payout;
 import backend.mossy.shared.payout.dto.response.payout.PayoutCandidateItemResponse;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.event.OrderItemDto;
-import backend.mossy.shared.member.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class PayoutFacade {
      * @param seller 변경된 판매자 정보 DTO
      */
     @Transactional
-    public void syncSeller(SellerDto seller) {
+    public void syncSeller(SellerApprovedEvent seller) {
         payoutSyncSellerUseCase.syncSeller(seller);
     }
 

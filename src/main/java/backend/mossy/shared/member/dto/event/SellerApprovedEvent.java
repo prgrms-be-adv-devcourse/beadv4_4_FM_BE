@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
-public record SellerDto(
-        Long id,
+public record SellerApprovedEvent(
+        Long sellerId,
         Long userId,
         SellerType sellerType,
         String storeName,

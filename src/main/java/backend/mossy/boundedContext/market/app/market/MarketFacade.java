@@ -2,7 +2,7 @@ package backend.mossy.boundedContext.market.app.market;
 
 import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.boundedContext.market.domain.market.MarketUser;
-import backend.mossy.shared.member.dto.event.SellerDto;
+import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import backend.mossy.shared.member.dto.event.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class MarketFacade {
     }
 
     @Transactional
-    public MarketSeller syncSeller(SellerDto seller) {
+    public MarketSeller syncSeller(SellerApprovedEvent seller) {
         return marketSyncSellerUseCase.syncSeller(seller);
     }
 }
