@@ -1,7 +1,6 @@
 package backend.mossy.boundedContext.market.in;
 
 import backend.mossy.boundedContext.market.app.payment.PaymentFacade;
-import backend.mossy.boundedContext.market.domain.order.Order;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.toss.PaymentCancelCashRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentCancelTossRequestDto;
@@ -28,27 +27,27 @@ public class ApiV1PaymentController {
     @PostMapping("/confirm/toss")
     public RsData<Void> confirmPayment(@RequestBody PaymentConfirmTossRequestDto request) {
         paymentFacade.confirmTossPayment(request);
-        return new RsData<>("P-200", "결제가 완료되었습니다.");
+        return new RsData<>("200", "결제가 완료되었습니다.");
     }
 
     @Operation(summary = "주문 결제 승인 (예치금)", description = "예치금을 이용한 결제 승인 처리")
     @PostMapping("/confirm/cash")
     public RsData<Void> confirmCashPayment(@RequestBody PaymentConfirmCashRequestDto request) {
         paymentFacade.confirmCashPayment(request);
-        return new RsData<>("P-200", "예치금 결제가 완료되었습니다.");
+        return new RsData<>("200", "예치금 결제가 완료되었습니다.");
     }
 
     @Operation(summary = "결제 취소", description = "PG 결제된 주문을 취소하고 환불 처리")
     @PostMapping("/cancel/toss")
     public RsData<Void> cancelTossPayment(@Valid @RequestBody PaymentCancelTossRequestDto request) {
         paymentFacade.cancelTossPayment(request);
-        return new RsData<>("P-200", "결제가 취소되었습니다.");
+        return new RsData<>("200", "PG-결제가 취소되었습니다.");
     }
 
     @Operation(summary = "결제 취소", description = "예치금으로 결제된 주문을 취소하고 환불 처리")
     @PostMapping("/cancel/cash")
     public RsData<Void> cancelCashPayment(@Valid @RequestBody PaymentCancelCashRequestDto request) {
         paymentFacade.cancelCashPayment(request);
-        return new RsData<>("P-200", "결제가 취소되었습니다.");
+        return new RsData<>("200", "예치금 결제가 취소되었습니다.");
     }
 }
