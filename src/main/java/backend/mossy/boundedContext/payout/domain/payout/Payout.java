@@ -54,7 +54,7 @@ public class Payout extends BaseIdAndTime {
             LocalDateTime payDate,
             PayoutUser payer,
             PayoutSeller payee,
-            BigDecimal itemAmount
+            BigDecimal amount
     ) {
         // 1. 상태 검증
         if (isCompleted()) {
@@ -62,7 +62,7 @@ public class Payout extends BaseIdAndTime {
         }
 
         // 2. 금액 검증
-        if (itemAmount == null || itemAmount.compareTo(BigDecimal.ZERO) < 0) {
+        if (this.amount == null || this.amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new DomainException(ErrorCode.INVALID_PAYOUT_AMOUNT);
         }
 
@@ -75,13 +75,13 @@ public class Payout extends BaseIdAndTime {
                 .paymentDate(payDate)
                 .payer(payer)
                 .payee(this.payee) // 현재 정산서의 수취인으로 고정
-                .amount(itemAmount)
+                .amount(amount)
                 .build();
 
         this.items.add(payoutItem);
 
         // 4. 총 정산 금액 업데이트 (필드 초기화 덕분에 null 체크 생략 가능)
-        this.amount = this.amount.add(itemAmount);
+        this.amount = this.amount.add(amount);
 
         return payoutItem;
     }
