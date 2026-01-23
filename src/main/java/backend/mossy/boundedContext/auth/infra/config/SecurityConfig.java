@@ -78,7 +78,11 @@ public class SecurityConfig {
                                 "/api/v1/cart/**",
                                 "/api/v1/orders/**",
 
-                                "/api/v1/product/**"
+                                // Product API
+                                "/api/v1/product/**",
+
+                                // BatchTest API
+                                "/api/v1/payout-batch/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

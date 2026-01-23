@@ -23,10 +23,10 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/test/payout-batch")
 @RequiredArgsConstructor
 @Profile("dev") // dev 환경에서만 활성화
-public class PayoutBatchTestController {
+@RequestMapping("/api/v1/payout-batch/test")
+public class ApiV1PayoutBatchTestController {
 
     private final PayoutFacade payoutFacade;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
