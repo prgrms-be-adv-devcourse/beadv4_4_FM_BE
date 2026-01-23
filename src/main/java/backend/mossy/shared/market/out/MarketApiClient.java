@@ -1,29 +1,36 @@
 package backend.mossy.shared.market.out;
 
+import backend.mossy.boundedContext.market.out.order.OrderRepository;
 import backend.mossy.shared.market.dto.event.OrderPayoutDto;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
+import backend.mossy.global.exception.DomainException;
+import backend.mossy.global.exception.ErrorCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
-@Service
+@Component
+@RequiredArgsConstructor
 public class MarketApiClient {
-    private final RestClient restClient;
+    private final OrderRepository orderRepository;
 
-    public MarketApiClient(@Value("${custom.global.internalBackUrl}") String internalBackUrl) {
-        this.restClient = RestClient.builder()
-                .baseUrl(internalBackUrl + "/api/v1/market")
-                .build();
-    }
+    public List<OrderPayoutDto> getOrderItems(Long orderId) {
+        // 1. 입력값 검증
+        if (orderId == null) {
+            throw new DomainException(ErrorCode.ORDER_ID_REQUIRED);
+        }
 
-    public List<OrderPayoutDto> getOrderItems(Long id) {
-        return restClient
-                .get()
-                .uri("/orders/%d/items".formatted(id))
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+        // 2. DB 조회
+        List<OrderPayoutDto> items = orderRepository.findPayoutOrderByOrderId(orderId);
+
+        // 3. 비즈니스 예외 처리
+        // 주문 항목이 없다는 것은 정산 프로세스를 진행할 수 없음을 의미하므로 예외를 발생시킵니다.
+        if (CollectionUtils.isEmpty(items)) {
+            throw new DomainException(ErrorCode.ORDERITEM_IS_NULL);
+            // 또는 상황에 따라 ErrorCode.ORDER_NOT_FOUND 사용
+        }
+
+        return items;
     }
 }
