@@ -1,6 +1,5 @@
 package backend.mossy.boundedContext.payout.app.payout;
 
-import backend.mossy.boundedContext.payout.domain.payout.Payout;
 import backend.mossy.shared.payout.dto.response.payout.PayoutCandidateItemResponse;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.event.OrderItemDto;
@@ -57,12 +56,12 @@ public class PayoutFacade {
     /**
      * [수동] 특정 수취인(payee)에 대한 정산을 수동으로 생성
      * 자동화된 배치 프로세스와는 별개의 흐름
+     *
      * @param payeeId 수취인의 ID
-     * @return 생성된 Payout 객체
      */
     @Transactional
-    public Payout createPayout(Long payeeId) {
-        return payoutCreatePayoutUseCase.createPayout(payeeId);
+    public void createPayout(Long payeeId) {
+        payoutCreatePayoutUseCase.createPayout(payeeId);
     }
 
     /**
