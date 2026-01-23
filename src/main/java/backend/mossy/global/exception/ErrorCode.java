@@ -14,6 +14,7 @@ public enum ErrorCode {
     REL_ID_IS_NULL(400,"참조 엔티티 ID가 없습니다."),
     PAYEE_IS_NULL(400,"수취인이 없습니다."),
     INVALID_AMOUNT(400,"금액이 올바르지 않습니다."),
+    INVALID_PAYOUT_AMOUNT(400,"정산 금액은 0원보다 작을 수 없습니다"),
     INVALID_BATCH_LIMIT(400,"배치 처리 한계값이 올바르지 않습니다."),
     INVALID_DONATION_AMOUNT(400,"기부 금액이 올바르지 않습니다."),
     INVALID_CARBON_AMOUNT(400,"탄소 배출량이 올바르지 않습니다."),
@@ -73,7 +74,8 @@ public enum ErrorCode {
     //422 Unprocessable Entity (비즈니스 규칙 위배)
     QUANTITY_LIMIT_EXCEEDED(422, "수량 제한을 초과했습니다."),
     ORDER_CANNOT_DELETE(422, "삭제할 수 없는 주문입니다."),
-    ALREADY_SETTLED_DONATION(422, "이미 정산 완료된 기부 내역입니다.");
+    ALREADY_SETTLED_DONATION(422, "이미 정산 완료된 기부 내역입니다."),
+    ALREADY_COMPLETED_PAYOUT(422,"이미 완료된 정산건입니다.");
     private final int status;
     private final String msg;
 }

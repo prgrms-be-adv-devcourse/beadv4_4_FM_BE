@@ -26,10 +26,9 @@ public class PayoutCreatePayoutUseCase {
      * 이미 해당 수취인에 대해 활성화된 (아직 정산일이 지정되지 않은) Payout 객체가 있다면 그것을 반환
      *
      * @param payeeId 정산 대상 수취인(PayoutSeller)의 ID
-     * @return 생성되거나 조회된 Payout 객체
      */
     @Transactional
-    public Payout createPayout(Long payeeId) {
+    public void createPayout(Long payeeId) {
         if (payeeId == null) {
             throw new DomainException(ErrorCode.INVALID_PAYEE_ID);
         }
@@ -39,7 +38,7 @@ public class PayoutCreatePayoutUseCase {
 
         // 2. 해당 수취인(_payee)에 대해 아직 정산일(payoutDate)이 지정되지 않은(NULL) 활성화된 Payout이 있는지 확인
         //    만약 있다면 기존 Payout을 반환하고, 없다면 새로운 Payout을 생성하여 저장
-        return payoutRepository.findByPayeeAndPayoutDateIsNull(_payee)
+        payoutRepository.findByPayeeAndPayoutDateIsNull(_payee)
                 .orElseGet(() -> payoutRepository.save(new Payout(_payee)));
     }
 }
