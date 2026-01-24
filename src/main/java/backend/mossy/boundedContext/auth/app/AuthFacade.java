@@ -8,6 +8,7 @@ import backend.mossy.boundedContext.member.domain.User;
 import backend.mossy.boundedContext.member.out.user.UserRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
+import backend.mossy.shared.member.domain.role.RoleCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,6 @@ public class AuthFacade {
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final TokenIssuer tokenIssuer;
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     //로그인
     @Transactional
@@ -45,9 +45,7 @@ public class AuthFacade {
         User user = userRepository.findByIdWithRoles(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
-        String role = user.getUserRoles() == null || user.getUserRoles().isEmpty()
-                ? "USER"
-                : user.getUserRoles().get(0).getRole().getCode().name();
+        String role = user.getPrimaryRole().name();
 
         TokenResponse tokens = tokenIssuer.issueTokens(userId,role);
 
