@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.market.in.cart;
 
+import backend.mossy.boundedContext.auth.infra.security.UserDetailsImpl;
 import backend.mossy.boundedContext.market.app.cart.CartFacade;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.request.CartItemAddRequest;
@@ -8,6 +9,7 @@ import backend.mossy.shared.market.dto.response.CartResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,9 +25,11 @@ public class ApiV1CartController {
     )
     @GetMapping
     public RsData<CartResponse> getCart(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId
-    ) {
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+
+            ) {
+        Long userId = userDetails.getUserId();
         return new RsData<>("200", "장바구니 조회를 성공했습니다.", cartFacade.getCart(userId));
     }
 

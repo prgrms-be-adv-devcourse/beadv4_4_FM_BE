@@ -47,6 +47,8 @@ public class PayoutSyncSellerUseCase {
                         .storeName(seller.storeName())
                         .businessNum(seller.businessNum())
                         .status(seller.status())
+                        .latitude(seller.latitude())
+                        .longitude((seller.longitude()))
                         .build()
         );
 
