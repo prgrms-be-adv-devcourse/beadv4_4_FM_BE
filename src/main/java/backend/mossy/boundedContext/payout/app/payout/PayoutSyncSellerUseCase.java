@@ -27,10 +27,9 @@ public class PayoutSyncSellerUseCase {
      * 이를 통해 Payout 컨텍스트는 정산에 필요한 판매자 정보를 자체적으로 갖게 됨
      *
      * @param seller Member 컨텍스트에서 전달된 판매자 정보 DTO
-     * @return 동기화(생성 또는 업데이트)된 PayoutSeller 엔티티
      */
     @Transactional
-    public PayoutSeller syncSeller(SellerApprovedEvent seller) {
+    public void syncSeller(SellerApprovedEvent seller) {
         if (seller == null || seller.id() == null) {
             throw new DomainException(ErrorCode.INVALID_SELLER_DATA);
         }
@@ -60,7 +59,6 @@ public class PayoutSyncSellerUseCase {
                     )
             );
         }
-        return _seller;
     }
 }
 
