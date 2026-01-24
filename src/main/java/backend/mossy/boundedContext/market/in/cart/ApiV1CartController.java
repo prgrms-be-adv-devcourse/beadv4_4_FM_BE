@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.market.in.cart;
 
+import backend.mossy.boundedContext.auth.infra.security.UserDetailsImpl;
 import backend.mossy.boundedContext.market.app.cart.CartFacade;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.request.CartItemAddRequest;
@@ -8,6 +9,7 @@ import backend.mossy.shared.market.dto.response.CartResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,9 +25,11 @@ public class ApiV1CartController {
     )
     @GetMapping
     public RsData<CartResponse> getCart(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId
-    ) {
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+
+            ) {
+        Long userId = userDetails.getUserId();
         return new RsData<>("200", "장바구니 조회를 성공했습니다.", cartFacade.getCart(userId));
     }
 
@@ -35,12 +39,13 @@ public class ApiV1CartController {
     )
     @PostMapping("/items")
     public RsData<Void> addCartItem(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
 
             @Parameter(description = "장바구니 상품 추가 요청 DTO", required = true)
             @RequestBody CartItemAddRequest request
     ) {
+        Long userId = userDetails.getUserId();
         cartFacade.addCartItem(userId, request);
         return new RsData<>("200", "상품이 장바구니에 추가되었습니다.");
     }
@@ -51,12 +56,13 @@ public class ApiV1CartController {
     )
     @PatchMapping("/items")
     public RsData<Void> updateCartItem(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
 
             @Parameter(description = "장바구니 상품 수량 수정 요청 DTO", required = true)
             @RequestBody CartItemUpdateRequest request
     ) {
+        Long userId = userDetails.getUserId();
         cartFacade.updateCartItem(userId, request);
         return new RsData<>("200", "장바구니 상품 수량이 수정되었습니다.");
     }
@@ -68,12 +74,13 @@ public class ApiV1CartController {
     )
     @DeleteMapping("/items/{productId}")
     public RsData<Void> removeCartItem(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
 
             @Parameter(description = "삭제할 상품 ID", required = true)
             @PathVariable Long productId
     ) {
+        Long userId = userDetails.getUserId();
         cartFacade.removeCartItem(userId, productId);
         return new RsData<>("200", "장바구니에서 상품이 삭제되었습니다.");
     }
@@ -84,9 +91,10 @@ public class ApiV1CartController {
     )
     @DeleteMapping
     public RsData<Void> clearCart(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+        Long userId = userDetails.getUserId();
         cartFacade.clearCart(userId);
         return new RsData<>("200", "장바구니가 비워졌습니다.");
     }

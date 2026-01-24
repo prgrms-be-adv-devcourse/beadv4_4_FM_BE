@@ -57,7 +57,7 @@ public class DeliveryDistance extends BaseIdAndTime {
                 return grade;
             }
         }
-        throw new DomainException(ErrorCode.DELIVERY_DISTANCE_NOT_FOUND);
+        return grades.getLast();
     }
 
     public static DeliveryDistance resolve(

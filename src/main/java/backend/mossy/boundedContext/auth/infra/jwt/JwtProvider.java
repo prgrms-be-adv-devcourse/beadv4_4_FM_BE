@@ -21,15 +21,15 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createAccesToken(Long userId, String role) {
-        return createToken(userId, role, jwtProperties.accessTokenExpireMs());
+    public String createAccessToken(Long userId, String role, Long sellerId) {
+        return createToken(userId, role, sellerId, jwtProperties.accessTokenExpireMs());
     }
 
     public String createRefreshToken(Long userId) {
-        return createToken(userId, null, jwtProperties.refreshTokenExpireMs());
+        return createToken(userId, null,null, jwtProperties.refreshTokenExpireMs());
     }
 
-    public String createToken(Long userId, String role, long expireMs) {
+    public String createToken(Long userId, String role, Long sellerId, long expireMs) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expireMs);
 
@@ -41,6 +41,10 @@ public class JwtProvider {
 
         if (role != null) {
             builder.claim("role", role);
+        }
+
+        if (sellerId != null) {
+            builder.claim("seller_id", sellerId);
         }
 
         return builder.compact();

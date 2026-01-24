@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.market.in.order;
 
+import backend.mossy.boundedContext.auth.infra.security.UserDetailsImpl;
 import backend.mossy.boundedContext.market.app.order.OrderFacade;
 import backend.mossy.global.rsData.RsData;
 import backend.mossy.shared.market.dto.request.OrderCreatedRequest;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,12 +33,13 @@ public class ApiV1OrderController {
     )
     @PostMapping
     public RsData<OrderCreatedResponse> createOrder(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
 
             @Parameter(description = "주문 생성 요청 DTO", required = true)
             @RequestBody OrderCreatedRequest request
     ) {
+        Long userId = userDetails.getUserId();
         return new RsData<>("200", "주문이 생성되었습니다.", orderFacade.createOrder(userId, request));
     }
 
@@ -46,12 +49,13 @@ public class ApiV1OrderController {
     )
     @GetMapping
     public Page<OrderListResponse> getMyOrders(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
 
             @Parameter(hidden = true)
             @PageableDefault(size = 5) Pageable pageable
     ) {
+        Long userId = userDetails.getUserId();
         return orderFacade.getOrderListByUserId(userId, pageable);
     }
 
@@ -71,9 +75,29 @@ public class ApiV1OrderController {
     @DeleteMapping("/{orderId}")
     public RsData<Void> deleteOrder(
             @PathVariable Long orderId,
-            @RequestParam Long userId
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
+        Long userId = userDetails.getUserId();
         orderFacade.deleteOrder(orderId, userId);
         return new RsData<>("200", "주문 삭제를 성공했습니다.");
+    }
+
+    @Operation(
+            summary = "주문 취소",
+            description = "결제 완료된 주문을 취소하고 환불을 진행합니다."
+    )
+    @PostMapping("/{orderId}/cancel")
+    public RsData<Void> cancelOrder(
+            @Parameter(description = "주문 ID", required = true)
+            @PathVariable Long orderId,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "취소 사유", required = true)
+            @RequestParam String cancelReason
+    ) {
+        Long userId = userDetails.getUserId();
+        orderFacade.cancelOrder(orderId, userId, cancelReason);
+        return new RsData<>("200", "주문이 취소되었습니다.");
     }
 }

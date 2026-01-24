@@ -55,7 +55,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Claims claims = jwtProvider.parseClaims(token);
             Long userId = Long.valueOf(claims.getSubject());
 
-            UserDetailsImpl principal = userDetailsService.loadUserById(userId);
+            Long sellerId = null;
+            Object raw = claims.get("seller_id");
+            if (raw != null ) {
+                if (raw instanceof Number) {
+                    sellerId = ((Number) raw).longValue();
+                }
+                else sellerId = Long.valueOf(raw.toString());
+            }
+
+            UserDetailsImpl base = userDetailsService.loadUserById(userId);
+            UserDetailsImpl principal = new UserDetailsImpl(base.getUser(), sellerId);
 
             if (!principal.isEnabled()) {
                 throw new DomainException(ErrorCode.ACCOUNT_DISABLED);

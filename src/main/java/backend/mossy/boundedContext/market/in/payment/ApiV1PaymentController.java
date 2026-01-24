@@ -1,4 +1,4 @@
-package backend.mossy.boundedContext.market.in;
+package backend.mossy.boundedContext.market.in.payment;
 
 import backend.mossy.boundedContext.market.app.payment.PaymentFacade;
 import backend.mossy.global.rsData.RsData;

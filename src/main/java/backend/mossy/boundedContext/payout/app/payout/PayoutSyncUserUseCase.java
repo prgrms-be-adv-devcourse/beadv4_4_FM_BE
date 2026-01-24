@@ -37,6 +37,8 @@ public class PayoutSyncUserUseCase {
                         .name(user.name())
                         .address(user.address())
                         .nickname(user.nickname())
+                        .latitude(user.latitude())
+                        .longitude(user.longitude())
                         .profileImage(user.profileImage())
                         .createdAt(user.createdAt())
                         .updatedAt(user.updatedAt())

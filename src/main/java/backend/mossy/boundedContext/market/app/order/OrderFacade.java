@@ -19,6 +19,7 @@ public class OrderFacade {
     private final GetOrderUseCase getOrderUseCase;
     private final GetSellerOrderUseCase getSellerOrderUseCase;
     private final DeleteOrderUseCase deleteOrderUseCase;
+    private final CancelOrderUseCase cancelOrderUseCase;
     private final CompletePaymentUseCase completePaymentUseCase;
 
     @Transactional
@@ -44,6 +45,11 @@ public class OrderFacade {
     @Transactional
     public void deleteOrder(Long orderId, Long userId) {
         deleteOrderUseCase.deleteOrder(orderId, userId);
+    }
+
+    @Transactional
+    public void cancelOrder(Long orderId, Long userId, String cancelReason) {
+        cancelOrderUseCase.cancelOrder(orderId, userId, cancelReason);
     }
 
     @Transactional(readOnly = true)

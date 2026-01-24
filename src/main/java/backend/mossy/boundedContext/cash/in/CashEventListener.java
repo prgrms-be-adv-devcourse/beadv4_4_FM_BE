@@ -9,6 +9,7 @@ import backend.mossy.shared.cash.event.CashSellerCreatedEvent;
 import backend.mossy.shared.cash.event.CashUserCreatedEvent;
 import backend.mossy.shared.market.event.OrderCashPrePaymentEvent;
 import backend.mossy.shared.market.event.PaymentCompletedEvent;
+import backend.mossy.shared.market.event.PaymentRefundEvent;
 import backend.mossy.shared.member.event.SellerJoinedEvent;
 import backend.mossy.shared.member.event.SellerUpdatedEvent;
 import backend.mossy.shared.member.event.UserUpdatedEvent;
@@ -71,5 +72,10 @@ public class CashEventListener {
     @Transactional(propagation = REQUIRES_NEW)
     public void paymentCompletedEvent(PaymentCompletedEvent event) {
         cashFacade.cashHolding(event);
+    }
+
+    @EventListener
+    public void paymentRefundEvent(PaymentRefundEvent event) {
+        cashFacade.processRefund(event);
     }
 }

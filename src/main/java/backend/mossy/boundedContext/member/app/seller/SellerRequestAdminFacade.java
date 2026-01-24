@@ -12,10 +12,16 @@ import backend.mossy.shared.member.domain.role.RoleCode;
 import backend.mossy.shared.member.domain.role.UserRole;
 import backend.mossy.shared.member.domain.seller.SellerRequest;
 import backend.mossy.shared.member.domain.seller.SellerRequestStatus;
+import backend.mossy.shared.member.domain.seller.SellerStatus;
+import backend.mossy.shared.member.domain.seller.SellerType;
 import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
+import backend.mossy.shared.member.event.SellerJoinedEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +33,7 @@ public class SellerRequestAdminFacade {
     private final EventPublisher eventPublisher;
 
     @Transactional
-    public Long approve(Long requestId) {
+    public SellerAppoveResult approve(Long requestId) {
         SellerRequest req = lockUseCase.lockAndGet(requestId);
 
         if (req.getStatus() != SellerRequestStatus.PENDING) {
@@ -59,20 +65,22 @@ public class SellerRequestAdminFacade {
             user.addUserRole(new UserRole(user, sellerRole));
         }
 
-        eventPublisher.publish(new SellerApprovedEvent(
-                seller.getId(),
-                seller.getUserId(),
-                seller.getSellerType(),
-                seller.getStoreName(),
-                seller.getBusinessNum(),
-                seller.getLatitude(),
-                seller.getLongitude(),
-                seller.getStatus(),
-                seller.getCreatedAt(),
-                seller.getUpdatedAt()
+        eventPublisher.publish(new SellerJoinedEvent(
+                new SellerApprovedEvent(
+                        seller.getId(),
+                        seller.getUserId(),
+                        seller.getSellerType(),
+                        seller.getStoreName(),
+                        seller.getBusinessNum(),
+                        seller.getLatitude(),
+                        seller.getLongitude(),
+                        seller.getStatus(),
+                        seller.getCreatedAt(),
+                        seller.getUpdatedAt()
+                )
         ));
 
-        return seller.getId();
+        return new SellerAppoveResult(seller.getId(), userId);
     }
 
     @Transactional
@@ -85,4 +93,6 @@ public class SellerRequestAdminFacade {
 
         req.reject();
     }
+    
+    public record SellerAppoveResult(Long sellerId, Long userId) {}
 }
