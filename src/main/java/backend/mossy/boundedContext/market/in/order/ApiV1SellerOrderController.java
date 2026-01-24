@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.market.in.order;
 
+import backend.mossy.boundedContext.auth.infra.security.UserDetailsImpl;
 import backend.mossy.boundedContext.market.app.order.OrderFacade;
 import backend.mossy.shared.market.dto.response.OrderDetailSellerResponse;
 import backend.mossy.shared.market.dto.response.OrderListSellerResponse;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,12 +28,13 @@ public class ApiV1SellerOrderController {
     )
     @GetMapping
     public Page<OrderListSellerResponse> getSellerOrders(
-            @Parameter(description = "판매자 ID", required = true)
-            @RequestParam Long sellerId,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
 
             @Parameter(hidden = true)
             @PageableDefault(size = 5) Pageable pageable
     ) {
+        Long sellerId = userDetails.getSellerId();
         return orderFacade.getSellerOrderList(sellerId, pageable);
     }
 
