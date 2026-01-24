@@ -58,7 +58,7 @@ public class ProductEventListener {
     // Product entity -> document으로 변환 후 저장
     private void syncElasticsearch(Long productId) {
         try {
-            Product product = productRepository.findById(productId)
+            Product product = productRepository.findByIdWithDetails(productId)
                     .orElseThrow(() -> new EntityNotFoundException("상품을 찾을 수 없습니다. ID: " + productId));
 
             ProductDocument document = ProductDocument.from(product);
