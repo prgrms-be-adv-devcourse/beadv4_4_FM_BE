@@ -4,7 +4,9 @@ import backend.mossy.boundedContext.auth.in.dto.LoginRequest;
 import backend.mossy.boundedContext.auth.in.dto.LoginResponse;
 import backend.mossy.boundedContext.auth.in.dto.TokenResponse;
 import backend.mossy.boundedContext.auth.out.RefreshTokenRepository;
+import backend.mossy.boundedContext.member.domain.Seller;
 import backend.mossy.boundedContext.member.domain.User;
+import backend.mossy.boundedContext.member.out.seller.SellerRepository;
 import backend.mossy.boundedContext.member.out.user.UserRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
@@ -21,14 +23,20 @@ public class AuthFacade {
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final TokenIssuer tokenIssuer;
     private final UserRepository userRepository;
+    private final SellerRepository sellerRepository;
 
     //로그인
     @Transactional
     public LoginResponse login(LoginRequest request) {
 
         var ctx = loginUseCase.execute(request.email(), request.password());
-        TokenResponse tokens = tokenIssuer.issueTokens(ctx.userId(),ctx.role());
+        Long sellerId = sellerRepository.findByUserId(ctx.userId())
+                .map(seller -> seller.getId())
+                .orElse(null);
+
+        TokenResponse tokens = tokenIssuer.issueTokens(ctx.userId(),ctx.role(), sellerId);
         refreshTokenUseCase.save(ctx.userId(),tokens.refreshToken());
+
         return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
 
     }
@@ -47,7 +55,11 @@ public class AuthFacade {
 
         String role = user.getPrimaryRole().name();
 
-        TokenResponse tokens = tokenIssuer.issueTokens(userId,role);
+        Long sellerId = sellerRepository.findByUserId(userId)
+                .map(seller -> seller.getId())
+                .orElse(null);
+
+        TokenResponse tokens = tokenIssuer.issueTokens(userId,role,sellerId);
 
         refreshTokenUseCase.save(userId,tokens.refreshToken());
         return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
