@@ -82,4 +82,22 @@ public class ApiV1OrderController {
         orderFacade.deleteOrder(orderId, userId);
         return new RsData<>("200", "주문 삭제를 성공했습니다.");
     }
+
+    @Operation(
+            summary = "주문 취소",
+            description = "결제 완료된 주문을 취소하고 환불을 진행합니다."
+    )
+    @PostMapping("/{orderId}/cancel")
+    public RsData<Void> cancelOrder(
+            @Parameter(description = "주문 ID", required = true)
+            @PathVariable Long orderId,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "취소 사유", required = true)
+            @RequestParam String cancelReason
+    ) {
+        Long userId = userDetails.getUserId();
+        orderFacade.cancelOrder(orderId, userId, cancelReason);
+        return new RsData<>("200", "주문이 취소되었습니다.");
+    }
 }

@@ -77,6 +77,7 @@ public enum ErrorCode {
 
     ORDER_NOT_FOUND(404, "주문이 존재하지 않습니다."),
     PENDING_ORDER_NOT_FOUND(404, "결제 대기 중인 주문을 찾을 수 없습니다."),
+    PAID_PAYMENT_NOT_FOUND(404, "결제 완료된 내역를 찾을 수 없습니다."),
     ORDERITEM_IS_NULL(404, "주문 목록이 없습니다."),
     WEIGHT_GRADE_NOT_FOUND(404, "무게 등급이 존재하지 않습니다."),
     DELIVERY_DISTANCE_NOT_FOUND(404, "배송 거리 등급이 존재하지 않습니다."),
@@ -106,6 +107,7 @@ public enum ErrorCode {
     // ========================================
     QUANTITY_LIMIT_EXCEEDED(422, "수량 제한을 초과했습니다."),
     ORDER_CANNOT_DELETE(422, "삭제할 수 없는 주문입니다."),
+    ORDER_CANNOT_CANCEL(422, "취소할 수 없는 주문입니다."),
     INSUFFICIENT_BALANCE(422, "잔액이 부족합니다."),
     INSUFFICIENT_WITHDRAW_BALANCE(422, "출금 가능한 잔액이 부족합니다."),
     INSUFFICIENT_STOCK(422, "재고가 부족합니다."),

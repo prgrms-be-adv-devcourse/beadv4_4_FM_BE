@@ -18,11 +18,11 @@ import static jakarta.persistence.FetchType.LAZY;
 @Builder
 public class OrderDetail extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "seller_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketSeller seller;
 
     @ManyToOne(fetch = LAZY)
@@ -33,13 +33,12 @@ public class OrderDetail extends BaseIdAndTime {
     @JoinColumn(name = "delivery_distance_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private DeliveryDistance deliveryDistance;
 
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "product_id")
     private Long productId;
 
-    @Column(nullable = false)
     private int quantity;
 
-    @Column(name = "order_price", nullable = false, precision = 10, scale = 2)
+    @Column(name = "order_price", precision = 10, scale = 2)
     private BigDecimal orderPrice;
 
     static OrderDetail create(

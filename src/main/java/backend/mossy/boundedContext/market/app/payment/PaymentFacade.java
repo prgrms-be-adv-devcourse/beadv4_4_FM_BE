@@ -1,11 +1,14 @@
 package backend.mossy.boundedContext.market.app.payment;
 
+import backend.mossy.boundedContext.market.domain.payment.PayMethod;
+import backend.mossy.boundedContext.market.domain.payment.Payment;
 import backend.mossy.shared.market.dto.response.PaymentResponse;
 import backend.mossy.shared.market.dto.toss.PaymentCancelCashRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentCancelTossRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentConfirmCashRequestDto;
 import backend.mossy.shared.market.dto.toss.PaymentConfirmTossRequestDto;
 import backend.mossy.shared.market.dto.toss.TossPaymentResponse;
+import backend.mossy.shared.market.event.OrderCancelEvent;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,34 +19,43 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentFacade {
 
     private final PaymentConfirmTossUseCase paymentConfirmUseCase;
-    private final PaymentCancelCashUseCase paymentCancelUserUseCase;
+    private final PaymentCancelCashUseCase paymentCancelCashUseCase;
     private final PaymentConfirmCashUseCase paymentConfirmCashUserCase;
     private final PaymentCancelTossUseCase paymentCancelTossUseCase;
     private final PaymentFindAllUseCase paymentGetInfoUseCase;
     private final PaymentRetrieveUseCase paymentRetrieveUseCase;
+    private final PaymentSupport paymentSupport;
 
     // PG 결제 승인
-    @Transactional
     public void confirmTossPayment(PaymentConfirmTossRequestDto request) {
         paymentConfirmUseCase.confirmToss(request);
     }
 
     // 예치금 결제 승인
-    @Transactional
     public void confirmCashPayment(PaymentConfirmCashRequestDto request) {
         paymentConfirmCashUserCase.confirmCash(request);
     }
 
     // PG 결제 취소
-    @Transactional
-    public void cancelTossPayment(PaymentCancelTossRequestDto request) {
-        paymentCancelTossUseCase.cancelTossPayment(request);
+    public void cancelTossPayment(PaymentCancelTossRequestDto event) {
+        paymentCancelTossUseCase.cancelTossPayment(event);
+    }
+
+    // 주문 취소로 인한 결제 취소
+    public void orderCancelPayment(OrderCancelEvent event) {
+        Payment payment = paymentSupport.findPayment(event.orderNo());
+        PayMethod payMethod = payment.getPayMethod();
+
+        if (payMethod == PayMethod.CARD) {
+            paymentCancelTossUseCase.orderCancelTossPayment(event);
+        } else if (payMethod == PayMethod.CASH) {
+            paymentCancelCashUseCase.orderCancelCashPayment(event);
+        }
     }
 
     // 예치금 결제 취소
-    @Transactional
     public void cancelCashPayment(PaymentCancelCashRequestDto request) {
-        paymentCancelUserUseCase.cancelCashPayment(request);
+        paymentCancelCashUseCase.cancelCashPayment(request);
     }
 
     // PG-승인된 결제 내역 조회

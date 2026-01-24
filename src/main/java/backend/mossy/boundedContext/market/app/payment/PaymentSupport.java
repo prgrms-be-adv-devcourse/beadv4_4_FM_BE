@@ -3,7 +3,10 @@ package backend.mossy.boundedContext.market.app.payment;
 import backend.mossy.boundedContext.market.domain.order.Order;
 import backend.mossy.boundedContext.market.domain.order.OrderState;
 import backend.mossy.boundedContext.market.domain.payment.PayMethod;
+import backend.mossy.boundedContext.market.domain.payment.Payment;
+import backend.mossy.boundedContext.market.domain.payment.PaymentStatus;
 import backend.mossy.boundedContext.market.out.order.OrderRepository;
+import backend.mossy.boundedContext.market.out.payment.PaymentRepository;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.market.dto.toss.TossCancelResponse;
@@ -24,12 +27,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentSupport {
 
     private final OrderRepository orderRepository;
+    private final PaymentRepository paymentRepository;
     private final TossPaymentsService tossPaymentsService;
     private final ApplicationEventPublisher eventPublisher;
 
     public Order findOrder(String orderNo) {
         return orderRepository.findByOrderNo(orderNo)
             .orElseThrow(() -> {return new DomainException(ErrorCode.PENDING_ORDER_NOT_FOUND);
+            });
+    }
+    public Payment findPayment(String orderNo) {
+        return paymentRepository.findByOrderNoAndStatus(orderNo, PaymentStatus.PAID)
+            .orElseThrow(() -> {return new DomainException(ErrorCode.PAID_PAYMENT_NOT_FOUND);
             });
     }
 

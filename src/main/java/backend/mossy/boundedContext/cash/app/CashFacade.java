@@ -25,6 +25,7 @@ import backend.mossy.shared.cash.dto.response.SellerWalletResponseDto;
 import backend.mossy.shared.cash.dto.response.UserWalletResponseDto;
 import backend.mossy.shared.member.dto.event.SellerApprovedEvent;
 import backend.mossy.shared.market.event.PaymentCompletedEvent;
+import backend.mossy.shared.market.event.PaymentRefundEvent;
 import backend.mossy.shared.member.dto.event.UserDto;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
@@ -96,6 +97,11 @@ public class CashFacade {
     @Transactional
     public void cashHolding(PaymentCompletedEvent request) {
         cashHoldingUseCase.holdPaymentAmount(request);
+    }
+
+    @Transactional
+    public void processRefund(PaymentRefundEvent event) {
+        cashHoldingUseCase.processRefund(event);
     }
 
     // === [조회 영역] ===

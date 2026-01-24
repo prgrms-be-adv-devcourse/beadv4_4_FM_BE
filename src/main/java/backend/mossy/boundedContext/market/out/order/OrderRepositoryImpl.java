@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.market.out.order;
 
+import backend.mossy.boundedContext.market.domain.order.OrderState;
 import backend.mossy.shared.market.dto.event.OrderPayoutDto;
 import backend.mossy.shared.market.dto.response.OrderDetailResponse;
 import backend.mossy.shared.market.dto.response.OrderListResponse;
@@ -49,7 +50,9 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                     .join(order.buyer, marketUser)
                     .join(orderDetail.weightGrade, weightGrade)
                     .join(orderDetail.deliveryDistance, deliveryDistance)
-                .where(order.id.eq(orderId))
+                .where(
+                    order.id.eq(orderId),
+                    order.state.eq(OrderState.PAID))
                 .fetch();
     }
 
