@@ -23,8 +23,11 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             "WHERE p.id = :productId")
     Optional<Product> findById(@Param("productId") Long productId);
 
-    @Query("SELECT p FROM Product p JOIN FETCH p.category")
-    List<Product> findAllWithCategory(ProductStatus status);
+    @Query("SELECT DISTINCT p FROM Product p " +
+            "JOIN FETCH p.category " +
+            "LEFT JOIN FETCH p.images " +
+            "WHERE p.status = :status")
+    List<Product> findAllWithCategoryAndImages(@Param("status") ProductStatus status);
 
     // 비관적 락
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -40,4 +43,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 
     @Query("SELECT p FROM Product p WHERE p.id IN :ids")
     List<Product> findByIdIn(@Param("ids") List<Long> ids);
+
 }
+

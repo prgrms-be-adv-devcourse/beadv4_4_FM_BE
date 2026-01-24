@@ -47,7 +47,7 @@ public class ApiV1ProductController {
     // 상품 등록
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RsData<Void> createProduct(@RequestBody @Valid ProductCreateRequest request) {
+    public RsData<Void> createProduct(@ModelAttribute @Valid ProductCreateRequest request) {
         productFacade.registerProduct(request);
         return new RsData<>("201", "상품이 등록되었습니다");
     }
@@ -57,7 +57,7 @@ public class ApiV1ProductController {
     public RsData<Long> updateProduct(
             @PathVariable Long productId,
             @RequestHeader("X-Seller-Id") Long currentSellerId,
-            @RequestBody @Valid ProductUpdateRequest request) {
+            @ModelAttribute @Valid ProductUpdateRequest request) {
         productFacade.updateProduct(productId, currentSellerId, request);
 
         return new RsData<>("200", "상품이 수정되었습니다.", productId);

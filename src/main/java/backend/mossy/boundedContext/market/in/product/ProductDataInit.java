@@ -29,7 +29,7 @@ public class ProductDataInit {
     }
 
     private void migrateAll() {
-        List<Product> products = productRepository.findAllWithCategory(ProductStatus.FOR_SALE);
+        List<Product> products = productRepository.findAllWithCategoryAndImages(ProductStatus.FOR_SALE);
 
         List<ProductDocument> documents = products.stream()
                 .map(ProductDocument::from)

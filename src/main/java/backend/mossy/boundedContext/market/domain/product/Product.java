@@ -71,8 +71,9 @@ public class Product extends BaseIdAndTime {
         this.quantity = quantity;
         this.status = status;
 
-        // 이미지 업데이트 로직
-        //updateImages(imageUrls);
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            updateImages(imageUrls);
+        }
     }
 
     // 상품 상태 변경 (판매자가 직접 변경)
@@ -111,4 +112,34 @@ public class Product extends BaseIdAndTime {
         }
     }
 
+    // 상품 이미지 등록
+    public void addImages(List<String> imageUrls) {
+        if (imageUrls == null || imageUrls.isEmpty()) return;
+
+        for (int i = 0; i < imageUrls.size(); i++) {
+            ProductImage image = ProductImage.builder()
+                    .imageUrl(imageUrls.get(i))
+                    .isThumbnail(i == 0) // 첫 번째 이미지를 썸네일로 설정
+                    .product(this)
+                    .build();
+            this.images.add(image);
+        }
+    }
+
+    // 상품 이미지 수정
+    public List<String> updateImages(List<String> newImageUrls) {
+        // 기존 이미지 리스트
+        List<String> oldImageUrls = this.images.stream()
+                .map(ProductImage::getImageUrl)
+                .toList();
+
+        // 기존 이미지 제거
+        this.images.clear();
+
+        // 새 이미지 추가
+        addImages(newImageUrls);
+
+        // S3 이미지 리스트 반환
+        return oldImageUrls;
+    }
 }
