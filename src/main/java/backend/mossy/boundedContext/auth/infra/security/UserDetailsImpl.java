@@ -1,5 +1,6 @@
 package backend.mossy.boundedContext.auth.infra.security;
 
+import backend.mossy.boundedContext.member.domain.Seller;
 import backend.mossy.boundedContext.member.domain.User;
 import backend.mossy.shared.member.domain.role.UserRole;
 import backend.mossy.shared.member.domain.user.UserStatus;
@@ -15,18 +16,28 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
-@RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
     private final User user;
+    private final Long sellerId;
 
-    public Long getUserId() {
-        return user.getId();
+    public UserDetailsImpl(User user) {
+        this(user, null);
     }
+
+    public UserDetailsImpl(User user, Long sellerId) {
+        this.user = user;
+        this.sellerId = sellerId;
+    }
+
+    public Long getUserId() { return user.getId();}
+
+    public Long getSellerId() { return sellerId; }
 
     public String getEmail() {
         return user.getEmail();
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -68,4 +79,5 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return user.getStatus() == UserStatus.ACTIVE;
     }
+
 }
