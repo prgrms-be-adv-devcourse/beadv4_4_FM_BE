@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MarketRegisterProductUseCase {
@@ -21,6 +24,7 @@ public class MarketRegisterProductUseCase {
     private final MarketSellerRepository marketSellerRepository;
     private final CategoryRepository categoryRepository;
     private final EventPublisher eventPublisher;
+    private final S3Service s3Service;
 
     @Transactional
     public Product register(ProductCreateRequest request) {
@@ -31,10 +35,13 @@ public class MarketRegisterProductUseCase {
         Category category = categoryRepository.findById(request.categoryId())
                 .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 
-        Product product = productRepository.save(request.toEntity(seller, category));
 
-        // 이미지 URL 리스트 처리 부분
+        List<String> imageUrls = s3Service.uploadFiles(request.images());
 
+        Product product = request.toEntity(seller, category);
+        product.addImages(imageUrls);
+
+        productRepository.save(product);
         eventPublisher.publish(new ProductRegisteredEvent(product.getId()));
 
         return product;

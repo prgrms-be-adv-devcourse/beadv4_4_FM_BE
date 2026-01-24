@@ -10,7 +10,7 @@ description = "Mossy"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -64,6 +64,10 @@ dependencies {
     //Elasticsearch
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
     testImplementation("org.springframework.boot:spring-boot-starter-data-elasticsearch-test")
+
+    //S3
+    implementation(platform("software.amazon.awssdk:bom:2.24.0"))
+    implementation("software.amazon.awssdk:s3")
 }
 
 tasks.withType<Test> {
