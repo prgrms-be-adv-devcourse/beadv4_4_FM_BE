@@ -33,9 +33,6 @@ public class SignupUseCase {
             throw new DomainException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
-        System.out.println(">>> DTO longitude = " + req.longitude());
-        System.out.println(">>> DTO latitude  = " + req.latitude());
-
         User user = User.builder()
                 .email(req.email())
                 .password(passwordEncoder.encode(req.password()))
@@ -49,9 +46,6 @@ public class SignupUseCase {
                 .profileImage("default.png")
                 .status(UserStatus.ACTIVE)
                 .build();
-
-        System.out.println(">>> ENTITY longitude = " + user.getLongitude());
-        System.out.println(">>> ENTITY latitude  = " + user.getLatitude());
 
         Role roleUser = roleRepository.findByCode(RoleCode.USER)
                 .orElseThrow(() -> new DomainException(ErrorCode.ROLE_NOT_FOUND));
