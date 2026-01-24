@@ -26,9 +26,6 @@ public class AuthController {
             description = "일반 유저(USER)로 가입")
     @PostMapping("/signup")
     public RsData<Long> signup(@RequestBody SignupRequest request) {
-        System.out.println(">>> request.longitude = " + request.longitude());
-        System.out.println(">>> request.latitude = " + request.latitude());
-
         return RsData.success("회원가입 성공", userFacade.signup(request));
     }
 

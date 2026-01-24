@@ -1,8 +1,10 @@
 package backend.mossy.boundedContext.member.domain;
 
+import backend.mossy.shared.member.domain.role.RoleCode;
 import backend.mossy.shared.member.domain.role.UserRole;
 import backend.mossy.shared.member.domain.user.SourceUser;
 import backend.mossy.shared.member.domain.user.UserStatus;
+import co.elastic.clients.elasticsearch.cat.AliasesRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -51,4 +53,12 @@ public class User extends SourceUser {
         this.password = encodedPassword;
     }
 
+    public RoleCode getPrimaryRole() {
+       if (userRoles == null ||  userRoles.isEmpty()) return RoleCode.USER;
+
+       return userRoles.stream()
+               .map(ur -> ur.getRole().getCode())
+               .max(Enum::compareTo)
+               .orElse(RoleCode.USER);
+    }
 }
