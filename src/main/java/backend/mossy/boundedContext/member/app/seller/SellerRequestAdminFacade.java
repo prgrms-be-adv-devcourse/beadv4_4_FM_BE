@@ -33,7 +33,7 @@ public class SellerRequestAdminFacade {
     private final EventPublisher eventPublisher;
 
     @Transactional
-    public Long approve(Long requestId) {
+    public SellerAppoveResult approve(Long requestId) {
         SellerRequest req = lockUseCase.lockAndGet(requestId);
 
         if (req.getStatus() != SellerRequestStatus.PENDING) {
@@ -80,7 +80,7 @@ public class SellerRequestAdminFacade {
                 )
         ));
 
-        return seller.getId();
+        return new SellerAppoveResult(seller.getId(), userId);
     }
 
     @Transactional
@@ -93,4 +93,6 @@ public class SellerRequestAdminFacade {
 
         req.reject();
     }
+    
+    public record SellerAppoveResult(Long sellerId, Long userId) {}
 }

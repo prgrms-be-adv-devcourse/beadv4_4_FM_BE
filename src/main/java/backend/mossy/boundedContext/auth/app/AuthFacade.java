@@ -65,6 +65,20 @@ public class AuthFacade {
         return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
     }
 
+    @Transactional
+    public LoginResponse issueForSellerApproved(Long userId, Long sellerId){
+        User user = userRepository.findByIdWithRoles(userId)
+                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+
+        String role = user.getPrimaryRole().name();
+
+        TokenResponse tokens = tokenIssuer.issueTokens(userId, role, sellerId);
+
+        refreshTokenUseCase.save(userId,tokens.refreshToken());
+
+        return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
+    }
+
     //로그아웃
     @Transactional
     public  void logout(String refreshToken){
