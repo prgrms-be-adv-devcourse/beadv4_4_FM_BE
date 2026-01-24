@@ -18,4 +18,6 @@ public interface SellerRequestRepository extends JpaRepository<SellerRequest, Lo
     Optional<SellerRequest> findByIdForUpdate(@Param("id") Long id);
 
     boolean existsByBusinessNum(String businessNum);
+
+    Optional<SellerRequest> findTopByUserIdOrderByCreatedAtDesc(Long userId);
 }
