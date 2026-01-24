@@ -55,6 +55,12 @@ public class ProductDocument {
     private OffsetDateTime  updatedAt;
 
     public static ProductDocument from(Product product) {
+        String thumbnail = product.getImages().stream()
+                .filter(ProductImage::getIsThumbnail)
+                .map(ProductImage::getImageUrl)
+                .findFirst()
+                .orElse(null);
+
         return ProductDocument.builder()
                 .productId(product.getId())
                 .name(product.getName())
@@ -64,6 +70,7 @@ public class ProductDocument {
                 .categoryName(product.getCategory().getName())
                 .sellerId(product.getSeller().getId())
                 .status(product.getStatus().name())
+                .thumbnailImage(thumbnail)
                 .createdAt(product.getCreatedAt().atOffset(ZoneOffset.UTC))
                 .updatedAt(product.getUpdatedAt().atOffset(ZoneOffset.UTC))
                 .build();
