@@ -1,0 +1,48 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:3306/${DB_NAME}?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  data:
+    redis:
+      host: redis  # Docker Compose 서비스명
+      port: 6379
+
+  elasticsearch:
+    uris:
+      - http://elasticsearch:9200  # Docker Compose 서비스명
+
+logging:
+  level:
+    root: INFO
+    com.back: INFO
+
+# 보안 키 (JWT, 암호화)
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expire-ms: 180000
+  refresh-token-expire-ms: 1209600000
+
+encryption:
+  secret-key: ${ENCRYPTION_KEY}

@@ -4,6 +4,7 @@ import backend.mossy.boundedContext.market.domain.product.Category;
 import backend.mossy.boundedContext.market.domain.market.MarketSeller;
 import backend.mossy.boundedContext.market.domain.product.Product;
 import backend.mossy.boundedContext.market.domain.product.ProductStatus;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +18,7 @@ public record ProductCreateRequest(
         BigDecimal price,
         Integer quantity,
         ProductStatus status,
-        List<String> imageUrls
+        List<MultipartFile> images
 ) {
     public Product toEntity(MarketSeller seller, Category category) {
         return Product.builder()
