@@ -88,4 +88,13 @@ public class PaymentSupport {
         order.cancelPayment(paymentKey, amount, method, cancelReason);
         orderRepository.save(order);
     }
+
+    public static String resolveOriginalOrderNo(String pgOrderId) {
+        if (pgOrderId == null) return null;
+        int index = pgOrderId.indexOf("__");
+        if (index > 0) {
+            return pgOrderId.substring(0, index); // 구분자가 있을 때만 자름
+        }
+        return pgOrderId; // 구분자가 없으면 받은 값 그대로 반환 (프론트 수정 전 대응용)
+    }
 }

@@ -67,6 +67,7 @@ public class Payment extends BaseIdAndTime {
     public static Payment createCashPaid(Order order, BigDecimal amount, PayMethod payMethod) {
         return Payment.builder()
             .order(order)
+            .orderNo(order.getOrderNo())
             .amount(amount)
             .payMethod(payMethod)
             .status(PaymentStatus.PAID)

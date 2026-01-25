@@ -8,9 +8,9 @@ import java.util.List;
 
 @Builder
 public record OrderCreatedRequest(
-        String buyerAddress,
-        BigDecimal buyerLatitude,
-        BigDecimal buyerLongitude,
+//        String buyerAddress,
+//        BigDecimal buyerLatitude,
+//        BigDecimal buyerLongitude,
         BigDecimal totalPrice,
         String paymentType,
         List<ProductInfoResponse> items
