@@ -34,9 +34,11 @@ public class ApiV1ProductController {
     @Transactional(readOnly = true)
     public RsData<Page<ProductResponse>> getProductList(
             @RequestParam (defaultValue = "0") int page,
-            @RequestParam (defaultValue = "10") int size
+            @RequestParam (defaultValue = "10") int size,
+            @RequestParam (defaultValue = "createdAt") String sort
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        System.out.println(("sort: " + sort));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
         Page<ProductResponse> productsList = productFacade
                 .getProductList(pageable)
                 .map(ProductResponse::from);

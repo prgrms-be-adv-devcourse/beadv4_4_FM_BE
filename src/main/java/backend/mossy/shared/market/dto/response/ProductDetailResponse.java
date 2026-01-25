@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 
-@Builder // 헤더 위에 선언
+@Builder
 public record ProductDetailResponse(
         Long productId,
         String name,
@@ -19,9 +19,15 @@ public record ProductDetailResponse(
         String status,
         String categoryName,
         Long sellerId,
-        List<String> imageUrls
+        String thumbnail,
+        List<String> images
 ) {
     public static ProductDetailResponse from(Product product) {
+        String thumbnail = product.getImages().stream()
+                .filter(image -> Boolean.TRUE.equals(image.getIsThumbnail()))
+                .map(ProductImage::getImageUrl)
+                .findFirst()
+                .orElse("https://team07-mossy-storage.s3.ap-northeast-2.amazonaws.com/product/defult.png");
         return ProductDetailResponse.builder()
                 .productId(product.getId())
                 .name(product.getName())
@@ -32,7 +38,8 @@ public record ProductDetailResponse(
                 .status(product.getStatus().name()) // Enum 처리 확인
                 .categoryName(product.getCategory().getName())
                 .sellerId(product.getSeller().getId())
-                .imageUrls(product.getImages().stream()
+                .thumbnail(thumbnail)
+                .images(product.getImages().stream()
                         .map(ProductImage::getImageUrl)
                         .toList())
                 .build();
