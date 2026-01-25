@@ -18,9 +18,15 @@ public record ProductResponse(
         BigDecimal price,
         Integer quantity,
         ProductStatus status,
-        List<String> imageUrls
+        String thumbnail
 ) {
     public static ProductResponse from(Product product) {
+        String thumbnail = product.getImages().stream()
+                .filter(image -> Boolean.TRUE.equals(image.getIsThumbnail()))
+                .map(ProductImage::getImageUrl)
+                .findFirst()
+                .orElse("https://team07-mossy-storage.s3.ap-northeast-2.amazonaws.com/product/defult.png");
+
         return new ProductResponse(
                 product.getId(),
                 product.getSeller().getId(),
@@ -31,9 +37,7 @@ public record ProductResponse(
                 product.getPrice(),
                 product.getQuantity(),
                 product.getStatus(),
-                product.getImages().stream()
-                        .map(ProductImage::getImageUrl)
-                        .toList()
+                thumbnail
         );
     }
 }
