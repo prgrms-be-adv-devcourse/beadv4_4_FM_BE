@@ -1,8 +1,24 @@
 services:
-  # 1. Spring Boot 애플리케이션
-  app:
-    build: .
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=/api
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - mossy-network
+  # 2. 백엔드 서비스
+  backend:
+    build:
+      context: ./backend   # 최상위 기준 백엔드 폴더 경로
+      dockerfile: Dockerfile
     container_name: mossy-app
+    ports:
+      - "8080:8080"
     restart: always
     ports:
       - "${APP_PORT}:8080"
@@ -27,6 +43,9 @@ services:
   redis:
     image: redis:latest
     container_name: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
     restart: always
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
@@ -75,4 +94,6 @@ networks:
 
 volumes: # Named Volume 정의 추가
   es_data:
+    driver: local
+  redis-data:
     driver: local
