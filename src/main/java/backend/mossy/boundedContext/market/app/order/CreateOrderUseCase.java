@@ -11,11 +11,13 @@ import backend.mossy.boundedContext.market.out.market.MarketUserRepository;
 import backend.mossy.boundedContext.market.out.order.DeliveryDistanceRepository;
 import backend.mossy.boundedContext.market.out.order.OrderRepository;
 import backend.mossy.boundedContext.market.out.order.WeightGradeRepository;
+import backend.mossy.global.eventPublisher.EventPublisher;
 import backend.mossy.global.exception.DomainException;
 import backend.mossy.global.exception.ErrorCode;
 import backend.mossy.shared.market.dto.request.OrderCreatedRequest;
 import backend.mossy.shared.market.dto.response.OrderCreatedResponse;
 import backend.mossy.shared.market.dto.response.ProductInfoResponse;
+import backend.mossy.shared.market.event.OrderCashPaymentRequestEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ public class CreateOrderUseCase {
     private final DeliveryDistanceRepository deliveryDistanceRepository;
     private final WeightGradeRepository weightGradeRepository;
     private final MarketPolicy marketPolicy;
+    private final EventPublisher eventPublisher;
 
     public OrderCreatedResponse createOrder(Long userId, OrderCreatedRequest request) {
         MarketUser buyer = marketUserRepository.findById(userId)
@@ -63,7 +66,7 @@ public class CreateOrderUseCase {
         for (MarketSeller seller : sellerMap.values()) {
             DeliveryDistance deliveryDistance = DeliveryDistance.resolve(
                     deliveryDistanceList,
-                    request.buyerLatitude(), request.buyerLongitude(),
+                    buyer.getLatitude(), buyer.getLongitude(),
                     seller.getLatitude(), seller.getLongitude()
             );
             deliveryMap.put(seller.getId(), deliveryDistance);
@@ -76,13 +79,24 @@ public class CreateOrderUseCase {
         for (ProductInfoResponse item : request.items()) {
             MarketSeller seller = sellerMap.get(item.sellerId());
             DeliveryDistance deliveryDistance = deliveryMap.get(item.sellerId());
-            BigDecimal totalWeight = item.weight().multiply(BigDecimal.valueOf(item.quantity()));
+            BigDecimal weight = item.weight() != null ? item.weight() : BigDecimal.ZERO;
+            BigDecimal totalWeight = weight.multiply(BigDecimal.valueOf(item.quantity()));
             WeightGrade weightGrade = WeightGrade.findByWeight(weightGrades, totalWeight);
             order.addOrderDetail(seller, item.productId(), item.quantity(), item.price(), deliveryDistance, weightGrade);
         }
 
         // 7. 저장
         Order savedOrder = orderRepository.save(order);
+
+        // 8. 예치금 결제인 경우 이벤트 발행
+        if ("CASH".equalsIgnoreCase(request.paymentType())) {
+            eventPublisher.publish(new OrderCashPaymentRequestEvent(
+                savedOrder.getId(),
+                savedOrder.getOrderNo(),
+                savedOrder.getBuyer().getId(),
+                savedOrder.getTotalPrice()
+            ));
+        }
 
         return OrderCreatedResponse.builder()
                 .orderId(savedOrder.getId())

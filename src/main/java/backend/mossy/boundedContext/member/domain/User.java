@@ -4,7 +4,6 @@ import backend.mossy.shared.member.domain.role.RoleCode;
 import backend.mossy.shared.member.domain.role.UserRole;
 import backend.mossy.shared.member.domain.user.SourceUser;
 import backend.mossy.shared.member.domain.user.UserStatus;
-import co.elastic.clients.elasticsearch.cat.AliasesRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

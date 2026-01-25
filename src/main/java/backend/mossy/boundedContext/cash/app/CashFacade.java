@@ -11,11 +11,13 @@ import backend.mossy.boundedContext.cash.app.usecase.user.CashCreateUserWalletUs
 import backend.mossy.boundedContext.cash.app.usecase.user.CashCreditUserBalanceUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.user.CashDeductUserBalanceUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.user.CashGetBalanceUseCase;
+import backend.mossy.boundedContext.cash.app.usecase.user.CashGetLogsUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.user.CashGetWalletInfoUseCase;
 import backend.mossy.boundedContext.cash.app.usecase.user.CashHoldingUseCase;
 import backend.mossy.boundedContext.cash.domain.seller.CashSeller;
 import backend.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import backend.mossy.boundedContext.cash.domain.user.CashUser;
+import backend.mossy.boundedContext.cash.domain.user.UserCashLog;
 import backend.mossy.boundedContext.cash.domain.user.UserWallet;
 import backend.mossy.shared.cash.dto.event.CashSellerDto;
 import backend.mossy.shared.cash.dto.event.CashUserDto;
@@ -28,6 +30,7 @@ import backend.mossy.shared.market.event.PaymentCompletedEvent;
 import backend.mossy.shared.market.event.PaymentRefundEvent;
 import backend.mossy.shared.member.dto.event.UserDto;
 import java.math.BigDecimal;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +52,7 @@ public class CashFacade {
     private final CashDeductUserBalanceUseCase cashDeductUserBalanceUseCase;
     private final CashDeductSellerBalanceUseCase cashDeductSellerBalanceUseCase;
     private final CashHoldingUseCase cashHoldingUseCase;
+    private final CashGetLogsUseCase cashGetLogsUseCase;
 
     // === [동기화 영역] ===
 
@@ -124,5 +128,9 @@ public class CashFacade {
     @Transactional(readOnly = true)
     public BigDecimal findSellerBalance(Long sellerId) {
         return cashGetSellerBalanceUseCase.getSellerBalance(sellerId);
+    }
+
+    public List<UserCashLog> findAllCashLogs(Long userId) {
+        return cashGetLogsUseCase.findCashLog(userId);
     }
 }

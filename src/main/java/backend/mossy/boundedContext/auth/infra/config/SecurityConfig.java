@@ -65,6 +65,7 @@ public class SecurityConfig {
 
                                 //Cash API Check
                                 "/api/v1/cash/**",
+                               "/api/v1/payments/**",
                                 "/api/auth/logout",
 
                                 //Cash API Check

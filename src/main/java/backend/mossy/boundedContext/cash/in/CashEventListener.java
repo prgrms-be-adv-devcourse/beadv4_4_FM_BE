@@ -4,9 +4,13 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
 
 import backend.mossy.boundedContext.cash.app.CashFacade;
+import backend.mossy.boundedContext.market.app.payment.PaymentFacade;
+import backend.mossy.boundedContext.market.domain.payment.PayMethod;
 import backend.mossy.shared.cash.dto.request.UserBalanceRequestDto;
 import backend.mossy.shared.cash.event.CashSellerCreatedEvent;
 import backend.mossy.shared.cash.event.CashUserCreatedEvent;
+import backend.mossy.shared.market.dto.toss.PaymentConfirmCashRequestDto;
+import backend.mossy.shared.market.event.OrderCashPaymentRequestEvent;
 import backend.mossy.shared.market.event.OrderCashPrePaymentEvent;
 import backend.mossy.shared.market.event.PaymentCompletedEvent;
 import backend.mossy.shared.market.event.PaymentRefundEvent;
@@ -25,6 +29,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class CashEventListener {
 
     private final CashFacade cashFacade;
+    private final PaymentFacade paymentFacade;
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
@@ -60,6 +65,16 @@ public class CashEventListener {
     @Transactional(propagation = REQUIRES_NEW)
     public void cashSellerCreatedEvent(CashSellerCreatedEvent event) {
         cashFacade.createSellerWallet(event.seller());
+    }
+
+    @EventListener
+    public void orderCashPaymentRequestEvent(OrderCashPaymentRequestEvent event) {
+        PaymentConfirmCashRequestDto request = PaymentConfirmCashRequestDto.builder()
+            .orderId(event.orderNo())
+            .amount(event.amount())
+            .payMethod(PayMethod.CASH)
+            .build();
+        paymentFacade.confirmCashPayment(request);
     }
 
     @EventListener
