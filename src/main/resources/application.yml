@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: Mossy
+  config:
+    import: optional:file:.env[.properties]
   profiles:
     active: dev # 기본 실행 프로필을 dev로 설정
   output:

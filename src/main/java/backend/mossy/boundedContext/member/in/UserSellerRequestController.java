@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "SellerRequest", description = "판매자 신청(User) API")
+@Tag(name = "Seller Request", description = "판매자 신청(User) API")
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class UserSellerRequestController {
     private final SellerRequestUserFacade  sellerRequestUserFacade;
 
     @Operation(summary = "판매자 신청", description = "판매자 신청서를 생성하고 상태를 PENDING으로 저장")
-    @PostMapping("/seller-request")
+    @PostMapping("/seller/request")
     public RsData<Long> requestSeller(
             @AuthenticationPrincipal UserDetailsImpl principal,
             @RequestBody @Valid SellerRequestCreateRequest req
