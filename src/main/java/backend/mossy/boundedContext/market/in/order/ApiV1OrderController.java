@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
-@Tag(name = "Order API", description = "주문 생성 및 구매 내역 API")
+@Tag(name = "Order", description = "주문 생성 및 구매 내역 API")
 public class ApiV1OrderController {
     private final OrderFacade orderFacade;
 
@@ -71,7 +71,10 @@ public class ApiV1OrderController {
         return orderFacade.getOrderDetails(orderId);
     }
 
-
+    @Operation(
+            summary = "주문 삭제",
+            description = "특정 주문을 삭제 합니다."
+    )
     @DeleteMapping("/{orderId}")
     public RsData<Void> deleteOrder(
             @PathVariable Long orderId,

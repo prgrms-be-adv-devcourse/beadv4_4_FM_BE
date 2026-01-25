@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "SellerRequest(Admin)", description = "판매자 신청(Admin) API")
+@Tag(name = "Admin", description = "판매자 신청(Admin) API")
 @RestController
 @RequestMapping("/api/v1/admin/seller-requests")
 @RequiredArgsConstructor
