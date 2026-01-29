@@ -1,0 +1,99 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=/api
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - mossy-network
+  # 2. 백엔드 서비스
+  backend:
+    build:
+      context: ./backend   # 최상위 기준 백엔드 폴더 경로
+      dockerfile: Dockerfile
+    container_name: mossy-app
+    ports:
+      - "8080:8080"
+    restart: always
+    ports:
+      - "${APP_PORT}:8080"
+    env_file: .env
+    deploy:
+      resources:
+        limits:
+          memory: 3g
+        reservations:
+          memory: 2g
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mossy-network
+
+  # 2. Redis
+  redis:
+    image: redis:latest
+    container_name: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+    networks:
+      - mossy-network
+
+  # 3. Elasticsearch (Nori 플러그인 빌드 포함)
+  elasticsearch:
+    build:
+      context: ./elasticsearch
+      dockerfile: Dockerfile # Nori 설치 Dockerfile 경로
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx1g
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+        reservations:
+          memory: 1g
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - "${ES_PORT}:9200"
+    healthcheck: # 헬스체크 추가
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - mossy-network
+
+networks:
+  mossy-network:
+    driver: bridge
+
+volumes: # Named Volume 정의 추가
+  es_data:
+    driver: local
+  redis-data:
+    driver: local

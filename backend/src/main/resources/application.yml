@@ -1,0 +1,47 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: Mossy
+  config:
+    import: optional:file:.env[.properties]
+  profiles:
+    active: dev # 기본 실행 프로필을 dev로 설정
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+  cache:
+    type: redis
+
+springdoc:
+  swagger-ui:
+    path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs
+
+market:
+  policy:
+    cart:
+      max_quantity: 100
+
+toss:
+  payments:
+    base-url: https://api.tosspayments.com
+    secret-key: ${TOSS_SECRET_KEY:test_sk_*******************}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${CLOUD_AWS_S3_BUCKET}
+    credentials:
+      access-key: ${CLOUD_AWS_ACCESS_KEY}
+      secret-key: ${CLOUD_AWS_SECRET_KEY}
+    region: ${CLOUD_AWS_REGION}

@@ -1,0 +1,65 @@
+# [Build & Compiled]
+*.class
+*.log
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+bin/
+
+# [IDE - IntelliJ]
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# [IDE - VS Code & Others]
+.vscode/
+.classpath
+.project
+.settings/
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# [Querydsl]
+/build/generated
+/src/main/generated/
+
+# [OS]
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# [Crashes]
+hs_err_pid*
+replay_pid*
+
+# [Sensitive Data - 중요!]
+# 모든 yml을 막는 대신, 민감한 정보가 담긴 특정 파일만 제외합니다.
+# application.yml은 공유하되, 보안이 필요한 경우 application-local.yml 등을 따로 만들어 관리하세요.
+# .yml (주석 처리: 전체 차단 해제
+application-dev.yml
+.env
+src/main/generated/
+.idea
+.terraform
