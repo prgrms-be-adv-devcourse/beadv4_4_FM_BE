@@ -1,0 +1,12 @@
+include:
+  - deployments/compose-infra.yml
+  - deployments/compose-es.yml
+  - deployments/compose-app-main.yml
+  - deployments/compose-app-finance.yml
+  - deployments/compose-app-sub.yml
+
+#모든 포함된 서비스들이 공유할 네트워크
+networks:
+  mossy-network:
+    name: mossy-network
+    driver: bridge

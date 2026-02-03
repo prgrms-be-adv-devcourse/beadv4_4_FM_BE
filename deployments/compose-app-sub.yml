@@ -1,0 +1,22 @@
+services:
+  review-service:
+    build:
+      context: ../src/backend
+      dockerfile: review-service/Dockerfile
+    container_name: review-service
+    restart: always
+    ports:
+      - "8085:8080"
+    env_file:
+      - ../envs/.env.review
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - mossy-network
+
+networks:
+  mossy-network:
+    external: true

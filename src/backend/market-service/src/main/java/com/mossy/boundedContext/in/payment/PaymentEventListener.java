@@ -1,0 +1,24 @@
+package com.mossy.boundedContext.in.payment;
+
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
+import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
+
+import com.mossy.boundedContext.app.payment.PaymentFacade;
+import com.mossy.shared.market.event.OrderCancelEvent;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
+
+@Component
+@RequiredArgsConstructor
+public class PaymentEventListener {
+
+    private final PaymentFacade paymentFacade;
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public void orderCancelEvent(OrderCancelEvent event) {
+        paymentFacade.orderCancelPayment(event);
+    }
+}

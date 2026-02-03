@@ -1,0 +1,42 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: market-service
+  config:
+    import: "optional:file:../../../envs/.env.market[.properties]"
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+  cache:
+    type: redis
+
+# 모든 서비스에서 동일한 경로로 스웨거 사용
+springdoc:
+  swagger-ui:
+    path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs
+
+# S3
+cloud:
+  aws:
+    s3:
+      bucket: ${CLOUD_AWS_S3_BUCKET}
+    credentials:
+      access-key: ${CLOUD_AWS_ACCESS_KEY}
+      secret-key: ${CLOUD_AWS_SECRET_KEY}
+    region: ${CLOUD_AWS_REGION}
+
+market:
+  policy:
+    cart:
+      max_quantity: 100

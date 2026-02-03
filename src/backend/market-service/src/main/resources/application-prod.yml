@@ -1,0 +1,32 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:3306/${DB_NAME}?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+
+  elasticsearch:
+    uris:
+      - http://elasticsearch:9200
+
+logging:
+  level:
+    root: INFO

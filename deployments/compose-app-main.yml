@@ -1,0 +1,57 @@
+services:
+gateway-service:
+    build:
+      context: ../src/backend
+      dockerfile: gateway-service/Dockerfile
+    container_name: gateway-service
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../envs/.env.gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - market-service
+      - member-service
+    networks:
+      - mossy-network
+
+  market-service:
+    build:
+      context: ../src/backend
+      dockerfile: market-service/Dockerfile
+    container_name: market-service
+    restart: always
+    ports:
+      - "8081:8080"
+    env_file:
+      - ../envs/.env.market
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mossy-network
+
+  member-service:
+    build:
+      context: ../src/backend
+      dockerfile: member-service/Dockerfile
+    container_name: member-service
+    restart: always
+    ports:
+      - "8082:8080"
+    env_file:
+      - ../envs/.env.member
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - mossy-network
+
+networks:
+  mossy-network:
+    external: true # compose-infra.yml에서 생성한 네트워크 참조

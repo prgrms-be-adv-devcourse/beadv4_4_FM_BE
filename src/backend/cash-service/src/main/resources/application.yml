@@ -1,0 +1,32 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: cash-service
+  config:
+    import: "optional:file:../../../envs/.env.cash[.properties]"
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+  cache:
+    type: redis
+
+# 모든 서비스에서 동일한 경로로 스웨거 사용
+springdoc:
+  swagger-ui:
+    path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs
+
+toss:
+  payments:
+    base-url: https://api.tosspayments.com
+    secret-key: ${TOSS_SECRET_KEY:test_sk_*******************}

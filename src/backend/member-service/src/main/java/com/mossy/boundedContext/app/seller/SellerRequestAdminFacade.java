@@ -1,0 +1,94 @@
+package com.mossy.boundedContext.app.seller;
+
+import com.mossy.boundedContext.domain.Seller;
+import com.mossy.boundedContext.domain.User;
+import com.mossy.boundedContext.out.seller.SellerRepository;
+import com.mossy.boundedContext.out.user.RoleRepository;
+import com.mossy.global.eventPublisher.EventPublisher;
+import com.mossy.global.exception.DomainException;
+import com.mossy.global.exception.ErrorCode;
+import com.mossy.shared.member.domain.role.Role;
+import com.mossy.shared.member.domain.role.RoleCode;
+import com.mossy.shared.member.domain.role.UserRole;
+import com.mossy.shared.member.domain.seller.SellerRequest;
+import com.mossy.shared.member.domain.seller.SellerRequestStatus;
+import com.mossy.shared.member.dto.event.SellerApprovedEvent;
+import com.mossy.shared.member.event.SellerJoinedEvent;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+
+@Service
+@RequiredArgsConstructor
+public class SellerRequestAdminFacade {
+
+    private final LockUseCase  lockUseCase;
+    private final SellerRepository sellerRepository;
+    private final RoleRepository roleRepository;
+    private final EventPublisher eventPublisher;
+
+    @Transactional
+    public SellerAppoveResult approve(Long requestId) {
+        SellerRequest req = lockUseCase.lockAndGet(requestId);
+
+        if (req.getStatus() != SellerRequestStatus.PENDING) {
+            throw new DomainException(ErrorCode.SELLER_REQUEST_NOT_PENDING);
+        }
+
+        User user = req.getUser();
+        Long userId = user.getId();
+
+        if (sellerRepository.existsByUserId(userId)) {
+            throw new DomainException(ErrorCode.DUPLICATE_SELLER);
+        }
+
+        if (sellerRepository.existsByBusinessNum(req.getBusinessNum())) {
+            throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
+        }
+
+        req.approve();
+
+        Seller seller = sellerRepository.save(Seller.createFromRequest(req));
+
+        Role sellerRole = roleRepository.findByCode(RoleCode.SELLER)
+                .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND));
+
+        boolean hasSellerRole = user.getUserRoles().stream()
+                .anyMatch(r -> r.getRole() != null && r.getRole().getCode() == RoleCode.SELLER);
+
+        if (!hasSellerRole) {
+            user.addUserRole(new UserRole(user, sellerRole));
+        }
+
+        eventPublisher.publish(new SellerJoinedEvent(
+                new SellerApprovedEvent(
+                        seller.getId(),
+                        seller.getUserId(),
+                        seller.getSellerType(),
+                        seller.getStoreName(),
+                        seller.getBusinessNum(),
+                        seller.getLatitude(),
+                        seller.getLongitude(),
+                        seller.getStatus(),
+                        seller.getCreatedAt(),
+                        seller.getUpdatedAt()
+                )
+        ));
+
+        return new SellerAppoveResult(seller.getId(), userId);
+    }
+
+    @Transactional
+    public void reject(Long requestId) {
+        SellerRequest req = lockUseCase.lockAndGet(requestId);
+
+        if (req.getStatus() != SellerRequestStatus.PENDING) {
+            throw new DomainException(ErrorCode.SELLER_REQUEST_NOT_PENDING);
+        }
+
+        req.reject();
+    }
+    
+    public record SellerAppoveResult(Long sellerId, Long userId) {}
+}
