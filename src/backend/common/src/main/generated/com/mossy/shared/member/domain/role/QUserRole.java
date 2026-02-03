@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,8 +16,6 @@ import com.querydsl.core.types.dsl.PathInits;
 public class QUserRole extends EntityPathBase<UserRole> {
 
     private static final long serialVersionUID = -477102978L;
-
-    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QUserRole userRole = new QUserRole("userRole");
 
@@ -33,33 +30,19 @@ public class QUserRole extends EntityPathBase<UserRole> {
     //inherited
     public final StringPath modelTypeCode = _super.modelTypeCode;
 
-    public final QRole role;
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final com.mossy.shared.member.domain.user.QUser user;
-
     public QUserRole(String variable) {
-        this(UserRole.class, forVariable(variable), INITS);
+        super(UserRole.class, forVariable(variable));
     }
 
     public QUserRole(Path<? extends UserRole> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QUserRole(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QUserRole(PathMetadata metadata, PathInits inits) {
-        this(UserRole.class, metadata, inits);
-    }
-
-    public QUserRole(Class<? extends UserRole> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.role = inits.isInitialized("role") ? new QRole(forProperty("role")) : null;
-        this.user = inits.isInitialized("user") ? new com.mossy.shared.member.domain.user.QUser(forProperty("user")) : null;
+        super(UserRole.class, metadata);
     }
 
 }

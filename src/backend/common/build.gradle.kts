@@ -33,14 +33,14 @@ dependencies {
     implementation(platform("software.amazon.awssdk:bom:2.24.0"))
     implementation("software.amazon.awssdk:s3")
     implementation("org.springframework.boot:spring-boot-starter-batch")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
 
     // DB 및 롬복
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
     //Swagger
-    api("org.springdoc:springdoc-openapi-starter-common:3.0.1")
+    api("org.springdoc:springdoc-openapi-starter-common:2.8.3")
 
     //JWT
     api("io.jsonwebtoken:jjwt-api:0.12.6")

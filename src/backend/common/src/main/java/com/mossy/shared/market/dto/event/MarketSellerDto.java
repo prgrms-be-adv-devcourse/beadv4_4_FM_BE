@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record MarketSellerDto (
-        Long id,
+        Long sellerId,
         Long userId,
         SellerType sellerType,
         String storeName,

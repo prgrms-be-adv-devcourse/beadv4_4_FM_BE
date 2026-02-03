@@ -14,7 +14,7 @@ import com.mossy.shared.market.enums.PayMethod;
 import com.mossy.shared.market.enums.PaymentStatus;
 import com.mossy.shared.market.event.PaymentCancelFailedEvent;
 import com.mossy.shared.market.event.PaymentCanceledEvent;
-import com.mossy.shared.market.out.TossPaymentsService;
+
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

@@ -37,7 +37,7 @@ dependencies {
     implementation("software.amazon.awssdk:s3")
 
     // Swagger UI
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
 
     // 컴파일 도구 및 DB 드라이버
     compileOnly("org.projectlombok:lombok")
