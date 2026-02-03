@@ -14,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Long>, com.mossy.boundedContext.market.out.product.ProductRepositoryCustom {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
     Page<Product> findByStatus(ProductStatus status, Pageable pageable);
 

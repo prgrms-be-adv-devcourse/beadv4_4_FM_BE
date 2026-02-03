@@ -30,6 +30,11 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-validation")
     api("org.springframework.boot:spring-boot-starter-data-redis")
 
+    implementation(platform("software.amazon.awssdk:bom:2.24.0"))
+    implementation("software.amazon.awssdk:s3")
+    implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
     // DB 및 롬복
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

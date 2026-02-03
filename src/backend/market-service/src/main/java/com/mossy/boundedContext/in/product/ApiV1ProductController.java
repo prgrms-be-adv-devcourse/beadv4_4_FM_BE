@@ -26,45 +26,45 @@ import org.springframework.web.bind.annotation.*;
 public class ApiV1ProductController {
     private final ProductFacade productFacade;
 
-    // 메인 화면 상품 리스트
-    @Operation(
-            summary = "메인 화면 상품",
-            description = "메인 화면 상품 리스트 조회합니다.")
-    @GetMapping
-    @Transactional(readOnly = true)
-    public RsData<Page<ProductResponse>> getProductList(
-            @RequestParam (defaultValue = "0") int page,
-            @RequestParam (defaultValue = "10") int size,
-            @RequestParam (defaultValue = "createdAt") String sort
-    ) {
-        System.out.println(("sort: " + sort));
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
-        Page<ProductResponse> productsList = productFacade
-                .getProductList(pageable)
-                .map(ProductResponse::from);
-        return new RsData<>("200", "", productsList);
-    }
+//    // 메인 화면 상품 리스트
+//    @Operation(
+//            summary = "메인 화면 상품",
+//            description = "메인 화면 상품 리스트 조회합니다.")
+//    @GetMapping
+//    @Transactional(readOnly = true)
+//    public RsData<Page<ProductResponse>> getProductList(
+//            @RequestParam (defaultValue = "0") int page,
+//            @RequestParam (defaultValue = "10") int size,
+//            @RequestParam (defaultValue = "createdAt") String sort
+//    ) {
+//        System.out.println(("sort: " + sort));
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+//        Page<ProductResponse> productsList = productFacade
+//                .getProductList(pageable)
+//                .map(ProductResponse::from);
+//        return new RsData<>("200", "", productsList);
+//    }
 
-    // 상품 상세 정보
-    @Operation(
-            summary = "상품 상세 정보",
-            description = "상품 상세 정보를 조회 합니다")
-    @GetMapping("/{productId}")
-    public RsData<ProductDetailResponse> getProductById(@PathVariable Long productId) {
-        ProductDetailResponse response = productFacade.getProductById(productId);
-        return new RsData<>("200", "", response);
-    }
+//    // 상품 상세 정보
+//    @Operation(
+//            summary = "상품 상세 정보",
+//            description = "상품 상세 정보를 조회 합니다")
+//    @GetMapping("/{productId}")
+//    public RsData<ProductDetailResponse> getProductById(@PathVariable Long productId) {
+//        ProductDetailResponse response = productFacade.getProductById(productId);
+//        return new RsData<>("200", "", response);
+//    }
 
     // 상품 등록
-    @Operation(
-            summary = "상품 등록",
-            description = "상품 등록합니다.")
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public RsData<Void> createProduct(@ModelAttribute @Valid ProductCreateRequest request) {
-        productFacade.registerProduct(request);
-        return new RsData<>("201", "상품이 등록되었습니다");
-    }
+//    @Operation(
+//            summary = "상품 등록",
+//            description = "상품 등록합니다.")
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public RsData<Void> createProduct(@ModelAttribute @Valid ProductCreateRequest request) {
+//        productFacade.registerProduct(request);
+//        return new RsData<>("201", "상품이 등록되었습니다");
+//    }
 
     // 상품 수정
     @Operation(

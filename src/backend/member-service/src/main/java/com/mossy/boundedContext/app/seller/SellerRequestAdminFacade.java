@@ -36,8 +36,7 @@ public class SellerRequestAdminFacade {
             throw new DomainException(ErrorCode.SELLER_REQUEST_NOT_PENDING);
         }
 
-        User user = req.getUser();
-        Long userId = user.getId();
+        Long userId = req.getUserId();
 
         if (sellerRepository.existsByUserId(userId)) {
             throw new DomainException(ErrorCode.DUPLICATE_SELLER);
@@ -54,27 +53,27 @@ public class SellerRequestAdminFacade {
         Role sellerRole = roleRepository.findByCode(RoleCode.SELLER)
                 .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND));
 
-        boolean hasSellerRole = user.getUserRoles().stream()
-                .anyMatch(r -> r.getRole() != null && r.getRole().getCode() == RoleCode.SELLER);
-
-        if (!hasSellerRole) {
-            user.addUserRole(new UserRole(user, sellerRole));
-        }
-
-        eventPublisher.publish(new SellerJoinedEvent(
-                new SellerApprovedEvent(
-                        seller.getId(),
-                        seller.getUserId(),
-                        seller.getSellerType(),
-                        seller.getStoreName(),
-                        seller.getBusinessNum(),
-                        seller.getLatitude(),
-                        seller.getLongitude(),
-                        seller.getStatus(),
-                        seller.getCreatedAt(),
-                        seller.getUpdatedAt()
-                )
-        ));
+//        boolean hasSellerRole = user.getUserRoles().stream()
+//                .anyMatch(r -> r.getRole() != null && r.getRole().getCode() == RoleCode.SELLER);
+//
+//        if (!hasSellerRole) {
+//            user.addUserRole(new UserRole(user, sellerRole));
+//        }
+//
+//        eventPublisher.publish(new SellerJoinedEvent(
+//                new SellerApprovedEvent(
+//                        seller.getId(),
+//                        seller.getUserId(),
+//                        seller.getSellerType(),
+//                        seller.getStoreName(),
+//                        seller.getBusinessNum(),
+//                        seller.getLatitude(),
+//                        seller.getLongitude(),
+//                        seller.getStatus(),
+//                        seller.getCreatedAt(),
+//                        seller.getUpdatedAt()
+//                )
+//        ));
 
         return new SellerAppoveResult(seller.getId(), userId);
     }

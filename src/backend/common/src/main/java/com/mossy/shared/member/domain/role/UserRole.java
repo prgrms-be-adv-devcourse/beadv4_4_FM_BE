@@ -1,8 +1,9 @@
 package com.mossy.shared.member.domain.role;
 
 
-import com.mossy.boundedContext.member.domain.User;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
+
+import com.mossy.shared.member.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

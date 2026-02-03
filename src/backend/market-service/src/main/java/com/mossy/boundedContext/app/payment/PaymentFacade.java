@@ -64,9 +64,9 @@ public class PaymentFacade {
         return paymentRetrieveUseCase.getTossPaymentInfo(orderNo);
     }
 
-    // 주문별 결제 내역 조회
-    @Transactional(readOnly = true)
-    public List<PaymentResponse> findAllPayments(String orderNo) {
-        return paymentGetInfoUseCase.findAllPayment(orderNo);
-    }
+//    // 주문별 결제 내역 조회
+//    @Transactional(readOnly = true)
+//    public List<PaymentResponse> findAllPayments(String orderNo) {
+//        return paymentGetInfoUseCase.findAllPayment(orderNo);
+//    }
 }

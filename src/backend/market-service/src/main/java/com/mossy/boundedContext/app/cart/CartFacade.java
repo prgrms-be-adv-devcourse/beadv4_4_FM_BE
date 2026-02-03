@@ -18,20 +18,20 @@ public class CartFacade {
     private final ClearCartUseCase clearCartUseCase;
     private final GetCartItemListUseCase getCartItemListUseCase;
 
-    @Transactional(readOnly = true)
-    public CartResponse getCart(Long userId) {
-        return getCartItemListUseCase.getCart(userId);
-    }
+//    @Transactional(readOnly = true)
+//    public CartResponse getCart(Long userId) {
+//        return getCartItemListUseCase.getCart(userId);
+//    }
 
     @Transactional
     public void createCart(MarketUserDto buyer) {
         createCartUseCase.create(buyer);
     }
 
-    @Transactional
-    public void addCartItem(Long userId, CartItemAddRequest request) {
-        addCartItemUseCase.addItem(userId, request);
-    }
+//    @Transactional
+//    public void addCartItem(Long userId, CartItemAddRequest request) {
+//        addCartItemUseCase.addItem(userId, request);
+//    }
 
     @Transactional
     public void updateCartItem(Long userId, CartItemUpdateRequest request) {

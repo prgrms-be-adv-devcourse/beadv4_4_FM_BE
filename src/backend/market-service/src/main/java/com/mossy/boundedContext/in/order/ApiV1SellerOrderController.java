@@ -21,31 +21,31 @@ public class ApiV1SellerOrderController {
     private final OrderFacade orderFacade;
 
 
-    @Operation(
-            summary = "판매자 판매 내역 목록 조회",
-            description = "판매자가 판매한 상품의 판매 내역 목록을 페이징하여 조회합니다."
-    )
-    @GetMapping
-    public Page<OrderListSellerResponse> getSellerOrders(
-            @Parameter(hidden = true)
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+//    @Operation(
+//            summary = "판매자 판매 내역 목록 조회",
+//            description = "판매자가 판매한 상품의 판매 내역 목록을 페이징하여 조회합니다."
+//    )
+//    @GetMapping
+//    public Page<OrderListSellerResponse> getSellerOrders(
+//            @Parameter(hidden = true)
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+//
+//            @Parameter(hidden = true)
+//            @PageableDefault(size = 5) Pageable pageable
+//    ) {
+//        Long sellerId = userDetails.getSellerId();
+//        return orderFacade.getSellerOrderList(sellerId, pageable);
+//    }
 
-            @Parameter(hidden = true)
-            @PageableDefault(size = 5) Pageable pageable
-    ) {
-        Long sellerId = userDetails.getSellerId();
-        return orderFacade.getSellerOrderList(sellerId, pageable);
-    }
-
-    @Operation(
-            summary = "판매자 판매 내역 상세 조회",
-            description = "판매자가 판매한 특정 상품의 판매 내역의 상세를 조회합니다."
-    )
-    @GetMapping("/{orderDetailId}")
-    public OrderDetailSellerResponse getSellerOrderDetail(
-            @Parameter(description = "주문 상세 ID", required = true)
-            @PathVariable Long orderDetailId
-    ) {
-        return orderFacade.getSellerOrderDetail(orderDetailId);
-    }
+//    @Operation(
+//            summary = "판매자 판매 내역 상세 조회",
+//            description = "판매자가 판매한 특정 상품의 판매 내역의 상세를 조회합니다."
+//    )
+//    @GetMapping("/{orderDetailId}")
+//    public OrderDetailSellerResponse getSellerOrderDetail(
+//            @Parameter(description = "주문 상세 ID", required = true)
+//            @PathVariable Long orderDetailId
+//    ) {
+//        return orderFacade.getSellerOrderDetail(orderDetailId);
+//    }
 }

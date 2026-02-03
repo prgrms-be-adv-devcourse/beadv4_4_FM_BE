@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderRepository extends JpaRepository<Order, Long>, com.mossy.boundedContext.market.out.order.OrderRepositoryCustom {
+public interface OrderRepository extends JpaRepository<Order, Long>, OrderRepositoryCustom {
 
     Optional<Order> findByIdAndState(Long orderId, OrderState state);
 
