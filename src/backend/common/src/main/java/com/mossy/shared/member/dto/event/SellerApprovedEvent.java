@@ -1,10 +1,11 @@
 package com.mossy.shared.member.dto.event;
 
-import com.mossy.shared.member.domain.seller.SellerStatus;
-import com.mossy.shared.member.domain.seller.SellerType;
+import com.mossy.member.domain.seller.SellerStatus;
+import com.mossy.member.domain.seller.SellerType;
+import lombok.Builder;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import lombok.Builder;
 
 @Builder
 public record SellerApprovedEvent(

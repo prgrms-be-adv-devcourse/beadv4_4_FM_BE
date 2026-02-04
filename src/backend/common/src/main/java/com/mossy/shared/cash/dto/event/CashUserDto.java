@@ -1,6 +1,5 @@
 package com.mossy.shared.cash.dto.event;
 
-import com.mossy.shared.member.domain.user.UserStatus;
 import lombok.Builder;
 import java.time.LocalDateTime;
 
@@ -15,7 +14,7 @@ public record CashUserDto(
     String address,
     String nickname,
     String profileImage,
-    UserStatus status,
+    String status,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {

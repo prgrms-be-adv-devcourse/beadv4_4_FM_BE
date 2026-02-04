@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.order;
+package com.mossy.member.domain.order;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -43,7 +43,7 @@ public class QOrderDetail extends EntityPathBase<OrderDetail> {
 
     public final NumberPath<Integer> quantity = createNumber("quantity", Integer.class);
 
-    public final com.mossy.boundedContext.domain.market.QMarketSeller seller;
+    public final com.mossy.member.domain.market.QMarketSeller seller;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
@@ -70,7 +70,7 @@ public class QOrderDetail extends EntityPathBase<OrderDetail> {
         super(type, metadata, inits);
         this.deliveryDistance = inits.isInitialized("deliveryDistance") ? new QDeliveryDistance(forProperty("deliveryDistance")) : null;
         this.order = inits.isInitialized("order") ? new QOrder(forProperty("order"), inits.get("order")) : null;
-        this.seller = inits.isInitialized("seller") ? new com.mossy.boundedContext.domain.market.QMarketSeller(forProperty("seller")) : null;
+        this.seller = inits.isInitialized("seller") ? new com.mossy.member.domain.market.QMarketSeller(forProperty("seller")) : null;
         this.weightGrade = inits.isInitialized("weightGrade") ? new QWeightGrade(forProperty("weightGrade")) : null;
     }
 

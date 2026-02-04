@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.product;
+package com.mossy.member.domain.product;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -47,7 +47,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Integer> quantity = createNumber("quantity", Integer.class);
 
-    public final com.mossy.boundedContext.domain.market.QMarketSeller seller;
+    public final com.mossy.member.domain.market.QMarketSeller seller;
 
     public final EnumPath<com.mossy.shared.market.enums.ProductStatus> status = createEnum("status", com.mossy.shared.market.enums.ProductStatus.class);
 
@@ -75,7 +75,7 @@ public class QProduct extends EntityPathBase<Product> {
     public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.category = inits.isInitialized("category") ? new QCategory(forProperty("category"), inits.get("category")) : null;
-        this.seller = inits.isInitialized("seller") ? new com.mossy.boundedContext.domain.market.QMarketSeller(forProperty("seller")) : null;
+        this.seller = inits.isInitialized("seller") ? new com.mossy.member.domain.market.QMarketSeller(forProperty("seller")) : null;
     }
 
 }
