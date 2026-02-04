@@ -30,29 +30,23 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-validation")
     api("org.springframework.boot:spring-boot-starter-data-redis")
 
-    implementation(platform("software.amazon.awssdk:bom:2.24.0"))
-    implementation("software.amazon.awssdk:s3")
-    implementation("org.springframework.boot:spring-boot-starter-batch")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
+
+    annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
     // DB 및 롬복
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
     //Swagger
-    api("org.springdoc:springdoc-openapi-starter-common:3.0.1")
+    api("org.springdoc:springdoc-openapi-starter-common:2.8.3")
 
     //JWT
     api("io.jsonwebtoken:jjwt-api:0.12.6")
     api("org.springframework.security:spring-security-core")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
-
-    // QueryDSL (JPA 사용 시 공통으로 필요)
-    api("com.querydsl:querydsl-jpa:5.1.0:jakarta")
-    annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
-    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
-    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
     // 테스트 (공통)
     testImplementation("org.springframework.boot:spring-boot-starter-test")

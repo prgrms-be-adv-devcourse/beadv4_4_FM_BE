@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 public class MarketSeller extends ReplicaSeller {
     @Builder
     public MarketSeller(
-            Long id,
+            Long sellerId,
             Long userId,
             SellerType sellerType,
             String storeName,
@@ -38,7 +38,7 @@ public class MarketSeller extends ReplicaSeller {
 
     ) {
         super(
-                id,
+                sellerId,
                 userId,
                 sellerType,
                 storeName,
@@ -53,7 +53,7 @@ public class MarketSeller extends ReplicaSeller {
 
     public static MarketSeller from(SellerApprovedEvent seller) {
         return MarketSeller.builder()
-                .id(seller.id())
+                .sellerId(seller.id())
                 .userId(seller.userId())
                 .sellerType(seller.sellerType())
                 .storeName(seller.storeName())
@@ -68,7 +68,7 @@ public class MarketSeller extends ReplicaSeller {
 
     public MarketSellerDto toDto() {
         return MarketSellerDto.builder()
-                .id(getId())
+                .sellerId(getId())
                 .userId(getUserId())
                 .sellerType(getSellerType())
                 .storeName(getStoreName())

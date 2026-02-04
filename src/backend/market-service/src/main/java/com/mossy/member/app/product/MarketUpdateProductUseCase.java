@@ -21,7 +21,7 @@ public class MarketUpdateProductUseCase {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final EventPublisher eventPublisher;
-    private final S3Service s3Service;
+    private final S3Adapter s3Adapter;
 
     @Value("${app.s3.dirs.product:product}") // 기본값 product 설정
     private String productDir;
@@ -42,13 +42,13 @@ public class MarketUpdateProductUseCase {
         // 이미지 파일이 확인
         if (request.images() != null && !request.images().isEmpty()) {
             // 새 이미지 파일 S3 업로드
-            List<String> newImageUrls = s3Service.uploadFiles(request.images(), productDir);
+            List<String> newImageUrls = s3Adapter.uploadFiles(request.images(), productDir);
 
             // 엔티티 이미지 교체 및 기존 URL 리스트 획득
             List<String> oldImageUrls = product.updateImages(newImageUrls);
 
             // S3 기존 이미지 파일 삭제 (업로드가 성공한 후에 실행하는 것이 안전)
-            s3Service.deleteFiles(oldImageUrls);
+            s3Adapter.deleteFiles(oldImageUrls);
         }
 
         // 모든 정보를 포함하여 업데이트

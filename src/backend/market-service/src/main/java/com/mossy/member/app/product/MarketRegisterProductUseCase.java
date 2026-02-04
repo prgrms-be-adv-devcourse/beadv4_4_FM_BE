@@ -16,7 +16,7 @@ public class MarketRegisterProductUseCase {
     private final MarketSellerRepository marketSellerRepository;
     private final CategoryRepository categoryRepository;
     private final EventPublisher eventPublisher;
-    private final S3Service s3Service;
+    private final S3Adapter s3Adapter;
 
     @Value("${app.s3.dirs.product:product}") // 기본값 product 설정
     private String productDir;
@@ -31,7 +31,7 @@ public class MarketRegisterProductUseCase {
 //                .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 //
 //
-//        List<String> imageUrls = s3Service.uploadFiles(request.images(), productDir);
+//        List<String> imageUrls = s3Adapter.uploadFiles(request.images(), productDir);
 //
 //        Product product = request.toEntity(seller, category);
 //        product.addImages(imageUrls);

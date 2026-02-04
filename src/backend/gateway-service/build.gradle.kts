@@ -27,7 +27,9 @@ repositories {
 
 dependencies {
     // common 모듈 (JWT 검증 로직을 공유하기 위해 필요)
-    implementation(project(":common"))
+    implementation(project(":common")) {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
+    }
 
     // API Gateway
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")

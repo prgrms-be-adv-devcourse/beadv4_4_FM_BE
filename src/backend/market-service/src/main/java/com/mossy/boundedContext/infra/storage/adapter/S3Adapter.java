@@ -1,4 +1,4 @@
-package com.mossy.global.aws.s3.service;
+package com.mossy.boundedContext.infra.storage.adapter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class S3Service {
+public class S3Adapter {
     private final S3Client s3Client;
 
     @Value("${cloud.aws.s3.bucket}")

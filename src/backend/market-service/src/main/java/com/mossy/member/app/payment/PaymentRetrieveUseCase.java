@@ -1,7 +1,6 @@
 package com.mossy.member.app.payment;
 
 import com.mossy.shared.market.dto.toss.TossPaymentResponse;
-import com.mossy.shared.market.out.TossPaymentsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
