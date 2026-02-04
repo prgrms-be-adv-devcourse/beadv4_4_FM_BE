@@ -66,3 +66,8 @@ market:
   policy:
     cart:
       max_quantity: 100
+
+toss:
+  payments:
+    base-url: https://api.tosspayments.com
+    secret-key: ${TOSS_SECRET_KEY:test_sk_*******************}

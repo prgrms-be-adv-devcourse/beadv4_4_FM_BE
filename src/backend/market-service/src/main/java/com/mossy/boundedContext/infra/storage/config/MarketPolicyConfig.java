@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.infra.config;
+package com.mossy.boundedContext.infra.storage.config;
 
 import com.mossy.boundedContext.domain.market.MarketPolicy;
 import org.springframework.beans.factory.annotation.Value;

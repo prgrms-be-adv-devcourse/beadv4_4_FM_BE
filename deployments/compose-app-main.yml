@@ -14,6 +14,9 @@ gateway-service:
     depends_on:
       - market-service
       - member-service
+      - cash-service
+      - payout-service
+      - review-service
     networks:
       - mossy-network
 
@@ -30,10 +33,12 @@ gateway-service:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+      elasticsearch:
+      condition: service_healthy
     networks:
       - mossy-network
 
@@ -49,6 +54,9 @@ gateway-service:
       - ../envs/.env.member
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - mossy-network
 

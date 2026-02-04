@@ -1,36 +1,56 @@
-# 1. 빌드 스테이지
-FROM gradle:jdk25 AS builder
+# ============================================
+# 1단계: 빌드 스테이지 (JDK 21 사용)
+# ============================================
+FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
 
-# 컨텍스트를 src/backend로 잡을 것이므로, 그 위치의 설정 파일들을 복사합니다.
+# 1. Gradle 래퍼 및 설정 파일 복사
 COPY gradlew .
 COPY gradle gradle
-COPY build.gradle.kts .
-COPY settings.gradle.kts .
+# 루트에 build.gradle.kts가 있다면 복사 (없다면 아래 줄을 주석 처리하세요)
+COPY build.gradle.kts . 
 
-# 실행 권한 부여
-RUN chmod +x ./gradlew
+# 2. 빌드 구조 동적 생성 (market-service와 common만 포함하여 빌드 속도 최적화)
+RUN printf 'rootProject.name = "backend"\ninclude("common")\ninclude("market-service")\n' > settings.gradle.kts
 
-# 모든 모듈 소스 복사 (market-service 포함)
-# 컨텍스트가 src/backend이므로 현재 폴더 전체를 복사하면 됩니다.
-COPY . .
+# 3. 의존성 캐싱을 위한 build 파일 선복사
+RUN mkdir -p common market-service
+COPY common/build.gradle.kts common/
+COPY market-service/build.gradle.kts market-service/
 
-# market-service 빌드
-RUN ./gradlew :market-service:bootJar -x test --no-daemon
+# 의존성 먼저 다운로드 (라이브러리 캐싱 레이어)
+RUN chmod +x gradlew && ./gradlew dependencies --no-daemon || true
 
-# 2. 실행 스테이지
-FROM eclipse-temurin:25-jdk-alpine
+# 4. 실제 소스 코드 복사
+COPY common/src common/src
+COPY market-service/src market-service/src
+
+# 5. JAR 빌드 (테스트 스킵)
+RUN ./gradlew :market-service:bootJar --no-daemon -x test
+
+# ============================================
+# 2단계: 실행 스테이지 (JRE 21 사용 - 경량화 및 보안)
+# ============================================
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# 타임존 설정
 ENV TZ=Asia/Seoul
+
+# 시스템 패키지 업데이트 및 보안 설정 (비루트 사용자)
 RUN apk add --no-cache tzdata && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
-    echo $TZ > /etc/timezone
+    echo $TZ > /etc/timezone && \
+    addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
 
-# 빌드된 JAR 파일 복사
-COPY --from=builder /app/market-service/build/libs/*.jar app.jar
+# 빌드 결과물만 복사
+COPY --from=build /app/market-service/build/libs/*.jar app.jar
 
+# 권한 부여 및 사용자 전환
+RUN chown appuser:appgroup app.jar
+USER appuser
+
+# JVM 최적화 옵션 및 실행
 ENTRYPOINT ["java", \
             "-XX:+UseContainerSupport", \
             "-XX:MaxRAMPercentage=75.0", \

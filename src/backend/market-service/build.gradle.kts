@@ -36,15 +36,18 @@ dependencies {
     implementation(platform("software.amazon.awssdk:bom:2.24.0"))
     implementation("software.amazon.awssdk:s3")
 
+    // QueryDSL (JPA 사용 시 공통으로 필요)
+    implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
+    annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
+    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+
     // Swagger UI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
 
     // 컴파일 도구 및 DB 드라이버
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
-    annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
-    annotationProcessor("jakarta.annotation:jakarta.annotation-api")
-    annotationProcessor("jakarta.persistence:jakarta.persistence-api")
     runtimeOnly("org.postgresql:postgresql")
 
     // 테스트
@@ -58,13 +61,19 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-//Q클래스 생성 경로
+val generatedDir = "build/generated/sources/annotationProcessor/java/main"
+
 sourceSets {
     main {
         java {
-            srcDir("build/generated/sources/annotationProcessor/java/main")
+            srcDirs(generatedDir)
         }
     }
+}
+
+// 빌드 시 생성된 폴더를 깨끗이 비우고 시작하도록 추가하면 꼬임 방지에 좋습니다.
+tasks.clean {
+    delete(generatedDir)
 }
 
 springBoot {
