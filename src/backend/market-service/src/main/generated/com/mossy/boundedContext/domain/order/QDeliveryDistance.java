@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.order;
+package com.mossy.member.domain.order;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 

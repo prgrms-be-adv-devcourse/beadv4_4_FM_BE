@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.product;
+package com.mossy.member.domain.product;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 

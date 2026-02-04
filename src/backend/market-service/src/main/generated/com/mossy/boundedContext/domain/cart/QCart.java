@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.cart;
+package com.mossy.member.domain.cart;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -24,7 +24,7 @@ public class QCart extends EntityPathBase<Cart> {
 
     public final com.mossy.global.jpa.entity.QBaseIdAndTime _super = new com.mossy.global.jpa.entity.QBaseIdAndTime(this);
 
-    public final com.mossy.boundedContext.domain.market.QMarketUser buyer;
+    public final com.mossy.member.domain.market.QMarketUser buyer;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -58,7 +58,7 @@ public class QCart extends EntityPathBase<Cart> {
 
     public QCart(Class<? extends Cart> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.buyer = inits.isInitialized("buyer") ? new com.mossy.boundedContext.domain.market.QMarketUser(forProperty("buyer")) : null;
+        this.buyer = inits.isInitialized("buyer") ? new com.mossy.member.domain.market.QMarketUser(forProperty("buyer")) : null;
     }
 
 }

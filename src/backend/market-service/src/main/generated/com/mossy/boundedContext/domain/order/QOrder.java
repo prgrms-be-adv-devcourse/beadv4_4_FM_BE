@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.order;
+package com.mossy.member.domain.order;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -26,7 +26,7 @@ public class QOrder extends EntityPathBase<Order> {
 
     public final StringPath address = createString("address");
 
-    public final com.mossy.boundedContext.domain.market.QMarketUser buyer;
+    public final com.mossy.member.domain.market.QMarketUser buyer;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -41,7 +41,7 @@ public class QOrder extends EntityPathBase<Order> {
 
     public final StringPath orderNo = createString("orderNo");
 
-    public final ListPath<com.mossy.boundedContext.domain.payment.Payment, com.mossy.boundedContext.domain.payment.QPayment> payments = this.<com.mossy.boundedContext.domain.payment.Payment, com.mossy.boundedContext.domain.payment.QPayment>createList("payments", com.mossy.boundedContext.domain.payment.Payment.class, com.mossy.boundedContext.domain.payment.QPayment.class, PathInits.DIRECT2);
+    public final ListPath<com.mossy.member.domain.payment.Payment, com.mossy.member.domain.payment.QPayment> payments = this.<com.mossy.member.domain.payment.Payment, com.mossy.member.domain.payment.QPayment>createList("payments", com.mossy.member.domain.payment.Payment.class, com.mossy.member.domain.payment.QPayment.class, PathInits.DIRECT2);
 
     public final EnumPath<com.mossy.shared.market.enums.OrderState> state = createEnum("state", com.mossy.shared.market.enums.OrderState.class);
 
@@ -68,7 +68,7 @@ public class QOrder extends EntityPathBase<Order> {
 
     public QOrder(Class<? extends Order> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.buyer = inits.isInitialized("buyer") ? new com.mossy.boundedContext.domain.market.QMarketUser(forProperty("buyer")) : null;
+        this.buyer = inits.isInitialized("buyer") ? new com.mossy.member.domain.market.QMarketUser(forProperty("buyer")) : null;
     }
 
 }

@@ -1,7 +1,5 @@
 package com.mossy.shared.cash.dto.event;
 
-import com.mossy.shared.member.domain.seller.SellerStatus;
-import com.mossy.shared.member.domain.seller.SellerType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -10,7 +8,7 @@ import lombok.Builder;
 public record CashSellerDto(
     Long id,
     Long userId,
-    SellerType sellerType,
+    String sellerType,
     String storeName,
     String businessNum,
     String representativeName,
@@ -20,7 +18,7 @@ public record CashSellerDto(
     String address2,
     BigDecimal latitude,
     BigDecimal longitude,
-    SellerStatus status,
+    String status,
     LocalDateTime createdAt,
     LocalDateTime updatedAt
 ) {

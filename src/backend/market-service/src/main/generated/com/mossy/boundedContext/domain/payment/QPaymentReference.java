@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.payment;
+package com.mossy.member.domain.payment;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 

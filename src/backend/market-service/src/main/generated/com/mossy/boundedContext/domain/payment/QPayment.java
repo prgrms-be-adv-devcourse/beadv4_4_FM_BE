@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.payment;
+package com.mossy.member.domain.payment;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -37,7 +37,7 @@ public class QPayment extends EntityPathBase<Payment> {
     //inherited
     public final StringPath modelTypeCode = _super.modelTypeCode;
 
-    public final com.mossy.boundedContext.domain.order.QOrder order;
+    public final com.mossy.member.domain.order.QOrder order;
 
     public final StringPath orderNo = createString("orderNo");
 
@@ -68,7 +68,7 @@ public class QPayment extends EntityPathBase<Payment> {
 
     public QPayment(Class<? extends Payment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.order = inits.isInitialized("order") ? new com.mossy.boundedContext.domain.order.QOrder(forProperty("order"), inits.get("order")) : null;
+        this.order = inits.isInitialized("order") ? new com.mossy.member.domain.order.QOrder(forProperty("order"), inits.get("order")) : null;
     }
 
 }
