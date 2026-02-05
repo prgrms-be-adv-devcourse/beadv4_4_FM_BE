@@ -1,4 +1,4 @@
-package com.mossy.java.auth.in.dto;
+package com.mossy.boundedContext.in.dto;
 
 public record LoginResponse(
         String accessToken,

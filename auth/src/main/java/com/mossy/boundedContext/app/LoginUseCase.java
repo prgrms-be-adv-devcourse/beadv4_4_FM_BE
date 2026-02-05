@@ -1,9 +1,7 @@
-package com.mossy.java.auth.app;
+package com.mossy.boundedContext.app;
 
-import com.mossy.member.member.domain.User;
-import com.mossy.member.member.out.user.UserRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.shared.member.domain.role.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +19,7 @@ public class LoginUseCase {
     public LoginContext execute(String email, String password) {
         User user = userRepository.findByEmailWithRoles(email)
                 .orElseThrow(() -> new DomainException(ErrorCode.INVALID_CREDENTIALS)); // 에러코드 통일
+
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new DomainException(ErrorCode.INVALID_CREDENTIALS);

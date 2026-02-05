@@ -1,4 +1,4 @@
-package com.mossy.global.security;
+package com.mossy.boundedContext.infra.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

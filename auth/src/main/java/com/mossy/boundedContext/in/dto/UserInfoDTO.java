@@ -1,6 +1,6 @@
-package com.mossy.java.auth.in.dto;
+package com.mossy.boundedContext.in.dto;
 
-import com.mossy.shared.member.domain.seller.SellerRequestStatus;
+import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
