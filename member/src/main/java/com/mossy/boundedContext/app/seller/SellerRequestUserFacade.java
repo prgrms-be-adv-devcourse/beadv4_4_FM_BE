@@ -1,18 +1,16 @@
-package com.mossy.member.app.seller;
+package com.mossy.boundedContext.app.seller;
 
-import com.mossy.member.domain.user.User;
-import com.mossy.member.out.seller.SellerRequestRepository;
-import com.mossy.member.out.user.UserRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.member.domain.seller.SellerRequest;
-import com.mossy.shared.member.domain.enums.SellerType;
-import com.mossy.shared.member.dto.request.SellerRequestCreateRequest;
+import com.mossy.boundedContext.domain.seller.SellerRequest;
+import com.mossy.boundedContext.domain.user.User;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
+import com.mossy.boundedContext.out.seller.SellerRequestRepository;
+import com.mossy.boundedContext.out.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor

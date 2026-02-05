@@ -1,6 +1,7 @@
-package com.mossy.member.domain.user;
+package com.mossy.boundedContext.domain.user;
 
 import com.mossy.shared.member.domain.entity.BaseUser;
+import com.mossy.shared.member.domain.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

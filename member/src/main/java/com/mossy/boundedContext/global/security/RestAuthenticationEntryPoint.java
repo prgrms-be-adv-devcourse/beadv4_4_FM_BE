@@ -1,6 +1,6 @@
-package com.mossy.member.global.security;
+package com.mossy.boundedContext.global.security;
 
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.global.rsData.RsData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

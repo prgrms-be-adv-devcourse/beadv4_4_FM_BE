@@ -1,4 +1,4 @@
-package com.mossy.shared.member.dto.event;
+package com.mossy.shared.member.payload;
 
 
 public class UserDtoMapper {

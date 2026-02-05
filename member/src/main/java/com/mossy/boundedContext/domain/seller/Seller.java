@@ -1,4 +1,4 @@
-package com.mossy.member.domain.seller;
+package com.mossy.boundedContext.domain.seller;
 
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;

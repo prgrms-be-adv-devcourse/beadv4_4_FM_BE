@@ -1,6 +1,6 @@
-package com.mossy.member.out.seller;
+package com.mossy.boundedContext.out.seller;
 
-import com.mossy.member.domain.seller.SellerRequest;
+import com.mossy.boundedContext.domain.seller.SellerRequest;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

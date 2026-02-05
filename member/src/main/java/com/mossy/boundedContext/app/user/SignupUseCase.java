@@ -1,14 +1,15 @@
-package com.mossy.member.app.user;
+package com.mossy.boundedContext.app.user;
 
-import com.mossy.member.out.user.RoleRepository;
-import com.mossy.member.out.user.UserRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.domain.user.User;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.in.dto.request.SignupRequest;
+import com.mossy.boundedContext.out.user.RoleRepository;
+import com.mossy.boundedContext.out.user.UserRepository;
 import com.mossy.shared.member.domain.enums.UserStatus;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
 import com.mossy.shared.member.domain.role.UserRole;
-import com.mossy.shared.member.dto.request.SignupRequest;
 import com.mossy.standard.ut.EncryptionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

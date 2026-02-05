@@ -1,8 +1,8 @@
-package com.mossy.member.global.security;
+package com.mossy.boundedContext.global.security;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.global.security.jwt.JwtProvider;
+
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

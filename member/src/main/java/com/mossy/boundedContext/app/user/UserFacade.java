@@ -1,12 +1,14 @@
-package com.mossy.member.app.user;
+package com.mossy.boundedContext.app.user;
 
+import com.mossy.boundedContext.domain.user.User;
+import com.mossy.boundedContext.in.dto.request.SignupRequest;
+import com.mossy.boundedContext.out.user.UserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.shared.member.dto.event.UserPayload;
-import com.mossy.shared.member.dto.event.UserDtoMapper;
-import com.mossy.shared.member.dto.request.SignupRequest;
-import com.mossy.member.out.user.UserRepository;
+
 
 import com.mossy.shared.member.event.UserJoinedEvent;
+import com.mossy.shared.member.payload.UserDtoMapper;
+import com.mossy.shared.member.payload.UserPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
