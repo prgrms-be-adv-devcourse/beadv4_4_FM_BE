@@ -14,9 +14,6 @@ import com.mossy.boundedContext.cash.app.usecase.user.CashGetBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashGetLogsUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashGetWalletInfoUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashSyncUserUseCase;
-import com.mossy.boundedContext.cash.domain.seller.CashSeller;
-import com.mossy.boundedContext.cash.domain.user.CashUser;
-import com.mossy.boundedContext.cash.domain.user.UserCashLog;
 import com.mossy.boundedContext.cash.in.dto.common.CashSellerDto;
 import com.mossy.boundedContext.cash.in.dto.common.CashUserDto;
 import com.mossy.boundedContext.cash.in.dto.request.CashHoldingRequestDto;
@@ -24,12 +21,12 @@ import com.mossy.boundedContext.cash.in.dto.request.CashRefundRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.SellerBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
+import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,81 +49,67 @@ public class CashFacade {
 
     // === [동기화 영역] ===
 
-    @Transactional
-    public CashUser syncUser(CashUserDto userDto) {
-        return cashSyncUserUseCase.syncUser(userDto);
+    public void syncUser(CashUserDto userDto) {
+        cashSyncUserUseCase.syncUser(userDto);
     }
 
-    @Transactional
-    public CashSeller syncSeller(CashSellerDto sellerDto) {
-        return cashSyncSellerUseCase.syncSeller(sellerDto);
+    public void syncSeller(CashSellerDto sellerDto) {
+        cashSyncSellerUseCase.syncSeller(sellerDto);
     }
 
     // === [지갑 영역] ===
 
-    @Transactional
     public void createUserWallet(CashUserDto userDto) {
         cashCreateUserWalletUseCase.createUserWallet(userDto);
     }
 
-    @Transactional
     public void createSellerWallet(CashSellerDto sellerDto) {
         cashCreateSellerWalletUseCase.createSellerWallet(sellerDto);
     }
 
-    @Transactional
     public void creditUserBalance(UserBalanceRequestDto request) {
         cashCreditUserBalanceUseCase.credit(request);
     }
 
-    @Transactional
     public void creditSellerBalance(SellerBalanceRequestDto request) {
         cashCreditSellerBalanceUseCase.credit(request);
     }
 
-    @Transactional
     public void deductUserBalance(UserBalanceRequestDto request) {
         cashDeductUserBalanceUseCase.deduct(request);
     }
 
-    @Transactional
     public void deductSellerBalance(SellerBalanceRequestDto request) {
         cashDeductSellerBalanceUseCase.deduct(request);
     }
 
-    @Transactional
     public void cashHolding(CashHoldingRequestDto request) {
         cashHoldingUseCase.holdPaymentAmount(request);
     }
 
-    @Transactional
     public void processRefund(CashRefundRequestDto request) {
         cashHoldingUseCase.processRefund(request);
     }
 
     // === [조회 영역] ===
 
-    @Transactional(readOnly = true)
     public UserWalletResponseDto findUserWallet(Long userId) {
         return cashGetWalletInfoUseCase.getUserWalletInfo(userId);
     }
 
-    @Transactional(readOnly = true)
     public BigDecimal findUserBalance(Long userId) {
         return cashGetBalanceUseCase.getUserWalletBalance(userId);
     }
 
-    @Transactional(readOnly = true)
     public SellerWalletResponseDto findSellerWallet(Long sellerId) {
         return cashGetSellerWalletInfoUseCase.getSellerWalletInfo(sellerId);
     }
 
-    @Transactional(readOnly = true)
     public BigDecimal findSellerBalance(Long sellerId) {
         return cashGetSellerBalanceUseCase.getSellerBalance(sellerId);
     }
 
-    public List<UserCashLog> findAllCashLogs(Long userId) {
+    public List<UserCashLogResponseDto> findAllCashLogs(Long userId) {
         return cashGetLogsUseCase.findCashLog(userId);
     }
 }

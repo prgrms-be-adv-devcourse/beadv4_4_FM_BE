@@ -3,6 +3,7 @@ package com.mossy.boundedContext.cash.app.mapper;
 import com.mossy.boundedContext.cash.domain.seller.CashSeller;
 import com.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import com.mossy.boundedContext.cash.domain.user.CashUser;
+import com.mossy.boundedContext.cash.domain.user.UserCashLog;
 import com.mossy.boundedContext.cash.domain.user.UserWallet;
 import com.mossy.boundedContext.cash.in.dto.common.CashSellerDto;
 import com.mossy.boundedContext.cash.in.dto.common.CashUserDto;
@@ -10,6 +11,7 @@ import com.mossy.boundedContext.cash.in.dto.request.CashHoldingRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.CashRefundRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
+import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmCashRequestDto;
 import com.mossy.shared.cash.enums.UserEventType;
@@ -87,31 +89,6 @@ public class CashMapper {
             .build();
     }
 
-    public PaymentConfirmCashRequestDto toPaymentConfirmCashRequestDto(OrderCashPaymentRequestEvent event) {
-        return PaymentConfirmCashRequestDto.builder()
-            .orderId(event.orderNo())
-            .amount(event.amount())
-            .payMethod(PayMethod.CASH)
-            .build();
-    }
-
-    public CashHoldingRequestDto toCashHoldingRequestDto(PaymentCompletedEvent event) {
-        return CashHoldingRequestDto.builder()
-            .orderId(event.orderId())
-            .buyerId(event.buyerId())
-            .amount(event.amount())
-            .payMethod(event.payMethod())
-            .build();
-    }
-
-    public CashRefundRequestDto toCashRefundRequestDto(PaymentRefundEvent event) {
-        return CashRefundRequestDto.builder()
-            .orderId(event.orderId())
-            .buyerId(event.buyerId())
-            .amount(event.amount())
-            .payMethod(event.payMethod())
-            .build();
-    }
 
     public UserPayload toPayload(CashUser user) {
         return UserPayload.builder()
@@ -175,6 +152,42 @@ public class CashMapper {
             .build();
     }
 
+    public PaymentConfirmCashRequestDto toPaymentConfirmCashRequestDto(OrderCashPaymentRequestEvent event) {
+        return PaymentConfirmCashRequestDto.builder()
+            .orderId(event.orderNo())
+            .amount(event.amount())
+            .payMethod(PayMethod.CASH)
+            .build();
+    }
+
+    public CashHoldingRequestDto toCashHoldingRequestDto(PaymentCompletedEvent event) {
+        return CashHoldingRequestDto.builder()
+            .orderId(event.orderId())
+            .buyerId(event.buyerId())
+            .amount(event.amount())
+            .payMethod(event.payMethod())
+            .build();
+    }
+
+    public CashRefundRequestDto toCashRefundRequestDto(PaymentRefundEvent event) {
+        return CashRefundRequestDto.builder()
+            .orderId(event.orderId())
+            .buyerId(event.buyerId())
+            .amount(event.amount())
+            .payMethod(event.payMethod())
+            .build();
+    }
+
+    public UserBalanceRequestDto toUserBalanceRequestDto(OrderCashPrePaymentEvent event) {
+        return UserBalanceRequestDto.builder()
+            .userId(event.buyerId())
+            .amount(event.amount())
+            .eventType(UserEventType.사용__주문결제)
+            .relTypeCode("ORDER")
+            .relId(event.orderId())
+            .build();
+    }
+
     public UserWalletResponseDto toResponseDto(UserWallet wallet) {
         return UserWalletResponseDto.builder()
             .walletId(wallet.getId())
@@ -191,13 +204,13 @@ public class CashMapper {
             .build();
     }
 
-    public UserBalanceRequestDto toUserBalanceRequestDto(OrderCashPrePaymentEvent event) {
-        return UserBalanceRequestDto.builder()
-            .userId(event.buyerId())
-            .amount(event.amount())
-            .eventType(UserEventType.사용__주문결제)
-            .relTypeCode("ORDER")
-            .relId(event.orderId())
+    public UserCashLogResponseDto toResponseDto(UserCashLog log) {
+        return UserCashLogResponseDto.builder()
+            .id(log.getId())
+            .eventType(log.getEventType())
+            .amount(log.getAmount())
+            .balance(log.getBalance())
+            .createdAt(log.getCreatedAt())
             .build();
     }
 }
