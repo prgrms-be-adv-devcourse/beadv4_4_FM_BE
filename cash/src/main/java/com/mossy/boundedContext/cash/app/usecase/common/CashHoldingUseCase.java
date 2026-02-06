@@ -5,7 +5,7 @@ import com.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import com.mossy.boundedContext.cash.domain.user.UserWallet;
 import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.boundedContext.exception.ErrorCode;
-import com.mossy.shared.market.enums.PayMethod;
+import com.mossy.shared.cash.enums.PayMethod;
 
 import com.mossy.shared.cash.enums.SellerEventType;
 import com.mossy.shared.cash.enums.UserEventType;

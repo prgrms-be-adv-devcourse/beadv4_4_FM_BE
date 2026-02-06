@@ -1,4 +1,4 @@
-package com.mossy.shared.market.enums;
+package com.mossy.shared.cash.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

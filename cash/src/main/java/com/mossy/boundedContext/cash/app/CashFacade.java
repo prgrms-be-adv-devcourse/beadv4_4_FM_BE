@@ -1,30 +1,31 @@
-package com.mossy.member.app;
+package com.mossy.boundedContext.cash.app;
 
-import com.mossy.member.app.usecase.seller.*;
-import com.mossy.member.app.usecase.seller.CashGetSellerBalanceUseCase;
-import com.mossy.member.app.usecase.seller.CashGetSellerWalletInfoUseCase;
-import com.mossy.member.app.usecase.sync.CashSyncSellerUseCase;
-import com.mossy.member.app.usecase.sync.CashSyncUserUseCase;
-import com.mossy.member.app.usecase.user.CashCreateUserWalletUseCase;
-import com.mossy.member.app.usecase.user.CashCreditUserBalanceUseCase;
-import com.mossy.member.app.usecase.user.CashDeductUserBalanceUseCase;
-import com.mossy.member.app.usecase.user.CashGetBalanceUseCase;
-import com.mossy.member.app.usecase.user.CashGetLogsUseCase;
-import com.mossy.member.app.usecase.user.CashGetWalletInfoUseCase;
-import com.mossy.member.app.usecase.user.CashHoldingUseCase;
-import com.mossy.member.domain.seller.CashSeller;
-import com.mossy.member.domain.seller.SellerWallet;
-import com.mossy.member.domain.user.CashUser;
-import com.mossy.member.domain.user.UserCashLog;
-import com.mossy.member.domain.user.UserWallet;
-import com.mossy.shared.cash.dto.event.CashSellerDto;
-import com.mossy.shared.cash.dto.event.CashUserDto;
-import com.mossy.shared.cash.dto.request.SellerBalanceRequestDto;
-import com.mossy.shared.cash.dto.request.UserBalanceRequestDto;
-import com.mossy.shared.member.dto.event.SellerPayload;
+import com.mossy.boundedContext.cash.app.mapper.CashPayloadMapper;
+import com.mossy.boundedContext.cash.app.usecase.seller.CashCreateSellerWalletUseCase;
+import com.mossy.boundedContext.cash.app.usecase.seller.CashCreditSellerBalanceUseCase;
+import com.mossy.boundedContext.cash.app.usecase.seller.CashDeductSellerBalanceUseCase;
+import com.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerBalanceUseCase;
+import com.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerWalletInfoUseCase;
+import com.mossy.boundedContext.cash.app.usecase.seller.CashSyncSellerUseCase;
+import com.mossy.boundedContext.cash.app.usecase.user.CashSyncUserUseCase;
+import com.mossy.boundedContext.cash.app.usecase.user.CashCreateUserWalletUseCase;
+import com.mossy.boundedContext.cash.app.usecase.user.CashCreditUserBalanceUseCase;
+import com.mossy.boundedContext.cash.app.usecase.user.CashDeductUserBalanceUseCase;
+import com.mossy.boundedContext.cash.app.usecase.user.CashGetBalanceUseCase;
+import com.mossy.boundedContext.cash.app.usecase.user.CashGetLogsUseCase;
+import com.mossy.boundedContext.cash.app.usecase.user.CashGetWalletInfoUseCase;
+import com.mossy.boundedContext.cash.app.usecase.common.CashHoldingUseCase;
+import com.mossy.boundedContext.cash.domain.seller.CashSeller;
+import com.mossy.boundedContext.cash.domain.user.CashUser;
+import com.mossy.boundedContext.cash.domain.user.UserCashLog;
+import com.mossy.boundedContext.cash.in.dto.request.SellerBalanceRequestDto;
+import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
+import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
+import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
 import com.mossy.shared.market.event.PaymentCompletedEvent;
 import com.mossy.shared.market.event.PaymentRefundEvent;
-import com.mossy.shared.member.dto.event.UserPayload;
+import com.mossy.shared.member.payload.SellerPayload;
+import com.mossy.shared.member.payload.UserPayload;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -58,20 +59,20 @@ public class CashFacade {
     }
 
     @Transactional
-    public CashSeller syncSeller(SellerPayload sellerApprovedEvent) {
-        return cashSyncSellerUseCase.syncSeller(sellerApprovedEvent);
+    public CashSeller syncSeller(SellerPayload sellerPayload) {
+        return cashSyncSellerUseCase.syncSeller(sellerPayload);
     }
 
     // === [지갑 영역] ===
 
     @Transactional
-    public UserWallet createUserWallet(CashUserDto userDto) {
-        return cashCreateUserWalletUseCase.createUserWallet(userDto);
+    public void createUserWallet(UserPayload userPayload) {
+        cashCreateUserWalletUseCase.createUserWallet(userPayload);
     }
 
     @Transactional
-    public SellerWallet createSellerWallet(CashSellerDto sellerDto) {
-        return cashCreateSellerWalletUseCase.createSellerWallet(sellerDto);
+    public void createSellerWallet(SellerPayload sellerPayload) {
+        cashCreateSellerWalletUseCase.createSellerWallet(sellerPayload);
     }
 
     @Transactional
@@ -106,20 +107,20 @@ public class CashFacade {
 
     // === [조회 영역] ===
 
-//    @Transactional(readOnly = true)
-//    public UserWalletResponseDto findUserWallet(Long userId) {
-//        return cashGetWalletInfoUseCase.getUserWalletInfo(userId);
-//    }
+    @Transactional(readOnly = true)
+    public UserWalletResponseDto findUserWallet(Long userId) {
+        return cashGetWalletInfoUseCase.getUserWalletInfo(userId);
+    }
 
     @Transactional(readOnly = true)
     public BigDecimal findUserBalance(Long userId) {
         return cashGetBalanceUseCase.getUserWalletBalance(userId);
     }
 
-//    @Transactional(readOnly = true)
-//    public SellerWalletResponseDto findSellerWallet(Long sellerId) {
-//        return cashGetSellerWalletInfoUseCase.getSellerWalletInfo(sellerId);
-//    }
+    @Transactional(readOnly = true)
+    public SellerWalletResponseDto findSellerWallet(Long sellerId) {
+        return cashGetSellerWalletInfoUseCase.getSellerWalletInfo(sellerId);
+    }
 
     @Transactional(readOnly = true)
     public BigDecimal findSellerBalance(Long sellerId) {

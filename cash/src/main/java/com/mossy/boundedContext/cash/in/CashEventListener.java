@@ -1,15 +1,15 @@
-package com.mossy.member.in;
+package com.mossy.boundedContext.cash.in;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
 
-import com.mossy.member.app.CashFacade;
-import com.mossy.shared.market.enums.PayMethod;
-import com.mossy.shared.cash.dto.request.UserBalanceRequestDto;
+import com.mossy.boundedContext.cash.app.CashFacade;
+import com.mossy.boundedContext.cash.app.mapper.CashPayloadMapper;
+import com.mossy.boundedContext.payment.app.PaymentFacade;
 import com.mossy.shared.cash.event.CashSellerCreatedEvent;
 import com.mossy.shared.cash.event.CashUserCreatedEvent;
-import com.mossy.shared.market.dto.toss.PaymentConfirmCashRequestDto;
 import com.mossy.shared.market.event.OrderCashPaymentRequestEvent;
+import com.mossy.shared.market.event.OrderCashPrePaymentEvent;
 import com.mossy.shared.market.event.PaymentCompletedEvent;
 import com.mossy.shared.market.event.PaymentRefundEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
@@ -27,6 +27,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class CashEventListener {
 
     private final CashFacade cashFacade;
+    private final PaymentFacade paymentFacade;
+    private final CashPayloadMapper mapper;
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
@@ -66,18 +68,12 @@ public class CashEventListener {
 
     @EventListener
     public void orderCashPaymentRequestEvent(OrderCashPaymentRequestEvent event) {
-        PaymentConfirmCashRequestDto request = PaymentConfirmCashRequestDto.builder()
-            .orderId(event.orderNo())
-            .amount(event.amount())
-            .payMethod(PayMethod.CASH)
-            .build();
-        //paymentFacade.confirmCashPayment(request);
+        paymentFacade.confirmCashPayment(mapper.toPaymentConfirmCashRequestDto(event));
     }
 
     @EventListener
     public void orderCashPrePaymentEvent(OrderCashPrePaymentEvent event) {
-        UserBalanceRequestDto request = event.toUserBalanceRequestDto();
-        cashFacade.deductUserBalance(request);
+        cashFacade.deductUserBalance(mapper.toUserBalanceRequestDto(event));
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
