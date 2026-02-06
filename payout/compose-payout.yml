@@ -1,18 +1,17 @@
 services:
-  payout-service:
+  payout:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: payout/Dockerfile
     container_name: payout
     restart: always
     ports:
       - "8084:8080"
     env_file:
-      - ../envs/.env.common
-      - ../envs/.env.payout
+      - .env.payout
     networks:
       - mossy-network
 
 networks:
   mossy-network:
-    external: true
+    driver: bridge

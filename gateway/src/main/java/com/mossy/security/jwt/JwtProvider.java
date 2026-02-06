@@ -1,4 +1,4 @@
-package com.mossy.global.security.jwt;
+package com.mossy.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -15,9 +15,9 @@ import java.util.Date;
 public class JwtProvider {
 
     private final Key key;
-    private final JwtProperties jwtProperties;
+    private final com.mossy.global.security.jwt.JwtProperties jwtProperties;
 
-    public JwtProvider(JwtProperties jwtProperties) {
+    public JwtProvider(com.mossy.global.security.jwt.JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
         this.key = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
     }
