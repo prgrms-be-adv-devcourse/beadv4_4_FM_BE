@@ -1,5 +1,7 @@
 package com.mossy.boundedContext.infra.feign;
 
+import com.mossy.shared.auth.domain.request.MemberVerifyRequest;
+import com.mossy.shared.auth.domain.response.MemberVerifyResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

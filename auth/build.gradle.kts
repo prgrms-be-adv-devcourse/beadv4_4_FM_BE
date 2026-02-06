@@ -19,7 +19,6 @@ repositories {
     mavenCentral()
 }
 
-// [중요] BOM 설정
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
@@ -27,26 +26,36 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation(project(":common")) // JWT 유틸 등 공통 모듈
+    implementation(project(":common")) // [공통 모듈] RsData, Exception 등 포함
 
-    // 1. Web & Security
+    // 1. Web & Security (인증 모듈의 핵심)
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
 
-    // 2. OpenFeign (Member Service와 통신)
+    // 2. JWT (이게 있어야 JwtProvider의 빨간 줄이 사라집니다!)
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
+    // 3. OpenFeign (Member 서비스와 통신)
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
-    // 3. Redis (Refresh Token 저장)
+    // 4. Redis (Refresh Token 및 로그인 실패 횟수 저장)
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
-    // 4. 유틸
+    // 5. Swagger (API 문서화)
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
+
+    // 6. Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
+    // 7. Test
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
 }
 
 tasks.withType<Test> {

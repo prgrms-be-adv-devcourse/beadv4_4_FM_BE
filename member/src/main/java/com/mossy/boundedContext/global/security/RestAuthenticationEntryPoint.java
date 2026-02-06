@@ -1,5 +1,4 @@
 package com.mossy.boundedContext.global.security;
-
 import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.global.rsData.RsData;
 import com.fasterxml.jackson.databind.ObjectMapper;
