@@ -3,9 +3,9 @@ package com.mossy.boundedContext.cash.app.usecase.user;
 import com.mossy.boundedContext.cash.app.CashSupport;
 import com.mossy.boundedContext.cash.domain.user.CashUser;
 import com.mossy.boundedContext.cash.domain.user.UserWallet;
-import com.mossy.boundedContext.cash.in.dto.common.CashUserDto;
 import com.mossy.boundedContext.cash.out.user.CashUserRepository;
 import com.mossy.boundedContext.cash.out.user.UserWalletRepository;
+import com.mossy.shared.member.payload.UserPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +19,10 @@ public class CashCreateUserWalletUseCase {
     private final UserWalletRepository userWalletRepository;
 
     @Transactional
-    public void createUserWallet(CashUserDto userDto) {
-        cashSupport.validateUserWalletExists(userDto.id());
+    public void createUserWallet(UserPayload userPayload) {
+        cashSupport.validateUserWalletExists(userPayload.id());
 
-        CashUser user = cashUserRepository.getReferenceById(userDto.id());
+        CashUser user = cashUserRepository.getReferenceById(userPayload.id());
         UserWallet wallet = new UserWallet(user);
         userWalletRepository.save(wallet);
     }
