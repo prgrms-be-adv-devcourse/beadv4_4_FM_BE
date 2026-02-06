@@ -25,7 +25,6 @@ public class ApiV1CartController {
     )
     @GetMapping
     public RsData<CartResponse> getCart(
-            @Parameter(hidden = true)
             @RequestParam(name="userId") Long userId
     ) {
         return new RsData<>("200", "장바구니 조회를 성공했습니다.", cartFacade.getCart(userId));
@@ -37,7 +36,7 @@ public class ApiV1CartController {
     )
     @PostMapping("/items")
     public RsData<Void> addCartItem(
-            @Parameter(hidden = true)
+            @Parameter(description = "사용자 ID")
             @RequestParam(name="userId") Long userId,
 
             @Parameter(description = "장바구니 상품 추가 요청 DTO", required = true)
@@ -95,7 +94,6 @@ public class ApiV1CartController {
     )
     @DeleteMapping
     public RsData<Void> clearCart(
-            @Parameter(hidden = true)
             @RequestParam(name="userId") Long userId
     ) {
         cartFacade.clearCart(userId);
