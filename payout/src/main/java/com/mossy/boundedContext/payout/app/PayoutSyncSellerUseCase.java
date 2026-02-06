@@ -5,7 +5,7 @@ import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.PayoutSeller;
 import com.mossy.boundedContext.payout.out.PayoutSellerRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.shared.member.dto.event.SellerPayload;
+import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,16 +30,16 @@ public class PayoutSyncSellerUseCase {
      */
     @Transactional
     public void syncSeller(SellerPayload seller) {
-        if (seller == null || seller.id() == null) {
+        if (seller == null || seller.sellerId() == null) {
             throw new DomainException(ErrorCode.INVALID_SELLER_DATA);
         }
         // PayoutSeller가 새로 생성되는 경우인지 확인
-        boolean isNew = !payoutSellerRepository.existsById(seller.id());
+        boolean isNew = !payoutSellerRepository.existsById(seller.sellerId());
 
         // SellerDto의 정보로 PayoutSeller 엔티티를 생성하거나 업데이트(save)
         PayoutSeller _seller = payoutSellerRepository.save(
                 PayoutSeller.builder()
-                        .id(seller.id())
+                        .id(seller.sellerId())
                         .createdAt(seller.createdAt())
                         .updatedAt(seller.updatedAt())
                         .userId(seller.userId())

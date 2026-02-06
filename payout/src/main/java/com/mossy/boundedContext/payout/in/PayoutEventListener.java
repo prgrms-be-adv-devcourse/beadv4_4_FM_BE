@@ -2,7 +2,7 @@ package com.mossy.boundedContext.payout.in;
 
 import com.mossy.boundedContext.donation.app.DonationFacade;
 import com.mossy.boundedContext.payout.app.PayoutFacade;
-import com.mossy.shared.cash.event.PaymentCompletedEvent;
+import com.mossy.shared.market.event.OrderPaidEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;
@@ -22,7 +22,6 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 public class PayoutEventListener {
     private final PayoutFacade payoutFacade;
     private final DonationFacade donationFacade;
-    private final MarketApiClient marketApiClient;
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
@@ -51,15 +50,15 @@ public class PayoutEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void payoutSellerCreatedEvent(PayoutSellerCreatedEvent event) {
-        payoutFacade.createPayout(event.seller().id());
+        payoutFacade.createPayout(event.seller().sellerId());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void paymentCompletedEvent(PaymentCompletedEvent event) {
-        // Payment 도메인에서 결제 완료 시 발행되는 이벤트 처리
-        // API로 OrderItem들을 조회하여 정산 후보 생성 및 기부 로그 생성
-        marketApiClient.getOrderItems(event.orderId())
+    public void orderPaidEvent(OrderPaidEvent event) {
+        // Market 도메인에서 주문 결제 완료 시 발행되는 이벤트 처리
+        // 이벤트에 포함된 OrderItem들을 사용하여 정산 후보 생성 및 기부 로그 생성
+        event.orderItems()
                 .forEach(orderItem -> {
                     // 1. 정산 후보 항목 생성 (수수료, 판매 대금, 기부금)
                     payoutFacade.addPayoutCandidateItem(orderItem, event.paymentDate());

@@ -1,9 +1,9 @@
 services:
   payout-service:
     build:
-      context: ../src/backend
-      dockerfile: payout-service/Dockerfile
-    container_name: payout-service
+      context: .
+      dockerfile: Dockerfile
+    container_name: payout
     restart: always
     ports:
       - "8084:8080"

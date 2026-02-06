@@ -4,7 +4,7 @@ spring:
   application:
     name: payout
   config:
-    import: "optional:file:../../../envs/.env.payout[.properties]"
+    import: "optional:file:./../../envs/.env.payout[.properties]"
   output:
     ansi:
       enabled: always

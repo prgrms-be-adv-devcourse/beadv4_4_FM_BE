@@ -10,7 +10,6 @@ import com.mossy.boundedContext.payout.domain.PayoutUser;
 import com.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
 import com.mossy.shared.market.dto.event.OrderPayoutDto;
 import com.mossy.shared.payout.enums.PayoutEventType;
-import com.mossy.shared.payout.payload.CreatePayoutCandidateItemDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,7 +102,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     }
 
     /**
-     * 정산 후보 아이템 생성을 위한 DTO를 받아 실제 엔티티를 생성하는 헬퍼 메서드
+     * 정산 후보 아이템을 생성하고 저장하는 헬퍼 메서드
      */
     private void makePayoutCandidateItem(
             LocalDateTime paymentDate,
@@ -113,7 +112,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             PayoutSeller payee,
             BigDecimal amount
     ) {
-        makePayoutCandidateItem(CreatePayoutCandidateItemDto.builder()
+        PayoutCandidateItem payoutCandidateItem = PayoutCandidateItem.builder()
                 .eventType(eventType)
                 .relTypeCode("OrderDetail")
                 .relId(orderItem.id())
@@ -121,15 +120,8 @@ public class PayoutAddPayoutCandidateItemsUseCase {
                 .payer(payer)
                 .payee(payee)
                 .amount(amount)
-                .build());
-    }
+                .build();
 
-    /**
-     * DTO를 PayoutCandidateItem 엔티티로 변환하고 저장
-     */
-    private void makePayoutCandidateItem(CreatePayoutCandidateItemDto dto) {
-
-        PayoutCandidateItem payoutCandidateItem = PayoutCandidateItem.from(dto);
         payoutCandidateItemRepository.save(payoutCandidateItem);
     }
 }

@@ -1,4 +1,4 @@
-package com.mossy.shared.payout.dto.response.payout;
+package com.mossy.boundedContext.payout.in.dto.response;
 
 
 import com.mossy.shared.payout.enums.PayoutEventType;

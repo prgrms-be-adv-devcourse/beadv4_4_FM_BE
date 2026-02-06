@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.exception;
 
 
+import com.mossy.global.exception.BaseErrorCode;
 import com.mossy.global.rsData.RsData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class GlobalExceptionHandler {
         log.warn("DomainException: {}", e.getMessage());
 
         if (e.getErrorCode() != null) {
-            ErrorCode errorCode = e.getErrorCode();
+            BaseErrorCode errorCode = e.getErrorCode();
             return ResponseEntity
                     .status(errorCode.getStatus())
                     .body(RsData.fail(errorCode));

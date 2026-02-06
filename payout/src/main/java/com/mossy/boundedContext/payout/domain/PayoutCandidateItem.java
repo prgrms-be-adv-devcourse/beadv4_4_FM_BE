@@ -5,7 +5,6 @@ import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.payout.app.PayoutAddPayoutCandidateItemsUseCase;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.payout.enums.PayoutEventType;
-import com.mossy.shared.payout.payload.CreatePayoutCandidateItemDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -125,24 +124,6 @@ public class PayoutCandidateItem extends BaseIdAndTime {
         this.payer = payer;
         this.payee = payee;
         this.amount = (amount != null) ? amount : BigDecimal.ZERO;
-    }
-
-    /**
-     * CreatePayoutCandidateItemDto 객체로부터 PayoutCandidateItem 엔티티를 생성하는 팩토리 메서드
-     *
-     * @param dto 정산 후보 아이템 생성 DTO
-     * @return 생성된 PayoutCandidateItem 엔티티
-     */
-    public static PayoutCandidateItem from(CreatePayoutCandidateItemDto dto) {
-        return PayoutCandidateItem.builder()
-                .eventType(dto.eventType())
-                .relTypeCode(dto.relTypeCode())
-                .relId(dto.relId())
-                .paymentDate(dto.paymentDate())
-                .payer(dto.payer())
-                .payee(dto.payee())
-                .amount(dto.amount())
-                .build();
     }
 
     /**

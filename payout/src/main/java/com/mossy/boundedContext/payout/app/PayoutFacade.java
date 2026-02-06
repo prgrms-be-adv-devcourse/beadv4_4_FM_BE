@@ -1,10 +1,9 @@
 package com.mossy.boundedContext.payout.app;
 
+import com.mossy.boundedContext.payout.in.dto.response.PayoutCandidateItemResponse;
 import com.mossy.shared.market.dto.event.OrderPayoutDto;
-import com.mossy.shared.payout.dto.response.payout.PayoutCandidateItemResponse;
-
+import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.global.rsData.RsData;
-import com.mossy.shared.member.dto.event.SellerPayload;
 import com.mossy.shared.member.dto.event.UserPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -87,19 +86,6 @@ public class PayoutFacade {
     public RsData<Integer> collectPayoutItemsMore(int limit) {
         return payoutCollectPayoutItemsMoreUseCase.collectPayoutItemsMore(limit);
     }
-
-    /**
-     * 현재 생성되어 있는 정산 후보 아이템 목록을 조회합니다. (읽기 전용)
-     * @return 정산 후보 아이템 응답 DTO 리스트
-     */
-    @Transactional(readOnly = true)
-    public List<PayoutCandidateItemResponse> findPayoutCandidateItems() {
-        return payoutSupport.findPayoutCandidateItems()
-                .stream()
-                .map(PayoutCandidateItemResponse::from)
-                .toList();
-    }
-
     /**
      * [흐름 3] 생성된 정산(Payout)들을 실제로 실행하고 완료 처리하는 배치를 실행
      * 이 과정이 성공적으로 끝나면 PayoutCompletedEvent가 발행되어, 기부금 정산 등 후속 조치가 이어짐
