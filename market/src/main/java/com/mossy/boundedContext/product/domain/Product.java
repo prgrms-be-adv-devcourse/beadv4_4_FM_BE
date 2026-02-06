@@ -34,7 +34,6 @@ public class Product extends BaseIdAndTime {
     @Column(nullable = false, length = 255)
     private String name;
 
-    @Lob
     @Column(name = "description", nullable = false)
     private String description;
 
