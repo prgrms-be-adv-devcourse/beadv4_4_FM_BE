@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.cash.app.usecase.user;
 
-import com.mossy.boundedContext.cash.app.mapper.CashPayloadMapper;
+import com.mossy.boundedContext.cash.app.mapper.CashMapper;
 import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class CashGetWalletInfoUseCase {
 
     private final UserWalletRepository userWalletRepository;
-    private final CashPayloadMapper mapper;
+    private final CashMapper mapper;
 
     public UserWalletResponseDto getUserWalletInfo(Long userId) {
         return userWalletRepository.findWalletByUserId(userId)

@@ -4,13 +4,13 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
 
 import com.mossy.boundedContext.cash.app.CashFacade;
-import com.mossy.boundedContext.cash.app.mapper.CashPayloadMapper;
+import com.mossy.boundedContext.cash.app.mapper.CashMapper;
 import com.mossy.boundedContext.payment.app.PaymentFacade;
 import com.mossy.shared.cash.event.CashSellerCreatedEvent;
 import com.mossy.shared.cash.event.CashUserCreatedEvent;
+import com.mossy.shared.cash.event.PaymentCompletedEvent;
 import com.mossy.shared.market.event.OrderCashPaymentRequestEvent;
 import com.mossy.shared.market.event.OrderCashPrePaymentEvent;
-import com.mossy.shared.market.event.PaymentCompletedEvent;
 import com.mossy.shared.market.event.PaymentRefundEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
@@ -28,42 +28,42 @@ public class CashEventListener {
 
     private final CashFacade cashFacade;
     private final PaymentFacade paymentFacade;
-    private final CashPayloadMapper mapper;
+    private final CashMapper mapper;
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void userJoinedEvent(UserJoinedEvent event) {
-        cashFacade.syncUser(event.user());
+        cashFacade.syncUser(mapper.toCashUserDto(event.user()));
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void sellerJoinedEvent(SellerJoinedEvent event) {
-        cashFacade.syncSeller(event.seller());
+        cashFacade.syncSeller(mapper.toCashSellerDto(event.seller()));
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void userUpdatedEvent(UserUpdatedEvent event) {
-        cashFacade.syncUser(event.user());
+        cashFacade.syncUser(mapper.toCashUserDto(event.user()));
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void sellerUpdatedEvent(SellerUpdatedEvent event) {
-        cashFacade.syncSeller(event.seller());
+        cashFacade.syncSeller(mapper.toCashSellerDto(event.seller()));
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void cashUserCreatedEvent(CashUserCreatedEvent event) {
-        cashFacade.createUserWallet(event.user());
+        cashFacade.createUserWallet(mapper.toCashUserDto(event.user()));
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void cashSellerCreatedEvent(CashSellerCreatedEvent event) {
-        cashFacade.createSellerWallet(event.seller());
+        cashFacade.createSellerWallet(mapper.toCashSellerDto(event.seller()));
     }
 
     @EventListener
@@ -79,11 +79,11 @@ public class CashEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void paymentCompletedEvent(PaymentCompletedEvent event) {
-        cashFacade.cashHolding(event);
+        cashFacade.cashHolding(mapper.toCashHoldingRequestDto(event));
     }
 
     @EventListener
     public void paymentRefundEvent(PaymentRefundEvent event) {
-        cashFacade.processRefund(event);
+        cashFacade.processRefund(mapper.toCashRefundRequestDto(event));
     }
 }

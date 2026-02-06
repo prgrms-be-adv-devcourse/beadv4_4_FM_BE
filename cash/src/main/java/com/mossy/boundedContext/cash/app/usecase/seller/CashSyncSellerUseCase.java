@@ -1,12 +1,12 @@
 package com.mossy.boundedContext.cash.app.usecase.seller;
 
-import com.mossy.boundedContext.cash.app.mapper.CashPayloadMapper;
+import com.mossy.boundedContext.cash.app.mapper.CashMapper;
 import com.mossy.boundedContext.cash.domain.seller.CashSeller;
+import com.mossy.boundedContext.cash.in.dto.common.CashSellerDto;
 import com.mossy.boundedContext.cash.out.seller.CashSellerRepository;
 import com.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.cash.event.CashSellerCreatedEvent;
-import com.mossy.shared.member.payload.SellerPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +17,9 @@ public class CashSyncSellerUseCase {
     private final CashSellerRepository cashSellerRepository;
     private final SellerWalletRepository sellerWalletRepository;
     private final EventPublisher eventPublisher;
-    private final CashPayloadMapper mapper;
+    private final CashMapper mapper;
 
-    public CashSeller syncSeller(SellerPayload seller) {
+    public CashSeller syncSeller(CashSellerDto seller) {
         CashSeller cashSeller = cashSellerRepository.save(mapper.toEntity(seller));
 
         if (!sellerWalletRepository.existsBySellerId(cashSeller.getId())) {

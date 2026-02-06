@@ -3,14 +3,14 @@ package com.mossy.boundedContext.cash.app.usecase.common;
 import com.mossy.boundedContext.cash.app.CashSupport;
 import com.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import com.mossy.boundedContext.cash.domain.user.UserWallet;
+import com.mossy.boundedContext.cash.in.dto.request.CashHoldingRequestDto;
+import com.mossy.boundedContext.cash.in.dto.request.CashRefundRequestDto;
 import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.shared.cash.enums.PayMethod;
 
 import com.mossy.shared.cash.enums.SellerEventType;
 import com.mossy.shared.cash.enums.UserEventType;
-import com.mossy.shared.market.event.PaymentCompletedEvent;
-import com.mossy.shared.market.event.PaymentRefundEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class CashHoldingUseCase {
 
     private final CashSupport cashSupport;
 
-    public void holdPaymentAmount(PaymentCompletedEvent request) {
+    public void holdPaymentAmount(CashHoldingRequestDto request) {
         UserWallet buyerWallet = cashSupport.findWalletByUserId(request.buyerId());
         SellerWallet holdingWallet = cashSupport.findHoldingWallet(); // 정책상 2번은 홀딩 지갑
 
@@ -49,26 +49,26 @@ public class CashHoldingUseCase {
         );
     }
 
-    public void processRefund(PaymentRefundEvent event) {
+    public void processRefund(CashRefundRequestDto request) {
         SellerWallet holdingWallet = cashSupport.findHoldingWallet();
-        BigDecimal refundAmount = event.amount();
+        BigDecimal refundAmount = request.amount();
 
         // 홀딩 지갑에서 환불 금액 차감
         holdingWallet.debit(
             refundAmount,
             SellerEventType.보관해제__주문취소,
             "ORDER_CANCEL",
-            event.orderId()
+            request.orderId()
         );
 
         // 예치금 결제인 경우에만 구매자 지갑으로 환불 (Toss 결제는 PG사가 환불 처리)
-        if (event.payMethod() == PayMethod.CASH) {
-            UserWallet buyerWallet = cashSupport.findWalletByUserId(event.buyerId());
+        if (request.payMethod() == PayMethod.CASH) {
+            UserWallet buyerWallet = cashSupport.findWalletByUserId(request.buyerId());
             buyerWallet.credit(
                 refundAmount,
                 UserEventType.환불__결제취소,
                 "ORDER_CANCEL",
-                event.orderId()
+                request.orderId()
             );
         }
     }

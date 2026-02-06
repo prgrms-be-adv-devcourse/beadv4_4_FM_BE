@@ -1,31 +1,30 @@
 package com.mossy.boundedContext.cash.app;
 
-import com.mossy.boundedContext.cash.app.mapper.CashPayloadMapper;
+import com.mossy.boundedContext.cash.app.usecase.common.CashHoldingUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashCreateSellerWalletUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashCreditSellerBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashDeductSellerBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerWalletInfoUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashSyncSellerUseCase;
-import com.mossy.boundedContext.cash.app.usecase.user.CashSyncUserUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashCreateUserWalletUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashCreditUserBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashDeductUserBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashGetBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashGetLogsUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashGetWalletInfoUseCase;
-import com.mossy.boundedContext.cash.app.usecase.common.CashHoldingUseCase;
+import com.mossy.boundedContext.cash.app.usecase.user.CashSyncUserUseCase;
 import com.mossy.boundedContext.cash.domain.seller.CashSeller;
 import com.mossy.boundedContext.cash.domain.user.CashUser;
 import com.mossy.boundedContext.cash.domain.user.UserCashLog;
+import com.mossy.boundedContext.cash.in.dto.common.CashSellerDto;
+import com.mossy.boundedContext.cash.in.dto.common.CashUserDto;
+import com.mossy.boundedContext.cash.in.dto.request.CashHoldingRequestDto;
+import com.mossy.boundedContext.cash.in.dto.request.CashRefundRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.SellerBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
-import com.mossy.shared.market.event.PaymentCompletedEvent;
-import com.mossy.shared.market.event.PaymentRefundEvent;
-import com.mossy.shared.member.payload.SellerPayload;
-import com.mossy.shared.member.payload.UserPayload;
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -54,25 +53,25 @@ public class CashFacade {
     // === [동기화 영역] ===
 
     @Transactional
-    public CashUser syncUser(UserPayload userPayload) {
-        return cashSyncUserUseCase.syncUser(userPayload);
+    public CashUser syncUser(CashUserDto userDto) {
+        return cashSyncUserUseCase.syncUser(userDto);
     }
 
     @Transactional
-    public CashSeller syncSeller(SellerPayload sellerPayload) {
-        return cashSyncSellerUseCase.syncSeller(sellerPayload);
+    public CashSeller syncSeller(CashSellerDto sellerDto) {
+        return cashSyncSellerUseCase.syncSeller(sellerDto);
     }
 
     // === [지갑 영역] ===
 
     @Transactional
-    public void createUserWallet(UserPayload userPayload) {
-        cashCreateUserWalletUseCase.createUserWallet(userPayload);
+    public void createUserWallet(CashUserDto userDto) {
+        cashCreateUserWalletUseCase.createUserWallet(userDto);
     }
 
     @Transactional
-    public void createSellerWallet(SellerPayload sellerPayload) {
-        cashCreateSellerWalletUseCase.createSellerWallet(sellerPayload);
+    public void createSellerWallet(CashSellerDto sellerDto) {
+        cashCreateSellerWalletUseCase.createSellerWallet(sellerDto);
     }
 
     @Transactional
@@ -96,13 +95,13 @@ public class CashFacade {
     }
 
     @Transactional
-    public void cashHolding(PaymentCompletedEvent request) {
+    public void cashHolding(CashHoldingRequestDto request) {
         cashHoldingUseCase.holdPaymentAmount(request);
     }
 
     @Transactional
-    public void processRefund(PaymentRefundEvent event) {
-        cashHoldingUseCase.processRefund(event);
+    public void processRefund(CashRefundRequestDto request) {
+        cashHoldingUseCase.processRefund(request);
     }
 
     // === [조회 영역] ===
