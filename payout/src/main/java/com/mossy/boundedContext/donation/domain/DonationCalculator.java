@@ -1,4 +1,4 @@
-package com.mossy.member.domain.donation;
+package com.mossy.boundedContext.donation.domain;
 
 import com.mossy.shared.market.dto.event.OrderPayoutDto;
 import com.mossy.shared.payout.enums.CarbonGrade;
@@ -18,7 +18,7 @@ import java.math.RoundingMode;
 public class DonationCalculator {
 
     private final CarbonCalculator carbonCalculator;
-    private final FeeCalculator feeCalculator;
+    private final com.mossy.member.domain.donation.FeeCalculator feeCalculator;
 
     // 최대 기부금 비율 (수수료의 50%)
     private static BigDecimal MAX_DONATION_RATE;

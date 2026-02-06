@@ -1,4 +1,4 @@
-package com.mossy.member.domain.donation;
+package com.mossy.boundedContext.donation.domain;
 
 import com.mossy.member.payout.domain.payout.PayoutUser;
 import com.mossy.global.exception.DomainException;

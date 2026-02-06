@@ -1,4 +1,4 @@
-package com.mossy.member.out.payout;
+package com.mossy.boundedContext.out.payout;
 
 import com.mossy.member.payout.app.payout.PayoutCompletePayoutsMoreUseCase;
 import com.mossy.member.payout.app.payout.PayoutCreatePayoutUseCase;

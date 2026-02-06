@@ -1,4 +1,4 @@
-package com.mossy.member.app.donation;
+package com.mossy.boundedContext.donation.app;
 
 import com.mossy.shared.market.dto.event.OrderPayoutDto;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DonationFacade {
 
     private final DonationCreateLogUseCase donationCreateLogUseCase;
-    private final DonationSettleUseCase donationSettleUseCase;
+    private final com.mossy.member.app.donation.DonationSettleUseCase donationSettleUseCase;
 
     /**
      * [1단계: 기부 로그 생성]

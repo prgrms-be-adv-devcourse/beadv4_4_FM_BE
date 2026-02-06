@@ -1,4 +1,4 @@
-package com.mossy.member.app.donation;
+package com.mossy.boundedContext.donation.app;
 
 import com.mossy.member.payout.app.payout.PayoutSupport;
 import com.mossy.member.domain.donation.DonationLog;

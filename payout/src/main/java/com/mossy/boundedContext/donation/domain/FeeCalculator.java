@@ -1,4 +1,4 @@
-package com.mossy.member.domain.donation;
+package com.mossy.boundedContext.donation.domain;
 
 import com.mossy.global.exception.DomainException;
 import com.mossy.global.exception.ErrorCode;
