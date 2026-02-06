@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.cash.in.dto.common;
 
+import com.mossy.shared.member.domain.enums.UserStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -12,7 +13,7 @@ public record CashUserDto(
     String address,
     String nickname,
     String profileImage,
-    String status,
+    UserStatus status,
     BigDecimal latitude,
     BigDecimal longitude,
     LocalDateTime createdAt,
