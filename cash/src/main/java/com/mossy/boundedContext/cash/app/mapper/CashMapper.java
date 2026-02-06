@@ -13,204 +13,63 @@ import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
-import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmCashRequestDto;
-import com.mossy.shared.cash.enums.UserEventType;
-import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
-import com.mossy.shared.market.event.OrderCashPaymentRequestEvent;
 import com.mossy.shared.market.event.OrderCashPrePaymentEvent;
 import com.mossy.shared.market.event.PaymentRefundEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.member.payload.UserPayload;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Component
-public class CashMapper {
+@Mapper(
+    componentModel = "spring",
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
+public interface CashMapper {
 
-    public CashUser toEntity(CashUserDto userDto) {
-        return CashUser.builder()
-            .id(userDto.id())
-            .email(userDto.email())
-            .name(userDto.name())
-            .address(userDto.address())
-            .nickname(userDto.nickname())
-            .profileImage(userDto.profileImage())
-            .status(userDto.status())
-            .latitude(userDto.latitude())
-            .longitude(userDto.longitude())
-            .createdAt(userDto.createdAt())
-            .updatedAt(userDto.updatedAt())
-            .build();
-    }
+    // --- [EventListener에서 사용 메서드들] ---
 
-    public CashSeller toEntity(CashSellerDto sellerDto) {
-        return CashSeller.builder()
-            .id(sellerDto.sellerId())
-            .userId(sellerDto.userId())
-            .sellerType(sellerDto.sellerType())
-            .storeName(sellerDto.storeName())
-            .businessNum(sellerDto.businessNum())
-            .latitude(sellerDto.latitude())
-            .longitude(sellerDto.longitude())
-            .status(sellerDto.status())
-            .createdAt(sellerDto.createdAt())
-            .updatedAt(sellerDto.updatedAt())
-            .build();
-    }
+    CashUserDto toCashUserDto(UserPayload payload);
 
-    public CashUserDto toCashUserDto(UserPayload payload) {
-        return CashUserDto.builder()
-            .id(payload.id())
-            .email(payload.email())
-            .name(payload.name())
-            .address(payload.address())
-            .nickname(payload.nickname())
-            .profileImage(payload.profileImage())
-            .status(payload.status())
-            .latitude(payload.latitude())
-            .longitude(payload.longitude())
-            .createdAt(payload.createdAt())
-            .updatedAt(payload.updatedAt())
-            .build();
-    }
+    @Mapping(target = "sellerId", source = "sellerId")
+    CashSellerDto toCashSellerDto(SellerPayload payload);
 
-    public CashSellerDto toCashSellerDto(SellerPayload payload) {
-        return CashSellerDto.builder()
-            .sellerId(payload.sellerId())
-            .userId(payload.userId())
-            .sellerType(payload.sellerType())
-            .storeName(payload.storeName())
-            .businessNum(payload.businessNum())
-            .latitude(payload.latitude())
-            .longitude(payload.longitude())
-            .status(payload.status())
-            .createdAt(payload.createdAt())
-            .updatedAt(payload.updatedAt())
-            .build();
-    }
+    // --- [기존 UseCase/Entity 매핑] ---
 
+    CashUser toEntity(CashUserDto userDto);
+    CashUserDto toDto(CashUser user);
 
-    public UserPayload toPayload(CashUser user) {
-        return UserPayload.builder()
-            .id(user.getId())
-            .email(user.getEmail())
-            .name(user.getName())
-            .address(user.getAddress())
-            .nickname(user.getNickname())
-            .profileImage(user.getProfileImage())
-            .status(user.getStatus())
-            .latitude(user.getLatitude())
-            .longitude(user.getLongitude())
-            .createdAt(user.getCreatedAt())
-            .updatedAt(user.getUpdatedAt())
-            .build();
-    }
+    @Mapping(target = "id", source = "sellerId")
+    CashSeller toEntity(CashSellerDto sellerDto);
 
-    public SellerPayload toPayload(CashSeller seller) {
-        return SellerPayload.builder()
-            .sellerId(seller.getId())
-            .userId(seller.getUserId())
-            .sellerType(seller.getSellerType())
-            .storeName(seller.getStoreName())
-            .businessNum(seller.getBusinessNum())
-            .latitude(seller.getLatitude())
-            .longitude(seller.getLongitude())
-            .status(seller.getStatus())
-            .createdAt(seller.getCreatedAt())
-            .updatedAt(seller.getUpdatedAt())
-            .build();
-    }
+    @Mapping(target = "sellerId", source = "id")
+    CashSellerDto toDto(CashSeller seller);
 
-    public CashUserDto toDto(CashUser user) {
-        return CashUserDto.builder()
-            .id(user.getId())
-            .email(user.getEmail())
-            .name(user.getName())
-            .address(user.getAddress())
-            .nickname(user.getNickname())
-            .profileImage(user.getProfileImage())
-            .status(user.getStatus())
-            .latitude(user.getLatitude())
-            .longitude(user.getLongitude())
-            .createdAt(user.getCreatedAt())
-            .updatedAt(user.getUpdatedAt())
-            .build();
-    }
+    UserPayload toPayload(CashUser user);
 
-    public CashSellerDto toDto(CashSeller seller) {
-        return CashSellerDto.builder()
-            .sellerId(seller.getId())
-            .userId(seller.getUserId())
-            .sellerType(seller.getSellerType())
-            .storeName(seller.getStoreName())
-            .businessNum(seller.getBusinessNum())
-            .latitude(seller.getLatitude())
-            .longitude(seller.getLongitude())
-            .status(seller.getStatus())
-            .createdAt(seller.getCreatedAt())
-            .updatedAt(seller.getUpdatedAt())
-            .build();
-    }
+    @Mapping(target = "sellerId", source = "id")
+    SellerPayload toPayload(CashSeller seller);
 
-    public PaymentConfirmCashRequestDto toPaymentConfirmCashRequestDto(OrderCashPaymentRequestEvent event) {
-        return PaymentConfirmCashRequestDto.builder()
-            .orderId(event.orderNo())
-            .amount(event.amount())
-            .payMethod(PayMethod.CASH)
-            .build();
-    }
+    // --- [이벤트 기반 DTO 변환] ---
 
-    public CashHoldingRequestDto toCashHoldingRequestDto(PaymentCompletedEvent event) {
-        return CashHoldingRequestDto.builder()
-            .orderId(event.orderId())
-            .buyerId(event.buyerId())
-            .amount(event.amount())
-            .payMethod(event.payMethod())
-            .build();
-    }
+    @Mapping(target = "userId", source = "buyerId")
+    @Mapping(target = "relId", source = "orderId")
+    @Mapping(target = "eventType", expression = "java(com.mossy.shared.cash.enums.UserEventType.사용__주문결제)")
+    @Mapping(target = "relTypeCode", constant = "ORDER")
+    UserBalanceRequestDto toUserBalanceRequestDto(OrderCashPrePaymentEvent event);
 
-    public CashRefundRequestDto toCashRefundRequestDto(PaymentRefundEvent event) {
-        return CashRefundRequestDto.builder()
-            .orderId(event.orderId())
-            .buyerId(event.buyerId())
-            .amount(event.amount())
-            .payMethod(event.payMethod())
-            .build();
-    }
+    CashHoldingRequestDto toCashHoldingRequestDto(PaymentCompletedEvent event);
 
-    public UserBalanceRequestDto toUserBalanceRequestDto(OrderCashPrePaymentEvent event) {
-        return UserBalanceRequestDto.builder()
-            .userId(event.buyerId())
-            .amount(event.amount())
-            .eventType(UserEventType.사용__주문결제)
-            .relTypeCode("ORDER")
-            .relId(event.orderId())
-            .build();
-    }
+    CashRefundRequestDto toCashRefundRequestDto(PaymentRefundEvent event);
 
-    public UserWalletResponseDto toResponseDto(UserWallet wallet) {
-        return UserWalletResponseDto.builder()
-            .walletId(wallet.getId())
-            .balance(wallet.getBalance())
-            .user(toDto(wallet.getUser()))
-            .build();
-    }
+    // --- [조회 응답 매핑] ---
 
-    public SellerWalletResponseDto toResponseDto(SellerWallet wallet) {
-        return SellerWalletResponseDto.builder()
-            .walletId(wallet.getId())
-            .balance(wallet.getBalance())
-            .seller(toDto(wallet.getSeller()))
-            .build();
-    }
+    @Mapping(target = "walletId", source = "id")
+    UserWalletResponseDto toResponseDto(UserWallet wallet);
 
-    public UserCashLogResponseDto toResponseDto(UserCashLog log) {
-        return UserCashLogResponseDto.builder()
-            .id(log.getId())
-            .eventType(log.getEventType())
-            .amount(log.getAmount())
-            .balance(log.getBalance())
-            .createdAt(log.getCreatedAt())
-            .build();
-    }
+    @Mapping(target = "walletId", source = "id")
+    SellerWalletResponseDto toResponseDto(SellerWallet wallet);
+
+    UserCashLogResponseDto toResponseDto(UserCashLog log);
 }

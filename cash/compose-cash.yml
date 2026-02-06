@@ -8,7 +8,7 @@ services:
     ports:
       - "8083:8080"
     env_file:
-      - ../envs/.env.cash
+      - .env.cash
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     networks:

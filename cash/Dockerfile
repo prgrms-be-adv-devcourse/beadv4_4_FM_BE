@@ -8,7 +8,7 @@ WORKDIR /app
 COPY gradlew .
 COPY gradle gradle
 # 루트에 build.gradle.kts가 있다면 복사 (없다면 아래 줄을 주석 처리하세요)
-COPY build.gradle.kts . 
+#COPY build.gradle.kts .
 
 # 2. 빌드 구조 동적 생성 (cash-service와 common만 포함하여 빌드 속도 최적화)
 RUN printf 'rootProject.name = "backend"\ninclude("common")\ninclude("cash")\n' > settings.gradle.kts
