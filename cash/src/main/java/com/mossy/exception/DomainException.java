@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.exception;
+package com.mossy.exception;
 
 import lombok.Getter;
 
@@ -7,7 +7,7 @@ public class DomainException extends RuntimeException {
 
     private final String resultCode;
     private final String msg;
-    private final ErrorCode errorCode;
+    private final CashErrorCode errorCode;
 
     public DomainException(String resultCode, String msg) {
         super(resultCode + ":" + msg);
@@ -16,7 +16,7 @@ public class DomainException extends RuntimeException {
         this.errorCode = null;
     }
 
-    public DomainException(ErrorCode errorCode) {
+    public DomainException(CashErrorCode errorCode) {
         super(errorCode.getMsg());
         this.resultCode = "F-" + errorCode.getStatus();
         this.msg = errorCode.getMsg();

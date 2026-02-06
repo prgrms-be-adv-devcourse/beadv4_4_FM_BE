@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.exception;
+package com.mossy.exception;
 
 import com.mossy.global.exception.BaseErrorCode;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ErrorCode implements BaseErrorCode {
+public enum CashErrorCode implements BaseErrorCode {
 
     // ========================================
     // 400 Bad Request (잘못된 요청 / 유효성 검증 실패)

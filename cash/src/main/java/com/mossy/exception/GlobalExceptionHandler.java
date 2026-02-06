@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.exception;
+package com.mossy.exception;
 
 import com.mossy.global.rsData.RsData;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
         log.warn("DomainException: {}", e.getMessage());
 
         if (e.getErrorCode() != null) {
-            ErrorCode errorCode = e.getErrorCode();
+            CashErrorCode errorCode = e.getErrorCode();
             return ResponseEntity
                     .status(errorCode.getStatus())
                     .body(RsData.fail(errorCode));
