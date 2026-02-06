@@ -66,12 +66,14 @@ public class CashEventListener {
         cashFacade.createSellerWallet(mapper.toCashSellerDto(event.seller()));
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
     public void orderCashPaymentRequestEvent(OrderCashPaymentRequestEvent event) {
         paymentFacade.confirmCashPayment(mapper.toPaymentConfirmCashRequestDto(event));
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
     public void orderCashPrePaymentEvent(OrderCashPrePaymentEvent event) {
         cashFacade.deductUserBalance(mapper.toUserBalanceRequestDto(event));
     }

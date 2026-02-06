@@ -8,6 +8,7 @@ import com.mossy.boundedContext.cash.out.seller.CashSellerRepository;
 import com.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class CashCreateSellerWalletUseCase {
     private final CashSellerRepository cashSellerRepository;
     private final SellerWalletRepository sellerWalletRepository;
 
+    @Transactional
     public void createSellerWallet(CashSellerDto sellerDto) {
         cashSupport.validateSellerWalletExists(sellerDto.sellerId());
 

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class CashHoldingUseCase {
 
     private final CashSupport cashSupport;
 
+    @Transactional
     public void holdPaymentAmount(CashHoldingRequestDto request) {
         UserWallet buyerWallet = cashSupport.findWalletByUserId(request.buyerId());
         SellerWallet holdingWallet = cashSupport.findHoldingWallet(); // 정책상 2번은 홀딩 지갑
@@ -49,6 +51,7 @@ public class CashHoldingUseCase {
         );
     }
 
+    @Transactional
     public void processRefund(CashRefundRequestDto request) {
         SellerWallet holdingWallet = cashSupport.findHoldingWallet();
         BigDecimal refundAmount = request.amount();
