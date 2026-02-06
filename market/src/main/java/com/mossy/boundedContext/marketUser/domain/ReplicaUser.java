@@ -44,7 +44,7 @@ public abstract class ReplicaUser extends BaseUser {
         this.updatedAt = updatedAt;
     }
 
-    public void changeUser(UserPayload payload) {
+    protected void changeUser(UserPayload payload) {
         this.email = payload.email();
         this.name = payload.name();
         this.address = payload.address();

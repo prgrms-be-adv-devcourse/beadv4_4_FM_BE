@@ -2,7 +2,7 @@ package com.mossy.boundedContext.marketUser.app;
 
 import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
-import com.mossy.shared.member.dto.event.SellerPayload;
+import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.member.payload.UserPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
