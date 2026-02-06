@@ -9,7 +9,10 @@ import com.mossy.boundedContext.cash.in.dto.common.CashUserDto;
 import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
+import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmCashRequestDto;
 import com.mossy.shared.cash.enums.UserEventType;
+import com.mossy.shared.cash.enums.PayMethod;
+import com.mossy.shared.market.event.OrderCashPaymentRequestEvent;
 import com.mossy.shared.market.event.OrderCashPrePaymentEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.member.payload.UserPayload;
@@ -46,6 +49,14 @@ public class CashPayloadMapper {
             .status(payload.status())
             .createdAt(payload.createdAt())
             .updatedAt(payload.updatedAt())
+            .build();
+    }
+
+    public PaymentConfirmCashRequestDto toPaymentConfirmCashRequestDto(OrderCashPaymentRequestEvent event) {
+        return PaymentConfirmCashRequestDto.builder()
+            .orderId(event.orderNo())
+            .amount(event.amount())
+            .payMethod(PayMethod.CASH)
             .build();
     }
 
