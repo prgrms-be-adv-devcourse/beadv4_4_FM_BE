@@ -1,4 +1,4 @@
-package com.mossy.java.auth.in;
+package com.mossy.boundedContext.in;
 
 import com.mossy.auth.app.AppFacade;
 import com.mossy.global.rsData.RsData;

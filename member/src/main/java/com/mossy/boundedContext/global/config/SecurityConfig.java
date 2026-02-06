@@ -1,8 +1,8 @@
-package com.mossy.member.global.config;
+package com.mossy.boundedContext.global.config;
 
-import com.mossy.member.global.security.JwtAuthenticationFilter;
-import com.mossy.member.global.security.RestAccessDeniedHandler;
-import com.mossy.member.global.security.RestAuthenticationEntryPoint;
+import com.mossy.boundedContext.global.security.JwtAuthenticationFilter;
+import com.mossy.boundedContext.global.security.RestAccessDeniedHandler;
+import com.mossy.boundedContext.global.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

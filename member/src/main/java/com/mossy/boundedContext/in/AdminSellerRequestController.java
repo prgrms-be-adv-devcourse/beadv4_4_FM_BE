@@ -1,10 +1,8 @@
-package com.mossy.member.in;
+package com.mossy.boundedContext.in;
 
-import com.mossy.member.auth.app.AuthFacade;
-import com.mossy.member.auth.in.dto.LoginResponse;
-import com.mossy.member.app.seller.SellerRequestAdminFacade;
+import com.mossy.boundedContext.app.seller.SellerRequestAdminFacade;
+import com.mossy.boundedContext.in.dto.response.SellerApproveResponse;
 import com.mossy.global.rsData.RsData;
-import com.mossy.shared.member.dto.request.SellerApproveResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

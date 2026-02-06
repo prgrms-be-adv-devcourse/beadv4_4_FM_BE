@@ -1,12 +1,13 @@
-package com.mossy.java.auth.app;
+package com.mossy.boundedContext.app;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.in.dto.LoginRequest;
+import com.mossy.boundedContext.in.dto.LoginResponse;
+import com.mossy.boundedContext.in.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.mossy.java.auth.in.dto.LoginRequest;
-import com.mossy.java.auth.in.dto.LoginResponse;
-import com.mossy.java.auth.in.dto.TokenResponse;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

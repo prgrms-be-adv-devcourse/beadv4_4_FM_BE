@@ -45,6 +45,9 @@ dependencies {
 
     // 테스트 (공통)
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    //security 공통
+    api ("org.springframework.boot:spring-boot-starter-security")
 }
 
 tasks.withType<Test> {

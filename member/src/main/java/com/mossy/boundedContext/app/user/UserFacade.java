@@ -1,16 +1,17 @@
-package com.mossy.member.app.user;
+package com.mossy.boundedContext.app.user;
 
+import com.mossy.boundedContext.app.VerfyMemberUseCase;
+import com.mossy.boundedContext.domain.user.User;
+import com.mossy.boundedContext.in.dto.request.SignupRequest;
+import com.mossy.boundedContext.out.user.UserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.shared.member.dto.event.UserPayload;
-import com.mossy.shared.member.dto.event.UserDtoMapper;
-import com.mossy.shared.member.dto.request.SignupRequest;
-import com.mossy.member.out.user.UserRepository;
-
+import com.mossy.shared.auth.domain.response.MemberVerifyResponse;
 import com.mossy.shared.member.event.UserJoinedEvent;
+import com.mossy.boundedContext.in.dto.UserDtoMapper;
+import com.mossy.shared.member.payload.UserPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -20,18 +21,20 @@ public class UserFacade {
     private final UserRepository userRepository;
     private final SignupUseCase signupUseCase;
     private final EventPublisher eventPublisher;
+    private final VerfyMemberUseCase verfyMemberUseCase;
 
-    @Transactional
     public Long signup(SignupRequest req){
-        User user = signupUseCase.execute(req);
-        User saved = userRepository.save(user);
+        User savedUser = signupUseCase.execute(req);
 
-        UserPayload userPayload = UserDtoMapper.from(saved);
+        UserPayload userPayload = UserDtoMapper.from(savedUser);
         eventPublisher.publish(new UserJoinedEvent (userPayload));
-        log.info("UserJoinedEvent 발행 완료: userId ={}", user.getId());
 
-        return saved.getId();
-
-
+        return savedUser.getId();
     }
+
+    public MemberVerifyResponse verifyMember(String email, String password) {
+        return verfyMemberUseCase.execute(email, password);
+    }
+
+
 }

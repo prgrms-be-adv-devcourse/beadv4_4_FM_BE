@@ -1,7 +1,7 @@
-package com.mossy.java.auth.app;
+package com.mossy.boundedContext.app;
 
-import com.mossy.member.auth.in.dto.TokenResponse;
-import com.mossy.member.auth.infra.jwt.JwtProvider;
+import com.mossy.boundedContext.in.dto.TokenResponse;
+import com.mossy.boundedContext.infra.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

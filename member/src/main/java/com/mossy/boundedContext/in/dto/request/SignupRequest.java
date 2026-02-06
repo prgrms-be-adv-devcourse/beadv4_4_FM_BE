@@ -1,4 +1,4 @@
-package com.mossy.shared.member.dto.request;
+package com.mossy.boundedContext.in.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

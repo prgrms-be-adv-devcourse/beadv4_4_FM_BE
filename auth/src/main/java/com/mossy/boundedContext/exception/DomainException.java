@@ -1,4 +1,4 @@
-package com.mossy.global.exception;
+package com.mossy.boundedContext.exception;
 
 import lombok.Getter;
 

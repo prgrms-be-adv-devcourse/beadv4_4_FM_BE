@@ -1,8 +1,8 @@
-package com.mossy.member.domain.user;
+package com.mossy.boundedContext.domain.user;
 
 import com.mossy.shared.member.domain.enums.UserStatus;
 import com.mossy.shared.member.domain.role.RoleCode;
-import com.mossy.shared.member.domain.role.UserRole;
+import com.mossy.boundedContext.domain.role.UserRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
