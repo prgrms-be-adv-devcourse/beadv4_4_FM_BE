@@ -1,6 +1,6 @@
 package com.mossy.global.rsData;
 
-//import com.mossy.global.exception.ErrorCode;
+import com.mossy.global.exception.BaseErrorCode;
 import com.mossy.standard.resultType.ResultType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -30,14 +30,14 @@ public class RsData<T> implements ResultType {
         return success(msg, null);
     }
 
-//    //실패할 경우
-//    public static<T> RsData<T> fail(ErrorCode errorCode) {
-//        return new RsData<>(
-//                "F-" + errorCode.getStatus(),
-//                errorCode.getMsg(),
-//                null
-//        );
-//    }
+    //실패할 경우
+    public static<T> RsData<T> fail(BaseErrorCode errorCode) {
+        return new RsData<>(
+                "F-" + errorCode.getStatus(),
+                errorCode.getMsg(),
+                null
+        );
+    }
 
     public static <T> RsData<T> fail(String resultCode, String msg) {
         return new RsData<>(resultCode, msg, null);
