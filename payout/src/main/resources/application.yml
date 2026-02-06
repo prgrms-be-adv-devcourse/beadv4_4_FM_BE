@@ -16,11 +16,20 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:mossyProject123@}
     driver-class-name: org.postgresql.Driver
+#   #로컬환경
+#    datasource:
+#      url: jdbc:postgresql://${localhost}:${5432}/${mossy}
+#      username: ${postgres}
+#      password: ${mossyProject123@}
+#      driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: false
     properties:
       hibernate:
         default_batch_fetch_size: 100
+  batch:
+    job:
+      enabled: false
   cache:
     type: redis
 
