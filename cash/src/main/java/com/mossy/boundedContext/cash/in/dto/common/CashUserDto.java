@@ -1,24 +1,21 @@
-package com.mossy.shared.member.payload;
+package com.mossy.boundedContext.cash.in.dto.common;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
-import com.mossy.shared.member.domain.enums.UserStatus;
 import lombok.Builder;
 
 @Builder
-public record UserPayload(
+public record CashUserDto(
     Long id,
     String email,
     String name,
     String address,
     String nickname,
     String profileImage,
-    UserStatus status,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt,
+    String status,
     BigDecimal latitude,
-    BigDecimal longitude
+    BigDecimal longitude,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt
 ) {
-
 }

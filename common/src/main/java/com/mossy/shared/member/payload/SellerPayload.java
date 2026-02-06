@@ -1,4 +1,4 @@
-package com.mossy.shared.member.dto.event;
+package com.mossy.shared.member.payload;
 
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;
