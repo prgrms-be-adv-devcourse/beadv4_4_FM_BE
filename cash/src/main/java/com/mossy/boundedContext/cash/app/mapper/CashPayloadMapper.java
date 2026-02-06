@@ -1,0 +1,139 @@
+package com.mossy.boundedContext.cash.app.mapper;
+
+import com.mossy.boundedContext.cash.domain.seller.CashSeller;
+import com.mossy.boundedContext.cash.domain.seller.SellerWallet;
+import com.mossy.boundedContext.cash.domain.user.CashUser;
+import com.mossy.boundedContext.cash.domain.user.UserWallet;
+import com.mossy.boundedContext.cash.in.dto.common.CashSellerDto;
+import com.mossy.boundedContext.cash.in.dto.common.CashUserDto;
+import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
+import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
+import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
+import com.mossy.shared.cash.enums.UserEventType;
+import com.mossy.shared.market.event.OrderCashPrePaymentEvent;
+import com.mossy.shared.member.payload.SellerPayload;
+import com.mossy.shared.member.payload.UserPayload;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CashPayloadMapper {
+
+    public CashUser toEntity(UserPayload payload) {
+        return CashUser.builder()
+            .id(payload.id())
+            .email(payload.email())
+            .name(payload.name())
+            .address(payload.address())
+            .nickname(payload.nickname())
+            .profileImage(payload.profileImage())
+            .status(payload.status())
+            .latitude(payload.latitude())
+            .longitude(payload.longitude())
+            .createdAt(payload.createdAt())
+            .updatedAt(payload.updatedAt())
+            .build();
+    }
+
+    public CashSeller toEntity(SellerPayload payload) {
+        return CashSeller.builder()
+            .id(payload.sellerId())
+            .userId(payload.userId())
+            .sellerType(payload.sellerType())
+            .storeName(payload.storeName())
+            .businessNum(payload.businessNum())
+            .latitude(payload.latitude())
+            .longitude(payload.longitude())
+            .status(payload.status())
+            .createdAt(payload.createdAt())
+            .updatedAt(payload.updatedAt())
+            .build();
+    }
+
+    public UserPayload toPayload(CashUser user) {
+        return UserPayload.builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .name(user.getName())
+            .address(user.getAddress())
+            .nickname(user.getNickname())
+            .profileImage(user.getProfileImage())
+            .status(user.getStatus())
+            .latitude(user.getLatitude())
+            .longitude(user.getLongitude())
+            .createdAt(user.getCreatedAt())
+            .updatedAt(user.getUpdatedAt())
+            .build();
+    }
+
+    public SellerPayload toPayload(CashSeller seller) {
+        return SellerPayload.builder()
+            .sellerId(seller.getId())
+            .userId(seller.getUserId())
+            .sellerType(seller.getSellerType())
+            .storeName(seller.getStoreName())
+            .businessNum(seller.getBusinessNum())
+            .latitude(seller.getLatitude())
+            .longitude(seller.getLongitude())
+            .status(seller.getStatus())
+            .createdAt(seller.getCreatedAt())
+            .updatedAt(seller.getUpdatedAt())
+            .build();
+    }
+
+    public CashUserDto toDto(CashUser user) {
+        return CashUserDto.builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .name(user.getName())
+            .address(user.getAddress())
+            .nickname(user.getNickname())
+            .profileImage(user.getProfileImage())
+            .status(user.getStatus().name())
+            .latitude(user.getLatitude())
+            .longitude(user.getLongitude())
+            .createdAt(user.getCreatedAt())
+            .updatedAt(user.getUpdatedAt())
+            .build();
+    }
+
+    public CashSellerDto toDto(CashSeller seller) {
+        return CashSellerDto.builder()
+            .sellerId(seller.getId())
+            .userId(seller.getUserId())
+            .sellerType(seller.getSellerType())
+            .storeName(seller.getStoreName())
+            .businessNum(seller.getBusinessNum())
+            .latitude(seller.getLatitude())
+            .longitude(seller.getLongitude())
+            .status(seller.getStatus())
+            .createdAt(seller.getCreatedAt())
+            .updatedAt(seller.getUpdatedAt())
+            .build();
+    }
+
+    public UserWalletResponseDto toResponseDto(UserWallet wallet) {
+        return UserWalletResponseDto.builder()
+            .walletId(wallet.getId())
+            .balance(wallet.getBalance())
+            .user(toDto(wallet.getUser()))
+            .build();
+    }
+
+    public SellerWalletResponseDto toResponseDto(SellerWallet wallet) {
+        return SellerWalletResponseDto.builder()
+            .walletId(wallet.getId())
+            .balance(wallet.getBalance())
+            .seller(toDto(wallet.getSeller()))
+            .build();
+    }
+
+    public UserBalanceRequestDto toUserBalanceRequestDto(OrderCashPrePaymentEvent event) {
+        return UserBalanceRequestDto.builder()
+            .userId(event.buyerId())
+            .amount(event.amount())
+            .eventType(UserEventType.사용__주문결제)
+            .relTypeCode("ORDER")
+            .relId(event.orderId())
+            .build();
+    }
+}

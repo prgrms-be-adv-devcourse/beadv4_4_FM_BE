@@ -1,11 +1,12 @@
-package com.mossy.member.app.usecase.sync;
+package com.mossy.boundedContext.cash.app.usecase.seller;
 
-import com.mossy.member.domain.seller.CashSeller;
-import com.mossy.member.out.seller.CashSellerRepository;
-import com.mossy.member.out.seller.SellerWalletRepository;
+import com.mossy.boundedContext.cash.app.mapper.CashPayloadMapper;
+import com.mossy.boundedContext.cash.domain.seller.CashSeller;
+import com.mossy.boundedContext.cash.out.seller.CashSellerRepository;
+import com.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.cash.event.CashSellerCreatedEvent;
-import com.mossy.shared.member.dto.event.SellerPayload;
+import com.mossy.shared.member.payload.SellerPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +17,16 @@ public class CashSyncSellerUseCase {
     private final CashSellerRepository cashSellerRepository;
     private final SellerWalletRepository sellerWalletRepository;
     private final EventPublisher eventPublisher;
+    private final CashPayloadMapper mapper;
 
     public CashSeller syncSeller(SellerPayload seller) {
-        // 1. CashSeller from 메서드를 사용하여 엔티티 생성 및 저장
-        CashSeller cashSeller = cashSellerRepository.save(CashSeller.from(seller));
+        CashSeller cashSeller = cashSellerRepository.save(mapper.toEntity(seller));
 
-        // 2. 해당 판매자의 지갑이 없는 경우에만 지갑 생성 이벤트 발행
         if (!sellerWalletRepository.existsBySellerId(cashSeller.getId())) {
             eventPublisher.publish(
-                new CashSellerCreatedEvent(cashSeller.toDto())
+                new CashSellerCreatedEvent(mapper.toPayload(cashSeller))
             );
         }
-
         return cashSeller;
     }
 }
