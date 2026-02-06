@@ -1,6 +1,6 @@
-package com.mossy.member.out.payout;
+package com.mossy.boundedContext.payout.out;
 
-import com.mossy.member.payout.domain.payout.PayoutSeller;
+import com.mossy.boundedContext.payout.domain.PayoutSeller;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DonationFacade {
 
     private final DonationCreateLogUseCase donationCreateLogUseCase;
-    private final com.mossy.member.app.donation.DonationSettleUseCase donationSettleUseCase;
+    private final DonationSettleUseCase donationSettleUseCase;
 
     /**
      * [1단계: 기부 로그 생성]

@@ -1,9 +1,8 @@
-package com.mossy.member.in.payout;
+package com.mossy.boundedContext.payout.in;
 
-import com.mossy.member.payout.app.donation.DonationFacade;
-import com.mossy.member.payout.app.payout.PayoutFacade;
+import com.mossy.boundedContext.donation.app.DonationFacade;
+import com.mossy.boundedContext.payout.app.PayoutFacade;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
-import com.mossy.shared.market.out.MarketApiClient;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;

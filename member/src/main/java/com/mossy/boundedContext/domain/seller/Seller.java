@@ -1,4 +1,4 @@
-package com.mossy.member.domain.seller;
+package com.mossy.boundedContext.domain.seller;
 
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;
@@ -26,7 +26,7 @@ import java.math.BigDecimal;
                         columnNames = {"business_num"})
         }
 )
-public class Seller extends SourceSeller {
+public class Seller extends com.mossy.member.domain.seller.SourceSeller {
 
         @Column(name = "representative_name", nullable = false, length = 100)
         private String representativeName;
@@ -71,7 +71,7 @@ public class Seller extends SourceSeller {
                 this.address2 = address2;
         }
 
-        public static Seller createFromRequest(SellerRequest req) {
+        public static Seller createFromRequest(com.mossy.member.domain.seller.SellerRequest req) {
                 return new Seller(
                         req.getUserId(),
                         req.getSellerType(),

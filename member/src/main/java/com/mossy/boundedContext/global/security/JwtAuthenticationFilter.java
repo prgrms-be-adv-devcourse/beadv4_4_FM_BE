@@ -1,4 +1,4 @@
-package com.mossy.member.global.security;
+package com.mossy.boundedContext.global.security;
 
 import com.mossy.global.exception.DomainException;
 import com.mossy.global.exception.ErrorCode;
@@ -30,7 +30,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
-    private final UserDetailsServiceImpl userDetailsService;
+    private final com.mossy.member.global.security.UserDetailsServiceImpl userDetailsService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Override
@@ -57,8 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // JwtProvider의 기능을 활용하여 한 줄로 정리
             Long sellerId = jwtProvider.getSellerId(claims);
 
-            UserDetailsImpl base = userDetailsService.loadUserById(userId);
-            UserDetailsImpl principal = new UserDetailsImpl(base.getUser(), sellerId);
+            com.mossy.member.global.security.UserDetailsImpl base = userDetailsService.loadUserById(userId);
+            com.mossy.member.global.security.UserDetailsImpl principal = new com.mossy.member.global.security.UserDetailsImpl(base.getUser(), sellerId);
 
             if (!principal.isEnabled()) {
                 throw new DomainException(ErrorCode.ACCOUNT_DISABLED);

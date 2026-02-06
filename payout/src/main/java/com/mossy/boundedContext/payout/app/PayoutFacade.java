@@ -1,7 +1,8 @@
-package com.mossy.member.app.payout;
+package com.mossy.boundedContext.payout.app;
 
 import com.mossy.shared.market.dto.event.OrderPayoutDto;
 import com.mossy.shared.payout.dto.response.payout.PayoutCandidateItemResponse;
+
 import com.mossy.global.rsData.RsData;
 import com.mossy.shared.member.dto.event.SellerPayload;
 import com.mossy.shared.member.dto.event.UserPayload;

@@ -1,5 +1,6 @@
-package com.mossy.member.app.user;
+package com.mossy.boundedContext.app.user;
 
+import com.mossy.boundedContext.domain.user.User;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.member.dto.event.UserPayload;
 import com.mossy.shared.member.dto.event.UserDtoMapper;

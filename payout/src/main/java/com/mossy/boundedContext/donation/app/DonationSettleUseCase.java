@@ -1,14 +1,16 @@
 package com.mossy.boundedContext.donation.app;
 
-import com.mossy.member.payout.app.payout.PayoutSupport;
-import com.mossy.member.domain.donation.DonationLog;
-import com.mossy.member.domain.payout.Payout;
-import com.mossy.member.domain.payout.PayoutItem;
-import com.mossy.member.domain.payout.PayoutSeller;
-import com.mossy.member.out.donation.DonationLogRepository;
-import com.mossy.member.out.payout.PayoutRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+
+import com.mossy.boundedContext.donation.domain.DonationLog;
+import com.mossy.boundedContext.donation.out.DonationLogRepository;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.payout.app.PayoutSupport;
+import com.mossy.boundedContext.payout.domain.Payout;
+import com.mossy.boundedContext.payout.domain.PayoutItem;
+import com.mossy.boundedContext.payout.domain.PayoutSeller;
+import com.mossy.boundedContext.payout.out.PayoutRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

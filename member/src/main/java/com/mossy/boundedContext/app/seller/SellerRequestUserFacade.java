@@ -1,11 +1,14 @@
-package com.mossy.member.app.seller;
+package com.mossy.boundedContext.app.seller;
 
-import com.mossy.member.domain.user.User;
+
+import com.mossy.boundedContext.domain.seller.SellerRequest;
+import com.mossy.boundedContext.domain.user.User;
+import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.member.out.seller.SellerRequestRepository;
 import com.mossy.member.out.user.UserRepository;
-import com.mossy.global.exception.DomainException;
+
 import com.mossy.global.exception.ErrorCode;
-import com.mossy.member.domain.seller.SellerRequest;
+
 import com.mossy.shared.member.domain.enums.SellerType;
 import com.mossy.shared.member.dto.request.SellerRequestCreateRequest;
 import jakarta.transaction.Transactional;

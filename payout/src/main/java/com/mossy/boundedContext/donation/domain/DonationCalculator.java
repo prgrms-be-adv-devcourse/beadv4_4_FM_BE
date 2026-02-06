@@ -18,7 +18,7 @@ import java.math.RoundingMode;
 public class DonationCalculator {
 
     private final CarbonCalculator carbonCalculator;
-    private final com.mossy.member.domain.donation.FeeCalculator feeCalculator;
+    private final FeeCalculator feeCalculator;
 
     // 최대 기부금 비율 (수수료의 50%)
     private static BigDecimal MAX_DONATION_RATE;

@@ -1,8 +1,9 @@
 package com.mossy.boundedContext.donation.domain;
 
-import com.mossy.member.payout.domain.payout.PayoutUser;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.payout.domain.PayoutUser;
+
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

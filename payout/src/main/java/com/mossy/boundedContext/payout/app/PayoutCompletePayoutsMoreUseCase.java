@@ -1,9 +1,11 @@
-package com.mossy.member.payout.app.payout;
+package com.mossy.boundedContext.payout.app;
 
-import com.mossy.member.payout.domain.payout.Payout;
-import com.mossy.member.payout.out.payout.PayoutRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+
+import com.mossy.boundedContext.payout.domain.Payout;
+
+import com.mossy.boundedContext.payout.out.PayoutRepository;
 import com.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

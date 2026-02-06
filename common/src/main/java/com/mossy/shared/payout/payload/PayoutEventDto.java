@@ -1,4 +1,4 @@
-package com.mossy.shared.payout.dto.event.payout;
+package com.mossy.shared.payout.payload;
 
 import lombok.Builder;
 

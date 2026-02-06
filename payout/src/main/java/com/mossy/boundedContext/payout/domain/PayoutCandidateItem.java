@@ -1,11 +1,11 @@
-package com.mossy.member.domain.payout;
+package com.mossy.boundedContext.payout.domain;
 
-import com.mossy.member.payout.app.payout.PayoutAddPayoutCandidateItemsUseCase;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.shared.payout.dto.event.payout.CreatePayoutCandidateItemDto;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.payout.app.PayoutAddPayoutCandidateItemsUseCase;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.payout.payload.CreatePayoutCandidateItemDto;
 import jakarta.persistence.*;
 import lombok.*;
 

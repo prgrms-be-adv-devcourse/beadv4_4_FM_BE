@@ -1,9 +1,10 @@
-package com.mossy.boundedContext.out.payout;
+package com.mossy.boundedContext.payout.out;
 
-import com.mossy.member.payout.app.payout.PayoutCompletePayoutsMoreUseCase;
-import com.mossy.member.payout.app.payout.PayoutCreatePayoutUseCase;
-import com.mossy.member.payout.domain.payout.Payout;
-import com.mossy.member.payout.domain.payout.PayoutSeller;
+
+import com.mossy.boundedContext.payout.app.PayoutCompletePayoutsMoreUseCase;
+import com.mossy.boundedContext.payout.app.PayoutCreatePayoutUseCase;
+import com.mossy.boundedContext.payout.domain.Payout;
+import com.mossy.boundedContext.payout.domain.PayoutSeller;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 

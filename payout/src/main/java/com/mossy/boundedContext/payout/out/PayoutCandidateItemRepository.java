@@ -1,7 +1,7 @@
-package com.mossy.boundedContext.out.payout;
+package com.mossy.boundedContext.payout.out;
 
-import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
-import com.mossy.member.payout.domain.payout.PayoutItem;
+import com.mossy.boundedContext.payout.domain.PayoutCandidateItem;
+import com.mossy.boundedContext.payout.domain.PayoutItem;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 

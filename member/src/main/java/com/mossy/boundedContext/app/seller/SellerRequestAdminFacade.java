@@ -1,14 +1,18 @@
-package com.mossy.member.app.seller;
+package com.mossy.boundedContext.app.seller;
 
-import com.mossy.member.domain.seller.Seller;
+
+import com.mossy.boundedContext.domain.seller.Seller;
+import com.mossy.boundedContext.domain.seller.SellerRequest;
+import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.member.out.seller.SellerRepository;
 import com.mossy.member.out.user.RoleRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.global.exception.DomainException;
+
 import com.mossy.global.exception.ErrorCode;
+import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
-import com.mossy.member.domain.seller.SellerRequest;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

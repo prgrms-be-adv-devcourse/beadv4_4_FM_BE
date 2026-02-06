@@ -1,7 +1,7 @@
-package com.mossy.member.domain.payout;
+package com.mossy.boundedContext.payout.domain;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.payout.enums.PayoutEventType;
 import jakarta.persistence.*;
@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
 
 import static jakarta.persistence.FetchType.LAZY;
 

@@ -1,11 +1,11 @@
-package com.mossy.member.payout.app.payout;
+package com.mossy.boundedContext.payout.app;
 
-import com.mossy.member.payout.domain.payout.PayoutSeller;
-import com.mossy.member.payout.out.payout.PayoutSellerRepository;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.payout.domain.PayoutSeller;
+import com.mossy.boundedContext.payout.out.PayoutSellerRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.member.dto.event.SellerPayload;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
 import com.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

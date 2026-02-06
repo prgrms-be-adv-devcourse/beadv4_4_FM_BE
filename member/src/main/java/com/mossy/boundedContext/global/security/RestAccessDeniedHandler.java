@@ -1,4 +1,4 @@
-package com.mossy.member.global.security;
+package com.mossy.boundedContext.global.security;
 
 import com.mossy.global.rsData.RsData;
 import jakarta.servlet.http.HttpServletRequest;

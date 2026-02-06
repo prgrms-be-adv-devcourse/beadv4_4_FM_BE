@@ -1,4 +1,4 @@
-package com.mossy.member.global.config;
+package com.mossy.boundedContext.global.config;
 
 import com.mossy.member.global.security.JwtAuthenticationFilter;
 import com.mossy.member.global.security.RestAccessDeniedHandler;

@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.donation.domain;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.shared.market.dto.event.OrderPayoutDto;
 import com.mossy.shared.payout.enums.CarbonGrade;
 import lombok.RequiredArgsConstructor;

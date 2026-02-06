@@ -1,17 +1,16 @@
-package com.mossy.member.payout.app.payout;
+package com.mossy.boundedContext.payout.app;
 
-import com.mossy.member.payout.domain.payout.PayoutUser;
-import com.mossy.member.payout.domain.donation.DonationCalculator;
-import com.mossy.member.payout.domain.donation.FeeCalculator;
-import com.mossy.member.payout.domain.payout.PayoutCandidateItem;
-import com.mossy.member.payout.domain.payout.PayoutSeller;
-
+import com.mossy.boundedContext.donation.domain.DonationCalculator;
+import com.mossy.boundedContext.donation.domain.FeeCalculator;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.payout.domain.PayoutCandidateItem;
+import com.mossy.boundedContext.payout.domain.PayoutSeller;
+import com.mossy.boundedContext.payout.domain.PayoutUser;
+import com.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
 import com.mossy.shared.market.dto.event.OrderPayoutDto;
-import com.mossy.shared.payout.dto.event.payout.CreatePayoutCandidateItemDto;
-import com.mossy.member.payout.out.payout.PayoutCandidateItemRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-
+import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.payout.payload.CreatePayoutCandidateItemDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
 
     /**
      * 단일 주문 아이템(OrderItem)에 대해 정산 후보 항목을 생성
-     * @param OrderPayoutDto 주문 아이템 DTO
+     * @param orderItem 주문 아이템 DTO
      * @param paymentDate 결제 완료 일시
      */
     @Transactional

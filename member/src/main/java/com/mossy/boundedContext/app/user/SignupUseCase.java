@@ -1,8 +1,8 @@
-package com.mossy.member.app.user;
+package com.mossy.boundedContext.app.user;
 
+import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.member.out.user.RoleRepository;
 import com.mossy.member.out.user.UserRepository;
-import com.mossy.global.exception.DomainException;
 import com.mossy.global.exception.ErrorCode;
 import com.mossy.shared.member.domain.enums.UserStatus;
 import com.mossy.shared.member.domain.role.Role;
