@@ -23,28 +23,38 @@ public class CashSeller extends ReplicaSeller {
 
     @Builder
     public CashSeller(
-            Long id,
-            Long userId,
-            SellerType sellerType,
-            String storeName,
-            String businessNum,
-            BigDecimal latitude,
-            BigDecimal longitude,
-            SellerStatus status,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt
+        Long id,
+        Long userId,
+        SellerType sellerType,
+        String storeName,
+        String businessNum,
+        BigDecimal latitude,
+        BigDecimal longitude,
+        SellerStatus status,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
     ) {
         super(
-                id,
-                userId,
-                sellerType,
-                storeName,
-                businessNum,
-                latitude,
-                longitude,
-                status,
-                createdAt,
-                updatedAt
+            id,
+            userId,
+            sellerType,
+            storeName,
+            businessNum,
+            latitude,
+            longitude,
+            status,
+            createdAt,
+            updatedAt
         );
+    }
+
+    public void update(SellerType sellerType, String storeName, String businessNum,
+        BigDecimal latitude, BigDecimal longitude, SellerStatus status) {
+        this.sellerType = sellerType;
+        this.storeName = storeName;
+        this.businessNum = businessNum;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.status = status;
     }
 }

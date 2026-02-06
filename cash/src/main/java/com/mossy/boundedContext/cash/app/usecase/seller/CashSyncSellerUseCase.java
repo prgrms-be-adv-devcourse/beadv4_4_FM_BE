@@ -4,29 +4,39 @@ import com.mossy.boundedContext.cash.app.mapper.CashMapper;
 import com.mossy.boundedContext.cash.domain.seller.CashSeller;
 import com.mossy.boundedContext.cash.in.dto.common.CashSellerDto;
 import com.mossy.boundedContext.cash.out.seller.CashSellerRepository;
-import com.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.cash.event.CashSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class CashSyncSellerUseCase {
 
     private final CashSellerRepository cashSellerRepository;
-    private final SellerWalletRepository sellerWalletRepository;
     private final EventPublisher eventPublisher;
     private final CashMapper mapper;
 
-    public CashSeller syncSeller(CashSellerDto seller) {
-        CashSeller cashSeller = cashSellerRepository.save(mapper.toEntity(seller));
+    @Transactional
+    public void syncSeller(CashSellerDto seller) {
+        cashSellerRepository.findById(seller.sellerId())
+            .ifPresentOrElse(
+                existingSeller -> existingSeller.update(
+                    seller.sellerType(),
+                    seller.storeName(),
+                    seller.businessNum(),
+                    seller.latitude(),
+                    seller.longitude(),
+                    seller.status()
+                ),
 
-        if (!sellerWalletRepository.existsBySellerId(cashSeller.getId())) {
-            eventPublisher.publish(
-                new CashSellerCreatedEvent(mapper.toPayload(cashSeller))
+                () -> {
+                    CashSeller newSeller = cashSellerRepository.save(mapper.toEntity(seller));
+                    eventPublisher.publish(
+                        new CashSellerCreatedEvent(mapper.toPayload(newSeller))
+                    );
+                }
             );
-        }
-        return cashSeller;
     }
 }

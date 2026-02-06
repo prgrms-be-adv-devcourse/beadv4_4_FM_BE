@@ -37,4 +37,16 @@ public class CashUser extends ReplicaUser {
         super(id, email, name, address, nickname, profileImage,
             createdAt, updatedAt, status, longitude, latitude);
     }
+
+    public void update(String name, String email, String address, String nickname,
+        String profileImage, UserStatus status, BigDecimal latitude, BigDecimal longitude) {
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.status = status;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }
