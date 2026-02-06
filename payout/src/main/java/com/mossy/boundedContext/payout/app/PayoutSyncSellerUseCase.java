@@ -24,7 +24,8 @@ public class PayoutSyncSellerUseCase {
 
     /**
      * Member 컨텍스트로부터 받은 SellerDto를 사용하여 PayoutSeller 엔티티를 생성하거나 업데이트
-     * 이를 통해 Payout 컨텍스트는 정산에 필요한 판매자 정보를 자체적으로 갖게 됨
+     * 기존 엔티티가 있으면 changeSeller로 업데이트하고, 없으면 새로 생성
+     * JPA 더티 체킹을 통해 실제 변경된 필드만 DB에 반영됨
      *
      * @param seller Member 컨텍스트에서 전달된 판매자 정보 DTO
      */
@@ -33,34 +34,30 @@ public class PayoutSyncSellerUseCase {
         if (seller == null || seller.sellerId() == null) {
             throw new DomainException(ErrorCode.INVALID_SELLER_DATA);
         }
-        // PayoutSeller가 새로 생성되는 경우인지 확인
-        boolean isNew = !payoutSellerRepository.existsById(seller.sellerId());
 
-        // SellerDto의 정보로 PayoutSeller 엔티티를 생성하거나 업데이트(save)
-        PayoutSeller _seller = payoutSellerRepository.save(
-                PayoutSeller.builder()
-                        .id(seller.sellerId())
-                        .createdAt(seller.createdAt())
-                        .updatedAt(seller.updatedAt())
-                        .userId(seller.userId())
-                        .sellerType(seller.sellerType())
-                        .storeName(seller.storeName())
-                        .businessNum(seller.businessNum())
-                        .status(seller.status())
-                        .latitude(seller.latitude())
-                        .longitude((seller.longitude()))
-                        .build()
-        );
+        payoutSellerRepository.findById(seller.sellerId())
+                .ifPresentOrElse(
+                        // 기존 판매자: changeSeller로 업데이트 (더티 체킹으로 변경된 필드만 UPDATE)
+                        existingSeller -> existingSeller.changeSeller(seller),
+                        // 새 판매자: 엔티티 생성 및 이벤트 발행
+                        () -> {
+                            PayoutSeller newSeller = PayoutSeller.builder()
+                                    .id(seller.sellerId())
+                                    .userId(seller.userId())
+                                    .sellerType(seller.sellerType())
+                                    .storeName(seller.storeName())
+                                    .businessNum(seller.businessNum())
+                                    .latitude(seller.latitude())
+                                    .longitude(seller.longitude())
+                                    .status(seller.status())
+                                    .createdAt(seller.createdAt())
+                                    .updatedAt(seller.updatedAt())
+                                    .build();
 
-        // 만약 새로운 판매자인 경우, PayoutSellerCreatedEvent를 발행하여
-        // 다른 모듈(예: Cash)이 후속 작업을 수행할 수 있도록 한다
-        if (isNew) {
-            eventPublisher.publish(
-                    new PayoutSellerCreatedEvent(
-                            _seller.toDto()
-                    )
-            );
-        }
+                            PayoutSeller saved = payoutSellerRepository.save(newSeller);
+                            eventPublisher.publish(new PayoutSellerCreatedEvent(saved.toDto()));
+                        }
+                );
     }
 }
 

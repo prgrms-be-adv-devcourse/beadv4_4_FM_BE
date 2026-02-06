@@ -66,6 +66,18 @@ public class PayoutSeller extends ReplicaSeller {
     }
 
     /**
+     * Member 컨텍스트로부터 받은 판매자 정보로 현재 엔티티를 동기화
+     * ReplicaSeller의 changeSeller를 public으로 오버라이딩
+     * JPA 더티 체킹을 통해 실제 변경된 필드만 DB에 반영됨
+     *
+     * @param seller Member 컨텍스트에서 전달된 판매자 정보 DTO
+     */
+    @Override
+    public void changeSeller(SellerPayload seller) {
+        super.changeSeller(seller);
+    }
+
+    /**
      * 현재 PayoutSeller 엔티티의 핵심 정보를 담은 DTO로 변환하여 반환
      * 주로 이벤트 발행 시 이벤트 데이터로 활용되거나 다른 서비스에 정보를 전달할 때 사용
      * @return PayoutSeller의 정보를 담은 SellerDto
