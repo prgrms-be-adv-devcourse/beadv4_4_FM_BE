@@ -8,6 +8,7 @@ import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class UpdateCartItemQuantityUseCase {
     private final CartRepository cartRepository;
     private final MarketPolicy marketPolicy;
 
+    @Transactional
     public void updateItemQuantity(Long userId, CartItemUpdateRequest request) {
         Cart cart = cartRepository.findByBuyerId(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.CART_NOT_FOUND));

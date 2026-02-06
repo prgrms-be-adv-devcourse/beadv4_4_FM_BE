@@ -9,6 +9,7 @@ import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
 import com.mossy.boundedContext.product.out.ProductApiClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class AddCartItemUseCase {
     private final CartRepository cartRepository;
     private final ProductApiClient productApiClient;
 
+    @Transactional
     public void addItem(Long userId, CartItemAddRequest request) {
         if (!productApiClient.exists(request.productId())) {
             throw new DomainException(ErrorCode.PRODUCT_NOT_FOUND);
