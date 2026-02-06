@@ -14,6 +14,7 @@ import com.mossy.standard.ut.EncryptionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class SignupUseCase {
     private final PasswordEncoder passwordEncoder;
     private final EncryptionUtils encryptionUtils;
 
+    @Transactional
     public User execute(SignupRequest req) {
 
         if (userRepository.existsByEmail(req.email())) {
@@ -52,6 +54,6 @@ public class SignupUseCase {
 
         user.addUserRole(new UserRole(user, roleUser));
 
-        return user;
+        return userRepository.save(user);
     }
 }
