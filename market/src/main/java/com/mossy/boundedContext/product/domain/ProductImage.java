@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.product;
+package com.mossy.boundedContext.product.domain;
 
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;

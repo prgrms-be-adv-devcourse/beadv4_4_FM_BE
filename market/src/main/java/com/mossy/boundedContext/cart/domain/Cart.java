@@ -1,9 +1,9 @@
-package com.mossy.boundedContext.domain.cart;
+package com.mossy.boundedContext.cart.domain;
 
-import com.mossy.boundedContext.domain.market.MarketUser;
-import com.mossy.boundedContext.domain.market.MarketPolicy;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
+import com.mossy.boundedContext.marketUser.domain.MarketUser;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

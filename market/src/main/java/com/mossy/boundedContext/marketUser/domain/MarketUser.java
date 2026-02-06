@@ -1,8 +1,8 @@
-package com.mossy.boundedContext.domain.market;
+package com.mossy.boundedContext.marketUser.domain;
 
 import com.mossy.shared.market.dto.event.MarketUserDto;
 import com.mossy.shared.member.domain.enums.UserStatus;
-import com.mossy.shared.member.dto.event.UserPayload;
+import com.mossy.shared.member.payload.UserPayload;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,5 +69,9 @@ public class MarketUser extends ReplicaUser {
                 .createdAt(getCreatedAt())
                 .updatedAt(getUpdatedAt())
                 .build();
+    }
+
+    public void updateUser(UserPayload user) {
+        super.changeUser(user);
     }
 }

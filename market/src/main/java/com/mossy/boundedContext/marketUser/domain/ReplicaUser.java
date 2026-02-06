@@ -1,6 +1,8 @@
-package com.mossy.boundedContext.domain.market;
+package com.mossy.boundedContext.marketUser.domain;
+
 import com.mossy.shared.member.domain.entity.BaseUser;
 import com.mossy.shared.member.domain.enums.UserStatus;
+import com.mossy.shared.member.payload.UserPayload;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -40,5 +42,17 @@ public abstract class ReplicaUser extends BaseUser {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    protected void changeUser(UserPayload payload) {
+        this.email = payload.email();
+        this.name = payload.name();
+        this.address = payload.address();
+        this.nickname = payload.nickname();
+        this.profileImage = payload.profileImage();
+        this.status = payload.status();
+        this.longitude = payload.longitude();
+        this.latitude = payload.latitude();
+        this.updatedAt = payload.updatedAt();
     }
 }

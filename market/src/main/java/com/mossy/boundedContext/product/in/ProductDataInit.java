@@ -1,9 +1,9 @@
-package com.mossy.boundedContext.in.product;
+package com.mossy.boundedContext.product.in;
 
-import com.mossy.boundedContext.domain.product.Product;
-import com.mossy.boundedContext.domain.product.ProductDocument;
-import com.mossy.boundedContext.out.product.ProductElasticRepository;
-import com.mossy.boundedContext.out.product.ProductRepository;
+import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.domain.ProductDocument;
+import com.mossy.boundedContext.product.out.ProductElasticRepository;
+import com.mossy.boundedContext.product.out.ProductRepository;
 import com.mossy.shared.market.enums.ProductStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

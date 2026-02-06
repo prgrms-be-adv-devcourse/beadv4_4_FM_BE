@@ -1,8 +1,8 @@
-package com.mossy.boundedContext.app.product;
+package com.mossy.boundedContext.product.app;
 
-import com.mossy.boundedContext.domain.product.Product;
-import com.mossy.shared.market.dto.request.ProductStatusUpdateRequest;
-import com.mossy.shared.market.dto.request.ProductUpdateRequest;
+import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.in.dto.request.ProductStatusUpdateRequest;
+import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

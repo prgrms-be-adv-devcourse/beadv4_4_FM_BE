@@ -1,6 +1,6 @@
-package com.mossy.boundedContext.out.product;
+package com.mossy.boundedContext.product.out;
 
-import com.mossy.boundedContext.domain.product.Category;
+import com.mossy.boundedContext.product.domain.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category, Long>  {

@@ -1,12 +1,11 @@
-package com.mossy.boundedContext.domain.product;
+package com.mossy.boundedContext.product.domain;
 
-import com.mossy.boundedContext.domain.market.MarketSeller;
+import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.market.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.security.access.AccessDeniedException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -109,7 +108,7 @@ public class Product extends BaseIdAndTime {
     // 판매자 검증
     public void validateOwner(Long sellerId) {
         if (!this.seller.getId().equals(sellerId)) {
-            throw new AccessDeniedException("해당 상품에 대한 권한이 없습니다.");
+            //throw new AccessDeniedException("해당 상품에 대한 권한이 없습니다.");
         }
     }
 

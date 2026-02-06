@@ -1,12 +1,12 @@
 services:
   elasticsearch:
     build:
-      context: elasticsearch
-      dockerfile: ./elasticsearch/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     container_name: elasticsearch
     restart: always
     env_file:
-      - ../envs/.env.elasticsearch
+      - .env
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -28,11 +28,6 @@ services:
       retries: 5
     networks:
       - mossy-network
-
-networks:
-  mossy-network:
-    external: true
-    name: mossy-network
 
 volumes:
   es_data:

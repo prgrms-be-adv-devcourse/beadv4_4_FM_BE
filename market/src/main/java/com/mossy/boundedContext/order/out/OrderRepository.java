@@ -1,6 +1,7 @@
-package com.mossy.boundedContext.out.order;
+package com.mossy.boundedContext.order.out;
 
-import com.mossy.boundedContext.domain.order.Order;
+
+import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.shared.market.enums.OrderState;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

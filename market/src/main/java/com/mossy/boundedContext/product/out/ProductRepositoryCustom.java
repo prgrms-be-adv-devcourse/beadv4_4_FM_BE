@@ -1,6 +1,6 @@
-package com.mossy.boundedContext.out.product;
+package com.mossy.boundedContext.product.out;
 
-import com.mossy.shared.market.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.product.in.dto.response.ProductInfoResponse;
 
 import java.util.List;
 

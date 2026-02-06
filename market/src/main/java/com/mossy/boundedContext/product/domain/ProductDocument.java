@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.product;
+package com.mossy.boundedContext.product.domain;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -17,7 +17,6 @@ import java.time.ZoneOffset;
 @ToString
 @EqualsAndHashCode
 @Builder
-@Setting(settingPath = "elasticsearch/settings.json")
 public class ProductDocument {
 
     @Id
@@ -33,7 +32,7 @@ public class ProductDocument {
     @Field(type = FieldType.Keyword)
     private String categoryName;
 
-    @Field(type = FieldType.Text, analyzer = "mossy_nori_analyzer")
+    @Field(type = FieldType.Text)
     private String name;
 
     @Field(type = FieldType.Text)

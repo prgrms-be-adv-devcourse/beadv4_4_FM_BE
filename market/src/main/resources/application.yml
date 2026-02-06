@@ -5,7 +5,7 @@ spring:
   application:
     name: market
   config:
-    import: "optional:file:./../../envs/.env.market[.properties]"
+    import: "optional:file:./market/.env.market[.properties]"
   output:
     ansi:
       enabled: always

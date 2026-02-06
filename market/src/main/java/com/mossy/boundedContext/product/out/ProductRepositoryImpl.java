@@ -1,17 +1,17 @@
-package com.mossy.boundedContext.out.product;
+package com.mossy.boundedContext.product.out;
 
-import com.mossy.shared.market.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.product.in.dto.response.ProductInfoResponse;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.mossy.boundedContext.domain.cart.QCart.cart;
-import static com.mossy.boundedContext.domain.cart.QCartItem.cartItem;
-import static com.mossy.boundedContext.domain.product.QCategory.category;
-import static com.mossy.boundedContext.domain.product.QProduct.product;
-import static com.mossy.boundedContext.domain.product.QProductImage.productImage;
+import static com.mossy.boundedContext.cart.domain.QCart.cart;
+import static com.mossy.boundedContext.cart.domain.QCartItem.cartItem;
+import static com.mossy.boundedContext.product.domain.QCategory.category;
+import static com.mossy.boundedContext.product.domain.QProduct.product;
+import static com.mossy.boundedContext.product.domain.QProductImage.productImage;
 
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {

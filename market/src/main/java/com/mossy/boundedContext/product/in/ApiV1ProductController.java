@@ -1,9 +1,9 @@
-package com.mossy.boundedContext.in.product;
+package com.mossy.boundedContext.product.in;
 
-import com.mossy.boundedContext.app.product.ProductFacade;
+import com.mossy.boundedContext.product.app.ProductFacade;
+import com.mossy.boundedContext.product.in.dto.request.ProductStatusUpdateRequest;
+import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
 import com.mossy.global.rsData.RsData;
-import com.mossy.shared.market.dto.request.ProductStatusUpdateRequest;
-import com.mossy.shared.market.dto.request.ProductUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ApiV1ProductController {
     private final ProductFacade productFacade;
+
+    @GetMapping
+    public RsData<String> test() {
+        return new RsData<>("200", "hi");
+    }
 
 //    // 메인 화면 상품 리스트
 //    @Operation(

@@ -1,26 +1,24 @@
+include:
+  - ../compose-infra.yml
+  - ../elasticsearch/compose-es.yml
+
 services:
-  market-service:
+  market:
     build:
-      context: ../src/backend
-      dockerfile: market-service/Dockerfile
-    container_name: market-service
+      context: ..
+      dockerfile: market/Dockerfile
+    container_name: market
     restart: always
     ports:
       - "8081:8080"
     env_file:
-      - ../envs/.env.market
+      - .env.market
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     depends_on:
-      postgres:
+      elasticsearch:
         condition: service_healthy
       redis:
         condition: service_healthy
-      elasticsearch:
-      condition: service_healthy
     networks:
       - mossy-network
-
-networks:
-  mossy-network:
-    external: true

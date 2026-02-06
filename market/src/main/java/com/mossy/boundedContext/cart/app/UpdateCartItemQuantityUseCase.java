@@ -1,11 +1,11 @@
-package com.mossy.boundedContext.app.cart;
+package com.mossy.boundedContext.cart.app;
 
-import com.mossy.boundedContext.domain.cart.Cart;
-import com.mossy.boundedContext.domain.market.MarketPolicy;
-import com.mossy.boundedContext.out.cart.CartRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.shared.market.dto.request.CartItemUpdateRequest;
+import com.mossy.boundedContext.cart.domain.Cart;
+import com.mossy.boundedContext.cart.in.dto.request.CartItemUpdateRequest;
+import com.mossy.boundedContext.cart.out.CartRepository;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

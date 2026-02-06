@@ -1,8 +1,8 @@
-package com.mossy.boundedContext.app.product;
+package com.mossy.boundedContext.product.app;
 
-import com.mossy.boundedContext.domain.product.Product;
-import com.mossy.boundedContext.domain.product.event.ProductDeletedEvent;
-import com.mossy.boundedContext.out.product.ProductRepository;
+import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.domain.event.ProductDeletedEvent;
+import com.mossy.boundedContext.product.out.ProductRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

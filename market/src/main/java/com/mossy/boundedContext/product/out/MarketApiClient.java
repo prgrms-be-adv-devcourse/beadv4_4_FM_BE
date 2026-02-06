@@ -1,9 +1,9 @@
-package com.mossy.boundedContext.out.product;
+package com.mossy.boundedContext.product.out;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.boundedContext.out.order.OrderRepository;
-import com.mossy.shared.market.dto.event.OrderPayoutDto;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.order.out.OrderRepository;
+import com.mossy.shared.market.payload.OrderPayoutDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;

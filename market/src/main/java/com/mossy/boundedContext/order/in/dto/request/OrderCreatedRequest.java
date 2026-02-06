@@ -1,6 +1,6 @@
-package com.mossy.shared.market.dto.request;
+package com.mossy.boundedContext.order.in.dto.request;
 
-import com.mossy.shared.market.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.product.in.dto.response.ProductInfoResponse;
 import lombok.Builder;
 
 import java.math.BigDecimal;

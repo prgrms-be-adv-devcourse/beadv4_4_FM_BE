@@ -1,6 +1,6 @@
-package com.mossy.boundedContext.out.cart;
+package com.mossy.boundedContext.cart.out;
 
-import com.mossy.boundedContext.domain.cart.Cart;
+import com.mossy.boundedContext.cart.domain.Cart;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

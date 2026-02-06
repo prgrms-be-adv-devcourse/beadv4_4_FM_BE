@@ -1,4 +1,4 @@
-package com.mossy.shared.market.dto.response;
+package com.mossy.boundedContext.product.in.dto.response;
 
 import com.mossy.shared.market.enums.ProductStatus;
 

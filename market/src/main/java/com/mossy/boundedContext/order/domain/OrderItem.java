@@ -1,7 +1,8 @@
-package com.mossy.boundedContext.domain.order;
+package com.mossy.boundedContext.order.domain;
 
-import com.mossy.boundedContext.domain.market.MarketSeller;
+import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
+import com.mossy.shared.market.enums.OrderState;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @AttributeOverride(name = "id", column = @Column(name = "order_detail_id"))
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class OrderDetail extends BaseIdAndTime {
+public class OrderItem extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
@@ -25,39 +26,35 @@ public class OrderDetail extends BaseIdAndTime {
     @JoinColumn(name = "seller_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketSeller seller;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "weight_grade_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private WeightGrade weightGrade;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "delivery_distance_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private DeliveryDistance deliveryDistance;
-
     @Column(name = "product_id")
     private Long productId;
 
     private int quantity;
 
-    @Column(name = "order_price", precision = 10, scale = 2)
+    @Column(name = "order_price", precision = 18, scale = 2, nullable = false)
     private BigDecimal orderPrice;
 
-    static OrderDetail create(
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderState state;
+
+    @Column(name="cancel_reason")
+    private String cancelReason;
+
+    static OrderItem create(
             Order order,
             MarketSeller seller,
             Long productId,
             int quantity,
-            BigDecimal orderPrice,
-            DeliveryDistance deliveryDistance,
-            WeightGrade weightGrade
+            BigDecimal orderPrice
     ) {
-        return OrderDetail.builder()
+        return OrderItem.builder()
                 .order(order)
                 .seller(seller)
                 .productId(productId)
                 .quantity(quantity)
                 .orderPrice(orderPrice)
-                .deliveryDistance(deliveryDistance)
-                .weightGrade(weightGrade)
+                .state(OrderState.PENDING)
                 .build();
     }
 }

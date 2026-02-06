@@ -7,8 +7,8 @@ import java.math.BigDecimal;
 public record OrderCancelEvent(
     String orderNo,
     Long buyerId,
-    BigDecimal amount,
-    PayMethod payMethod,
+//    BigDecimal amount,
+//    PayMethod payMethod,
     String cancelReason
 ) {
 
