@@ -18,12 +18,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<RsData<Void>> handleDomainException(DomainException e) {
         log.warn("DomainException: {}", e.getMessage());
 
-//        if (e.getErrorCode() != null) {
-//            ErrorCode errorCode = e.getErrorCode();
-//            return ResponseEntity
-//                    .status(errorCode.getStatus())
-//                    .body(RsData.fail(errorCode));
-//        }
+        if (e.getErrorCode() != null) {
+            ErrorCode errorCode = e.getErrorCode();
+            return ResponseEntity
+                    .status(errorCode.getStatus())
+                    .body(RsData.fail(errorCode));
+        }
 
         int status = e.getHttpStatus();
         return ResponseEntity
