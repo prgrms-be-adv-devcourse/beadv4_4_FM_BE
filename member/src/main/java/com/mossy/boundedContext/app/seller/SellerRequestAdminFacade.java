@@ -1,7 +1,10 @@
 package com.mossy.boundedContext.app.seller;
 
+
+import com.mossy.boundedContext.domain.role.UserRole;
 import com.mossy.boundedContext.domain.seller.Seller;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
+import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.out.seller.SellerRepository;
@@ -10,12 +13,10 @@ import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
-import com.mossy.shared.member.domain.role.UserRole;
 import com.mossy.shared.member.event.SellerJoinedEvent;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

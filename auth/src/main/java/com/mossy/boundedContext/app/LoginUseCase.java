@@ -2,7 +2,6 @@ package com.mossy.boundedContext.app;
 
 import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.boundedContext.exception.ErrorCode;
-import com.mossy.shared.member.domain.role.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

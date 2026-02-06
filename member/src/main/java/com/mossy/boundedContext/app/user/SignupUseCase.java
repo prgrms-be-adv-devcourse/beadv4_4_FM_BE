@@ -9,7 +9,7 @@ import com.mossy.boundedContext.out.user.UserRepository;
 import com.mossy.shared.member.domain.enums.UserStatus;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
-import com.mossy.shared.member.domain.role.UserRole;
+import com.mossy.boundedContext.domain.role.UserRole;
 import com.mossy.standard.ut.EncryptionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
