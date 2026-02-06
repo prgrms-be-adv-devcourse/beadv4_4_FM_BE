@@ -27,9 +27,9 @@ dependencies {
     // 공통
     implementation(project(":common"))
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    //implementation("org.springframework.boot:spring-boot-starter-security")
 
-    implementation("org.springframework.boot:spring-boot-starter-batch")
+    //implementation("org.springframework.boot:spring-boot-starter-batch")
 
     // Market 서비스 전용 라이브러리
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
@@ -52,7 +52,7 @@ dependencies {
 
     // 테스트
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
+    //testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.batch:spring-batch-test")
     // testImplementation("org.springframework.boot:spring-boot-starter-data-elasticsearch-test") // 필요 시 유지
 }

@@ -1,7 +1,6 @@
-package com.mossy.boundedContext.out.product;
+package com.mossy.boundedContext.product.out;
 
-
-import com.mossy.boundedContext.domain.product.ProductDocument;
+import com.mossy.boundedContext.product.domain.ProductDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;

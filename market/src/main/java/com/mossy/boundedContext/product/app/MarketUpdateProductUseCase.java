@@ -1,13 +1,13 @@
-package com.mossy.boundedContext.app.product;
+package com.mossy.boundedContext.product.app;
 
-import com.mossy.boundedContext.domain.product.Category;
-import com.mossy.boundedContext.domain.product.Product;
-import com.mossy.boundedContext.domain.product.event.ProductUpdatedEvent;
 import com.mossy.boundedContext.infra.storage.adapter.S3Adapter;
-import com.mossy.boundedContext.out.product.ProductRepository;
-import com.mossy.boundedContext.out.product.CategoryRepository;
+import com.mossy.boundedContext.product.domain.Category;
+import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.domain.event.ProductUpdatedEvent;
+import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
+import com.mossy.boundedContext.product.out.CategoryRepository;
+import com.mossy.boundedContext.product.out.ProductRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.shared.market.dto.request.ProductUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

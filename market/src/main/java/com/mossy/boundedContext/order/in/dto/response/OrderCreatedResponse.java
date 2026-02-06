@@ -1,4 +1,4 @@
-package com.mossy.shared.market.dto.response;
+package com.mossy.boundedContext.order.in.dto.response;
 
 import lombok.Builder;
 

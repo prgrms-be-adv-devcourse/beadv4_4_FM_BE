@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.infra.config;
 
-import com.mossy.boundedContext.domain.market.MarketPolicy;
+import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

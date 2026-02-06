@@ -1,7 +1,7 @@
-package com.mossy.boundedContext.app.product;
+package com.mossy.boundedContext.product.app;
 
-import com.mossy.boundedContext.domain.product.ProductDocument;
-import com.mossy.boundedContext.out.product.ProductElasticRepository;
+import com.mossy.boundedContext.product.domain.ProductDocument;
+import com.mossy.boundedContext.product.out.ProductElasticRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

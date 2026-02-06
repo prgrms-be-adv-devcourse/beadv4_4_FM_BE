@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.domain.product.event;
+package com.mossy.boundedContext.product.domain.event;
 
 public record ProductDeletedEvent(Long productId) {
 }

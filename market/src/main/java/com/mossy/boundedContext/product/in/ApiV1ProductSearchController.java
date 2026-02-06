@@ -1,7 +1,7 @@
-package com.mossy.boundedContext.in.product;
+package com.mossy.boundedContext.product.in;
 
-import com.mossy.boundedContext.app.product.ProductSearchUseCase;
-import com.mossy.boundedContext.domain.product.ProductDocument;
+import com.mossy.boundedContext.product.app.ProductSearchUseCase;
+import com.mossy.boundedContext.product.domain.ProductDocument;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

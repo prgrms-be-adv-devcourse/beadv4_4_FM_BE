@@ -1,9 +1,9 @@
-package com.mossy.boundedContext.domain.market;
+package com.mossy.boundedContext.marketUser.domain;
 
 import com.mossy.shared.market.dto.event.MarketSellerDto;
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;
-import com.mossy.shared.member.dto.event.SellerPayload;
+import com.mossy.shared.member.payload.SellerPayload;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -77,5 +77,9 @@ public class MarketSeller extends ReplicaSeller {
                 .createdAt(getCreatedAt())
                 .updatedAt(getUpdatedAt())
                 .build();
+    }
+
+    public void updateSeller(SellerPayload seller) {
+        super.changeSeller(seller);
     }
 }

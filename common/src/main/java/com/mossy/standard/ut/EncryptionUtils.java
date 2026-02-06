@@ -11,7 +11,7 @@ import java.util.Base64;
 @Component
 public class EncryptionUtils {
 
-    @Value("${encryption.secret-key}")
+    @Value("${encryption.secret-key:mossy-encrypt-key-must-be-32byte}")
     private String secretKey;
     private static final String ALGORITHM = "AES";
 

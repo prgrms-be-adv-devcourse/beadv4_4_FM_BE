@@ -1,8 +1,8 @@
-package com.mossy.boundedContext.app.order;
+package com.mossy.boundedContext.order.app;
 
-import com.mossy.boundedContext.out.order.OrderRepository;
-import com.mossy.shared.market.dto.response.OrderDetailSellerResponse;
-import com.mossy.shared.market.dto.response.OrderListSellerResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
+import com.mossy.boundedContext.order.out.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

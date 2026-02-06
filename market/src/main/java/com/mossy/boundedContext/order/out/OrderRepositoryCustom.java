@@ -1,10 +1,10 @@
-package com.mossy.boundedContext.out.order;
+package com.mossy.boundedContext.order.out;
 
-import com.mossy.shared.market.dto.event.OrderPayoutDto;
-import com.mossy.shared.market.dto.response.OrderDetailResponse;
-import com.mossy.shared.market.dto.response.OrderListResponse;
-import com.mossy.shared.market.dto.response.OrderDetailSellerResponse;
-import com.mossy.shared.market.dto.response.OrderListSellerResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
+import com.mossy.shared.market.payload.OrderPayoutDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

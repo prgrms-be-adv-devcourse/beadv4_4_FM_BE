@@ -1,11 +1,11 @@
-package com.mossy.boundedContext.out.order;
+package com.mossy.boundedContext.order.out;
 
-import com.mossy.shared.market.dto.event.OrderPayoutDto;
-import com.mossy.shared.market.dto.response.OrderDetailResponse;
-import com.mossy.shared.market.dto.response.OrderListResponse;
-import com.mossy.shared.market.dto.response.OrderDetailSellerResponse;
-import com.mossy.shared.market.dto.response.OrderListSellerResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
 import com.mossy.shared.market.enums.OrderState;
+import com.mossy.shared.market.payload.OrderPayoutDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,12 +17,10 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.mossy.boundedContext.domain.market.QMarketSeller.marketSeller;
-import static com.mossy.boundedContext.domain.market.QMarketUser.marketUser;
-import static com.mossy.boundedContext.domain.order.QDeliveryDistance.deliveryDistance;
-import static com.mossy.boundedContext.domain.order.QOrder.order;
-import static com.mossy.boundedContext.domain.order.QOrderDetail.orderDetail;
-import static com.mossy.boundedContext.domain.order.QWeightGrade.weightGrade;
+import static com.mossy.boundedContext.marketUser.domain.QMarketSeller.marketSeller;
+import static com.mossy.boundedContext.marketUser.domain.QMarketUser.marketUser;
+import static com.mossy.boundedContext.order.domain.QOrder.order;
+import static com.mossy.boundedContext.order.domain.QOrderItem.orderItem;
 
 @RequiredArgsConstructor
 public class OrderRepositoryImpl implements OrderRepositoryCustom {
@@ -33,23 +31,19 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     public List<OrderPayoutDto> findPayoutOrderByOrderId(Long orderId) {
         return queryFactory
                 .select(Projections.constructor(OrderPayoutDto.class,
-                        orderDetail.id,
+                        orderItem.id,
                         order.id,
                         marketUser.id,
                         marketUser.name,
-                        orderDetail.seller.id,
-                        orderDetail.productId,
-                        orderDetail.orderPrice,
-                        weightGrade.weightGradeName,
-                        deliveryDistance.distance.castToNum(java.math.BigDecimal.class),
-                        orderDetail.createdAt,
-                        orderDetail.updatedAt
+                        orderItem.seller.id,
+                        orderItem.productId,
+                        orderItem.orderPrice,
+                        orderItem.createdAt,
+                        orderItem.updatedAt
                 ))
                 .from(order)
-                    .join(order.orderDetails, orderDetail)
+                    .join(order.orderItems, orderItem)
                     .join(order.buyer, marketUser)
-                    .join(orderDetail.weightGrade, weightGrade)
-                    .join(orderDetail.deliveryDistance, deliveryDistance)
                 .where(
                     order.id.eq(orderId),
                     order.state.eq(OrderState.PAID))
@@ -66,12 +60,12 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                         order.orderNo,
                         order.totalPrice,
                         order.state,
-                        orderDetail.count(),
+                        orderItem.count(),
                         order.address,
                         order.createdAt
                 ))
                 .from(order)
-                    .join(order.orderDetails, orderDetail)
+                    .join(order.orderItems, orderItem)
                 .where(condition)
                 .groupBy(order.id)
                 .orderBy(order.createdAt.desc())
@@ -90,62 +84,58 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     public List<OrderDetailResponse> findOrderDetailsByOrderId(Long orderId) {
         return queryFactory
                 .select(Projections.constructor(OrderDetailResponse.class,
-                        orderDetail.productId,
-                        orderDetail.quantity,
-                        orderDetail.orderPrice,
+                        orderItem.productId,
+                        orderItem.quantity,
+                        orderItem.orderPrice,
                         marketSeller.storeName
                 ))
                 .from(order)
-                    .join(order.orderDetails, orderDetail)
-                    .join(orderDetail.seller, marketSeller)
+                    .join(order.orderItems, orderItem)
+                    .join(orderItem.seller, marketSeller)
                 .where(order.id.eq(orderId))
                 .fetch();
     }
 
     @Override
     public Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, Pageable pageable) {
-        BooleanExpression condition = orderDetail.seller.id.eq(sellerId);
+        BooleanExpression condition = orderItem.seller.id.eq(sellerId);
 
         List<OrderListSellerResponse> content = queryFactory
                 .select(Projections.constructor(OrderListSellerResponse.class,
-                        orderDetail.id,
-                        orderDetail.productId,
-                        orderDetail.quantity,
-                        orderDetail.orderPrice,
+                        orderItem.id,
+                        orderItem.productId,
+                        orderItem.quantity,
+                        orderItem.orderPrice,
                         order.state,
-                        orderDetail.createdAt
+                        orderItem.createdAt
                 ))
                 .from(order)
-                    .join(order.orderDetails, orderDetail)
+                    .join(order.orderItems, orderItem)
                 .where(condition)
-                .orderBy(orderDetail.createdAt.desc())
+                .orderBy(orderItem.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         return createPage(content, pageable, () -> queryFactory
-                .select(orderDetail.count())
-                .from(orderDetail)
+                .select(orderItem.count())
+                .from(orderItem)
                 .where(condition)
                 .fetchOne());
     }
 
     @Override
-    public OrderDetailSellerResponse findSellerOrderDetailById(Long orderDetailId) {
+    public OrderDetailSellerResponse findSellerOrderDetailById(Long orderItemId) {
         return queryFactory
                 .select(Projections.constructor(OrderDetailSellerResponse.class,
                         order.orderNo,
                         marketUser.name,
-                        order.address,
-                        weightGrade.weightGradeName,
-                        deliveryDistance.distance
+                        order.address
                 ))
                 .from(order)
-                    .join(order.orderDetails, orderDetail)
+                    .join(order.orderItems, orderItem)
                     .join(order.buyer, marketUser)
-                    .join(orderDetail.weightGrade, weightGrade)
-                    .join(orderDetail.deliveryDistance, deliveryDistance)
-                .where(orderDetail.id.eq(orderDetailId))
+                .where(orderItem.id.eq(orderItemId))
                 .fetchOne();
     }
 

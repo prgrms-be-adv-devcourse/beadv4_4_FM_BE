@@ -1,10 +1,10 @@
-package com.mossy.boundedContext.in.market;
+package com.mossy.boundedContext.marketUser.in;
 
-import com.mossy.boundedContext.app.cart.CartFacade;
-import com.mossy.boundedContext.app.market.MarketFacade;
-import com.mossy.boundedContext.app.order.OrderFacade;
-import com.mossy.boundedContext.domain.market.MarketSeller;
-import com.mossy.boundedContext.domain.market.MarketUser;
+import com.mossy.boundedContext.cart.app.CartFacade;
+import com.mossy.boundedContext.marketUser.app.MarketFacade;
+import com.mossy.boundedContext.marketUser.domain.MarketSeller;
+import com.mossy.boundedContext.marketUser.domain.MarketUser;
+import com.mossy.boundedContext.order.app.OrderFacade;
 import com.mossy.shared.market.event.MarketUserCreatedEvent;
 import com.mossy.shared.market.event.OrderPaidEvent;
 import com.mossy.shared.market.event.PaymentCompletedEvent;

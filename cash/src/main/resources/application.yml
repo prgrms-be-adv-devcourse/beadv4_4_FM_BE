@@ -4,7 +4,7 @@ spring:
   application:
     name: cash
   config:
-    import: "optional:file:../../../envs/.env.cash[.properties]"
+    import: "optional:file:./cash/.env.cash[.properties]"
   output:
     ansi:
       enabled: always

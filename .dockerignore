@@ -7,6 +7,8 @@ out/
 target/
 bin/
 *.jar
+# Gradle Wrapper는 예외
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 
 # ==========================================

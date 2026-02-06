@@ -1,28 +1,21 @@
-package com.mossy.boundedContext.app.order;
+package com.mossy.boundedContext.order.app;
 
-import com.mossy.boundedContext.domain.market.MarketPolicy;
-import com.mossy.boundedContext.domain.market.MarketSeller;
-import com.mossy.boundedContext.domain.market.MarketUser;
-import com.mossy.boundedContext.domain.order.DeliveryDistance;
-import com.mossy.boundedContext.domain.order.Order;
-import com.mossy.boundedContext.domain.order.WeightGrade;
-import com.mossy.boundedContext.out.market.MarketSellerRepository;
-import com.mossy.boundedContext.out.market.MarketUserRepository;
-import com.mossy.boundedContext.out.order.DeliveryDistanceRepository;
-import com.mossy.boundedContext.out.order.OrderRepository;
-import com.mossy.boundedContext.out.order.WeightGradeRepository;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
+import com.mossy.boundedContext.marketUser.domain.MarketSeller;
+import com.mossy.boundedContext.marketUser.domain.MarketUser;
+import com.mossy.boundedContext.marketUser.out.MarketSellerRepository;
+import com.mossy.boundedContext.marketUser.out.MarketUserRepository;
+import com.mossy.boundedContext.order.domain.Order;
+import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest;
+import com.mossy.boundedContext.order.in.dto.response.OrderCreatedResponse;
+import com.mossy.boundedContext.order.out.OrderRepository;
+import com.mossy.boundedContext.product.in.dto.response.ProductInfoResponse;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.shared.market.dto.request.OrderCreatedRequest;
-import com.mossy.shared.market.dto.response.OrderCreatedResponse;
-import com.mossy.shared.market.dto.response.ProductInfoResponse;
-import com.mossy.shared.market.event.OrderCashPaymentRequestEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -35,10 +28,7 @@ public class CreateOrderUseCase {
     private final MarketUserRepository marketUserRepository;
     private final MarketSellerRepository marketSellerRepository;
     private final OrderRepository orderRepository;
-    private final DeliveryDistanceRepository deliveryDistanceRepository;
-    private final WeightGradeRepository weightGradeRepository;
     private final MarketPolicy marketPolicy;
-    private final EventPublisher eventPublisher;
 
     public OrderCreatedResponse createOrder(Long userId, OrderCreatedRequest request) {
         MarketUser buyer = marketUserRepository.findById(userId)
@@ -59,44 +49,14 @@ public class CreateOrderUseCase {
         Map<Long, MarketSeller> sellerMap = marketSellerRepository.findAllById(sellerIds).stream()
                 .collect(Collectors.toMap(MarketSeller::getId, Function.identity()));
 
-        // 4. 배송거리 계산
-        List<DeliveryDistance> deliveryDistanceList = deliveryDistanceRepository.findAllByOrderByDistanceAsc();
-        Map<Long, DeliveryDistance> deliveryMap = new HashMap<>();
-
-        for (MarketSeller seller : sellerMap.values()) {
-            DeliveryDistance deliveryDistance = DeliveryDistance.resolve(
-                    deliveryDistanceList,
-                    buyer.getLatitude(), buyer.getLongitude(),
-                    seller.getLatitude(), seller.getLongitude()
-            );
-            deliveryMap.put(seller.getId(), deliveryDistance);
-        }
-
-        // 5. 무게등급 조건 조회
-        List<WeightGrade> weightGrades = weightGradeRepository.findAllByOrderByMaxWeightAsc();
-
-        // 6. OrderDetail 생성 (배송거리 + 무게등급)
+        // 6. OrderDetail 생성
         for (ProductInfoResponse item : request.items()) {
             MarketSeller seller = sellerMap.get(item.sellerId());
-            DeliveryDistance deliveryDistance = deliveryMap.get(item.sellerId());
-            BigDecimal weight = item.weight() != null ? item.weight() : BigDecimal.ZERO;
-            BigDecimal totalWeight = weight.multiply(BigDecimal.valueOf(item.quantity()));
-            WeightGrade weightGrade = WeightGrade.findByWeight(weightGrades, totalWeight);
-            order.addOrderDetail(seller, item.productId(), item.quantity(), item.price(), deliveryDistance, weightGrade);
+            order.addOrderDetail(seller, item.productId(), item.quantity(), item.price());
         }
 
         // 7. 저장
         Order savedOrder = orderRepository.save(order);
-
-        // 8. 예치금 결제인 경우 이벤트 발행
-        if ("CASH".equalsIgnoreCase(request.paymentType())) {
-            eventPublisher.publish(new OrderCashPaymentRequestEvent(
-                savedOrder.getId(),
-                savedOrder.getOrderNo(),
-                savedOrder.getBuyer().getId(),
-                savedOrder.getTotalPrice()
-            ));
-        }
 
         return OrderCreatedResponse.builder()
                 .orderId(savedOrder.getId())

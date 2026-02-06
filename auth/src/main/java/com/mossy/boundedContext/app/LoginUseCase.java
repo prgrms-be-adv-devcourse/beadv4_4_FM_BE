@@ -1,7 +1,6 @@
 package com.mossy.java.auth.app;
 
-import com.mossy.member.member.domain.User;
-import com.mossy.member.member.out.user.UserRepository;
+
 import com.mossy.global.exception.DomainException;
 import com.mossy.global.exception.ErrorCode;
 import com.mossy.shared.member.domain.role.UserRole;

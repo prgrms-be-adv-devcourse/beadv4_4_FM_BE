@@ -1,7 +1,9 @@
-package com.mossy.boundedContext.app.cart;
+package com.mossy.boundedContext.cart.app;
 
+import com.mossy.boundedContext.cart.in.dto.request.CartItemAddRequest;
+import com.mossy.boundedContext.cart.in.dto.request.CartItemUpdateRequest;
+import com.mossy.boundedContext.cart.in.dto.response.CartResponse;
 import com.mossy.shared.market.dto.event.MarketUserDto;
-import com.mossy.shared.market.dto.request.CartItemUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,20 +18,20 @@ public class CartFacade {
     private final ClearCartUseCase clearCartUseCase;
     private final GetCartItemListUseCase getCartItemListUseCase;
 
-//    @Transactional(readOnly = true)
-//    public CartResponse getCart(Long userId) {
-//        return getCartItemListUseCase.getCart(userId);
-//    }
+    @Transactional(readOnly = true)
+    public CartResponse getCart(Long userId) {
+        return getCartItemListUseCase.getCart(userId);
+    }
 
     @Transactional
     public void createCart(MarketUserDto buyer) {
         createCartUseCase.create(buyer);
     }
 
-//    @Transactional
-//    public void addCartItem(Long userId, CartItemAddRequest request) {
-//        addCartItemUseCase.addItem(userId, request);
-//    }
+    @Transactional
+    public void addCartItem(Long userId, CartItemAddRequest request) {
+        addCartItemUseCase.addItem(userId, request);
+    }
 
     @Transactional
     public void updateCartItem(Long userId, CartItemUpdateRequest request) {

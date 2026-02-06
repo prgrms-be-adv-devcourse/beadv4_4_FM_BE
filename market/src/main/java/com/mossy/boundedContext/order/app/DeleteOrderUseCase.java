@@ -1,9 +1,9 @@
-package com.mossy.boundedContext.app.order;
+package com.mossy.boundedContext.order.app;
 
-import com.mossy.boundedContext.domain.order.Order;
-import com.mossy.boundedContext.out.order.OrderRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.order.domain.Order;
+import com.mossy.boundedContext.order.out.OrderRepository;
 import com.mossy.shared.market.enums.OrderState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

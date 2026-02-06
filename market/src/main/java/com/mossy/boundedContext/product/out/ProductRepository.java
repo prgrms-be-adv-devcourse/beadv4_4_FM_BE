@@ -1,7 +1,6 @@
-package com.mossy.boundedContext.out.product;
+package com.mossy.boundedContext.product.out;
 
-
-import com.mossy.boundedContext.domain.product.Product;
+import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.shared.market.enums.ProductStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;

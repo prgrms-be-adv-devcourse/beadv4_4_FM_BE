@@ -1,8 +1,15 @@
-package com.mossy.boundedContext.in.order;
+package com.mossy.boundedContext.order.in;
 
-import com.mossy.boundedContext.app.order.OrderFacade;
+import com.mossy.boundedContext.order.app.OrderFacade;
+import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,31 +20,30 @@ public class ApiV1SellerOrderController {
     private final OrderFacade orderFacade;
 
 
-//    @Operation(
-//            summary = "판매자 판매 내역 목록 조회",
-//            description = "판매자가 판매한 상품의 판매 내역 목록을 페이징하여 조회합니다."
-//    )
-//    @GetMapping
-//    public Page<OrderListSellerResponse> getSellerOrders(
-//            @Parameter(hidden = true)
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
-//
-//            @Parameter(hidden = true)
-//            @PageableDefault(size = 5) Pageable pageable
-//    ) {
-//        Long sellerId = userDetails.getSellerId();
-//        return orderFacade.getSellerOrderList(sellerId, pageable);
-//    }
+    @Operation(
+            summary = "판매자 판매 내역 목록 조회",
+            description = "판매자가 판매한 상품의 판매 내역 목록을 페이징하여 조회합니다."
+    )
+    @GetMapping
+    public Page<OrderListSellerResponse> getSellerOrders(
+            @Parameter(hidden = true)
+            @RequestParam(name="sellerId") Long sellerId,
 
-//    @Operation(
-//            summary = "판매자 판매 내역 상세 조회",
-//            description = "판매자가 판매한 특정 상품의 판매 내역의 상세를 조회합니다."
-//    )
-//    @GetMapping("/{orderDetailId}")
-//    public OrderDetailSellerResponse getSellerOrderDetail(
-//            @Parameter(description = "주문 상세 ID", required = true)
-//            @PathVariable Long orderDetailId
-//    ) {
-//        return orderFacade.getSellerOrderDetail(orderDetailId);
-//    }
+            @Parameter(hidden = true)
+            @PageableDefault(size = 5) Pageable pageable
+    ) {
+        return orderFacade.getSellerOrderList(sellerId, pageable);
+    }
+
+    @Operation(
+            summary = "판매자 판매 내역 상세 조회",
+            description = "판매자가 판매한 특정 상품의 판매 내역의 상세를 조회합니다."
+    )
+    @GetMapping("/{orderDetailId}")
+    public OrderDetailSellerResponse getSellerOrderDetail(
+            @Parameter(description = "주문 상세 ID", required = true)
+            @PathVariable Long orderDetailId
+    ) {
+        return orderFacade.getSellerOrderDetail(orderDetailId);
+    }
 }

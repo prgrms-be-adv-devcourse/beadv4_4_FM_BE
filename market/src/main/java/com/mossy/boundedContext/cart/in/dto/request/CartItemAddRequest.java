@@ -1,4 +1,4 @@
-package com.mossy.shared.market.dto.request;
+package com.mossy.boundedContext.cart.in.dto.request;
 
 public record CartItemAddRequest(
         Long productId,

@@ -1,4 +1,4 @@
-package com.mossy.shared.market.dto.request;
+package com.mossy.boundedContext.product.in.dto.request;
 
 import com.mossy.shared.market.enums.ProductStatus;
 import jakarta.validation.constraints.NotBlank;
