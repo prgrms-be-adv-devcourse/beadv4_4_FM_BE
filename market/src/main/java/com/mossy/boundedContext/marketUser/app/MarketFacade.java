@@ -18,7 +18,6 @@ public class MarketFacade {
         return marketSyncUserUseCase.syncUser(user);
     }
 
-    @Transactional
     public MarketSeller syncSeller(SellerPayload seller) {
         return marketSyncSellerUseCase.syncSeller(seller);
     }
