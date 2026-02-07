@@ -31,7 +31,6 @@ public class ApiV1OrderController {
     )
     @PostMapping
     public RsData<OrderCreatedResponse> createOrder(
-            @Parameter(hidden = true)
             @RequestParam(name="userId") Long userId,
 
             @Parameter(description = "주문 생성 요청 DTO", required = true)
@@ -46,7 +45,6 @@ public class ApiV1OrderController {
     )
     @GetMapping
     public Page<OrderListResponse> getMyOrders(
-            @Parameter(hidden = true)
             @RequestParam(name="userId") Long userId,
 
             @Parameter(hidden = true)
@@ -74,7 +72,6 @@ public class ApiV1OrderController {
     @DeleteMapping("/{orderId}")
     public RsData<Void> deleteOrder(
             @PathVariable Long orderId,
-            @Parameter(hidden = true)
             @RequestParam(name="userId") Long userId
     ) {
         orderFacade.deleteOrder(orderId, userId);
@@ -89,7 +86,6 @@ public class ApiV1OrderController {
     public RsData<Void> cancelOrder(
             @Parameter(description = "주문 ID", required = true)
             @PathVariable Long orderId,
-            @Parameter(hidden = true)
             @RequestParam(name="userId") Long userId,
             @Parameter(description = "취소 사유", required = true)
             @RequestParam String cancelReason
