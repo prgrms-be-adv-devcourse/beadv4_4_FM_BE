@@ -16,6 +16,8 @@ public interface OrderRepository  extends JpaRepository<Order, Long>, OrderRepos
 
     Optional<Order> findByBuyerIdAndState(Long buyerId, OrderState state);
 
+    Optional<Order> findByBuyerIdAndState(Long buyerId, OrderState state);
+
     Optional<Order> findByOrderNo(String orderNo);
 
     @Query("SELECT o FROM Order o JOIN FETCH o.buyer WHERE o.id = :orderId")
