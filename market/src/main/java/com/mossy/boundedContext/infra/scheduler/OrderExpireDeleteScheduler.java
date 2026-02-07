@@ -2,7 +2,6 @@ package com.mossy.boundedContext.infra.scheduler;
 
 import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.out.OrderRepository;
-import com.mossy.shared.market.enums.OrderState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
