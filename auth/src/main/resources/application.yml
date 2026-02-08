@@ -19,10 +19,11 @@ spring:
       port: 6379
 
 # JWT 설정
-jwt:
-  secret: ${JWT_SECRET}
-  access-token-expire-ms: 1800000       # 30분
-  refresh-token-expire-ms: 1209600000    # 14일
+mossy:
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token-expire-ms: 1800000       # 30분
+    refresh-token-expire-ms: 1209600000    # 14일
 
 # OpenFeign 설정 (로깅 및 타임아웃)
 feign:
