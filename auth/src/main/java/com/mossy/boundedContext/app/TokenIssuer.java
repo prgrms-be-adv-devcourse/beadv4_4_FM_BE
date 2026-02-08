@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.app;
 
 import com.mossy.boundedContext.in.dto.TokenResponse;
-import com.mossy.boundedContext.infra.security.jwt.JwtProvider;
+import com.mossy.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

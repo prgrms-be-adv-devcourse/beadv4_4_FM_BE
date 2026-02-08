@@ -2,7 +2,7 @@ package com.mossy.boundedContext.in;
 
 
 import com.mossy.boundedContext.app.seller.SellerRequestUserFacade;
-import com.mossy.boundedContext.global.security.UserDetailsImpl;
+import com.mossy.global.config.UserDetailsImpl;
 import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;

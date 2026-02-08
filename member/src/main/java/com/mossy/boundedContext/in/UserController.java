@@ -2,7 +2,7 @@ package com.mossy.boundedContext.in;
 
 
 import com.mossy.boundedContext.domain.seller.SellerRequest;
-import com.mossy.boundedContext.global.security.UserDetailsImpl;
+import com.mossy.global.config.UserDetailsImpl;
 import com.mossy.boundedContext.in.dto.UserInfoDTO;
 import com.mossy.boundedContext.out.seller.SellerRequestRepository;
 import com.mossy.global.rsData.RsData;

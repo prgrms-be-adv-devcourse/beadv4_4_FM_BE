@@ -1,5 +1,6 @@
-package com.mossy.boundedContext.global.security;
-import com.mossy.boundedContext.exception.ErrorCode;
+package com.mossy.global.config;
+
+import com.mossy.global.exception.BaseErrorCode;
 import com.mossy.global.rsData.RsData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,11 +32,17 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         }
 
         Object attr = request.getAttribute("AUTH_ERROR");
-        ErrorCode errorCode = (attr instanceof ErrorCode ec)
-                ? ec
-                : ErrorCode.INVALID_TOKEN;
+        BaseErrorCode errorCode;
 
-
+        if (attr instanceof BaseErrorCode) {
+            errorCode = (BaseErrorCode) attr;
+        } else {
+            errorCode = new BaseErrorCode() {
+                @Override public int getStatus() { return 401; }
+                @Override public String getMsg() { return "인증에 실패했습니다."; }
+                @Override public String getCode() { return "F-401";}
+            };
+        }
 
         response.setStatus(errorCode.getStatus());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

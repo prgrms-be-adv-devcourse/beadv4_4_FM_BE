@@ -1,12 +1,9 @@
-package com.mossy.boundedContext.global.security;
+package com.mossy.global.config;
 
-
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.global.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +20,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.SignatureException;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -30,7 +29,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
-    private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Override
@@ -53,16 +51,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             Claims claims = jwtProvider.parseClaims(token);
             Long userId = Long.valueOf(claims.getSubject());
+            String role = claims.get("role", String.class);
+            Long sellerId = jwtProvider.getSellerId(token);
 
-            // JwtProvider의 기능을 활용하여 한 줄로 정리
-            Long sellerId = jwtProvider.getSellerId(claims);
-
-            UserDetailsImpl base = userDetailsService.loadUserById(userId);
-            UserDetailsImpl principal = new UserDetailsImpl(base.getUser(), sellerId);
-
-            if (!principal.isEnabled()) {
-                throw new DomainException(ErrorCode.ACCOUNT_DISABLED);
-            }
+            UserDetailsImpl principal = new UserDetailsImpl(
+                    userId,
+                    claims.getSubject(),
+                    null,
+                    List.of(role),
+                    sellerId,
+                    true
+            );
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     principal,
@@ -74,37 +73,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (ExpiredJwtException e) {
-            handleAuthError(request, response, ErrorCode.EXPIRED_TOKEN);
-            return;
-        } catch (SignatureException e) {
-            handleAuthError(request, response, ErrorCode.TOKEN_SIGNATURE_ERROR);
-            return;
+            handleAuthError(request, response, "EXPIRED_TOKEN");
         } catch (MalformedJwtException e) {
-            handleAuthError(request, response, ErrorCode.INVALID_TOKEN);
-            return;
-        } catch (DomainException e) {
-            handleAuthError(request, response, e.getErrorCode());
-            return;
+            handleAuthError(request, response, "INVALID_TOKEN");
         } catch (Exception e) {
             log.error("JWT 인증 중 알 수 없는 예외 발생", e);
-            handleAuthError(request, response, ErrorCode.INVALID_TOKEN);
-            return;
+            handleAuthError(request, response, "AUTH_FAILURE");
         }
     }
 
     private void handleAuthError(
             HttpServletRequest request,
             HttpServletResponse response,
-            ErrorCode errorCode
+            String errorType
     ) throws IOException, ServletException {
 
         SecurityContextHolder.clearContext();
-        request.setAttribute("AUTH_ERROR", errorCode);
+        request.setAttribute("AUTH_ERROR", errorType);
 
         authenticationEntryPoint.commence(
                 request,
                 response,
-                new BadCredentialsException(errorCode.name())
+                new BadCredentialsException(errorType)
         );
 
     }

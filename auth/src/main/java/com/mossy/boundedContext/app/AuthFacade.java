@@ -1,12 +1,9 @@
 package com.mossy.boundedContext.app;
 
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.in.dto.LoginRequest;
 import com.mossy.boundedContext.in.dto.LoginResponse;
 import com.mossy.boundedContext.in.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

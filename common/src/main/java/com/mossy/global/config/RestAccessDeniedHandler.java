@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.global.security;
+package com.mossy.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mossy.global.rsData.RsData;
