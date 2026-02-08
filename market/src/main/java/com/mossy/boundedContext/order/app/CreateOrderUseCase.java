@@ -51,14 +51,14 @@ public class CreateOrderUseCase {
                 .collect(Collectors.toMap(MarketSeller::getId, seller -> seller));
 
         Order savedOrder = orderRepository.save(
-            Order.create(
-                    buyer,
-                    request.buyerAddress(),
-                    orderNo,
-                    sellerMap,
-                    request.items(),
-                    request.totalPrice()
-            )
+                Order.create(
+                        buyer,
+                        request.buyerAddress(),
+                        orderNo,
+                        sellerMap,
+                        request.items(),
+                        request.totalPrice()
+                )
         );
 
         return OrderCreatedResponse.builder()
