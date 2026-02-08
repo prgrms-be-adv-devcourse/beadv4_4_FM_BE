@@ -52,7 +52,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
     @Override
     public Page<OrderListResponse> findOrderListByUserId(Long userId, Pageable pageable) {
-        BooleanExpression condition = order.buyer.id.eq(userId);
+        BooleanExpression condition = order.buyer.id.eq(userId)
+                .and(order.state.notIn(OrderState.PENDING, OrderState.EXPIRED));
 
         List<OrderListResponse> content = queryFactory
                 .select(Projections.constructor(OrderListResponse.class,
