@@ -54,4 +54,12 @@ public class AuthFacade {
 
         refreshTokenUseCase.deleteIfExists(refreshToken);
     }
+
+    //판매자 등록
+    @Transactional
+    public LoginResponse issueForSellerApproved(Long userId, Long sellerId) {
+        TokenResponse tokens = tokenIssuer.issueTokens(userId, "SELLER", sellerId);
+        refreshTokenUseCase.save(userId, tokens.refreshToken());
+        return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
+    }
 }

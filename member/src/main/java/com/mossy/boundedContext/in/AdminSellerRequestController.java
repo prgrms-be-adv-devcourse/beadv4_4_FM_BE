@@ -1,12 +1,17 @@
 package com.mossy.boundedContext.in;
 
+import com.mossy.boundedContext.out.AuthFacade;
 import com.mossy.boundedContext.app.seller.SellerRequestAdminFacade;
+import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.in.dto.response.SellerApproveResponse;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Admin", description = "판매자 신청(Admin) API")
 @RestController

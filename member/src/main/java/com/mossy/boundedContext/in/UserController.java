@@ -44,8 +44,8 @@ public class UserController {
 
         UserInfoDTO dto = new UserInfoDTO(
                 userId,
-                principal.getUser().getNickname(),
-                principal.getUser().getName(),
+                principal.getNickname(),
+                principal.getName(),
                 status
         );
 

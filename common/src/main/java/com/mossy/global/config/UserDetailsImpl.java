@@ -14,6 +14,8 @@ public class UserDetailsImpl implements UserDetails {
     private final Long userId;
     private final String email;
     private final String password;
+    private final String nickname;
+    private final String name;
     private final Long sellerId;
     private final Collection<? extends GrantedAuthority> authorities;
     private final boolean enabled;
@@ -22,6 +24,8 @@ public class UserDetailsImpl implements UserDetails {
             Long userId,
             String email,
             String password,
+            String nickname,
+            String name,
             List<String> roles,
             Long sellerId,
             boolean enabled
@@ -29,6 +33,8 @@ public class UserDetailsImpl implements UserDetails {
         this.userId = userId;
         this.email = email;
         this.password = password;
+        this.nickname = nickname;
+        this.name = name;
         this.sellerId = sellerId;
         this.enabled = enabled;
         this.authorities = roles.stream()

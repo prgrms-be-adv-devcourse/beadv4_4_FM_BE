@@ -24,7 +24,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByEmailWithRoles(email)
                 .orElseThrow(()  -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
-        return new UserDetailsImpl(user);
+        return new UserDetailsImpl(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getNickname(),
+                user.getName(),
+                user.getUserRoles().stream()
+                        .map(r -> r.getRole().getCode().name()).toList(),
+                null,
+                true
+        );
     }
 
     @Cacheable(value = "USER_DETAILS", key = "#userId")
@@ -33,6 +43,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByIdWithRoles(userId)
                 .orElseThrow(()  -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
-        return new UserDetailsImpl(user);
+        return new UserDetailsImpl(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getNickname(),
+                user.getName(),
+                user.getUserRoles().stream()
+                        .map(r -> r.getRole().getCode().name()).toList(),
+                null,
+                true
+        );
     }
 }

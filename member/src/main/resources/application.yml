@@ -4,7 +4,7 @@ spring:
   application:
     name: member
   config:
-    import: "optional:file:../../../envs/.env.member[.properties]"
+    import: "optional:file:.env.member[.properties]"
   output:
     ansi:
       enabled: always

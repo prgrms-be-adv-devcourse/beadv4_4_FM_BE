@@ -51,13 +51,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             Claims claims = jwtProvider.parseClaims(token);
             Long userId = Long.valueOf(claims.getSubject());
+            String email = claims.getSubject();
             String role = claims.get("role", String.class);
             Long sellerId = jwtProvider.getSellerId(token);
+
+
+            String nickname = claims.get("nickname", String.class);
+            String name = claims.get("name", String.class);
 
             UserDetailsImpl principal = new UserDetailsImpl(
                     userId,
                     claims.getSubject(),
                     null,
+                    nickname,
+                    name,
                     List.of(role),
                     sellerId,
                     true
