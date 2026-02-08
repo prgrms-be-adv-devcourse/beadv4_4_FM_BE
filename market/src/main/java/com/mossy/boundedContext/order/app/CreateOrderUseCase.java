@@ -1,5 +1,7 @@
 package com.mossy.boundedContext.order.app;
 
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
 import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
@@ -30,10 +32,13 @@ public class CreateOrderUseCase {
 
     @Transactional
     public OrderCreatedResponse createOrder(Long userId, OrderCreatedRequest request) {
+        MarketUser buyer = marketUserRepository.findByIdWithLock(userId)
+                .orElseThrow(() -> new DomainException(ErrorCode.BUYER_NOT_FOUND));
+
         orderRepository.findByBuyerIdAndState(userId, OrderState.PENDING)
                 .ifPresent(Order::expire);
 
-        MarketUser buyer = marketUserRepository.getReferenceById(userId);
+        // TODO: 재고 조회
 
         String orderNo = marketPolicy.generateOrderNo();
 
@@ -46,14 +51,14 @@ public class CreateOrderUseCase {
                 .collect(Collectors.toMap(MarketSeller::getId, seller -> seller));
 
         Order savedOrder = orderRepository.save(
-            Order.create(
-                    buyer,
-                    request.buyerAddress(),
-                    orderNo,
-                    sellerMap,
-                    request.items(),
-                    request.totalPrice()
-            )
+                Order.create(
+                        buyer,
+                        request.buyerAddress(),
+                        orderNo,
+                        sellerMap,
+                        request.items(),
+                        request.totalPrice()
+                )
         );
 
         return OrderCreatedResponse.builder()
