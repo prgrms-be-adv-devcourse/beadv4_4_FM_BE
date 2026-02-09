@@ -2,7 +2,7 @@ package com.mossy.boundedContext.app;
 
 import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.boundedContext.exception.ErrorCode;
-import com.mossy.global.jwt.JwtProperties;
+import com.mossy.boundedContext.infra.jwt.JwtProperties;
 import com.mossy.boundedContext.out.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
