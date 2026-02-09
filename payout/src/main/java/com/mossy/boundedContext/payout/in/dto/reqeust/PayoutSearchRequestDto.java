@@ -1,4 +1,4 @@
-package com.mossy.shared.payout.dto.request.payout;
+package com.mossy.boundedContext.payout.in.dto.reqeust;
 
 import java.time.LocalDate;
 

@@ -1,4 +1,4 @@
-package com.mossy.shared.payout.dto.response.payout;
+package com.mossy.boundedContext.payout.in.dto.response;
 
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;

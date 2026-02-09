@@ -4,6 +4,7 @@ import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.*;
 import com.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
+import com.mossy.boundedContext.payout.out.PayoutItemRepository;
 import com.mossy.boundedContext.payout.out.PayoutRepository;
 import com.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,57 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PayoutCollectPayoutItemsMoreUseCase {
-    private final PayoutRepository payoutRepository;
+    // 집계 기능 사용 시 필요
+    //private final PayoutRepository payoutRepository;
+
+    // 집계 없이 정산만 사용 시 필요
+    private final PayoutItemRepository payoutItemRepository;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
 
+    // 집계 기능 사용 시 (Payout을 통한 정산)
+    // public RsData<Integer> collectPayoutItemsMore(int limit) {
+    //     // 1. 정산할 준비가 된 '정산 후보' 목록을 조회합니다.
+    //     List<PayoutCandidateItem> payoutReadyCandidateItems = findPayoutReadyCandidateItems(limit);
+    //
+    //     // 처리할 후보가 없으면 종료합니다.
+    //     if (payoutReadyCandidateItems.isEmpty())
+    //         return new RsData<>("200-1", "더 이상 정산에 추가할 항목이 없습니다.", 0);
+    //
+    //     // 2. 후보들을 돈 받을 사람(payee) 기준으로 그룹화합니다.
+    //     // 이렇게 하면 판매자별로 여러 판매 건을 한 번에 처리할 수 있습니다.
+    //     payoutReadyCandidateItems.stream()
+    //             .collect(Collectors.groupingBy(PayoutCandidateItem::getPayee))
+    //             .forEach((payee, candidateItems) -> {
+    //                 // 3. 해당 판매자의 현재 진행중인(아직 정산되지 않은) Payout 객체를 찾습니다.
+    //                 Payout payout = findActiveByPayee(payee)
+    //                         .orElseThrow(() -> new DomainException(ErrorCode.PAYOUT_NOT_FOUND));
+    //
+    //                 // 4. 각 후보(candidateItem)를 실제 정산 항목(payoutItem)으로 변환하여 Payout 객체에 추가합니다.
+    //                 candidateItems.forEach(item -> {
+    //                     PayoutItem payoutItem = payout.addItem(
+    //                             item.getEventType(),
+    //                             item.getRelTypeCode(),
+    //                             item.getRelId(),
+    //                             item.getPaymentDate(),
+    //                             item.getPayer(),
+    //                             item.getPayee(),
+    //                             item.getAmount()
+    //                     );
+    //
+    //                     // 5. 후보 항목에 실제 정산 항목을 연결하여, 이 후보가 처리되었음을 표시합니다.
+    //                     item.setPayoutItem(payoutItem);
+    //                 });
+    //             });
+    //
+    //
+    //     return new RsData<>(
+    //             "201-1",
+    //             "%d건의 정산데이터가 생성되었습니다.".formatted(payoutReadyCandidateItems.size()),
+    //             payoutReadyCandidateItems.size()
+    //     );
+    // }
+
+    // 집계 없이 정산만 사용 시 (PayoutItem 직접 생성)
     public RsData<Integer> collectPayoutItemsMore(int limit) {
         // 1. 정산할 준비가 된 '정산 후보' 목록을 조회합니다.
         List<PayoutCandidateItem> payoutReadyCandidateItems = findPayoutReadyCandidateItems(limit);
@@ -29,32 +78,25 @@ public class PayoutCollectPayoutItemsMoreUseCase {
         if (payoutReadyCandidateItems.isEmpty())
             return new RsData<>("200-1", "더 이상 정산에 추가할 항목이 없습니다.", 0);
 
-        // 2. 후보들을 돈 받을 사람(payee) 기준으로 그룹화합니다.
-        // 이렇게 하면 판매자별로 여러 판매 건을 한 번에 처리할 수 있습니다.
-        payoutReadyCandidateItems.stream()
-                .collect(Collectors.groupingBy(PayoutCandidateItem::getPayee))
-                .forEach((payee, candidateItems) -> {
-                    // 3. 해당 판매자의 현재 진행중인(아직 정산되지 않은) Payout 객체를 찾습니다.
-                    Payout payout = findActiveByPayee(payee)
-                            .orElseThrow(() -> new DomainException(ErrorCode.PAYOUT_NOT_FOUND));
+        // 2. 각 정산 후보를 PayoutItem으로 직접 변환하여 저장합니다.
+        payoutReadyCandidateItems.forEach(candidateItem -> {
+            PayoutItem payoutItem = PayoutItem.builder()
+                    .payout(null)  // 집계 없이 정산만 진행
+                    .eventType(candidateItem.getEventType())
+                    .relTypeCode(candidateItem.getRelTypeCode())
+                    .relId(candidateItem.getRelId())
+                    .paymentDate(candidateItem.getPaymentDate())
+                    .payer(candidateItem.getPayer())
+                    .payee(candidateItem.getPayee())
+                    .amount(candidateItem.getAmount())
+                    .build();
 
-                    // 4. 각 후보(candidateItem)를 실제 정산 항목(payoutItem)으로 변환하여 Payout 객체에 추가합니다.
-                    candidateItems.forEach(item -> {
-                        PayoutItem payoutItem = payout.addItem(
-                                item.getEventType(),
-                                item.getRelTypeCode(),
-                                item.getRelId(),
-                                item.getPaymentDate(),
-                                item.getPayer(),
-                                item.getPayee(),
-                                item.getAmount()
-                        );
+            // PayoutItem을 직접 저장합니다.
+            payoutItemRepository.save(payoutItem);
 
-                        // 5. 후보 항목에 실제 정산 항목을 연결하여, 이 후보가 처리되었음을 표시합니다.
-                        item.setPayoutItem(payoutItem);
-                    });
-                });
-
+            // 후보 항목에 실제 정산 항목을 연결하여, 이 후보가 처리되었음을 표시합니다.
+            candidateItem.setPayoutItem(payoutItem);
+        });
 
         return new RsData<>(
                 "201-1",
@@ -66,9 +108,9 @@ public class PayoutCollectPayoutItemsMoreUseCase {
     /**
      * 아직 정산되지 않은(payoutDate가 null인) 특정 판매자(payee)의 Payout 객체를 찾습니다.
      */
-    private Optional<Payout> findActiveByPayee(PayoutSeller payee) {
-        return payoutRepository.findByPayeeAndPayoutDateIsNull(payee);
-    }
+   // private Optional<Payout> findActiveByPayee(PayoutSeller payee) {
+   //     return payoutRepository.findByPayeeAndPayoutDateIsNull(payee);
+   // }
 
     /**
      * 정산할 준비가 된 후보들을 조회합니다.

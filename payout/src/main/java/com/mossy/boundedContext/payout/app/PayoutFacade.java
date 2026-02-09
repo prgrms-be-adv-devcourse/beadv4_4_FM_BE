@@ -28,7 +28,7 @@ import java.util.List;
 public class PayoutFacade {
     private final PayoutSyncSellerUseCase payoutSyncSellerUseCase;
     private final PayoutSyncUserUseCase payoutSyncUserUseCase;
-    private final PayoutCreatePayoutUseCase payoutCreatePayoutUseCase;
+    //private final PayoutCreatePayoutUseCase payoutCreatePayoutUseCase;
     private final PayoutAddPayoutCandidateItemsUseCase payoutAddPayoutCandidateItemsUseCase;
     private final PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
     private final PayoutCompletePayoutsMoreUseCase payoutCompletePayoutsMoreUseCase;
@@ -60,10 +60,10 @@ public class PayoutFacade {
      *
      * @param payeeId 수취인의 ID
      */
-    @Transactional
-    public void createPayout(Long payeeId) {
-        payoutCreatePayoutUseCase.createPayout(payeeId);
-    }
+//    @Transactional
+//    public void createPayout(Long payeeId) {
+//        payoutCreatePayoutUseCase.createPayout(payeeId);
+//    }
 
     /**
      * [흐름 1] 단일 주문 아이템을 바탕으로 정산 후보 아이템(PayoutCandidateItem)을 추가
