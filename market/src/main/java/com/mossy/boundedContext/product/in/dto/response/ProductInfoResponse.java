@@ -11,7 +11,6 @@ public record ProductInfoResponse(
         String productName,
         String categoryName,
         BigDecimal price,
-        BigDecimal weight,
         String thumbnailUrl,
         Integer quantity
 ) { }
