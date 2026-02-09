@@ -9,7 +9,8 @@ import com.mossy.boundedContext.payout.app.PayoutSupport;
 import com.mossy.boundedContext.payout.domain.Payout;
 import com.mossy.boundedContext.payout.domain.PayoutItem;
 import com.mossy.boundedContext.payout.domain.PayoutSeller;
-import com.mossy.boundedContext.payout.out.PayoutRepository;
+import com.mossy.boundedContext.payout.out.PayoutItemRepository;
+//import com.mossy.boundedContext.payout.out.PayoutRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,42 +27,73 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DonationSettleUseCase {
 
-    private final PayoutRepository payoutRepository;
+    // 집계 기능 사용 시 필요
+    //private final PayoutRepository payoutRepository;
+
+    // 집계 없이 정산만 사용 시 필요
+    private final PayoutItemRepository payoutItemRepository;
+
     private final DonationLogRepository donationLogRepository;
     private final PayoutSupport payoutSupport;
 
+    // 집계 기능 사용 시 (Payout을 통한 기부금 정산)
+    // /**
+    //  * 특정 정산(Payout)이 완료되었을 때, 관련된 모든 기부 로그(DonationLog)를 '정산 완료' 상태로 업데이트
+    //  *
+    //  * @param payoutId 완료된 Payout의 ID
+    //  */
+    // @Transactional
+    // public void settleDonationLogs(Long payoutId) {
+    //     if (payoutId == null) {
+    //         throw new DomainException(ErrorCode.PAYOUT_NOT_FOUND);
+    //     }
+    //     // 1. 정산 완료된 Payout 객체를 조회
+    //     Payout payout = payoutRepository.findById(payoutId)
+    //             .orElseThrow(() -> new DomainException(ErrorCode.PAYOUT_NOT_FOUND));
+    //
+    //     // 2. 시스템에 정의된 '기부금 수령 판매자(DONATION seller)' 정보를 조회
+    //     //    기부금은 이 가상의 판매자에게 지급되는 형식으로 처리
+    //     PayoutSeller donationSeller = payoutSupport.findDonationSeller()
+    //             .orElseThrow(() -> new DomainException(ErrorCode.DONATION_SELLER_NOT_FOUND));
+    //
+    //     // 3. 완료된 Payout에 포함된 항목(PayoutItem)들 중에서,
+    //     //    수령인이 '기부금 수령 판매자'인 항목들만 필터링
+    //     //    그 후, 해당 항목들의 'relId' (여기서는 orderItemId에 해당)를 추출
+    //     List<Long> orderItemIds = payout.getItems().stream()
+    //             .filter(item -> item.getPayee().getId().equals(donationSeller.getId()))
+    //             .map(PayoutItem::getRelId)  // relId는 PayoutItem의 관련 ID이며, 기부 항목의 경우 orderItemId를 저장
+    //             .toList();
+    //     if (orderItemIds.isEmpty()) {
+    //         throw new DomainException(ErrorCode.DONATION_PAYOUT_ITEM_NOT_FOUND);
+    //     }
+    //
+    //     // 4. 추출된 orderItemId 목록을 순회하면서, 각 ID에 해당하는 DonationLog를 찾아 '정산 완료' 처리
+    //     //    DonationLog의 settle() 메서드는 해당 로그의 상태를 변경
+    //     orderItemIds.forEach(orderItemId -> {
+    //         List<DonationLog> donationLogs = donationLogRepository.findByOrderItemId(orderItemId);
+    //         if (donationLogs.isEmpty()) {
+    //             throw new DomainException(ErrorCode.DONATION_LOG_NOT_FOUND);
+    //         }
+    //         donationLogs.forEach(DonationLog::settle);
+    //     });
+    // }
+
+    // 집계 없이 정산만 사용 시
+    // 주의: Payout이 없으므로 payoutId로 기부금을 정산할 수 없습니다.
+    // 대안: PayoutItem 생성 시점에 직접 DonationLog를 정산 처리하거나,
+    //       별도의 배치 작업으로 처리해야 합니다.
     /**
-     * 특정 정산(Payout)이 완료되었을 때, 관련된 모든 기부 로그(DonationLog)를 '정산 완료' 상태로 업데이트
+     * 특정 주문 항목 ID 리스트에 해당하는 기부 로그를 정산 완료 처리
      *
-     * @param payoutId 완료된 Payout의 ID
+     * @param orderItemIds 정산할 주문 항목 ID 리스트
      */
     @Transactional
-    public void settleDonationLogs(Long payoutId) {
-        if (payoutId == null) {
-            throw new DomainException(ErrorCode.PAYOUT_NOT_FOUND);
-        }
-        // 1. 정산 완료된 Payout 객체를 조회
-        Payout payout = payoutRepository.findById(payoutId)
-                .orElseThrow(() -> new DomainException(ErrorCode.PAYOUT_NOT_FOUND));
-
-        // 2. 시스템에 정의된 '기부금 수령 판매자(DONATION seller)' 정보를 조회
-        //    기부금은 이 가상의 판매자에게 지급되는 형식으로 처리
-        PayoutSeller donationSeller = payoutSupport.findDonationSeller()
-                .orElseThrow(() -> new DomainException(ErrorCode.DONATION_SELLER_NOT_FOUND));
-
-        // 3. 완료된 Payout에 포함된 항목(PayoutItem)들 중에서,
-        //    수령인이 '기부금 수령 판매자'인 항목들만 필터링
-        //    그 후, 해당 항목들의 'relId' (여기서는 orderItemId에 해당)를 추출
-        List<Long> orderItemIds = payout.getItems().stream()
-                .filter(item -> item.getPayee().getId().equals(donationSeller.getId()))
-                .map(PayoutItem::getRelId)  // relId는 PayoutItem의 관련 ID이며, 기부 항목의 경우 orderItemId를 저장
-                .toList();
-        if (orderItemIds.isEmpty()) {
+    public void settleDonationLogsByOrderItemIds(List<Long> orderItemIds) {
+        if (orderItemIds == null || orderItemIds.isEmpty()) {
             throw new DomainException(ErrorCode.DONATION_PAYOUT_ITEM_NOT_FOUND);
         }
 
-        // 4. 추출된 orderItemId 목록을 순회하면서, 각 ID에 해당하는 DonationLog를 찾아 '정산 완료' 처리
-        //    DonationLog의 settle() 메서드는 해당 로그의 상태를 변경
+        // 추출된 orderItemId 목록을 순회하면서, 각 ID에 해당하는 DonationLog를 찾아 '정산 완료' 처리
         orderItemIds.forEach(orderItemId -> {
             List<DonationLog> donationLogs = donationLogRepository.findByOrderItemId(orderItemId);
             if (donationLogs.isEmpty()) {

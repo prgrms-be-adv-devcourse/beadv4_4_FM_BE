@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 기부(Donation) 기능의 메인 진입점 역할을 하는 파사드(Facade)
  * 기부와 관련된 핵심 비즈니스 로직(Use Case)들을 외부 또는 내부 모듈에서 쉽게 사용할 수 있도록 캡슐화
@@ -32,15 +34,28 @@ public class DonationFacade {
         donationCreateLogUseCase.createDonationLog(orderItem);
     }
 
+    // 집계 기능 사용 시 (Payout을 통한 기부금 정산)
+    // /**
+    //  * [2단계: 기부 로그 정산 처리]
+    //  * 정산(Payout)이 완료되었을 때, 해당 정산에 포함된 기부 로그들을 '정산 완료' 상태로 변경
+    //  * 이 메서드는 PayoutCompletedEvent를 처리하는 DonationEventListener에 의해 호출
+    //  *
+    //  * @param payoutId 정산이 완료된 Payout의 ID
+    //  */
+    // @Transactional
+    // public void settleDonationLogs(Long payoutId) {
+    //     donationSettleUseCase.settleDonationLogs(payoutId);
+    // }
+
+    // 집계 없이 정산만 사용 시
     /**
      * [2단계: 기부 로그 정산 처리]
-     * 정산(Payout)이 완료되었을 때, 해당 정산에 포함된 기부 로그들을 '정산 완료' 상태로 변경
-     * 이 메서드는 PayoutCompletedEvent를 처리하는 DonationEventListener에 의해 호출
+     * 주문 항목 ID 리스트를 기반으로 해당 기부 로그들을 '정산 완료' 상태로 변경
      *
-     * @param payoutId 정산이 완료된 Payout의 ID
+     * @param orderItemIds 정산할 주문 항목 ID 리스트
      */
     @Transactional
-    public void settleDonationLogs(Long payoutId) {
-        donationSettleUseCase.settleDonationLogs(payoutId);
+    public void settleDonationLogsByOrderItemIds(List<Long> orderItemIds) {
+        donationSettleUseCase.settleDonationLogsByOrderItemIds(orderItemIds);
     }
 }

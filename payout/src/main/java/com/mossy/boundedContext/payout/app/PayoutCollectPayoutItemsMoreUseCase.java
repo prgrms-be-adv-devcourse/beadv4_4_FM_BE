@@ -3,19 +3,23 @@ package com.mossy.boundedContext.payout.app;
 import com.mossy.boundedContext.exception.DomainException;
 import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.*;
+import com.mossy.boundedContext.donation.app.DonationFacade;
 import com.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
 import com.mossy.boundedContext.payout.out.PayoutItemRepository;
 import com.mossy.boundedContext.payout.out.PayoutRepository;
 import com.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PayoutCollectPayoutItemsMoreUseCase {
@@ -25,6 +29,8 @@ public class PayoutCollectPayoutItemsMoreUseCase {
     // 집계 없이 정산만 사용 시 필요
     private final PayoutItemRepository payoutItemRepository;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
+    private final PayoutSupport payoutSupport;
+    private final DonationFacade donationFacade;
 
     // 집계 기능 사용 시 (Payout을 통한 정산)
     // public RsData<Integer> collectPayoutItemsMore(int limit) {
@@ -78,6 +84,10 @@ public class PayoutCollectPayoutItemsMoreUseCase {
         if (payoutReadyCandidateItems.isEmpty())
             return new RsData<>("200-1", "더 이상 정산에 추가할 항목이 없습니다.", 0);
 
+        // 기부금 판매자 정보 조회 (기부금 정산 처리용)
+        PayoutSeller donationSeller = payoutSupport.findDonationSeller().orElse(null);
+        List<Long> donationOrderItemIds = new ArrayList<>();
+
         // 2. 각 정산 후보를 PayoutItem으로 직접 변환하여 저장합니다.
         payoutReadyCandidateItems.forEach(candidateItem -> {
             PayoutItem payoutItem = PayoutItem.builder()
@@ -96,7 +106,19 @@ public class PayoutCollectPayoutItemsMoreUseCase {
 
             // 후보 항목에 실제 정산 항목을 연결하여, 이 후보가 처리되었음을 표시합니다.
             candidateItem.setPayoutItem(payoutItem);
+
+            // 기부금 관련 항목인 경우 orderItemId 수집
+            if (donationSeller != null && candidateItem.getPayee().getId().equals(donationSeller.getId())) {
+                donationOrderItemIds.add(candidateItem.getRelId());
+            }
         });
+
+        // 3. 정산 완료 후 기부금 정산 처리
+        if (!donationOrderItemIds.isEmpty()) {
+            log.info("정산 완료 후 기부금 정산 처리를 시작합니다. (총 {}건)", donationOrderItemIds.size());
+            donationFacade.settleDonationLogsByOrderItemIds(donationOrderItemIds);
+            log.info("기부금 정산 처리가 완료되었습니다.");
+        }
 
         return new RsData<>(
                 "201-1",
