@@ -27,7 +27,7 @@ spring:
 
   elasticsearch:
     uris:
-      - http://elasticsearch:9200
+      - http://${ELASTICSEARCH_HOST}:9200
 
 logging:
   level:

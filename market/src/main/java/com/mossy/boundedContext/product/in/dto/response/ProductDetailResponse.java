@@ -1,5 +1,7 @@
 package com.mossy.boundedContext.product.in.dto.response;
 
+import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.domain.ProductImage;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -20,4 +22,26 @@ public record ProductDetailResponse(
         String thumbnail,
         List<String> images
 ) {
+    public static ProductDetailResponse from(Product product) {
+        String thumbnail = product.getImages().stream()
+                .filter(image -> Boolean.TRUE.equals(image.getIsThumbnail()))
+                .map(ProductImage::getImageUrl)
+                .findFirst()
+                .orElse("https://team07-mossy-storage.s3.ap-northeast-2.amazonaws.com/product/defult.png");
+        return ProductDetailResponse.builder()
+                .productId(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .price(product.getPrice())
+                .weight(product.getWeight())
+                .quantity(product.getQuantity())
+                .status(product.getStatus().name()) // Enum 처리 확인
+                .categoryName(product.getCategory().getName())
+                .sellerId(product.getSeller().getId())
+                .thumbnail(thumbnail)
+                .images(product.getImages().stream()
+                        .map(ProductImage::getImageUrl)
+                        .toList())
+                .build();
+    }
 }

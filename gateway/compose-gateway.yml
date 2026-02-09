@@ -1,5 +1,5 @@
 services:
-gateway-service:
+  gateway:
     build:
       context: ../src/backend
       dockerfile: gateway-service/Dockerfile

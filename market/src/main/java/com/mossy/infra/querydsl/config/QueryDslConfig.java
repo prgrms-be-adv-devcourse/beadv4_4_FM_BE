@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.infra.querydsl.config;
+package com.mossy.infra.querydsl.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

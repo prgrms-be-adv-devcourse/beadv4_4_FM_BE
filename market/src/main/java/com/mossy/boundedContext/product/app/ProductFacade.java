@@ -1,8 +1,10 @@
 package com.mossy.boundedContext.product.app;
 
 import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.in.dto.request.ProductCreateRequest;
 import com.mossy.boundedContext.product.in.dto.request.ProductStatusUpdateRequest;
 import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
+import com.mossy.boundedContext.product.in.dto.response.ProductDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,17 +29,17 @@ public class ProductFacade {
     }
 
     // 상품 상세 정보 조회
-//    @Transactional(readOnly = true)
-//    public ProductDetailResponse getProductById(Long productId) {
-//        Product product = marketGetProductDetailUseCase.execute(productId);
-//        return ProductDetailResponse.from(product);
-//    }
+    @Transactional(readOnly = true)
+    public ProductDetailResponse getProductById(Long productId) {
+        Product product = marketGetProductDetailUseCase.execute(productId);
+        return ProductDetailResponse.from(product);
+    }
 
-//    // 상품 등록
-//    @Transactional
-//    public Product registerProduct(ProductCreateRequest request) {
-//        return marketRegisterProductUseCase.register(request);
-//    }
+    // 상품 등록
+    @Transactional
+    public Product registerProduct(ProductCreateRequest request) {
+        return marketRegisterProductUseCase.register(request);
+    }
 
     // 상품 정보 수정
     @Transactional
