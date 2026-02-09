@@ -1,6 +1,6 @@
 package com.mossy.shared.market.event;
 
-import com.mossy.shared.market.enums.PayMethod;
+import com.mossy.shared.cash.enums.PayMethod;
 
 import java.math.BigDecimal;
 
