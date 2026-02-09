@@ -6,52 +6,54 @@ spring:
     name: gateway
 
   config:
-    import: "optional:file:../../../envs/.env.gateway[.properties]"
+    import: "optional:file:.env.gateway[.properties]"
 
   cloud:
     gateway:
       routes:
-        - id: market-service
-          uri: http://market-service:8081 # Docker Compose 서비스 이름 또는 주소
+        - id: market
+          uri: http://market:8081 # Docker Compose 서비스 이름 또는 주소
           predicates:
             - "Path=/api/v1/cart/**, /api/v1/orders/**, /api/v1/payments/**, /api/v1/product/**"
           filters:
             - JwtAuthenticationFilter
 
         # 로그인 회원가입은 필터 X
-        - id: member-service
-          uri: http://member-service:8082
+        - id: member
+          uri: http://member:8082
           predicates:
-            - "Path=/api/v1/admin/**, /api/v1/user/**, /api/v1/auth/**"
+            - "Path=/api/v1/admin/**, /api/v1/users/**"
 
-#        로그인 후 경로 필터
-#        - id: member-service
-#          uri: http://member-service:8082
-#          predicates:
-#            - "Path=/api/v1/admin/**, /api/v1/user/**, /api/v1/auth/**"
-#          filters:
-#            - JwtAuthenticationFilter
-
-        - id: cash-service
-          uri: http://cash-service:8083
+        - id: cash
+          uri: http://cash:8083
           predicates:
             - "Path=/api/v1/cash/**"
           filters:
             - JwtAuthenticationFilter
 
-        - id: payout-service
-          uri: http://payout-service:8084
+        - id: payout
+          uri: http://payout:8084
           predicates:
             - "Path=/api/payout/**"
           filters:
             - JwtAuthenticationFilter
 
-        - id: review-service
-          uri: http://review-service:8085
+        - id: review
+          uri: http://review:8085
           predicates:
             - "Path=/api/v1/review/**"
           filters:
             - JwtAuthenticationFilter
+
+        - id: auth
+          uri: http://localhost:8086
+          predicates:
+            - "Path=/api/v1/auth/**"
+
+# 유레카 클라이언트 비활성화 (나중에 활성화)
+eureka:
+  client:
+    enabled: false
 
 jwt:
   secret: ${JWT_SECRET}
