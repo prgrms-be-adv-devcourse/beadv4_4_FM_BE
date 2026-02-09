@@ -2,8 +2,8 @@ package com.mossy.boundedContext.payout.app;
 
 import com.mossy.boundedContext.donation.domain.DonationCalculator;
 import com.mossy.boundedContext.donation.domain.FeeCalculator;
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.domain.PayoutSeller;
 import com.mossy.boundedContext.payout.domain.PayoutUser;

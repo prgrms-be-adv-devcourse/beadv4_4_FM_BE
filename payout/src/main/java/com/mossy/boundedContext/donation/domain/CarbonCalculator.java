@@ -1,8 +1,8 @@
 package com.mossy.boundedContext.donation.domain;
 
 
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.shared.market.dto.event.OrderPayoutDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

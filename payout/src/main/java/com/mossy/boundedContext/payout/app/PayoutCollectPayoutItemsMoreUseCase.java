@@ -1,7 +1,5 @@
 package com.mossy.boundedContext.payout.app;
 
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.*;
 import com.mossy.boundedContext.donation.app.DonationFacade;
 import com.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
@@ -16,8 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.donation.domain;
 
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.PayoutUser;
 
 import com.mossy.global.jpa.entity.BaseIdAndTime;

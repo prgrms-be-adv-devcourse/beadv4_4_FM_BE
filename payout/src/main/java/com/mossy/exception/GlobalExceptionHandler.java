@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.exception;
+package com.mossy.exception;
 
 
 import com.mossy.global.exception.BaseErrorCode;
