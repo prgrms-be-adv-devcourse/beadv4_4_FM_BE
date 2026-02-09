@@ -1,4 +1,4 @@
-package com.mossy.global.jwt;
+package com.mossy.boundedContext.infra.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
