@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.in.dto;
+package com.mossy.boundedContext.app.mapper;
 
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.shared.member.payload.UserPayload;

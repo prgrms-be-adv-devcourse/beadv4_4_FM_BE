@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.in;
+package com.mossy.boundedContext.in.internal;
 
 import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.out.AuthFacade;

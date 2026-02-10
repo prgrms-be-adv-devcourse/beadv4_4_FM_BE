@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "auth", url = "localhost:8086")
 public interface AuthClient {
 
-    @PostMapping("/api/v1/auth/internal/issue-seller-token")
+    @PostMapping("/api/v1/internal/auth/issue-seller-token")
     LoginResponse issueForSellerApproved(
             @RequestParam("userId") Long userId,
             @RequestParam("sellerId") Long sellerId

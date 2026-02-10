@@ -7,7 +7,7 @@ import com.mossy.boundedContext.out.user.UserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.auth.domain.response.MemberVerifyResponse;
 import com.mossy.shared.member.event.UserJoinedEvent;
-import com.mossy.boundedContext.in.dto.UserDtoMapper;
+import com.mossy.boundedContext.app.mapper.UserDtoMapper;
 import com.mossy.shared.member.payload.UserPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
