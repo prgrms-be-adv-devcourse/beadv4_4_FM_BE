@@ -1,4 +1,4 @@
-package com.mossy.shared.cash.event;
+package com.mossy.boundedContext.cash.in.dto.event;
 
 import com.mossy.shared.member.payload.UserPayload;
 

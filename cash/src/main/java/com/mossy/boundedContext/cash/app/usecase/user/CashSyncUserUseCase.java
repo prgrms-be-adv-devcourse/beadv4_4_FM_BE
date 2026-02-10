@@ -5,7 +5,7 @@ import com.mossy.boundedContext.cash.domain.user.CashUser;
 import com.mossy.boundedContext.cash.in.dto.common.CashUserDto;
 import com.mossy.boundedContext.cash.out.user.CashUserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.shared.cash.event.CashUserCreatedEvent;
+import com.mossy.boundedContext.cash.in.dto.event.CashUserCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

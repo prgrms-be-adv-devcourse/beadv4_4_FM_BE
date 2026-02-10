@@ -15,11 +15,9 @@ import com.mossy.boundedContext.payment.in.dto.response.PaymentResponse;
 import com.mossy.boundedContext.payment.in.dto.response.TossPaymentResponse;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.market.event.OrderCancelEvent;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

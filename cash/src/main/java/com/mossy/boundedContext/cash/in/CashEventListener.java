@@ -5,8 +5,8 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 
 import com.mossy.boundedContext.cash.app.CashFacade;
 import com.mossy.boundedContext.cash.app.mapper.CashMapper;
-import com.mossy.shared.cash.event.CashSellerCreatedEvent;
-import com.mossy.shared.cash.event.CashUserCreatedEvent;
+import com.mossy.boundedContext.cash.in.dto.event.CashSellerCreatedEvent;
+import com.mossy.boundedContext.cash.in.dto.event.CashUserCreatedEvent;
 import com.mossy.shared.cash.event.PaymentRefundEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
