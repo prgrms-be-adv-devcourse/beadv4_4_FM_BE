@@ -6,7 +6,8 @@ import com.mossy.boundedContext.cart.in.dto.response.CartResponse;
 import com.mossy.shared.market.dto.event.MarketUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,33 +19,31 @@ public class CartFacade {
     private final ClearCartUseCase clearCartUseCase;
     private final GetCartItemListUseCase getCartItemListUseCase;
 
-    @Transactional(readOnly = true)
     public CartResponse getCart(Long userId) {
         return getCartItemListUseCase.getCart(userId);
     }
 
-    @Transactional
     public void createCart(MarketUserDto buyer) {
         createCartUseCase.create(buyer);
     }
 
-    @Transactional
     public void addCartItem(Long userId, CartItemAddRequest request) {
         addCartItemUseCase.addItem(userId, request);
     }
 
-    @Transactional
     public void updateCartItem(Long userId, CartItemUpdateRequest request) {
         updateCartItemUseCase.updateItemQuantity(userId, request);
     }
 
-    @Transactional
     public void removeCartItem(Long userId, Long productId) {
         removeCartItemUseCase.removeItem(userId, productId);
     }
 
-    @Transactional
     public void clearCart(Long userId) {
         clearCartUseCase.clear(userId);
+    }
+
+    public void removeCartItems(Long userId, List<Long> productIds) {
+        removeCartItemUseCase.removeItems(userId, productIds);
     }
 }

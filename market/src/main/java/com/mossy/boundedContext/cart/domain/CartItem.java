@@ -24,10 +24,10 @@ public class CartItem extends BaseIdAndTime {
     @Column(nullable = false)
     private int quantity;
 
-    public CartItem(Cart cart, Long productId, int count) {
+    public CartItem(Cart cart, Long productId, int quantity) {
         this.cart = cart;
         this.productId = productId;
-        this.quantity = count;
+        this.quantity = quantity;
     }
 
     public void addItem(int quantity) {

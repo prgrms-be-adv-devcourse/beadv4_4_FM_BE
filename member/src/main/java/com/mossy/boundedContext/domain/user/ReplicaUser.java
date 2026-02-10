@@ -1,5 +1,7 @@
-package com.mossy.member.domain.user;
+package com.mossy.boundedContext.domain.user;
+
 import com.mossy.shared.member.domain.entity.BaseUser;
+import com.mossy.shared.member.domain.enums.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;

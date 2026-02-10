@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Table(name = "MARKET_ORDER_DETAIL")
+@Table(name = "MARKET_ORDER_ITEM")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@AttributeOverride(name = "id", column = @Column(name = "order_detail_id"))
+@AttributeOverride(name = "id", column = @Column(name = "order_item_id"))
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class OrderItem extends BaseIdAndTime {

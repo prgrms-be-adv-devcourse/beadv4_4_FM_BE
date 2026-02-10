@@ -7,6 +7,7 @@ import com.mossy.boundedContext.marketUser.out.MarketUserRepository;
 import com.mossy.shared.market.dto.event.MarketUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class CreateCartUseCase {
     private final MarketUserRepository marketUserRepository;
     private final CartRepository cartRepository;
 
+    @Transactional
     public void create(MarketUserDto buyer) {
         MarketUser user = marketUserRepository.getReferenceById(buyer.id());
         Cart cart = Cart.createCart(user);

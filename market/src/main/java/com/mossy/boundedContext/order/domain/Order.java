@@ -4,6 +4,7 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
+import com.mossy.boundedContext.product.in.dto.response.ProductInfoResponse;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.market.enums.OrderState;
 import jakarta.persistence.*;
@@ -12,6 +13,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -41,44 +43,45 @@ public class Order extends BaseIdAndTime {
     @Column(nullable = false)
     private OrderState state;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public static Order create(
             MarketUser buyer,
-            String orderNo
+            String address,
+            String orderNo,
+            Map<Long, MarketSeller> sellerMap,
+            List<ProductInfoResponse> items,
+            BigDecimal totalPrice
     ) {
-        return Order.builder()
+        Order order = Order.builder()
                 .buyer(buyer)
                 .orderNo(orderNo)
-                .address(buyer.getAddress())
-                .totalPrice(BigDecimal.ZERO)
+                .address(address)
                 .state(OrderState.PENDING)
+                .totalPrice(totalPrice)
                 .build();
+
+        items.forEach(item -> order.addOrderItem(sellerMap.get(item.sellerId()), item));
+
+        return order;
     }
 
-    public void addOrderDetail(
-            MarketSeller seller,
-            Long productId,
-            int quantity,
-            BigDecimal price
-    ) {
-        BigDecimal orderPrice = price.multiply(BigDecimal.valueOf(quantity));
-        this.orderItems.add(
-                OrderItem.create(
-                        this,
-                        seller,
-                        productId,
-                        quantity,
-                        orderPrice
-                )
-        );
-        this.totalPrice = this.totalPrice.add(orderPrice);
+    private void addOrderItem(MarketSeller seller, ProductInfoResponse item) {
+        BigDecimal orderPrice = item.price().multiply(BigDecimal.valueOf(item.quantity()));
+        OrderItem orderItem = OrderItem.create(this, seller, item.productId(), item.quantity(), orderPrice);
+        this.orderItems.add(orderItem);
     }
 
     public void completePayment() {
         this.state = OrderState.PAID;
+    }
+
+    public void expire() {
+        if (this.state == OrderState.PENDING) {
+            this.state = OrderState.EXPIRED;
+        }
     }
 
     public void validateAmount(BigDecimal requestAmount) {

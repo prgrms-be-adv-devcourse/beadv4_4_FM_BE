@@ -39,6 +39,9 @@ dependencies {
     // 테스트
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+
+    // Feign Client 추가
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.0")
 }
 
 tasks.withType<Test> {

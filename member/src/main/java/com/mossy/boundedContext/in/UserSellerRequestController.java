@@ -1,9 +1,10 @@
-package com.mossy.member.in;
+package com.mossy.boundedContext.in;
 
-import com.mossy.member.global.security.UserDetailsImpl;
-import com.mossy.member.app.seller.SellerRequestUserFacade;
+
+import com.mossy.boundedContext.app.seller.SellerRequestUserFacade;
+import com.mossy.global.config.UserDetailsImpl;
+import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
 import com.mossy.global.rsData.RsData;
-import com.mossy.shared.member.dto.request.SellerRequestCreateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserSellerRequestController {
 
-    private final SellerRequestUserFacade  sellerRequestUserFacade;
+    private final SellerRequestUserFacade sellerRequestUserFacade;
 
     @Operation(summary = "판매자 신청", description = "판매자 신청서를 생성하고 상태를 PENDING으로 저장")
     @PostMapping("/seller/request")

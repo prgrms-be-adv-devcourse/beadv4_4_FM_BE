@@ -1,14 +1,13 @@
-package com.mossy.java.auth.in;
+package com.mossy.boundedContext.in;
 
-import com.mossy.auth.app.AppFacade;
+import com.mossy.boundedContext.app.AuthFacade;
+import com.mossy.boundedContext.in.dto.LoginRequest;
+import com.mossy.boundedContext.in.dto.LoginResponse;
 import com.mossy.global.rsData.RsData;
-import com.mossy.shared.member.dto.request.SignupRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import com.mossy.java.auth.in.dto.LoginRequest;
-import com.mossy.java.auth.in.dto.LoginResponse;
 
 @Tag(name = "Auth", description = "임시 인증 API (개발용)")
 @RestController
@@ -16,15 +15,14 @@ import com.mossy.java.auth.in.dto.LoginResponse;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final com.mossy.auth.app.AuthFacade authFacade;
-    private final UserFacade userFacade;
+    private final AuthFacade authFacade;
 
     @Operation(
             summary = "회원가입",
             description = "일반 유저(USER)로 가입")
     @PostMapping("/signup")
-    public RsData<Long> signup(@RequestBody SignupRequest request) {
-        return RsData.success("회원가입 성공", userFacade.signup(request));
+    public RsData<LoginResponse> signup(@RequestBody LoginRequest req) {
+        return RsData.success("회원가입 성공", authFacade.login(req));
     }
 
     @Operation(

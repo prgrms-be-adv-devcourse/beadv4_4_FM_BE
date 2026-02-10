@@ -1,7 +1,7 @@
 package com.mossy.shared.cash.event;
 
-import com.mossy.shared.cash.dto.event.CashSellerDto;
+import com.mossy.shared.member.payload.SellerPayload;
 
 public record CashSellerCreatedEvent(
-    CashSellerDto seller
+    SellerPayload seller
 ) {}

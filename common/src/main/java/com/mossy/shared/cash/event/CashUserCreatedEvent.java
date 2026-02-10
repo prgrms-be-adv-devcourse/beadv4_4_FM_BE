@@ -1,7 +1,8 @@
 package com.mossy.shared.cash.event;
 
-import com.mossy.shared.cash.dto.event.CashUserDto;
+import com.mossy.shared.member.payload.UserPayload;
 
-public record CashUserCreatedEvent (
-    CashUserDto user
-){}
+public record CashUserCreatedEvent(
+    UserPayload user
+) {
+}

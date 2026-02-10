@@ -1,38 +1,31 @@
-package com.mossy.java.auth.app;
+package com.mossy.boundedContext.app;
 
-
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.shared.member.domain.role.UserRole;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.out.MemberServiceClient;
+import com.mossy.shared.auth.domain.request.MemberVerifyRequest;
+import com.mossy.shared.auth.domain.response.MemberVerifyResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class LoginUseCase {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final MemberServiceClient memberServiceClient;
 
     public LoginContext execute(String email, String password) {
-        User user = userRepository.findByEmailWithRoles(email)
-                .orElseThrow(() -> new DomainException(ErrorCode.INVALID_CREDENTIALS)); // 에러코드 통일
+        MemberVerifyResponse response = memberServiceClient.verify(
+                new MemberVerifyRequest(email, password)
+        );
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        if (response == null || !response.isValid()) {
             throw new DomainException(ErrorCode.INVALID_CREDENTIALS);
         }
 
-        String role = extractRole(user);
-        return new LoginContext(user.getId(), role);
-    }
-
-    private String extractRole(User user) {
-        List<UserRole> userRoles = user.getUserRoles();
-        if (userRoles == null || userRoles.isEmpty()) return "USER";
-        return userRoles.get(0).getRole().getCode().name();
+        String role = response.roles().isEmpty() ? "USER" : response.roles().get(0).name();
+        return new LoginContext(response.userId(), role);
     }
 
     public record LoginContext(Long userId, String role) {}

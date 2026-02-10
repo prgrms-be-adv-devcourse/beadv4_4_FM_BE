@@ -1,6 +1,8 @@
-package com.mossy.member.domain.seller;
+package com.mossy.boundedContext.domain.seller;
 
 import com.mossy.shared.member.domain.entity.BaseSeller;
+import com.mossy.shared.member.domain.enums.SellerStatus;
+import com.mossy.shared.member.domain.enums.SellerType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
@@ -28,12 +30,12 @@ public abstract class ReplicaSeller extends BaseSeller {
     public ReplicaSeller(
             Long id,
             Long userId,
-            String sellerType,
+            SellerType sellerType,
             String storeName,
             String businessNum,
             BigDecimal latitude,
             BigDecimal longitude,
-            String status,
+            SellerStatus status,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
 

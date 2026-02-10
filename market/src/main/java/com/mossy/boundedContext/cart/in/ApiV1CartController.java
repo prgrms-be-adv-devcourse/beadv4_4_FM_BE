@@ -2,6 +2,7 @@ package com.mossy.boundedContext.cart.in;
 
 import com.mossy.boundedContext.cart.app.CartFacade;
 import com.mossy.boundedContext.cart.in.dto.request.CartItemAddRequest;
+import com.mossy.boundedContext.cart.in.dto.request.CartItemDeleteRequest;
 import com.mossy.boundedContext.cart.in.dto.request.CartItemUpdateRequest;
 import com.mossy.boundedContext.cart.in.dto.response.CartResponse;
 import com.mossy.global.rsData.RsData;
@@ -24,7 +25,6 @@ public class ApiV1CartController {
     )
     @GetMapping
     public RsData<CartResponse> getCart(
-            @Parameter(hidden = true)
             @RequestParam(name="userId") Long userId
     ) {
         return new RsData<>("200", "장바구니 조회를 성공했습니다.", cartFacade.getCart(userId));
@@ -36,7 +36,7 @@ public class ApiV1CartController {
     )
     @PostMapping("/items")
     public RsData<Void> addCartItem(
-            @Parameter(hidden = true)
+            @Parameter(description = "사용자 ID")
             @RequestParam(name="userId") Long userId,
 
             @Parameter(description = "장바구니 상품 추가 요청 DTO", required = true)
@@ -62,21 +62,30 @@ public class ApiV1CartController {
         return new RsData<>("200", "장바구니 상품 수량이 수정되었습니다.");
     }
 
-
     @Operation(
-            summary = "장바구니 상품 삭제",
-            description = "장바구니에서 특정 상품을 삭제합니다."
+            summary = "장바구니 상품 단일 삭제",
+            description = "장바구니에 담긴 상품을 삭제합니다."
     )
     @DeleteMapping("/items/{productId}")
     public RsData<Void> removeCartItem(
-            @Parameter(hidden = true)
             @RequestParam(name="userId") Long userId,
-
-            @Parameter(description = "삭제할 상품 ID", required = true)
             @PathVariable Long productId
     ) {
         cartFacade.removeCartItem(userId, productId);
-        return new RsData<>("200", "장바구니에서 상품이 삭제되었습니다.");
+        return new RsData<>("200", "상품이 삭제되었습니다.");
+    }
+
+    @Operation(
+            summary = "장바구니 상품 선택 삭제",
+            description = "장바구니에 담긴 선택한 상품들을 삭제합니다."
+    )
+    @DeleteMapping("/items")
+    public RsData<Void> removeCartItems(
+            @RequestParam(name="userId") Long userId,
+            @RequestBody CartItemDeleteRequest request
+    ) {
+        cartFacade.removeCartItems(userId, request.productIds());
+        return new RsData<>("200", "선택한 상품들이 삭제되었습니다.");
     }
 
     @Operation(
@@ -85,7 +94,6 @@ public class ApiV1CartController {
     )
     @DeleteMapping
     public RsData<Void> clearCart(
-            @Parameter(hidden = true)
             @RequestParam(name="userId") Long userId
     ) {
         cartFacade.clearCart(userId);

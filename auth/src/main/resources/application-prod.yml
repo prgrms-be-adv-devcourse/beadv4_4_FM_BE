@@ -1,0 +1,22 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  # 운영 환경 Redis 정보
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+
+  datasource:
+     url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
+     username: ${DB_USERNAME}
+     password: ${DB_PASSWORD}
+     driver-class-name: org.postgresql.Driver
+
+logging:
+  level:
+    root: INFO
+    # 운영 환경에서는 Feign 로그를 좀 더 간결하게
+    com.mossy.boundedContext.auth.out.MemberServiceClient: INFO

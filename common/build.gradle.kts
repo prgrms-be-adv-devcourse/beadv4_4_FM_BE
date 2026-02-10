@@ -25,25 +25,27 @@ repositories {
 }
 
 dependencies {
-    // 공통 라이브러리
-    api("org.springframework.boot:spring-boot-starter-data-jpa")
+    // 1. Spring Boot Starters
     api("org.springframework.boot:spring-boot-starter-validation")
     api("org.springframework.boot:spring-boot-starter-data-redis")
 
+    // Web 의존성은 필터
     compileOnly("org.springframework.boot:spring-boot-starter-web")
 
+        // 3. QueryDSL & JPA
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
     annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
-    // DB 및 롬복
+    // 4. Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
-    //Swagger
-    api("org.springdoc:springdoc-openapi-starter-common:2.8.3")
+    // 5. Swagger & Utils
+    api("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
 
-    // 테스트 (공통)
+    // 6. Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
@@ -52,10 +54,6 @@ tasks.withType<Test> {
 }
 
 // Library module - disable bootJar, enable jar
-tasks.bootJar {
-    enabled = false
-}
+tasks.bootJar { enabled = false }
 
-tasks.jar {
-    enabled = true
-}
+tasks.jar { enabled = true }

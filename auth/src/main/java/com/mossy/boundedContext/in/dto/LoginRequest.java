@@ -1,6 +1,6 @@
-package com.mossy.java.auth.in.dto;
+package com.mossy.boundedContext.in.dto;
 
 public record LoginRequest(
-        String email, //나중에 이메일로 바꿀예정, 체크용 로그인
+        String email,
         String password
 ) { }

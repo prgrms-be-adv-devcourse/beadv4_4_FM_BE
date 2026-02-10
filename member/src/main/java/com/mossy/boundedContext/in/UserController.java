@@ -1,10 +1,13 @@
-package com.mossy.member.in;
+package com.mossy.boundedContext.in;
 
-import com.mossy.member.auth.in.dto.UserInfoDTO;
-import com.mossy.member.global.security.UserDetailsImpl;
-import com.mossy.member.out.seller.SellerRequestRepository;
+
+import com.mossy.boundedContext.domain.seller.SellerRequest;
+import com.mossy.global.config.UserDetailsImpl;
+import com.mossy.boundedContext.in.dto.UserInfoDTO;
+import com.mossy.boundedContext.out.seller.SellerRequestRepository;
 import com.mossy.global.rsData.RsData;
-import com.mossy.member.domain.seller.SellerRequest;
+
+import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +44,8 @@ public class UserController {
 
         UserInfoDTO dto = new UserInfoDTO(
                 userId,
-                principal.getUser().getNickname(),
-                principal.getUser().getName(),
+                principal.getNickname(),
+                principal.getName(),
                 status
         );
 

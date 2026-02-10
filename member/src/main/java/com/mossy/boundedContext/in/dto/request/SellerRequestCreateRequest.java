@@ -1,7 +1,6 @@
-package com.mossy.shared.member.dto.request;
+package com.mossy.boundedContext.in.dto.request;
 
 import com.mossy.shared.member.domain.enums.SellerType;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

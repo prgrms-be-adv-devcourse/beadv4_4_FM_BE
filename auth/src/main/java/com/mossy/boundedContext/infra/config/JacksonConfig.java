@@ -1,4 +1,4 @@
-package com.mossy.global.config;
+package com.mossy.boundedContext.infra.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;

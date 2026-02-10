@@ -1,9 +1,9 @@
-package com.mossy.java.auth.app;
+package com.mossy.boundedContext.app;
 
-import com.mossy.member.auth.infra.jwt.JwtProperties;
-import com.mossy.member.auth.out.RefreshTokenRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.global.jwt.JwtProperties;
+import com.mossy.boundedContext.out.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,0 +1,39 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: auth
+  # .env.auth 파일에서 상세 값을 읽어오도록 설정
+  config:
+    import: "optional:file:.env.auth[.properties]"
+
+  output:
+    ansi:
+      enabled: always
+
+  # Redis 설정 (토큰 저장 및 로그인 제한용)
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+
+# JWT 설정
+mossy:
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token-expire-ms: 1800000       # 30분
+    refresh-token-expire-ms: 1209600000    # 14일
+
+# OpenFeign 설정 (로깅 및 타임아웃)
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+# 로깅 설정 (Feign 통신 확인용)
+logging:
+  level:
+    com.mossy.boundedContext.auth.out.MemberServiceClient: DEBUG

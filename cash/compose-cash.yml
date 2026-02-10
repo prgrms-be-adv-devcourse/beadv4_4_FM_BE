@@ -1,14 +1,14 @@
 services:
-  cash-service:
+  cash:
     build:
-      context: ../src/backend
-      dockerfile: cash-service/Dockerfile
-    container_name: cash-service
+      context: ..
+      dockerfile: cash/Dockerfile
+    container_name: cash
     restart: always
     ports:
       - "8083:8080"
     env_file:
-      - ../envs/.env.cash
+      - .env.cash
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     networks:

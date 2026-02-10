@@ -27,8 +27,6 @@ dependencies {
     // 공통
     implementation(project(":common"))
     implementation("org.springframework.boot:spring-boot-starter-web")
-    //implementation("org.springframework.boot:spring-boot-starter-security")
-
     //implementation("org.springframework.boot:spring-boot-starter-batch")
 
     // Market 서비스 전용 라이브러리
@@ -49,12 +47,6 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")
-
-    // 테스트
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    //testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.springframework.batch:spring-batch-test")
-    // testImplementation("org.springframework.boot:spring-boot-starter-data-elasticsearch-test") // 필요 시 유지
 }
 
 tasks.withType<Test> {

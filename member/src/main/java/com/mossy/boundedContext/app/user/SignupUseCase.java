@@ -1,18 +1,20 @@
-package com.mossy.member.app.user;
+package com.mossy.boundedContext.app.user;
 
-import com.mossy.member.out.user.RoleRepository;
-import com.mossy.member.out.user.UserRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.boundedContext.domain.user.User;
+import com.mossy.boundedContext.exception.DomainException;
+import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.in.dto.request.SignupRequest;
+import com.mossy.boundedContext.out.user.RoleRepository;
+import com.mossy.boundedContext.out.user.UserRepository;
 import com.mossy.shared.member.domain.enums.UserStatus;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
-import com.mossy.shared.member.domain.role.UserRole;
-import com.mossy.shared.member.dto.request.SignupRequest;
+import com.mossy.boundedContext.domain.role.UserRole;
 import com.mossy.standard.ut.EncryptionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class SignupUseCase {
     private final PasswordEncoder passwordEncoder;
     private final EncryptionUtils encryptionUtils;
 
+    @Transactional
     public User execute(SignupRequest req) {
 
         if (userRepository.existsByEmail(req.email())) {
@@ -51,6 +54,6 @@ public class SignupUseCase {
 
         user.addUserRole(new UserRole(user, roleUser));
 
-        return user;
+        return userRepository.save(user);
     }
 }

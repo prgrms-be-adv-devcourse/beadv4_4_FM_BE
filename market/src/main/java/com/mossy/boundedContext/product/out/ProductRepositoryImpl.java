@@ -27,7 +27,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         product.name,
                         category.name,
                         product.price,
-                        product.weight,
                         productImage.imageUrl,
                         cartItem.quantity
                 ))

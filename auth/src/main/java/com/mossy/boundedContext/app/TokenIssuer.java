@@ -1,7 +1,7 @@
-package com.mossy.java.auth.app;
+package com.mossy.boundedContext.app;
 
-import com.mossy.member.auth.in.dto.TokenResponse;
-import com.mossy.member.auth.infra.jwt.JwtProvider;
+import com.mossy.boundedContext.in.dto.TokenResponse;
+import com.mossy.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +11,6 @@ public class TokenIssuer {
 
     private final JwtProvider jwtProvider;
 
-    public TokenResponse issueTokens (Long userId, String role) {
-        return issueTokens(userId, role, null);
-    }
     public TokenResponse issueTokens (Long userId, String role, Long sellerId) {
         String accessToken = jwtProvider.createAccessToken(userId, role, sellerId);
         String refreshToken = jwtProvider.createRefreshToken(userId);
