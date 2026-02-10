@@ -27,7 +27,7 @@ public class MemberSecurityConfig {
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/users/**", "/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/users/**", "/api/v1/seller/auth/**").permitAll()
                         .requestMatchers("/mossy-docs/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 );

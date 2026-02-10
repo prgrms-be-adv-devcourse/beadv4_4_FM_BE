@@ -4,7 +4,7 @@ import com.mossy.boundedContext.app.VerfyMemberUseCase;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.boundedContext.out.dto.response.MemberVerifyResponse;
+import com.mossy.boundedContext.out.external.dto.response.MemberVerifyExternResponse;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.shared.member.payload.UserPayload;
@@ -31,7 +31,7 @@ public class UserFacade {
         return savedUser.getId();
     }
 
-    public MemberVerifyResponse verifyMember(String email, String password) {
+    public MemberVerifyExternResponse verifyMember(String email, String password) {
         return verfyMemberUseCase.execute(email, password);
     }
 

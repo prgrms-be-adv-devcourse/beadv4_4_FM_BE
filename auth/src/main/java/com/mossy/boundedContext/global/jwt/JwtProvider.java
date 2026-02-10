@@ -67,7 +67,7 @@ public class JwtProvider {
 
     public Long getSellerId(String token) {
         Claims claims = parseClaims(token);
-        Object raw = claims.get("sellerId");
+        Object raw = claims.get("seller_Id");
         if (raw == null) return null;
         return (raw instanceof Number) ? ((Number) raw).longValue() : Long.valueOf(raw.toString());
     }

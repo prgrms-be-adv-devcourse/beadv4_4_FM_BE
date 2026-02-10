@@ -2,7 +2,7 @@ package com.mossy.boundedContext.app;
 
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
-import com.mossy.boundedContext.out.dto.response.MemberVerifyResponse;
+import com.mossy.boundedContext.out.external.dto.response.MemberVerifyExternResponse;
 import com.mossy.shared.member.domain.role.RoleCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +19,7 @@ public class VerfyMemberUseCase {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public MemberVerifyResponse execute(String email, String password) {
+    public MemberVerifyExternResponse execute(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
@@ -29,7 +29,7 @@ public class VerfyMemberUseCase {
                 .map(ur -> ur.getRole().getCode())
                 .collect(Collectors.toList());
 
-        return new MemberVerifyResponse(user.getId(), roles, isValid);
+        return new MemberVerifyExternResponse(user.getId(), roles, isValid);
 
     }
 }

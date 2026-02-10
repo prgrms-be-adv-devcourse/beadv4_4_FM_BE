@@ -1,7 +1,7 @@
-package com.mossy.boundedContext.out;
+package com.mossy.boundedContext.out.external;
 
-import com.mossy.shared.auth.domain.request.MemberVerifyRequest;
-import com.mossy.shared.auth.domain.response.MemberVerifyResponse;
+import com.mossy.boundedContext.out.dto.request.MemberVerifyExternRequest;
+import com.mossy.boundedContext.out.dto.response.MemberVerifyResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface MemberServiceClient {
 
     @PostMapping("api/v1/internal/members/verify")
-    MemberVerifyResponse verify(@RequestBody MemberVerifyRequest request);
+    MemberVerifyResponse verify(@RequestBody MemberVerifyExternRequest request);
 }
