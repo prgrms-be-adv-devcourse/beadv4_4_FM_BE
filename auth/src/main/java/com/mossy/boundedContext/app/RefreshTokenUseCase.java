@@ -6,6 +6,7 @@ import com.mossy.boundedContext.global.jwt.JwtProperties;
 import com.mossy.boundedContext.out.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public class RefreshTokenUseCase {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProperties jwtProperties;
 
+    @Transactional
     public void save(Long userId, String refreshToken) {
         refreshTokenRepository.save(
                 String.valueOf(userId),
@@ -22,6 +24,7 @@ public class RefreshTokenUseCase {
         );
     }
 
+    @Transactional(readOnly = true)
     public String validateAndGetUserId(String refreshToken) {
         String userIdStr = refreshTokenRepository.getUserIdByToken(refreshToken);
         if (userIdStr == null) throw new DomainException(ErrorCode.INVALID_TOKEN);
@@ -32,10 +35,12 @@ public class RefreshTokenUseCase {
         return userIdStr;
     }
 
+    @Transactional
     public void delete(String userIdStr, String refreshToken) {
         refreshTokenRepository.delete(userIdStr, refreshToken);
     }
 
+    @Transactional
     public void deleteIfExists(String refreshToken) {
         String userId = refreshTokenRepository.getUserIdByToken(refreshToken);
         if (userId != null) {
