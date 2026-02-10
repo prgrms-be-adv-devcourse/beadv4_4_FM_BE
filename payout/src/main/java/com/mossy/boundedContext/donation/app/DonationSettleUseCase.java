@@ -6,11 +6,10 @@ import com.mossy.boundedContext.donation.out.DonationLogRepository;
 import com.mossy.boundedContext.payout.domain.payout.Payout;
 import com.mossy.boundedContext.payout.domain.payout.PayoutItem;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
-import com.mossy.boundedContext.payout.out.PayoutRepository;
+import com.mossy.boundedContext.payout.out.repository.PayoutRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.app.PayoutSupport;
-import com.mossy.boundedContext.payout.out.PayoutRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,8 @@ package com.mossy.boundedContext.payout.app.seller;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
-import com.mossy.boundedContext.payout.out.PayoutSellerRepository;
+import com.mossy.boundedContext.payout.in.dto.event.PayoutSellerDto;
+import com.mossy.boundedContext.payout.out.repository.PayoutSellerRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.payout.event.PayoutSellerCreatedEvent;
@@ -23,7 +24,8 @@ public class PayoutSyncSellerUseCase {
     private final EventPublisher eventPublisher;
 
     /**
-     * Member 컨텍스트로부터 받은 SellerDto를 사용하여 PayoutSeller 엔티티를 생성하거나 업데이트
+     * Member 컨텍스트로부터 받은 SellerPayload를 사용하여 PayoutSeller 엔티티를 생성하거나 업데이트
+     * 내부에서 PayoutSellerDto로 변환하여 처리
      * 기존 엔티티가 있으면 changeSeller로 업데이트하고, 없으면 새로 생성
      * JPA 더티 체킹을 통해 실제 변경된 필드만 DB에 반영됨
      *
@@ -35,29 +37,40 @@ public class PayoutSyncSellerUseCase {
             throw new DomainException(ErrorCode.INVALID_SELLER_DATA);
         }
 
-        payoutSellerRepository.findById(seller.sellerId())
+        // SellerPayload를 PayoutSellerDto로 변환
+        PayoutSellerDto dto = PayoutSellerDto.from(seller);
+
+        payoutSellerRepository.findById(dto.sellerId())
                 .ifPresentOrElse(
                         // 기존 판매자: changeSeller로 업데이트 (더티 체킹으로 변경된 필드만 UPDATE)
                         existingSeller -> existingSeller.changeSeller(seller),
-                        // 새 판매자: 엔티티 생성 및 이벤트 발행
-                        () -> {
-                            PayoutSeller newSeller = PayoutSeller.builder()
-                                    .id(seller.sellerId())
-                                    .userId(seller.userId())
-                                    .sellerType(seller.sellerType())
-                                    .storeName(seller.storeName())
-                                    .businessNum(seller.businessNum())
-                                    .latitude(seller.latitude())
-                                    .longitude(seller.longitude())
-                                    .status(seller.status())
-                                    .createdAt(seller.createdAt())
-                                    .updatedAt(seller.updatedAt())
-                                    .build();
-
-                            PayoutSeller saved = payoutSellerRepository.save(newSeller);
-                            eventPublisher.publish(new PayoutSellerCreatedEvent(saved.toDto()));
-                        }
+                        // 새 판매자: DTO로 엔티티 생성
+                        () -> createPayoutSeller(dto)
                 );
+    }
+
+    /**
+     * PayoutSeller 엔티티를 생성하고 저장하는 헬퍼 메서드
+     * TODO: 향후 MapStruct를 사용하여 DTO -> Entity 변환 로직을 Mapper로 분리
+     *
+     * @param dto 판매자 생성 DTO
+     */
+    private void createPayoutSeller(PayoutSellerDto dto) {
+        PayoutSeller newSeller = PayoutSeller.builder()
+                .id(dto.sellerId())
+                .userId(dto.userId())
+                .sellerType(dto.sellerType())
+                .storeName(dto.storeName())
+                .businessNum(dto.businessNum())
+                .latitude(dto.latitude())
+                .longitude(dto.longitude())
+                .status(dto.status())
+                .createdAt(dto.createdAt())
+                .updatedAt(dto.updatedAt())
+                .build();
+
+        PayoutSeller saved = payoutSellerRepository.save(newSeller);
+        eventPublisher.publish(new PayoutSellerCreatedEvent(saved.toDto()));
     }
 }
 

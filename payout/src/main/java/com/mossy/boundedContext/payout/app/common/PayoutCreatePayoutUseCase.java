@@ -3,8 +3,8 @@ package com.mossy.boundedContext.payout.app.common;
 
 import com.mossy.boundedContext.payout.domain.payout.Payout;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
-import com.mossy.boundedContext.payout.out.PayoutRepository;
-import com.mossy.boundedContext.payout.out.PayoutSellerRepository;
+import com.mossy.boundedContext.payout.out.repository.PayoutRepository;
+import com.mossy.boundedContext.payout.out.repository.PayoutSellerRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;

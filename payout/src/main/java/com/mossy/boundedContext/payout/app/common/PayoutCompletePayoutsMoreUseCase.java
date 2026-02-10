@@ -4,7 +4,7 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 
 import com.mossy.boundedContext.payout.domain.payout.Payout;
-import com.mossy.boundedContext.payout.out.PayoutRepository;
+import com.mossy.boundedContext.payout.out.repository.PayoutRepository;
 import com.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

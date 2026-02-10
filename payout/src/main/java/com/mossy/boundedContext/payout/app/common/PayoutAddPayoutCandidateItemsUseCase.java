@@ -8,7 +8,8 @@ import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
-import com.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
+import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateDto;
+import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
 
 import com.mossy.shared.market.payload.OrderPayoutDto;
 import com.mossy.shared.payout.enums.PayoutEventType;
@@ -96,36 +97,42 @@ public class PayoutAddPayoutCandidateItemsUseCase {
 
         // --- 계산된 금액을 바탕으로 3가지 종류의 정산 후보 아이템을 생성 ---
         // 아이템 1: 플랫폼 수수료 (구매자 -> 시스템)
-        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee, orderItem.weightGrade(), orderItem.deliveryDistance());
+        makePayoutCandidateItem(PayoutCandidateItemCreateDto.of(
+                paymentDate, orderItem, PayoutEventType.정산__상품판매_수수료,
+                buyer, system, adjustedFee,
+                orderItem.weightGrade(), orderItem.deliveryDistance()
+        ));
+
         // 아이템 2: 판매 대금 (구매자 -> 판매자)
-        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee, orderItem.weightGrade(), orderItem.deliveryDistance());
+        makePayoutCandidateItem(PayoutCandidateItemCreateDto.of(
+                paymentDate, orderItem, PayoutEventType.정산__상품판매_대금,
+                buyer, seller, salePriceWithoutFee,
+                orderItem.weightGrade(), orderItem.deliveryDistance()
+        ));
+
         // 아이템 3: 기부금 (구매자 -> 기부금 수령처)
-        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount, orderItem.weightGrade(), orderItem.deliveryDistance());
+        makePayoutCandidateItem(PayoutCandidateItemCreateDto.of(
+                paymentDate, orderItem, PayoutEventType.정산__상품판매_기부금,
+                buyer, donation, donationAmount,
+                orderItem.weightGrade(), orderItem.deliveryDistance()
+        ));
     }
 
     /**
      * 정산 후보 아이템을 생성하고 저장하는 헬퍼 메서드
+     * TODO: 향후 MapStruct를 사용하여 DTO -> Entity 변환 로직을 Mapper로 분리
      */
-    private void makePayoutCandidateItem(
-            LocalDateTime paymentDate,
-            OrderPayoutDto orderItem,
-            PayoutEventType eventType,
-            PayoutUser payer,
-            PayoutSeller payee,
-            BigDecimal amount,
-            String weightGrade,
-            BigDecimal deliveryDistance
-    ) {
+    private void makePayoutCandidateItem(PayoutCandidateItemCreateDto dto) {
         PayoutCandidateItem payoutCandidateItem = PayoutCandidateItem.builder()
-                .eventType(eventType)
+                .eventType(dto.eventType())
                 .relTypeCode("OrderItem")
-                .relId(orderItem.id())
-                .paymentDate(paymentDate)
-                .payer(payer)
-                .payee(payee)
-                .amount(amount)
-                .weightGrade(weightGrade)
-                .deliveryDistance(deliveryDistance)
+                .relId(dto.orderItem().id())
+                .paymentDate(dto.paymentDate())
+                .payer(dto.payer())
+                .payee(dto.payee())
+                .amount(dto.amount())
+                .weightGrade(dto.weightGrade())
+                .deliveryDistance(dto.deliveryDistance())
                 .build();
 
         payoutCandidateItemRepository.save(payoutCandidateItem);

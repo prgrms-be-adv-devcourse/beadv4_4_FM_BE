@@ -5,13 +5,12 @@ import com.mossy.boundedContext.payout.domain.payout.Payout;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.domain.payout.PayoutItem;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
-import com.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
-import com.mossy.boundedContext.payout.out.PayoutRepository;
+import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
+import com.mossy.boundedContext.payout.out.repository.PayoutRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 

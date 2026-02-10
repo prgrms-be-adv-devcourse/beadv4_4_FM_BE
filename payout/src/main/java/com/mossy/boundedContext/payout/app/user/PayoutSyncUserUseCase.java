@@ -3,10 +3,11 @@ package com.mossy.boundedContext.payout.app.user;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
-import com.mossy.boundedContext.payout.out.PayoutUserRepository;
+import com.mossy.boundedContext.payout.in.dto.event.PayoutUserDto;
+import com.mossy.boundedContext.payout.out.repository.PayoutUserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-
 import com.mossy.shared.member.payload.UserPayload;
+import com.mossy.shared.payout.event.PayoutUserCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,28 +36,38 @@ public class PayoutSyncUserUseCase {
             throw new DomainException(ErrorCode.INVALID_USER_DATA);
         }
 
-        payoutUserRepository.findById(user.id())
+        PayoutUserDto dto = PayoutUserDto.from(user);
+        payoutUserRepository.findById(dto.id())
                 .ifPresentOrElse(
                         // 기존 사용자: changeUser로 업데이트 (더티 체킹으로 변경된 필드만 UPDATE)
                         existingUser -> existingUser.changeUser(user),
-                        // 새 사용자: 엔티티 생성
-                        () -> {
-                            PayoutUser newUser = PayoutUser.builder()
-                                    .id(user.id())
-                                    .email(user.email())
-                                    .name(user.name())
-                                    .address(user.address())
-                                    .nickname(user.nickname())
-                                    .latitude(user.latitude())
-                                    .longitude(user.longitude())
-                                    .profileImage(user.profileImage())
-                                    .createdAt(user.createdAt())
-                                    .updatedAt(user.updatedAt())
-                                    .status(user.status())
-                                    .build();
-
-                            payoutUserRepository.save(newUser);
-                        }
+                        // 새 사용자: DTO로 변환 후 엔티티 생성
+                        () -> createPayoutUser(dto)
                 );
+    }
+
+    /**
+     * PayoutUser 엔티티를 생성하고 저장하는 헬퍼 메서드
+     * TODO: 향후 MapStruct를 사용하여 DTO -> Entity 변환 로직을 Mapper로 분리
+     *
+     * @param dto 사용자 생성 DTO
+     */
+    private void createPayoutUser(PayoutUserDto dto) {
+        PayoutUser newUser = PayoutUser.builder()
+                .id(dto.id())
+                .email(dto.email())
+                .name(dto.name())
+                .address(dto.address())
+                .nickname(dto.nickname())
+                .latitude(dto.latitude())
+                .longitude(dto.longitude())
+                .profileImage(dto.profileImage())
+                .status(dto.status())
+                .createdAt(dto.createdAt())
+                .updatedAt(dto.updatedAt())
+                .build();
+
+        PayoutUser saved = payoutUserRepository.save(newUser);
+        eventPublisher.publish(new PayoutUserCreatedEvent(saved.toDto()));
     }
 }

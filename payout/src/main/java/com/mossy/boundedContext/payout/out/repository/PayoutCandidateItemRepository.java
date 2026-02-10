@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.payout.out;
+package com.mossy.boundedContext.payout.out.repository;
 
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.domain.payout.PayoutItem;

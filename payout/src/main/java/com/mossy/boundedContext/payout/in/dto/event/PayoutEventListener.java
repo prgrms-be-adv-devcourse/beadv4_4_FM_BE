@@ -1,9 +1,9 @@
-package com.mossy.boundedContext.payout.in;
+package com.mossy.boundedContext.payout.in.dto.event;
 
 import com.mossy.boundedContext.donation.app.DonationFacade;
 import com.mossy.boundedContext.payout.app.PayoutFacade;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
-import com.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
+import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
 import com.mossy.shared.market.event.OrderPaidEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
@@ -67,7 +67,7 @@ public class PayoutEventListener {
         event.orderItems()
                 .forEach(orderItem -> {
                     // 정산 후보 항목 생성 (수수료, 판매 대금, 기부금)
-                    payoutFacade.addPayoutCandidateItem(orderItem, event.paymentDate());
+                    payoutFacade.addPayoutCandidateItem(orderItem, event.createdAt());
                 });
     }
 
@@ -84,7 +84,7 @@ public class PayoutEventListener {
         donationCandidates.forEach(candidate -> {
             donationFacade.createDonationLogDirect(
                     candidate.getRelId(),                    // orderItemId
-                    candidate.getPayer().getUserId(),        // buyerId
+                    candidate.getPayer().getId(),        // buyerId
                     candidate.getAmount(),                   // 이미 계산된 기부금액
                     candidate.getWeightGrade(),              // weightGrade
                     candidate.getDeliveryDistance()          // deliveryDistance

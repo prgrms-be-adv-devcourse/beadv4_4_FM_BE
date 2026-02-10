@@ -88,7 +88,6 @@ public class PayoutCollectItemsAndCompletePayoutsBatchJobConfig {
     /**
      * [배치 2단계] 정산 완료 Step
      * 1단계에서 항목들이 채워진 '정산(Payout)' 객체들을 실제 정산 처리합니다.
-     *
      * Spring Batch 6.0: TransactionManager 필수
      */
     @Bean
