@@ -29,7 +29,7 @@ public class RestAccessDeniedHandler implements ServerAccessDeniedHandler {
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
         // 에러 응답 객체 생성
-        RsData<Object> body = RsData.fail("F-403", "접근 권한이 없습니다.");
+        RsData<Void> body = RsData.fail("F-403", "접근 권한이 없습니다.");
 
         try {
             // ObjectMapper를 사용하여 JSON 바이트 배열로 변환
