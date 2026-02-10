@@ -5,7 +5,7 @@ import com.mossy.boundedContext.payment.in.dto.event.PaymentCanceledEvent;
 import com.mossy.boundedContext.payment.in.dto.request.TossConfirmRequest;
 import com.mossy.boundedContext.payment.in.dto.response.TossCancelResponse;
 import com.mossy.boundedContext.payment.in.dto.response.TossConfirmResponse;
-import com.mossy.boundedContext.payment.out.MarketServiceClient;
+import com.mossy.boundedContext.payment.out.MarketFeignClient;
 import com.mossy.boundedContext.payment.out.PaymentRepository;
 import com.mossy.boundedContext.payment.out.dto.MarketOrderResponse;
 import com.mossy.exception.CashErrorCode;
@@ -29,7 +29,7 @@ public class PaymentSupport {
     private final PaymentRepository paymentRepository;
     private final TossPaymentsService tossPaymentsService;
     private final ApplicationEventPublisher eventPublisher;
-    private final MarketServiceClient marketServiceClient;
+    private final MarketFeignClient marketFeignClient;
 
     // ── 결제 조회 ──
 
@@ -41,7 +41,7 @@ public class PaymentSupport {
     // ── 주문 조회 (FeignClient) ──
 
     public MarketOrderResponse findPendingOrder(String orderNo) {
-        MarketOrderResponse order = marketServiceClient.getOrderByOrderNo(orderNo);
+        MarketOrderResponse order = marketFeignClient.getOrderByOrderNo(orderNo);
         if (order.status() != OrderState.PENDING) {
             throw new DomainException(CashErrorCode.PENDING_ORDER_NOT_FOUND);
         }
@@ -49,7 +49,7 @@ public class PaymentSupport {
     }
 
     public MarketOrderResponse findOrderForCancel(Long orderId) {
-        MarketOrderResponse order = marketServiceClient.getOrder(orderId);
+        MarketOrderResponse order = marketFeignClient.getOrder(orderId);
         if (order.status() != OrderState.PAID) {
             throw new DomainException(CashErrorCode.PAID_ORDER_NOT_FOUND);
         }

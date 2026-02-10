@@ -35,7 +35,7 @@ public class ApiV1PaymentController {
         }
     )
     @PostMapping("/confirm/toss")
-    public RsData<Void> confirmPayment(@RequestBody PaymentConfirmTossRequestDto request) {
+    public RsData<Void> confirmTossPayment(@RequestBody PaymentConfirmTossRequestDto request) {
         paymentFacade.confirmTossPayment(request);
         return new RsData<>("200", "결제가 완료되었습니다.");
     }

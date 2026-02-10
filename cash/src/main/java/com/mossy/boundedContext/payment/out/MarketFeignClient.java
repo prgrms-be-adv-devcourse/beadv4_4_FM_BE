@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "market", url = "http://localhost:8081")
-public interface MarketServiceClient {
+public interface MarketFeignClient {
 
     @GetMapping("/api/v1/internal/orders/{orderId}")
     MarketOrderResponse getOrder(@PathVariable("orderId") Long orderId);
