@@ -7,7 +7,7 @@ import com.mossy.boundedContext.out.user.UserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.auth.domain.response.MemberVerifyResponse;
 import com.mossy.shared.member.event.UserJoinedEvent;
-import com.mossy.boundedContext.app.mapper.UserDtoMapper;
+import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.shared.member.payload.UserPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class UserFacade {
     public Long signup(SignupRequest req){
         User savedUser = signupUseCase.execute(req);
 
-        UserPayload userPayload = UserDtoMapper.from(savedUser);
+        UserPayload userPayload = UserMapper.from(savedUser);
         eventPublisher.publish(new UserJoinedEvent (userPayload));
 
         return savedUser.getId();
