@@ -102,6 +102,7 @@ public enum ErrorCode implements BaseErrorCode {
     INVALID_ORDER_STATE(409, "유효하지 않은 주문 상태입니다."),
     ORDER_ALREADY_PAID(409, "이미 결제가 완료된 주문입니다."),
     WALLET_ALREADY_EXISTS(409, "이미 생성된 지갑이 존재합니다."),
+    DUPLICATE_ORDER_REQUEST(409, "주문 생성을 실패했습니다."),
 
     // ========================================
     // 422 Unprocessable Entity (비즈니스 규칙 위배)

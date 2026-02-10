@@ -2,12 +2,10 @@ package com.mossy.boundedContext.marketUser.in;
 
 import com.mossy.boundedContext.cart.app.CartFacade;
 import com.mossy.boundedContext.marketUser.app.MarketFacade;
-import com.mossy.boundedContext.marketUser.domain.MarketSeller;
-import com.mossy.boundedContext.marketUser.domain.MarketUser;
+import com.mossy.boundedContext.marketUser.in.dto.event.MarketUserEvent;
 import com.mossy.boundedContext.order.app.OrderFacade;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
-import com.mossy.boundedContext.marketUser.in.dto.event.MarketUserPayload;
-import com.mossy.shared.market.event.OrderPaidPayload;
+import com.mossy.shared.market.event.OrderPaidEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;
@@ -53,7 +51,7 @@ public class MarketEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void MarketCartCreatedEvent(MarketUserPayload event) {
+    public void MarketCartCreatedEvent(MarketUserEvent event) {
         cartFacade.createCart(event.buyer());
     }
 
@@ -65,7 +63,7 @@ public class MarketEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void PaymentCompletedForCart(OrderPaidPayload event) {
+    public void PaymentCompletedForCart(OrderPaidEvent event) {
         cartFacade.clearCart(event.buyerId());
     }
 }
