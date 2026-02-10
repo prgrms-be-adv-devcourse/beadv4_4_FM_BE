@@ -3,7 +3,7 @@ package com.mossy.boundedContext.payment.app.usecase;
 import com.mossy.boundedContext.payment.app.PaymentSupport;
 import com.mossy.boundedContext.payment.domain.Payment;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelTossRequestDto;
-import com.mossy.boundedContext.payment.out.dto.MarketOrderResponse;
+import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentRefundEvent;

@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.payment.in.dto.command;
 
 import com.mossy.boundedContext.payment.domain.Payment;
-import com.mossy.boundedContext.payment.out.dto.MarketOrderResponse;
+import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.shared.cash.enums.PayMethod;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

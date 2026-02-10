@@ -6,7 +6,7 @@ import com.mossy.boundedContext.payment.app.mapper.PaymentMapper;
 import com.mossy.boundedContext.payment.domain.Payment;
 import com.mossy.boundedContext.payment.in.dto.command.PaymentCompletedDto;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmCashRequestDto;
-import com.mossy.boundedContext.payment.out.dto.MarketOrderResponse;
+import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;

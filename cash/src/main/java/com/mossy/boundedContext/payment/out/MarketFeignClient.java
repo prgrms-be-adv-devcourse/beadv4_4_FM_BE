@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.payment.out;
 
-import com.mossy.boundedContext.payment.out.dto.MarketOrderResponse;
+import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

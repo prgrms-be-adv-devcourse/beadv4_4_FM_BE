@@ -7,7 +7,7 @@ import com.mossy.boundedContext.payment.in.dto.response.TossCancelResponse;
 import com.mossy.boundedContext.payment.in.dto.response.TossConfirmResponse;
 import com.mossy.boundedContext.payment.out.MarketFeignClient;
 import com.mossy.boundedContext.payment.out.PaymentRepository;
-import com.mossy.boundedContext.payment.out.dto.MarketOrderResponse;
+import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.exception.ErrorCode;
 import com.mossy.exception.DomainException;
 import com.mossy.shared.cash.enums.PayMethod;

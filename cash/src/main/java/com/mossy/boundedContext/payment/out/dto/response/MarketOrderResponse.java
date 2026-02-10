@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.payment.out.dto;
+package com.mossy.boundedContext.payment.out.dto.response;
 
 import com.mossy.shared.market.enums.OrderState;
 import java.math.BigDecimal;
