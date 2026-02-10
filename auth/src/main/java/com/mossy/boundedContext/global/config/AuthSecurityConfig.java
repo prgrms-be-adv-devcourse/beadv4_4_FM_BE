@@ -1,4 +1,4 @@
-package com.mossy.config;
+package com.mossy.boundedContext.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

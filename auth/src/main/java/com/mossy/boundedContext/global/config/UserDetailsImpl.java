@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.infra.config;
+package com.mossy.boundedContext.global.config;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
