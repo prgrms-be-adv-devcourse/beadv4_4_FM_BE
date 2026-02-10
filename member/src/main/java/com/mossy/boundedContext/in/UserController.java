@@ -1,8 +1,8 @@
 package com.mossy.boundedContext.in;
 
 
+import com.mossy.boundedContext.domain.seller.Seller;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
-import com.mossy.global.config.UserDetailsImpl;
 import com.mossy.boundedContext.in.dto.UserInfoDTO;
 import com.mossy.boundedContext.out.seller.SellerRequestRepository;
 import com.mossy.global.rsData.RsData;
@@ -11,8 +11,8 @@ import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,9 +31,11 @@ public class UserController {
             description = "현재 로그인된 사용자의 기본 식별 정보(userId)를 조회"
     )
     @GetMapping("/me")
-    public RsData<UserInfoDTO> me(@AuthenticationPrincipal UserDetailsImpl principal) {
-
-        Long userId = principal.getUserId();
+    public RsData<UserInfoDTO> me(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestHeader("X-User-Nickname") String nickname,
+            @RequestHeader("X-User-Name") String name
+    ) {
 
         Optional<SellerRequest> latestRequest =
                 sellerRequestRepository.findTopByUserIdOrderByCreatedAtDesc(userId);
@@ -44,8 +46,8 @@ public class UserController {
 
         UserInfoDTO dto = new UserInfoDTO(
                 userId,
-                principal.getNickname(),
-                principal.getName(),
+                nickname,
+                name,
                 status
         );
 
