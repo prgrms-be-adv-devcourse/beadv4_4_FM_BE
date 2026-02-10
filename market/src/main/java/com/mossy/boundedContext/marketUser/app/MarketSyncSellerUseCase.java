@@ -14,14 +14,11 @@ public class MarketSyncSellerUseCase {
     private final MarketSellerRepository marketSellerRepository;
 
     @Transactional
-    public MarketSeller syncSeller(SellerPayload seller) {
-        return marketSellerRepository.findById(seller.sellerId())
-            .map(existingSeller -> {
-                existingSeller.updateSeller(seller);
-                return existingSeller;
-            })
-            .orElseGet(() -> {
-                return marketSellerRepository.save(MarketSeller.from(seller));
-            });
+    public void syncSeller(SellerPayload seller) {
+        marketSellerRepository.findById(seller.sellerId())
+            .ifPresentOrElse(
+                existingSeller -> existingSeller.updateSeller(seller),
+                () -> marketSellerRepository.save(MarketSeller.from(seller))
+            );
     }
 }

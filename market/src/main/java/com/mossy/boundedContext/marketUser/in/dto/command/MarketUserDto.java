@@ -1,4 +1,4 @@
-package com.mossy.shared.market.payload;
+package com.mossy.boundedContext.marketUser.in.dto.command;
 
 import com.mossy.shared.member.domain.enums.UserStatus;
 import lombok.Builder;

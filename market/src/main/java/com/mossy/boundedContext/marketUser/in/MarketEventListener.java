@@ -6,7 +6,7 @@ import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
 import com.mossy.boundedContext.order.app.OrderFacade;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
-import com.mossy.shared.market.event.MarketUserPayload;
+import com.mossy.boundedContext.marketUser.in.dto.event.MarketUserPayload;
 import com.mossy.shared.market.event.OrderPaidPayload;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
@@ -29,26 +29,26 @@ public class MarketEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public MarketUser userCreatedEvent(UserJoinedEvent event) {
-        return marketFacade.syncUser(event.user());
+    public void userCreatedEvent(UserJoinedEvent event) {
+        marketFacade.syncUser(event.user());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public MarketUser sellerUpdatedEvent(UserUpdatedEvent event) {
-        return marketFacade.syncUser(event.user());
+    public void sellerUpdatedEvent(UserUpdatedEvent event) {
+        marketFacade.syncUser(event.user());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public MarketSeller sellerCreatedEvent(SellerJoinedEvent event) {
-        return marketFacade.syncSeller(event.seller());
+    public void sellerCreatedEvent(SellerJoinedEvent event) {
+        marketFacade.syncSeller(event.seller());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public MarketSeller sellerUpdatedEvent(SellerUpdatedEvent event) {
-        return marketFacade.syncSeller(event.seller());
+    public void sellerUpdatedEvent(SellerUpdatedEvent event) {
+        marketFacade.syncSeller(event.seller());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
