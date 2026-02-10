@@ -25,7 +25,7 @@ public interface PayoutMapper {
         PayoutUser toEntity(PayoutUserDto dto);
 
         @Mapping(target = "relTypeCode", constant = "OrderItem")
-        @Mapping(target = "relId", source = "orderItem.id")
+        @Mapping(target = "relId", source = "orderItem.orderItemId")
         PayoutCandidateItem toEntity(PayoutCandidateItemCreateDto dto);
 
         // --- [이벤트 기반 DTO 변환] ---

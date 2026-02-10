@@ -1,6 +1,9 @@
 package com.mossy.boundedContext.donation.domain;
 
 
+import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.shared.market.payload.OrderPayoutDto;
 import com.mossy.shared.payout.enums.CarbonGrade;
 import lombok.RequiredArgsConstructor;
@@ -36,18 +39,18 @@ public class DonationCalculator {
     }
 
     /**
-     * 주어진 주문 아이템(OrderPayoutDto)에 대한 최종 기부금액을 계산
+     * 주어진 주문 아이템에 대한 최종 기부금액을 계산
      * 계산 과정은 탄소 배출량 등급에 따른 비율 적용 및 최대 기부금 비율 제한을 포함
      *
-     * @param orderItem 기부금 계산의 기준이 되는 주문 정산 DTO
+     * @param dto 기부금 계산의 기준이 되는 정산 후보 DTO
      * @return 계산된 기부금 (원 단위로 반올림됨)
      */
-    public BigDecimal calculate(OrderPayoutDto orderItem) {
+    public BigDecimal calculate(CreatePayoutCandidateDto dto) {
         // 1. 탄소 배출량 기반으로 수수료를 계산
-        BigDecimal payoutFee = feeCalculator.calculate(orderItem);
+        BigDecimal payoutFee = feeCalculator.calculate(dto);
 
         // 2. 주문 아이템의 배송 정보 등을 바탕으로 탄소 배출량(kg)을 계산
-        BigDecimal carbon = carbonCalculator.calculate(orderItem);
+        BigDecimal carbon = carbonCalculator.calculate(dto);
 
         // 3. 계산된 탄소 배출량에 따라 탄소 등급(CarbonGrade)을 판정합니다.
         CarbonGrade grade = CarbonGrade.fromCarbon(carbon);
@@ -70,27 +73,27 @@ public class DonationCalculator {
     }
 
     /**
-     * 주어진 주문 아이템(OrderPayoutDto)의 탄소 배출량을 기반으로 해당 아이템의 탄소 등급(CarbonGrade)을 조회
+     * 주어진 주문 아이템의 탄소 배출량을 기반으로 해당 아이템의 탄소 등급(CarbonGrade)을 조회
      *
-     * @param orderItem 탄소 등급을 조회할 주문 정산 DTO
+     * @param dto 탄소 등급을 조회할 정산 후보 DTO
      * @return 계산된 탄소 등급
      */
-    public CarbonGrade getGrade(OrderPayoutDto orderItem) {
-        BigDecimal carbon = carbonCalculator.calculate(orderItem);
+    public CarbonGrade getGrade(CreatePayoutCandidateDto dto) {
+        BigDecimal carbon = carbonCalculator.calculate(dto);
         return CarbonGrade.fromCarbon(carbon);
     }
 
     /**
-     * 주어진 주문 아이템(OrderPayoutDto)에 대한 총 탄소 배출량(kg 단위)을 계산하여 반환
+     * 주어진 주문 아이템에 대한 총 탄소 배출량(kg 단위)을 계산하여 반환
      *
-     * @param orderItem 탄소 배출량을 계산할 주문 정산 DTO
+     * @param dto 탄소 배출량을 계산할 정산 후보 DTO
      * @return 계산된 탄소 배출량 (kg 단위)
      */
-    public BigDecimal getCarbon(OrderPayoutDto orderItem) {
-        return carbonCalculator.calculate(orderItem);
+    public BigDecimal getCarbon(CreatePayoutCandidateDto dto) {
+        return carbonCalculator.calculate(dto);
     }
 
-    /**
+
     private void validateOrderItem(OrderPayoutDto orderItem) {
         if (orderItem == null) {
             throw new DomainException(ErrorCode.INVALID_DONATION_CALCULATION_INPUT);
@@ -99,5 +102,5 @@ public class DonationCalculator {
             throw new DomainException(ErrorCode.INVALID_PAYOUT_FEE);
         }
     }
-     **/
+
 }

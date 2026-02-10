@@ -2,7 +2,6 @@ package com.mossy.boundedContext.payout.in.dto.command;
 
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
-import com.mossy.shared.market.payload.OrderPayoutDto;
 import com.mossy.shared.payout.enums.PayoutEventType;
 import lombok.Builder;
 
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public record PayoutCandidateItemCreateDto(
         LocalDateTime paymentDate,
-        OrderPayoutDto orderItem,
+        CreatePayoutCandidateDto orderItem,
         PayoutEventType eventType,
         PayoutUser payer,
         PayoutSeller payee,
@@ -21,7 +20,7 @@ public record PayoutCandidateItemCreateDto(
         BigDecimal deliveryDistance
 ) {
     public static PayoutCandidateItemCreateDto of(
-            LocalDateTime paymentDate, OrderPayoutDto orderItem, PayoutEventType eventType,
+            LocalDateTime paymentDate, CreatePayoutCandidateDto orderItem, PayoutEventType eventType,
             PayoutUser payer, PayoutSeller payee, BigDecimal amount,
             String weightGrade, BigDecimal deliveryDistance
     ) {

@@ -7,7 +7,6 @@ import com.mossy.boundedContext.payout.app.common.PayoutCreatePayoutUseCase;
 import com.mossy.boundedContext.payout.app.seller.PayoutSyncSellerUseCase;
 
 import com.mossy.boundedContext.payout.app.user.PayoutSyncUserUseCase;
-import com.mossy.shared.market.payload.OrderPayoutDto;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.global.rsData.RsData;
 
@@ -16,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 /**
  * 정산(Payout) 기능의 메인 진입점 역할을 하는 파사드(Facade)
@@ -74,12 +71,11 @@ public class PayoutFacade {
     /**
      * [흐름 1] 단일 주문 아이템을 바탕으로 정산 후보 아이템(PayoutCandidateItem)을 추가
      * Payment 컨텍스트에서 결제가 완료될 때 호출
-     * @param orderItem 주문 아이템 DTO
-     * @param paymentDate 결제 완료 일시
+     * @param dto 정산 후보 생성을 위한 DTO (OrderItem 정보 + 계산된 거리/무게등급 포함)
      */
     @Transactional
-    public void addPayoutCandidateItem(OrderPayoutDto orderItem, LocalDateTime paymentDate) {
-        payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(orderItem, paymentDate);
+    public void addPayoutCandidateItem(com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto dto) {
+        payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto);
     }
 
     /**

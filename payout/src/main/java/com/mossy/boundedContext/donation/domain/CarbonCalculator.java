@@ -1,10 +1,10 @@
 package com.mossy.boundedContext.donation.domain;
 
 
+import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 
-import com.mossy.shared.market.payload.OrderPayoutDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -70,22 +70,22 @@ public class CarbonCalculator {
     }
 
     /**
-     * OrderPayoutDto로부터 무게 등급(weightGrade)과 배송 거리(deliveryDistance)를 추출하여 탄소 배출량을 계산
+     * CreatePayoutCandidateDto로부터 무게 등급(weightGrade)과 배송 거리(deliveryDistance)를 추출하여 탄소 배출량을 계산
      * 무게 등급을 대표값으로 변환 후 계산
      *
-     * @param orderItem 탄소 배출량을 계산할 주문 정산 DTO
+     * @param dto 탄소 배출량을 계산할 정산 후보 DTO
      * @return 계산된 탄소 배출량 (kg 단위)
      */
-    public BigDecimal calculate(OrderPayoutDto orderItem) {
-        if (orderItem == null) {
+    public BigDecimal calculate(CreatePayoutCandidateDto dto) {
+        if (dto == null) {
             throw new DomainException(ErrorCode.INVALID_CARBON_CALCULATION_INPUT);
         }
 
         // 무게 등급명을 대표값으로 변환
-        BigDecimal representativeWeight = getRepresentativeWeightByGrade(orderItem.weightGrade());
+        BigDecimal representativeWeight = getRepresentativeWeightByGrade(dto.weightGrade());
 
         // 거리를 등급별 대표값으로 변환
-        BigDecimal representativeDistance = getRepresentativeDistance(orderItem.deliveryDistance());
+        BigDecimal representativeDistance = getRepresentativeDistance(dto.deliveryDistance());
 
         return representativeWeight
                 .multiply(representativeDistance)
