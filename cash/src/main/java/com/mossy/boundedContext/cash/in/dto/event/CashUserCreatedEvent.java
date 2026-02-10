@@ -1,8 +1,8 @@
 package com.mossy.boundedContext.cash.in.dto.event;
 
-import com.mossy.shared.member.payload.UserPayload;
+import com.mossy.boundedContext.cash.in.dto.command.CashUserDto;
 
 public record CashUserCreatedEvent(
-    UserPayload user
+    CashUserDto user
 ) {
 }

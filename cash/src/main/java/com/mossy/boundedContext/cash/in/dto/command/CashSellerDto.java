@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.cash.in.dto.common;
+package com.mossy.boundedContext.cash.in.dto.command;
 
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;
