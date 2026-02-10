@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.infra.storage.adapter;
+package com.mossy.infra.storage.adapter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

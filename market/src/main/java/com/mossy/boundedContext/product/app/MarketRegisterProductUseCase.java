@@ -1,17 +1,13 @@
 package com.mossy.boundedContext.product.app;
 
-import com.mossy.boundedContext.infra.storage.adapter.S3Adapter;
+import com.mossy.infra.storage.adapter.S3Adapter;
 import com.mossy.boundedContext.marketUser.out.MarketSellerRepository;
 import com.mossy.boundedContext.product.out.CategoryRepository;
 import com.mossy.boundedContext.product.out.ProductRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.marketUser.domain;
 
-import com.mossy.shared.market.dto.event.MarketSellerDto;
+import com.mossy.shared.market.payload.MarketSellerDto;
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;
 import com.mossy.shared.member.payload.SellerPayload;

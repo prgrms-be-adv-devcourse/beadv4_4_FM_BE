@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.product.app;
 
-import com.mossy.boundedContext.infra.storage.adapter.S3Adapter;
+import com.mossy.infra.storage.adapter.S3Adapter;
 import com.mossy.boundedContext.product.domain.Category;
 import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.domain.event.ProductUpdatedEvent;

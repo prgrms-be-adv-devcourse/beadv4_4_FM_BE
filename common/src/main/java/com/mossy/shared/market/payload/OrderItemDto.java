@@ -1,4 +1,4 @@
-package com.mossy.shared.market.dto.event;
+package com.mossy.shared.market.payload;
 
 import com.mossy.standard.modelType.HashModelTypeCode;
 

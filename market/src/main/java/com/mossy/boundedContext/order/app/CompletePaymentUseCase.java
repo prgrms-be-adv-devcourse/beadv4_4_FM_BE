@@ -1,11 +1,11 @@
 package com.mossy.boundedContext.order.app;
 
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.out.OrderRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.shared.market.event.OrderPaidEvent;
+import com.mossy.shared.market.event.OrderPaidPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +22,6 @@ public class CompletePaymentUseCase {
 
         order.completePayment();
 
-        eventPublisher.publish(new OrderPaidEvent(order.getBuyer().getId()));
+        eventPublisher.publish(new OrderPaidPayload(order.getBuyer().getId()));
     }
 }
