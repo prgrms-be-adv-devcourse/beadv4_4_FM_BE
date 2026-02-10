@@ -1,4 +1,4 @@
-package com.mossy.global.jwt;
+package com.mossy.boundedContext.infra.jwt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

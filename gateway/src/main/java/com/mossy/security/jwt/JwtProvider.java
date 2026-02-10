@@ -1,4 +1,4 @@
-package com.mossy.global.security.jwt;
+package com.mossy.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

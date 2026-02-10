@@ -32,18 +32,18 @@ dependencies {
     // Web 의존성은 필터
     compileOnly("org.springframework.boot:spring-boot-starter-web")
 
-        // 3. QueryDSL & JPA
+    // 2. QueryDSL & JPA
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
-    // 4. Lombok
+    // 3. Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
-    // 5. Swagger & Utils
-    api("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
+    // 4. Swagger & Utils
+    api("org.springdoc:springdoc-openapi-starter-common:2.8.3")
 
     // 6. Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -1,6 +1,6 @@
 package com.mossy.filter;
 
-import com.mossy.global.security.jwt.JwtProvider;
+import com.mossy.security.jwt.JwtProvider;
 import lombok.Data;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
