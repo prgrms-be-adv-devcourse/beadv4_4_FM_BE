@@ -41,6 +41,9 @@ dependencies {
 
     // Feign Client 추가
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.0")
+
+    // Security
+    implementation ("org.springframework.boot:spring-boot-starter-security")
 }
 
 tasks.withType<Test> {

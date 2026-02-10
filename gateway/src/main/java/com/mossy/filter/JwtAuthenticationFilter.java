@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
 
-            // 4. (선택) 토큰에서 정보를 꺼내 내부 서비스에 헤더로 전달
+            // 4. 토큰에서 정보를 꺼내 내부 서비스에 헤더로 전달
             // 예: X-User-Id 헤더에 유저 ID를 담아 보내면 내부 서비스가 편해집니다.
             Long userId = jwtProvider.getUserId(jwt);
             ServerHttpRequest modifiedRequest = request.mutate()
