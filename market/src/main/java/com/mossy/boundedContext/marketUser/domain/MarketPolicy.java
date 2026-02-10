@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.marketUser.domain;
 
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 
 import java.util.UUID;
 

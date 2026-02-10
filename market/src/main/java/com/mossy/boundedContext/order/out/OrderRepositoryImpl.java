@@ -37,7 +37,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                         marketUser.name,
                         orderItem.seller.id,
                         orderItem.productId,
-                        orderItem.orderPrice,
+                        orderItem.originalPrice,
                         orderItem.createdAt,
                         orderItem.updatedAt
                 ))
@@ -87,7 +87,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .select(Projections.constructor(OrderDetailResponse.class,
                         orderItem.productId,
                         orderItem.quantity,
-                        orderItem.orderPrice,
+                        orderItem.originalPrice,
                         marketSeller.storeName
                 ))
                 .from(order)
@@ -106,7 +106,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                         orderItem.id,
                         orderItem.productId,
                         orderItem.quantity,
-                        orderItem.orderPrice,
+                        orderItem.originalPrice,
                         order.state,
                         orderItem.createdAt
                 ))

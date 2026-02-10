@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.infra.scheduler;
+package com.mossy.infra.scheduler;
 
 import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.out.OrderRepository;

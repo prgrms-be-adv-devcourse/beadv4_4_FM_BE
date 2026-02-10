@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.infra.config;
+package com.mossy.infra.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

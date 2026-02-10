@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.order.app;
 
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
 import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,10 +42,9 @@ public class CreateOrderUseCase {
 
         String orderNo = marketPolicy.generateOrderNo();
 
-        List<Long> sellerIds = request.items().stream()
+        Set<Long> sellerIds = request.items().stream()
                 .map(ProductInfoResponse::sellerId)
-                .distinct()
-                .toList();
+                .collect(Collectors.toSet());
 
         Map<Long, MarketSeller> sellerMap = marketSellerRepository.findAllById(sellerIds).stream()
                 .collect(Collectors.toMap(MarketSeller::getId, seller -> seller));
