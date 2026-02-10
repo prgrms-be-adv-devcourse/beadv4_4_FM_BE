@@ -2,8 +2,8 @@ package com.mossy.boundedContext.app.seller;
 
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
 import com.mossy.boundedContext.out.seller.SellerRequestRepository;
 import com.mossy.boundedContext.out.user.UserRepository;

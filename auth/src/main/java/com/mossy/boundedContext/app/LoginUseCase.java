@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.app;
 
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.out.MemberServiceClient;
 import com.mossy.shared.auth.domain.request.MemberVerifyRequest;
 import com.mossy.shared.auth.domain.response.MemberVerifyResponse;

@@ -1,8 +1,8 @@
 package com.mossy.boundedContext.app.user;
 
 import com.mossy.boundedContext.domain.user.User;
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.global.ut.EncryptionUtils;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.out.user.RoleRepository;
