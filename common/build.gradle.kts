@@ -30,7 +30,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-data-redis")
 
     // Web 의존성은 필터
-    api("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
 
     // 2. QueryDSL & JPA
     api("org.springframework.boot:spring-boot-starter-data-jpa")
