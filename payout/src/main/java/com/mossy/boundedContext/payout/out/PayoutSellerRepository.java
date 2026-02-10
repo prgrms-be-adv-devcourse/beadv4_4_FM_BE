@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.payout.out;
 
-import com.mossy.boundedContext.payout.domain.PayoutSeller;
+import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

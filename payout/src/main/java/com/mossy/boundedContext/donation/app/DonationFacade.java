@@ -29,23 +29,40 @@ public class DonationFacade {
      *
      * @param orderItem 기부금이 발생한 특정 주문 아이템 DTO
      */
-    // 집계 기능 사용 시 (Payout을 통한 기부금 정산)
-    // /**
-    //  * [2단계: 기부 로그 정산 처리]
-    //  * 정산(Payout)이 완료되었을 때, 해당 정산에 포함된 기부 로그들을 '정산 완료' 상태로 변경
-    //  * 이 메서드는 PayoutCompletedEvent를 처리하는 DonationEventListener에 의해 호출
-    //  *
-    //  * @param payoutId 정산이 완료된 Payout의 ID
-    //  */
-    // @Transactional
-    // public void settleDonationLogs(Long payoutId) {
-    //     donationSettleUseCase.settleDonationLogs(payoutId);
-    // }
+     //집계 기능 사용 시 (Payout을 통한 기부금 정산)
+     /*
+      * [2단계: 기부 로그 정산 처리]
+      * 정산(Payout)이 완료되었을 때, 해당 정산에 포함된 기부 로그들을 '정산 완료' 상태로 변경
+      * 이 메서드는 PayoutCompletedEvent를 처리하는 DonationEventListener에 의해 호출
+      *
+      * @param payoutId 정산이 완료된 Payout의 ID
+      */
+     @Transactional
+     public void settleDonationLogs(Long payoutId) {
+         donationSettleUseCase.settleDonationLogs(payoutId);
+     }
 
     // 집계 없이 정산만 사용 시
     @Transactional
     public void createDonationLog(OrderPayoutDto orderItem) {
         donationCreateLogUseCase.createDonationLog(orderItem);
+    }
+
+    /**
+     * [1단계: 기부 로그 생성 - 정산 완료 시]
+     * PayoutCandidateItem의 정보를 사용하여 기부 로그를 직접 생성
+     * 이미 계산된 기부금액과 탄소 배출량 정보를 활용
+     *
+     * @param orderItemId      주문 항목 ID
+     * @param buyerId          구매자 ID
+     * @param donationAmount   이미 계산된 기부금액
+     * @param weightGrade      무게 등급
+     * @param deliveryDistance 배송 거리
+     */
+    @Transactional
+    public void createDonationLogDirect(Long orderItemId, Long buyerId, java.math.BigDecimal donationAmount,
+                                        String weightGrade, java.math.BigDecimal deliveryDistance) {
+        donationCreateLogUseCase.createDonationLogDirect(orderItemId, buyerId, donationAmount, weightGrade, deliveryDistance);
     }
 
     /**

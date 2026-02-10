@@ -1,10 +1,10 @@
-package com.mossy.boundedContext.payout.app;
+package com.mossy.boundedContext.payout.app.common;
 
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 
-import com.mossy.boundedContext.payout.domain.Payout;
-
+import com.mossy.boundedContext.payout.domain.payout.Payout;
+import com.mossy.boundedContext.payout.out.PayoutRepository;
 import com.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PayoutCompletePayoutsMoreUseCase {
-    //private final PayoutRepository payoutRepository;
+    private final PayoutRepository payoutRepository;
 
     /**
      * 아직 완료되지 않은 Payout들을 조회하여, '정산 완료' 상태로 처리

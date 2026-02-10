@@ -1,12 +1,13 @@
-package com.mossy.boundedContext.payout.app;
+package com.mossy.boundedContext.payout.app.common;
 
 import com.mossy.boundedContext.donation.domain.DonationCalculator;
 import com.mossy.boundedContext.donation.domain.FeeCalculator;
+import com.mossy.boundedContext.payout.app.PayoutSupport;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.boundedContext.payout.domain.PayoutCandidateItem;
-import com.mossy.boundedContext.payout.domain.PayoutSeller;
-import com.mossy.boundedContext.payout.domain.PayoutUser;
+import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
+import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
+import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.boundedContext.payout.out.PayoutCandidateItemRepository;
 
 import com.mossy.shared.market.payload.OrderPayoutDto;
@@ -95,11 +96,11 @@ public class PayoutAddPayoutCandidateItemsUseCase {
 
         // --- 계산된 금액을 바탕으로 3가지 종류의 정산 후보 아이템을 생성 ---
         // 아이템 1: 플랫폼 수수료 (구매자 -> 시스템)
-        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee);
+        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee, orderItem.weightGrade(), orderItem.deliveryDistance());
         // 아이템 2: 판매 대금 (구매자 -> 판매자)
-        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee);
+        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee, orderItem.weightGrade(), orderItem.deliveryDistance());
         // 아이템 3: 기부금 (구매자 -> 기부금 수령처)
-        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount);
+        makePayoutCandidateItem(paymentDate, orderItem, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount, orderItem.weightGrade(), orderItem.deliveryDistance());
     }
 
     /**
@@ -111,7 +112,9 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             PayoutEventType eventType,
             PayoutUser payer,
             PayoutSeller payee,
-            BigDecimal amount
+            BigDecimal amount,
+            String weightGrade,
+            BigDecimal deliveryDistance
     ) {
         PayoutCandidateItem payoutCandidateItem = PayoutCandidateItem.builder()
                 .eventType(eventType)
@@ -121,6 +124,8 @@ public class PayoutAddPayoutCandidateItemsUseCase {
                 .payer(payer)
                 .payee(payee)
                 .amount(amount)
+                .weightGrade(weightGrade)
+                .deliveryDistance(deliveryDistance)
                 .build();
 
         payoutCandidateItemRepository.save(payoutCandidateItem);

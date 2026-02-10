@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.payout.domain;
+package com.mossy.boundedContext.payout.domain.user;
 import com.mossy.shared.member.domain.entity.BaseUser;
 import com.mossy.shared.member.domain.enums.UserStatus;
 import com.mossy.shared.member.payload.UserPayload;

@@ -1,5 +1,7 @@
-package com.mossy.boundedContext.payout.domain;
+package com.mossy.boundedContext.payout.domain.payout;
 
+import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
+import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.global.jpa.entity.BaseIdAndTime;

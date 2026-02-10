@@ -1,8 +1,8 @@
-package com.mossy.boundedContext.payout.app;
+package com.mossy.boundedContext.payout.app.user;
 
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.boundedContext.payout.domain.PayoutUser;
+import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.boundedContext.payout.out.PayoutUserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 

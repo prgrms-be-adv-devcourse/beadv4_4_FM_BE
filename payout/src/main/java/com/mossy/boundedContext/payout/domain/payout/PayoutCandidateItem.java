@@ -1,8 +1,10 @@
-package com.mossy.boundedContext.payout.domain;
+package com.mossy.boundedContext.payout.domain.payout;
 
+import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
+import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.boundedContext.payout.app.PayoutAddPayoutCandidateItemsUseCase;
+import com.mossy.boundedContext.payout.app.common.PayoutAddPayoutCandidateItemsUseCase;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.payout.enums.PayoutEventType;
 import jakarta.persistence.*;
@@ -76,6 +78,18 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private BigDecimal amount;
 
     /**
+     * 탄소 배출량 계산을 위한 무게 등급
+     */
+    @Column(name = "weight_grade", length = 20)
+    private String weightGrade;
+
+    /**
+     * 탄소 배출량 계산을 위한 배송 거리
+     */
+    @Column(name = "delivery_distance")
+    private BigDecimal deliveryDistance;
+
+    /**
      * 이 정산 후보 아이템이 실제 정산(Payout)에 포함되어 {@link PayoutItem}으로 변환되었을 때,
      * 해당 PayoutItem을 참조합니다. 이 필드가 채워지면 더 이상 정산 후보가 아님을 나타냄
      * PayoutItem 엔티티와의 일대일(OneToOne) 관계를 가짐
@@ -87,17 +101,20 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     /**
      * PayoutCandidateItem 엔티티를 생성하는 빌더 패턴 생성자
      *
-     * @param eventType   정산 이벤트 타입
-     * @param relTypeCode 관련 엔티티 타입 코드
-     * @param relId       관련 엔티티 ID
-     * @param paymentDate 결제 발생일
-     * @param payer       지불자 (PayoutUser)
-     * @param payee       수취인 (PayoutSeller)
-     * @param amount      금액
+     * @param eventType        정산 이벤트 타입
+     * @param relTypeCode      관련 엔티티 타입 코드
+     * @param relId            관련 엔티티 ID
+     * @param paymentDate      결제 발생일
+     * @param payer            지불자 (PayoutUser)
+     * @param payee            수취인 (PayoutSeller)
+     * @param amount           금액
+     * @param weightGrade      무게 등급 (탄소 배출량 계산용)
+     * @param deliveryDistance 배송 거리 (탄소 배출량 계산용)
      */
     @Builder
     public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
-                               LocalDateTime paymentDate, PayoutUser payer, PayoutSeller payee, BigDecimal amount) {
+                               LocalDateTime paymentDate, PayoutUser payer, PayoutSeller payee, BigDecimal amount,
+                               String weightGrade, BigDecimal deliveryDistance) {
 
         if (eventType == null) {
             throw new DomainException(ErrorCode.PAYOUT_EVENT_TYPE_IS_NULL); // status: 400
@@ -124,6 +141,8 @@ public class PayoutCandidateItem extends BaseIdAndTime {
         this.payer = payer;
         this.payee = payee;
         this.amount = (amount != null) ? amount : BigDecimal.ZERO;
+        this.weightGrade = weightGrade;
+        this.deliveryDistance = deliveryDistance;
     }
 
     /**

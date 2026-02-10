@@ -2,7 +2,7 @@ package com.mossy.boundedContext.donation.out;
 
 
 import com.mossy.boundedContext.donation.domain.DonationLog;
-import com.mossy.boundedContext.payout.domain.PayoutUser;
+import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

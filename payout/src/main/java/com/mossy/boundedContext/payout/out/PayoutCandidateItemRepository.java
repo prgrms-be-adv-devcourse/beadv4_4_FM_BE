@@ -1,7 +1,8 @@
 package com.mossy.boundedContext.payout.out;
 
-import com.mossy.boundedContext.payout.domain.PayoutCandidateItem;
-import com.mossy.boundedContext.payout.domain.PayoutItem;
+import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
+import com.mossy.boundedContext.payout.domain.payout.PayoutItem;
+import com.mossy.shared.payout.enums.PayoutEventType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -24,4 +25,14 @@ public interface PayoutCandidateItemRepository extends JpaRepository<PayoutCandi
      * @return 조회 조건에 맞는 정산 후보 아이템 리스트
      */
     List<PayoutCandidateItem> findByPayoutItemIsNullAndPaymentDateBeforeOrderByPayeeAscIdAsc(LocalDateTime paymentDate, Pageable pageable);
+
+    /**
+     * 특정 Payout에 포함된 PayoutItem 중 특정 이벤트 타입의 PayoutCandidateItem들을 조회
+     * 정산 완료 시 기부금 관련 항목들을 찾아 기부 로그를 생성하기 위해 사용
+     *
+     * @param payoutId Payout ID
+     * @param eventType 조회할 이벤트 타입 (예: 정산__상품판매_기부금)
+     * @return 조회 조건에 맞는 정산 후보 아이템 리스트
+     */
+    List<PayoutCandidateItem> findByPayoutItem_Payout_IdAndEventType(Long payoutId, PayoutEventType eventType);
 }
