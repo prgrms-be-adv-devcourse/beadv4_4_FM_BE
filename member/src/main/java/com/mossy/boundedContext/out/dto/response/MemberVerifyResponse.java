@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.out.dto;
+package com.mossy.boundedContext.out.dto.response;
 
 import com.mossy.shared.member.domain.role.RoleCode;
 

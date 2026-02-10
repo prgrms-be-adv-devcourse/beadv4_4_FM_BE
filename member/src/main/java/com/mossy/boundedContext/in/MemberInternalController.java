@@ -2,7 +2,7 @@ package com.mossy.boundedContext.in;
 
 import com.mossy.boundedContext.app.user.UserFacade;
 import com.mossy.boundedContext.out.dto.request.MemberVerifyRequest;
-import com.mossy.boundedContext.out.dto.MemberVerifyResponse;
+import com.mossy.boundedContext.out.dto.response.MemberVerifyResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

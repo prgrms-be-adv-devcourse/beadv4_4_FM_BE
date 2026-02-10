@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.out;
+package com.mossy.boundedContext.out.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
