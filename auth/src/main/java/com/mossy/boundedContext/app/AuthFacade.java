@@ -1,8 +1,8 @@
 package com.mossy.boundedContext.app;
 
-import com.mossy.boundedContext.in.dto.LoginRequest;
-import com.mossy.boundedContext.in.dto.LoginResponse;
-import com.mossy.boundedContext.in.dto.TokenResponse;
+import com.mossy.boundedContext.in.dto.request.LoginRequest;
+import com.mossy.boundedContext.in.dto.response.LoginResponse;
+import com.mossy.boundedContext.in.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

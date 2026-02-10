@@ -1,9 +1,12 @@
 package com.mossy.boundedContext.in;
 
 
+import com.mossy.boundedContext.app.user.UserFacade;
 import com.mossy.boundedContext.domain.seller.Seller;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.in.dto.UserInfoDTO;
+import com.mossy.boundedContext.in.dto.request.SignupRequest;
+import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.out.seller.SellerRequestRepository;
 import com.mossy.global.rsData.RsData;
 
@@ -11,10 +14,7 @@ import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -25,6 +25,15 @@ import java.util.Optional;
 public class UserController {
 
     private final SellerRequestRepository sellerRequestRepository;
+    private final UserFacade userFacade;
+
+    @Operation(
+            summary = "회원가입",
+            description = "일반 유저(USER)로 가입")
+    @PostMapping("/signup")
+    public RsData<Long> signup(@RequestBody SignupRequest req) {
+        return RsData.success("회원가입 성공", userFacade.signup(req));
+    }
 
     @Operation(
             summary = "내 정보 조회",

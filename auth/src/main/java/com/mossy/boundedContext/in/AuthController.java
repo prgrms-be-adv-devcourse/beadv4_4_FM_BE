@@ -1,8 +1,8 @@
 package com.mossy.boundedContext.in;
 
 import com.mossy.boundedContext.app.AuthFacade;
-import com.mossy.boundedContext.in.dto.LoginRequest;
-import com.mossy.boundedContext.in.dto.LoginResponse;
+import com.mossy.boundedContext.in.dto.request.LoginRequest;
+import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,14 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthFacade authFacade;
-
-    @Operation(
-            summary = "회원가입",
-            description = "일반 유저(USER)로 가입")
-    @PostMapping("/signup")
-    public RsData<LoginResponse> signup(@RequestBody LoginRequest req) {
-        return RsData.success("회원가입 성공", authFacade.login(req));
-    }
 
     @Operation(
             summary = "로그인",
