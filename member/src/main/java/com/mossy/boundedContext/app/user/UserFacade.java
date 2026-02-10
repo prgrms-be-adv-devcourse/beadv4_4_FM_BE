@@ -4,7 +4,7 @@ import com.mossy.boundedContext.app.VerfyMemberUseCase;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.shared.auth.domain.response.MemberVerifyResponse;
+import com.mossy.boundedContext.out.dto.MemberVerifyResponse;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.shared.member.payload.UserPayload;

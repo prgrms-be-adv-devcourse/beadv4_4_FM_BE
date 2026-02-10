@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.out.user;
+package com.mossy.boundedContext.out.repository.user;
 
 import com.mossy.boundedContext.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;

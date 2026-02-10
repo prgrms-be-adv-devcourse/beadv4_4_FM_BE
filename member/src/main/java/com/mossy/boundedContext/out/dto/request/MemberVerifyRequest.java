@@ -1,4 +1,4 @@
-package com.mossy.shared.auth.domain.request;
+package com.mossy.boundedContext.out.dto.request;
 
 public record MemberVerifyRequest(
         String email,

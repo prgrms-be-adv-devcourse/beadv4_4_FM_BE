@@ -3,7 +3,7 @@ package com.mossy.boundedContext.app.seller;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.boundedContext.out.seller.SellerRequestRepository;
+import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

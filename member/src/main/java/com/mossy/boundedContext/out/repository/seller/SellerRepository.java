@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.out.seller;
+package com.mossy.boundedContext.out.repository.seller;
 
 import com.mossy.boundedContext.domain.seller.Seller;
 import org.springframework.data.jpa.repository.JpaRepository;

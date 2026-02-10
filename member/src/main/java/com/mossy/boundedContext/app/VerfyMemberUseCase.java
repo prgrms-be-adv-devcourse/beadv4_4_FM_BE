@@ -1,8 +1,8 @@
 package com.mossy.boundedContext.app;
 
 import com.mossy.boundedContext.domain.user.User;
-import com.mossy.boundedContext.out.user.UserRepository;
-import com.mossy.shared.auth.domain.response.MemberVerifyResponse;
+import com.mossy.boundedContext.out.repository.user.UserRepository;
+import com.mossy.boundedContext.out.dto.MemberVerifyResponse;
 import com.mossy.shared.member.domain.role.RoleCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

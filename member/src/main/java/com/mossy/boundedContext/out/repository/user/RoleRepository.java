@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.out.user;
+package com.mossy.boundedContext.out.repository.user;
 
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;

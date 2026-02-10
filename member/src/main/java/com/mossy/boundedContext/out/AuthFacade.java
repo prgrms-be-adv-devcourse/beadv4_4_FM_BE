@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.out;
 
 import com.mossy.boundedContext.in.dto.response.LoginResponse;
+import com.mossy.boundedContext.out.external.AuthClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

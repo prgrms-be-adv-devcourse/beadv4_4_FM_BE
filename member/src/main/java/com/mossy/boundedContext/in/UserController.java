@@ -2,12 +2,10 @@ package com.mossy.boundedContext.in;
 
 
 import com.mossy.boundedContext.app.user.UserFacade;
-import com.mossy.boundedContext.domain.seller.Seller;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.in.dto.UserInfoDTO;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
-import com.mossy.boundedContext.in.dto.response.LoginResponse;
-import com.mossy.boundedContext.out.seller.SellerRequestRepository;
+import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import com.mossy.global.rsData.RsData;
 
 import com.mossy.shared.member.domain.enums.SellerRequestStatus;
