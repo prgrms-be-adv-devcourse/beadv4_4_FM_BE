@@ -1,4 +1,4 @@
-package com.mossy.standard.ut;
+package com.mossy.boundedContext.global.ut;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
