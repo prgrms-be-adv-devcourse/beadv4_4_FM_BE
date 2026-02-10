@@ -3,7 +3,6 @@ package com.mossy.boundedContext.app.user;
 import com.mossy.boundedContext.app.VerfyMemberUseCase;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
-import com.mossy.boundedContext.out.user.UserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.auth.domain.response.MemberVerifyResponse;
 import com.mossy.shared.member.event.UserJoinedEvent;
@@ -18,15 +17,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserFacade {
 
-    private final UserRepository userRepository;
     private final SignupUseCase signupUseCase;
     private final EventPublisher eventPublisher;
     private final VerfyMemberUseCase verfyMemberUseCase;
+    private final UserMapper userMapper;
 
     public Long signup(SignupRequest req){
         User savedUser = signupUseCase.execute(req);
 
-        UserPayload userPayload = UserMapper.from(savedUser);
+        UserPayload userPayload = userMapper.toPayload(savedUser);
         eventPublisher.publish(new UserJoinedEvent (userPayload));
 
         return savedUser.getId();
