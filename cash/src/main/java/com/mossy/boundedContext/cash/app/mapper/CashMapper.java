@@ -5,8 +5,8 @@ import com.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import com.mossy.boundedContext.cash.domain.user.CashUser;
 import com.mossy.boundedContext.cash.domain.user.UserCashLog;
 import com.mossy.boundedContext.cash.domain.user.UserWallet;
-import com.mossy.boundedContext.cash.in.dto.common.CashSellerDto;
-import com.mossy.boundedContext.cash.in.dto.common.CashUserDto;
+import com.mossy.boundedContext.cash.in.dto.command.CashSellerDto;
+import com.mossy.boundedContext.cash.in.dto.command.CashUserDto;
 import com.mossy.boundedContext.cash.in.dto.request.CashRefundRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
@@ -26,24 +26,17 @@ public interface CashMapper {
 
     CashUserDto toCashUserDto(UserPayload payload);
 
-    @Mapping(target = "sellerId", source = "sellerId")
     CashSellerDto toCashSellerDto(SellerPayload payload);
 
     // --- [기존 UseCase/Entity 매핑] ---
 
     CashUser toEntity(CashUserDto userDto);
+
     CashUserDto toDto(CashUser user);
 
-    @Mapping(target = "id", source = "sellerId")
     CashSeller toEntity(CashSellerDto sellerDto);
 
-    @Mapping(target = "sellerId", source = "id")
     CashSellerDto toDto(CashSeller seller);
-
-    UserPayload toPayload(CashUser user);
-
-    @Mapping(target = "sellerId", source = "id")
-    SellerPayload toPayload(CashSeller seller);
 
     // --- [이벤트 기반 DTO 변환] ---
 

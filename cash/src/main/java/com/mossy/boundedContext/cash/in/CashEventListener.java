@@ -52,13 +52,13 @@ public class CashEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void cashUserCreatedEvent(CashUserCreatedEvent event) {
-        cashFacade.createUserWallet(mapper.toCashUserDto(event.user()));
+        cashFacade.createUserWallet(event.user());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void cashSellerCreatedEvent(CashSellerCreatedEvent event) {
-        cashFacade.createSellerWallet(mapper.toCashSellerDto(event.seller()));
+        cashFacade.createSellerWallet(event.seller());
     }
 
     @EventListener
