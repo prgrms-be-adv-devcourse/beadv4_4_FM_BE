@@ -8,7 +8,7 @@ import com.mossy.boundedContext.payment.in.dto.response.TossConfirmResponse;
 import com.mossy.boundedContext.payment.out.MarketFeignClient;
 import com.mossy.boundedContext.payment.out.PaymentRepository;
 import com.mossy.boundedContext.payment.out.dto.MarketOrderResponse;
-import com.mossy.exception.CashErrorCode;
+import com.mossy.exception.ErrorCode;
 import com.mossy.exception.DomainException;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.enums.PaymentStatus;
@@ -35,7 +35,7 @@ public class PaymentSupport {
 
     public Payment findPayment(String orderNo) {
         return paymentRepository.findByOrderNoAndStatus(orderNo, PaymentStatus.PAID)
-            .orElseThrow(() -> new DomainException(CashErrorCode.PAID_PAYMENT_NOT_FOUND));
+            .orElseThrow(() -> new DomainException(ErrorCode.PAID_PAYMENT_NOT_FOUND));
     }
 
     // ── 주문 조회 (FeignClient) ──
@@ -43,7 +43,7 @@ public class PaymentSupport {
     public MarketOrderResponse findPendingOrder(String orderNo) {
         MarketOrderResponse order = marketFeignClient.getOrderByOrderNo(orderNo);
         if (order.status() != OrderState.PENDING) {
-            throw new DomainException(CashErrorCode.PENDING_ORDER_NOT_FOUND);
+            throw new DomainException(ErrorCode.PENDING_ORDER_NOT_FOUND);
         }
         return order;
     }
@@ -51,7 +51,7 @@ public class PaymentSupport {
     public MarketOrderResponse findOrderForCancel(Long orderId) {
         MarketOrderResponse order = marketFeignClient.getOrder(orderId);
         if (order.status() != OrderState.PAID) {
-            throw new DomainException(CashErrorCode.PAID_ORDER_NOT_FOUND);
+            throw new DomainException(ErrorCode.PAID_ORDER_NOT_FOUND);
         }
         return order;
     }
@@ -60,7 +60,7 @@ public class PaymentSupport {
 
     public void validateAmount(BigDecimal orderAmount, BigDecimal requestAmount) {
         if (orderAmount.compareTo(requestAmount) != 0) {
-            throw new DomainException(CashErrorCode.ORDER_AMOUNT_MISMATCH);
+            throw new DomainException(ErrorCode.ORDER_AMOUNT_MISMATCH);
         }
     }
 

@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
         log.warn("DomainException: {}", e.getMessage());
 
         if (e.getErrorCode() != null) {
-            CashErrorCode errorCode = e.getErrorCode();
+            ErrorCode errorCode = e.getErrorCode();
             return ResponseEntity
                     .status(errorCode.getStatus())
                     .body(RsData.fail(errorCode));

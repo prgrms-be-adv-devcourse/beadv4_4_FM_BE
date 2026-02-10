@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.cash.in.dto.request;
 
 import com.mossy.exception.DomainException;
-import com.mossy.exception.CashErrorCode;
+import com.mossy.exception.ErrorCode;
 import com.mossy.shared.cash.enums.UserEventType;
 import lombok.Builder;
 
@@ -26,9 +26,9 @@ public record UserBalanceRequestDto(
     }
 
     public UserBalanceRequestDto {
-        if (userId == null) throw new DomainException(CashErrorCode.SELLER_ID_REQUIRED);
+        if (userId == null) throw new DomainException(ErrorCode.SELLER_ID_REQUIRED);
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new DomainException(CashErrorCode.AMOUNT_MUST_BE_POSITIVE);
+            throw new DomainException(ErrorCode.AMOUNT_MUST_BE_POSITIVE);
         }
     }
 }

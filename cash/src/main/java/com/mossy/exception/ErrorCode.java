@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum CashErrorCode implements BaseErrorCode {
+public enum ErrorCode implements BaseErrorCode {
 
     // ========================================
     // 400 Bad Request (잘못된 요청 / 유효성 검증 실패)

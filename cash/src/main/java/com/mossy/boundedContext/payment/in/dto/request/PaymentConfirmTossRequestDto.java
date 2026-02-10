@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.payment.in.dto.request;
 
-import com.mossy.exception.CashErrorCode;
+import com.mossy.exception.ErrorCode;
 import com.mossy.exception.DomainException;
 import java.math.BigDecimal;
 
@@ -17,16 +17,16 @@ public record PaymentConfirmTossRequestDto(
 ) {
     public PaymentConfirmTossRequestDto {
         if (paymentKey == null || paymentKey.isBlank()) {
-            throw new DomainException(CashErrorCode.PAYMENT_KEY_REQUIRED);
+            throw new DomainException(ErrorCode.PAYMENT_KEY_REQUIRED);
         }
         if (orderId == null || orderId.isBlank()) {
-            throw new DomainException(CashErrorCode.ORDER_ID_REQUIRED);
+            throw new DomainException(ErrorCode.ORDER_ID_REQUIRED);
         }
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new DomainException(CashErrorCode.AMOUNT_MUST_BE_POSITIVE);
+            throw new DomainException(ErrorCode.AMOUNT_MUST_BE_POSITIVE);
         }
         if (payMethod == null) {
-            throw new DomainException(CashErrorCode.PAY_METHOD_REQUIRED);
+            throw new DomainException(ErrorCode.PAY_METHOD_REQUIRED);
         }
     }
 }

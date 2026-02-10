@@ -6,7 +6,7 @@ import com.mossy.boundedContext.cash.domain.user.UserWallet;
 import com.mossy.boundedContext.cash.in.dto.request.CashHoldingRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.CashRefundRequestDto;
 import com.mossy.exception.DomainException;
-import com.mossy.exception.CashErrorCode;
+import com.mossy.exception.ErrorCode;
 import com.mossy.shared.cash.enums.PayMethod;
 
 import com.mossy.shared.cash.enums.SellerEventType;
@@ -31,7 +31,7 @@ public class CashHoldingUseCase {
         BigDecimal orderAmount = request.amount();
 
         if (buyerWallet.getBalance().compareTo(orderAmount) < 0) {
-            throw new DomainException(CashErrorCode.INSUFFICIENT_BALANCE);
+            throw new DomainException(ErrorCode.INSUFFICIENT_BALANCE);
         }
 
         // 구매자 지갑에서 주문 금액 차감
