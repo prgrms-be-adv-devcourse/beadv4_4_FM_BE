@@ -49,14 +49,6 @@ public interface CashMapper {
 
     // --- [이벤트 기반 DTO 변환] ---
 
-    @Mapping(target = "userId", source = "buyerId")
-    @Mapping(target = "relId", source = "orderId")
-    @Mapping(target = "eventType", expression = "java(com.mossy.shared.cash.enums.UserEventType.사용__주문결제)")
-    @Mapping(target = "relTypeCode", constant = "ORDER")
-    UserBalanceRequestDto toUserBalanceRequestDto(OrderCashPrePaymentEvent event);
-
-    CashHoldingRequestDto toCashHoldingRequestDto(PaymentCompletedEvent event);
-
     CashRefundRequestDto toCashRefundRequestDto(PaymentRefundEvent event);
 
     // --- [조회 응답 매핑] ---
