@@ -1,8 +1,12 @@
-package com.mossy.boundedContext.app.payment;
+package com.mossy.boundedContext.payment.app;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.shared.market.dto.toss.*;
+import com.mossy.boundedContext.payment.in.dto.request.TossCancelRequest;
+import com.mossy.boundedContext.payment.in.dto.request.TossConfirmRequest;
+import com.mossy.boundedContext.payment.in.dto.response.TossCancelResponse;
+import com.mossy.boundedContext.payment.in.dto.response.TossConfirmResponse;
+import com.mossy.boundedContext.payment.in.dto.response.TossPaymentResponse;
+import com.mossy.exception.CashErrorCode;
+import com.mossy.exception.DomainException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -46,7 +50,7 @@ public class TossPaymentsService {
                 .onStatus(HttpStatusCode::isError, (req, res) -> {
                     String errorBody = new String(res.getBody().readAllBytes(), StandardCharsets.UTF_8);
                     log.error("토스페이먼츠 결제 승인 실패: status={}, body={}", res.getStatusCode(), errorBody);
-                    throw new DomainException(ErrorCode.TOSS_PAYMENT_CONFIRM_FAILED);
+                    throw new DomainException(CashErrorCode.TOSS_PAYMENT_CONFIRM_FAILED);
                 })
                 .body(TossConfirmResponse.class);
 
@@ -57,7 +61,7 @@ public class TossPaymentsService {
             throw e;
         } catch (Exception e) {
             log.error("토스페이먼츠 결제 승인 예외: {}", e.getMessage(), e);
-            throw new DomainException(ErrorCode.TOSS_PAYMENT_CONFIRM_FAILED);
+            throw new DomainException(CashErrorCode.TOSS_PAYMENT_CONFIRM_FAILED);
         }
     }
     //토스페이먼츠 결제 취소 API 호출
@@ -71,7 +75,7 @@ public class TossPaymentsService {
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, (req, res) -> {
                     log.error("토스페이먼츠 결제 취소 실패: status={}", res.getStatusCode());
-                    throw new DomainException(ErrorCode.TOSS_PAYMENT_CANCEL_FAILED);
+                    throw new DomainException(CashErrorCode.TOSS_PAYMENT_CANCEL_FAILED);
                 })
                 .body(TossCancelResponse.class);
             return response;
@@ -79,7 +83,7 @@ public class TossPaymentsService {
         } catch (DomainException e) {
             throw e;
         } catch (Exception e) {
-            throw new DomainException(ErrorCode.TOSS_PAYMENT_CANCEL_FAILED);
+            throw new DomainException(CashErrorCode.TOSS_PAYMENT_CANCEL_FAILED);
         }
     }
 
@@ -95,7 +99,7 @@ public class TossPaymentsService {
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, (req, res) -> {
                     log.error("토스 결제 조회 실패: status={}", res.getStatusCode());
-                    throw new DomainException(ErrorCode.TOSS_PAYMENT_NOT_FOUND);
+                    throw new DomainException(CashErrorCode.TOSS_PAYMENT_NOT_FOUND);
                 })
                 .body(TossPaymentResponse.class);
 
@@ -103,7 +107,7 @@ public class TossPaymentsService {
             throw e;
         } catch (Exception e) {
             log.error("토스 결제 조회 중 예외 발생: {}", e.getMessage());
-            throw new DomainException(ErrorCode.TOSS_API_ERROR);
+            throw new DomainException(CashErrorCode.TOSS_API_ERROR);
         }
     }
 }

@@ -42,8 +42,10 @@ public enum CashErrorCode implements BaseErrorCode {
     USER_NOT_FOUND(404, "존재하지 않는 회원입니다."),
     SELLER_NOT_FOUND(404, "존재하지 않는 판매자입니다."),
 
-    // 결제 내역 조회
+    // 주문 및 결제 내역 조회
+    ORDER_NOT_FOUND(404, "주문을 찾을 수 없습니다."),
     PENDING_ORDER_NOT_FOUND(404, "결제 대기 중인 주문을 찾을 수 없습니다."),
+    PAID_ORDER_NOT_FOUND(404, "결제 완료 상태의 주문을 찾을 수 없습니다."),
     PAID_PAYMENT_NOT_FOUND(404, "결제 완료된 내역를 찾을 수 없습니다."),
 
     // ========================================
@@ -71,4 +73,9 @@ public enum CashErrorCode implements BaseErrorCode {
 
     private final int status;
     private final String msg;
+
+    @Override
+    public String getCode() {
+        return this.name();
+    }
 }

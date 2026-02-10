@@ -1,7 +1,7 @@
-package com.mossy.shared.market.dto.toss;
+package com.mossy.boundedContext.payment.in.dto.request;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.exception.CashErrorCode;
+import com.mossy.exception.DomainException;
 import java.math.BigDecimal;
 
 public record PaymentCancelCashRequestDto(
@@ -11,13 +11,13 @@ public record PaymentCancelCashRequestDto(
 ) {
     public PaymentCancelCashRequestDto {
         if (orderId == null || orderId.isBlank()) {
-            throw new DomainException(ErrorCode.ORDER_ID_REQUIRED);
+            throw new DomainException(CashErrorCode.ORDER_ID_REQUIRED);
         }
         if (cancelAmount == null || cancelAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new DomainException(ErrorCode.CANCEL_AMOUNT_MUST_BE_POSITIVE);
+            throw new DomainException(CashErrorCode.CANCEL_AMOUNT_MUST_BE_POSITIVE);
         }
         if (cancelReason == null || cancelReason.isBlank()) {
-            throw new DomainException(ErrorCode.CANCEL_REASON_REQUIRED);
+            throw new DomainException(CashErrorCode.CANCEL_REASON_REQUIRED);
         }
     }
 }

@@ -1,10 +1,10 @@
-package com.mossy.shared.market.dto.toss;
+package com.mossy.boundedContext.payment.in.dto.request;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.exception.CashErrorCode;
+import com.mossy.exception.DomainException;
 import java.math.BigDecimal;
 
-import com.mossy.shared.market.enums.PayMethod;
+import com.mossy.shared.cash.enums.PayMethod;
 import lombok.Builder;
 
 @Builder
@@ -15,13 +15,15 @@ public record PaymentConfirmCashRequestDto(
 ) {
     public PaymentConfirmCashRequestDto {
         if (orderId == null || orderId.isBlank()) {
-            throw new DomainException(ErrorCode.ORDER_ID_REQUIRED);
+            throw new DomainException(CashErrorCode.ORDER_ID_REQUIRED);
         }
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new DomainException(ErrorCode.AMOUNT_MUST_BE_POSITIVE);
+            throw new DomainException(CashErrorCode.AMOUNT_MUST_BE_POSITIVE);
         }
         if (payMethod == null) {
-            throw new DomainException(ErrorCode.PAY_METHOD_REQUIRED);
+            throw new DomainException(CashErrorCode.PAY_METHOD_REQUIRED);
         }
     }
 }
+
+

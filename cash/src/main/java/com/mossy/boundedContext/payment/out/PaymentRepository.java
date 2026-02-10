@@ -1,11 +1,11 @@
-package com.mossy.boundedContext.out.payment;
+package com.mossy.boundedContext.payment.out;
 
-import com.mossy.boundedContext.domain.payment.Payment;
 
+import com.mossy.boundedContext.payment.domain.Payment;
 import java.util.List;
 import java.util.Optional;
 
-import com.mossy.shared.market.enums.PaymentStatus;
+import com.mossy.shared.cash.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {

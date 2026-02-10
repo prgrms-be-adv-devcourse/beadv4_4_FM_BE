@@ -1,4 +1,4 @@
-package com.mossy.shared.market.dto.toss;
+package com.mossy.boundedContext.payment.in.dto.response;
 
 import java.math.BigDecimal;
 

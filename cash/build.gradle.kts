@@ -7,6 +7,8 @@ plugins {
 group = "com.mossy"
 version = "0.0.1-SNAPSHOT"
 
+val springCloudVersion = "2024.0.0"
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -23,11 +25,20 @@ repositories {
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+    }
+}
+
 dependencies {
     // common 모듈
     implementation(project(":common"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     runtimeOnly("org.postgresql:postgresql")
+
+    // OpenFeign (Market 서비스와 통신)
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     // 롬복
     compileOnly("org.projectlombok:lombok")
