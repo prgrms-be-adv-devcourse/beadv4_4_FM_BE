@@ -30,7 +30,6 @@ public class DonationSettleUseCase {
     private final DonationLogRepository donationLogRepository;
     private final PayoutSupport payoutSupport;
 
-     //집계 기능 사용 시 (Payout을 통한 기부금 정산)
      /**
       * 특정 정산(Payout)이 완료되었을 때, 관련된 모든 기부 로그(DonationLog)를 '정산 완료' 상태로 업데이트
       *
@@ -72,10 +71,6 @@ public class DonationSettleUseCase {
          });
      }
 
-    // 집계 없이 정산만 사용 시
-    // 주의: Payout이 없으므로 payoutId로 기부금을 정산할 수 없습니다.
-    // 대안: PayoutItem 생성 시점에 직접 DonationLog를 정산 처리하거나,
-    //       별도의 배치 작업으로 처리해야 합니다.
     /**
      * 특정 주문 항목 ID 리스트에 해당하는 기부 로그를 정산 완료 처리
      *

@@ -126,4 +126,9 @@ public enum ErrorCode implements BaseErrorCode {
 
     private final int status;
     private final String msg;
+
+    @Override
+    public String getCode() {
+        return name();
+    }
 }

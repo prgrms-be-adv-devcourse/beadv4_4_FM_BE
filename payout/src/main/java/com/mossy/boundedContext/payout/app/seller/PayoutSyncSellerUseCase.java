@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.payout.app.seller;
 
+import com.mossy.boundedContext.payout.app.common.PayoutMapper;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PayoutSyncSellerUseCase {
     private final PayoutSellerRepository payoutSellerRepository;
     private final EventPublisher eventPublisher;
+    private final PayoutMapper payoutMapper;
 
     /**
      * Member 컨텍스트로부터 받은 SellerPayload를 사용하여 PayoutSeller 엔티티를 생성하거나 업데이트
@@ -51,24 +53,10 @@ public class PayoutSyncSellerUseCase {
 
     /**
      * PayoutSeller 엔티티를 생성하고 저장하는 헬퍼 메서드
-     * TODO: 향후 MapStruct를 사용하여 DTO -> Entity 변환 로직을 Mapper로 분리
-     *
      * @param dto 판매자 생성 DTO
      */
     private void createPayoutSeller(PayoutSellerDto dto) {
-        PayoutSeller newSeller = PayoutSeller.builder()
-                .id(dto.sellerId())
-                .userId(dto.userId())
-                .sellerType(dto.sellerType())
-                .storeName(dto.storeName())
-                .businessNum(dto.businessNum())
-                .latitude(dto.latitude())
-                .longitude(dto.longitude())
-                .status(dto.status())
-                .createdAt(dto.createdAt())
-                .updatedAt(dto.updatedAt())
-                .build();
-
+        PayoutSeller newSeller = payoutMapper.toEntity(dto);
         PayoutSeller saved = payoutSellerRepository.save(newSeller);
         eventPublisher.publish(new PayoutSellerCreatedEvent(saved.toDto()));
     }

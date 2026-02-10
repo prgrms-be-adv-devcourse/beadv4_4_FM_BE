@@ -23,14 +23,9 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PayoutItem extends BaseIdAndTime {
 
-    // 집계 기능 사용 시 필수
-    // @ManyToOne(fetch = LAZY)
-    // @JoinColumn(name = "payout_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    // private Payout payout;
 
-    // 집계 없이 정산만 사용 (nullable로 변경)
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "payout_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "payout_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Payout payout;
 
     @Enumerated(EnumType.STRING)
@@ -79,10 +74,8 @@ public class PayoutItem extends BaseIdAndTime {
 
     private void validatePayoutItem(Payout payout, PayoutEventType eventType, String relTypeCode,
                                     Long relId, LocalDateTime paymentDate, PayoutSeller payee, BigDecimal amount) {
-        // 집계 기능 사용 시 필수
-        // if (payout == null) throw new DomainException(ErrorCode.PAYOUT_IS_NULL);
 
-        // 집계 없이 정산만 사용 시 payout은 optional
+        if (payout == null) throw new DomainException(ErrorCode.PAYOUT_IS_NULL);
         if (eventType == null) throw new DomainException(ErrorCode.PAYOUT_EVENT_TYPE_IS_NULL);
         if (relTypeCode == null || relTypeCode.isBlank()) throw new DomainException(ErrorCode.REL_TYPE_CODE_IS_NULL);
         if (relId == null) throw new DomainException(ErrorCode.REL_ID_IS_NULL);

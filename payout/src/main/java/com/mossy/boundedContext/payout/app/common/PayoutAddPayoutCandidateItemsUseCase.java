@@ -32,6 +32,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
     private final DonationCalculator donationCalculator;
     private final FeeCalculator feeCalculator;
+    private final PayoutMapper payoutMapper;
 
     /**
      * 단일 주문 아이템(OrderItem)에 대해 정산 후보 항목을 생성
@@ -120,21 +121,9 @@ public class PayoutAddPayoutCandidateItemsUseCase {
 
     /**
      * 정산 후보 아이템을 생성하고 저장하는 헬퍼 메서드
-     * TODO: 향후 MapStruct를 사용하여 DTO -> Entity 변환 로직을 Mapper로 분리
      */
     private void makePayoutCandidateItem(PayoutCandidateItemCreateDto dto) {
-        PayoutCandidateItem payoutCandidateItem = PayoutCandidateItem.builder()
-                .eventType(dto.eventType())
-                .relTypeCode("OrderItem")
-                .relId(dto.orderItem().id())
-                .paymentDate(dto.paymentDate())
-                .payer(dto.payer())
-                .payee(dto.payee())
-                .amount(dto.amount())
-                .weightGrade(dto.weightGrade())
-                .deliveryDistance(dto.deliveryDistance())
-                .build();
-
+        PayoutCandidateItem payoutCandidateItem = payoutMapper.toEntity(dto);
         payoutCandidateItemRepository.save(payoutCandidateItem);
     }
 }

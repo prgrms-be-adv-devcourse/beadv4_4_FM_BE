@@ -11,6 +11,7 @@ import com.mossy.shared.payout.event.PayoutUserCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.mossy.boundedContext.payout.app.common.PayoutMapper;
 
 /**
  * [UseCase] 사용자 정보를 Payout 컨텍스트와 동기화하는 서비스 클래스
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PayoutSyncUserUseCase {
     private final PayoutUserRepository payoutUserRepository;
     private final EventPublisher eventPublisher;
+    private final PayoutMapper payoutMapper;
 
     /**
      * Member 컨텍스트로부터 받은 UserDto를 사용하여 PayoutUser 엔티티를 생성하거나 업데이트
@@ -48,25 +50,10 @@ public class PayoutSyncUserUseCase {
 
     /**
      * PayoutUser 엔티티를 생성하고 저장하는 헬퍼 메서드
-     * TODO: 향후 MapStruct를 사용하여 DTO -> Entity 변환 로직을 Mapper로 분리
-     *
      * @param dto 사용자 생성 DTO
      */
     private void createPayoutUser(PayoutUserDto dto) {
-        PayoutUser newUser = PayoutUser.builder()
-                .id(dto.id())
-                .email(dto.email())
-                .name(dto.name())
-                .address(dto.address())
-                .nickname(dto.nickname())
-                .latitude(dto.latitude())
-                .longitude(dto.longitude())
-                .profileImage(dto.profileImage())
-                .status(dto.status())
-                .createdAt(dto.createdAt())
-                .updatedAt(dto.updatedAt())
-                .build();
-
+        PayoutUser newUser = payoutMapper.toEntity(dto);
         PayoutUser saved = payoutUserRepository.save(newUser);
         eventPublisher.publish(new PayoutUserCreatedEvent(saved.toDto()));
     }

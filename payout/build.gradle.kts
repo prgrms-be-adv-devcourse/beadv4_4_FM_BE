@@ -35,6 +35,10 @@ dependencies {
     // Swagger UI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
 
+    // MapStruct
+    implementation ("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
     // 컴파일 및 런타임 도구
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
