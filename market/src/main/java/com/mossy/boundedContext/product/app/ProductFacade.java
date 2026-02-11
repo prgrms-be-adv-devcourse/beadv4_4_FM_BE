@@ -17,6 +17,7 @@ public class ProductFacade {
     //private final MarketGetProductListUseCase marketGetProductListUseCase;
     //private final MarketGetProductDetailUseCase marketGetProductDetailUseCase;
     private final MarketRegisterProductUseCase marketRegisterProductUseCase;
+    private final ProductOptionConfigureUseCase productOptionConfigureUseCase;
    // private final MarketUpdateProductUseCase marketUpdateProductUseCase;
     //private final MarketChangeProductStatusUseCase marketChangeProductStatusUseCase;
     //private final MarketDecreaseStockUseCase marketDecreaseStockUseCase;
@@ -38,8 +39,16 @@ public class ProductFacade {
     // 상품 등록
     @Transactional
     public Long registerProduct(ProductCreateRequest request) {
-        Product product = marketRegisterProductUseCase.register(request);
-        return product.getId();
+        // Step 1: 뼈대 생성 (Memory 상의 객체)
+        Product product = marketRegisterProductUseCase.create(
+                request.sellerId(), request.catalogProductId(), request.basePrice()
+        );
+
+        // Step 2: 옵션/아이템 조립 (객체 그래프 완성)
+        productOptionConfigureUseCase.configure(product, request.optionGroups(), request.productItems());
+
+        // Step 3: 최종 저장 (DB 반영)
+        return marketRegisterProductUseCase.save(product);
     }
 
     // 상품 정보 수정

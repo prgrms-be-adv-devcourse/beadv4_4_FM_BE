@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.product.in;
 
 import com.mossy.boundedContext.product.app.ProductSearchUseCase;
-import com.mossy.boundedContext.product.domain.ProductDocument;
+import com.mossy.boundedContext.product.domain.CatalogDocument;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,13 @@ public class ApiV1ProductSearchController {
             summary = "상품 검색",
             description = "상품명을 기준으로 상품 목록을 페이징 조회합니다."
     )
-    public Page<ProductDocument> findByName(
+    public Page<CatalogDocument> findByName(
             @RequestParam("name") String name,
             @RequestParam (defaultValue = "0") int page,
             @RequestParam (defaultValue = "10") int size) {
         log.info("name={}", name);
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<ProductDocument> productsList = productSearchUseCase.findByName(name, pageable);
+        Page<CatalogDocument> productsList = productSearchUseCase.findByName(name, pageable);
 
         return productsList;
     }

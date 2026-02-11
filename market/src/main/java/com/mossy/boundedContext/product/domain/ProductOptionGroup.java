@@ -13,14 +13,12 @@ import lombok.*;
 @AttributeOverride(name = "id", column = @Column(name = "product_option_group_id"))
 public class ProductOptionGroup extends BaseIdAndTime {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Product product; // 어떤 판매글의 옵션그룹인지
+    @Column(name = "product_id", insertable = false, updatable = false)
+    private Long productId;
+
+    @Column(name = "product_option_group_master_id", nullable = false)
+    private Long masterId;
 
     @Column(nullable = false)
-    private String name; // 예: "색상", "사이즈"
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+    private String name;
 }

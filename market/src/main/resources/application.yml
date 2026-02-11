@@ -6,6 +6,8 @@ spring:
     name: market
   config:
     import: "optional:file:./market/.env.market[.properties]"
+  profiles:
+    active: dev
   output:
     ansi:
       enabled: always

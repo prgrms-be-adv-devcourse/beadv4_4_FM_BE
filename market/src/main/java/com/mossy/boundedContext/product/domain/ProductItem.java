@@ -13,21 +13,20 @@ import java.util.List;
 @Entity
 @Table(name = "MARKET_PRODUCT_ITEMS")
 @Getter
-@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "product_items_id"))
 public class ProductItem extends BaseIdAndTime {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Product product;
+    @Column(name = "product_id", nullable = false, insertable = false, updatable = false)
+    private Long productId;
 
     @Column(name = "sku_code", unique = true, length = 100)
     private String skuCode;
 
     @Column(name = "option_combination", length = 255)
-    private String optionCombination; // 예: "Red/XL"
+    private String optionCombination;
 
     @Column(nullable = false)
     private Integer quantity = 0;
@@ -35,26 +34,17 @@ public class ProductItem extends BaseIdAndTime {
     @Column(name = "additional_price", nullable = false, precision = 18, scale = 2)
     private BigDecimal additionalPrice = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_items_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private List<ProductOptionValue> optionValues = new ArrayList<>();
 
-    // === 연관관계 편의 메서드 === //
-    protected void assignProduct(Product product) {
-        this.product = product;
-    }
-
     public void addOptionValue(ProductOptionValue value) {
+        if (this.optionValues == null) this.optionValues = new ArrayList<>();
         this.optionValues.add(value);
-        value.setProductItem(this);
-    }
-
-    // 상품 가격
-    public BigDecimal getTotalPrice() {
-        return this.product.getBasePrice().add(this.additionalPrice);
     }
 
     // 재고 감소
-    public void removeStock(int quantity) {
+    public void removeQuantity(int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("차감 수량은 0보다 커야 합니다.");
         }
@@ -65,7 +55,7 @@ public class ProductItem extends BaseIdAndTime {
     }
 
     // 재고 추가
-    public void addStock(int quantity) {
+    public void addQuantity(int quantity) {
         this.quantity += quantity;
     }
 }

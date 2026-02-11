@@ -1,10 +1,12 @@
 package com.mossy.boundedContext.product.in.dto.request;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record ProductItemRequest(
         String skuCode,
-        String optionCombination,
+        String optionCombination, // 예: "빨강/XL"
+        BigDecimal additionalPrice,
         Integer quantity,
-        BigDecimal additionalPrice
+        List<ItemOptionMappingRequest> itemOptions
 ) {}

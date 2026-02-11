@@ -11,8 +11,8 @@ import java.util.List;
 
 public record ProductCreateRequest(
         Long sellerId,
-        Long catalogId,
+        Long catalogProductId,
         BigDecimal basePrice,
-        List<String> optionGroupNames,
-        List<ProductItemRequest> items // 옵션 리스트
+        List<OptionGroupRequest> optionGroups,
+        List<ProductItemRequest> productItems
 ) {}

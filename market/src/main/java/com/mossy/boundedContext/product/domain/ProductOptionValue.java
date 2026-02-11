@@ -14,12 +14,13 @@ import lombok.*;
 public class ProductOptionValue extends BaseIdAndTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_items_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "product_items_id", nullable = false,
+            insertable = false, updatable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private ProductItem productItem;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_option_group_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private ProductOptionGroup optionGroup;
+    @Column(name = "product_option_group_id", nullable = false)
+    private Long optionGroupId;
 
     @Column(nullable = false)
     private String value;
