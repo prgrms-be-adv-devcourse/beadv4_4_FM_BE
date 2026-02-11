@@ -8,6 +8,9 @@ import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateD
 import com.mossy.boundedContext.payout.in.dto.event.PayoutSellerDto;
 import com.mossy.boundedContext.payout.in.dto.event.PayoutUserDto;
 import com.mossy.shared.market.event.OrderPaidEvent;
+import com.mossy.shared.member.payload.SellerPayload;
+import com.mossy.shared.member.payload.UserPayload;
+import com.mossy.shared.payout.enums.PayoutEventType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -21,15 +24,46 @@ import java.math.BigDecimal;
 public interface PayoutMapper {
         // --- [EventListener에서 사용 메서드들] ---
 
+        // --- [Payload to DTO 변환] ---
+        PayoutSellerDto toDto(SellerPayload seller);
+
+        PayoutUserDto toDto(UserPayload user);
+
         // --- [기존 UseCase/Entity 매핑] ---
         @Mapping(target = "id", source = "sellerId")
         PayoutSeller toEntity(PayoutSellerDto dto);
-        
+
         PayoutUser toEntity(PayoutUserDto dto);
 
+        @Mapping(target = "sellerId", source = "id")
+        SellerPayload toPayload(PayoutSeller seller);
+
+        UserPayload toPayload(PayoutUser user);
+
+
+
+
         @Mapping(target = "relTypeCode", constant = "OrderItem")
-        @Mapping(target = "relId", source = "orderItem.orderItemId")
+        //@Mapping(target =="relId", source = "orderItem.orderItemId")
         PayoutCandidateItem toEntity(PayoutCandidateItemCreateDto dto);
+
+        @Mapping(target = "paymentDate", source = "dto.paymentDate")
+        @Mapping(target = "orderItem", source = "dto")
+        @Mapping(target = "eventType", source = "eventType")
+        @Mapping(target = "payer", source = "payer")
+        @Mapping(target = "payee", source = "payee")
+        @Mapping(target = "amount", source = "amount")
+        @Mapping(target = "weightGrade", source = "dto.weightGrade")
+        @Mapping(target = "deliveryDistance", source = "dto.deliveryDistance")
+        @Mapping(target = "carbonKg", source = "carbonKg")
+        PayoutCandidateItemCreateDto toCandidateItemCreateDto(
+                CreatePayoutCandidateDto dto,
+                PayoutEventType eventType,
+                PayoutUser payer,
+                PayoutSeller payee,
+                BigDecimal amount,
+                BigDecimal carbonKg
+        );
 
         // --- [이벤트 기반 DTO 변환] ---
         @Mapping(target = "orderItemId", source = "orderItem.orderItemId")

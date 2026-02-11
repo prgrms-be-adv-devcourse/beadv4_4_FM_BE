@@ -55,25 +55,4 @@ public class PayoutUser extends ReplicaUser {
     public void changeUser(UserPayload user) {
         super.changeUser(user);
     }
-
-    /**
-     * 현재 PayoutUser 엔티티의 핵심 정보를 담은 DTO로 변환하여 반환
-     * 주로 이벤트 발행 시 이벤트 데이터로 활용되거나 다른 서비스에 정보를 전달할 때 사용
-     * @return PayoutUser의 정보를 담은 UserDto
-     */
-    public UserPayload toDto() {
-        return UserPayload.builder()
-                .id(getId())
-                .email(getEmail())
-                .name(getName())
-                .address(getAddress())
-                .nickname(getNickname())
-                .profileImage(getProfileImage())
-                .status(getStatus())
-                .longitude(getLongitude())
-                .latitude(getLatitude())
-                .createdAt(getCreatedAt())
-                .updatedAt(getUpdatedAt())
-                .build();
-    }
 }

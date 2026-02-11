@@ -76,24 +76,4 @@ public class PayoutSeller extends ReplicaSeller {
     public void changeSeller(SellerPayload seller) {
         super.changeSeller(seller);
     }
-
-    /**
-     * 현재 PayoutSeller 엔티티의 핵심 정보를 담은 DTO로 변환하여 반환
-     * 주로 이벤트 발행 시 이벤트 데이터로 활용되거나 다른 서비스에 정보를 전달할 때 사용
-     * @return PayoutSeller의 정보를 담은 SellerDto
-     */
-    public SellerPayload toDto() {
-        return SellerPayload.builder()
-                .sellerId(getId())
-                .userId(getUserId())
-                .sellerType(getSellerType())
-                .storeName(getStoreName())
-                .businessNum(getBusinessNum())
-                .status(getStatus())
-                .latitude(getLatitude())
-                .longitude(getLongitude())
-                .createdAt(getCreatedAt())
-                .updatedAt(getUpdatedAt())
-                .build();
-    }
 }

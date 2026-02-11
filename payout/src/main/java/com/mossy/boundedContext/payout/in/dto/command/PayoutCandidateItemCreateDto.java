@@ -20,22 +20,4 @@ public record PayoutCandidateItemCreateDto(
         BigDecimal deliveryDistance,
         BigDecimal carbonKg
 ) {
-    public static PayoutCandidateItemCreateDto of(
-            LocalDateTime paymentDate, CreatePayoutCandidateDto orderItem, PayoutEventType eventType,
-            PayoutUser payer, PayoutSeller payee, BigDecimal amount,
-            String weightGrade, BigDecimal deliveryDistance, BigDecimal carbonKg
-    ) {
-        return PayoutCandidateItemCreateDto.builder()
-                .paymentDate(paymentDate)
-                .orderItem(orderItem)
-                .eventType(eventType)
-                .payer(payer)
-                .payee(payee)
-                .amount(amount)
-                .weightGrade(weightGrade)
-                .deliveryDistance(deliveryDistance)
-                .carbonKg(carbonKg)
-                .build();
-    }
-
 }

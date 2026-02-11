@@ -1,7 +1,5 @@
 package com.mossy.exception;
 
-
-import com.mossy.global.exception.BaseCode;
 import com.mossy.global.rsData.RsData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +19,7 @@ public class GlobalExceptionHandler {
         log.warn("DomainException: {}", e.getMessage());
 
         if (e.getErrorCode() != null) {
-            BaseCode errorCode = e.getErrorCode();
+            ErrorCode errorCode = e.getErrorCode();
             return ResponseEntity
                     .status(errorCode.getStatus())
                     .body(RsData.fail(errorCode));
@@ -30,7 +28,7 @@ public class GlobalExceptionHandler {
         int status = e.getHttpStatus();
         return ResponseEntity
                 .status(status)
-                .body(RsData.fail(e.getResultCode(), e.getMsg()));
+                .body(new RsData<>(e.getResultCode(), e.getMsg(), null));
     }
 
     //IllegalArgumentException 처리 (DTO 유효성 검증 실패 등)
@@ -40,18 +38,18 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(RsData.fail("F-400", e.getMessage()));
+                .body(new RsData<>("F-400", e.getMessage(), null));
     }
 
 
-     //IllegalStateException 처리 (비즈니스 로직 상태 오류)
+    //IllegalStateException 처리 (비즈니스 로직 상태 오류)
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<RsData<Void>> handleIllegalStateException(IllegalStateException e) {
         log.warn("IllegalStateException: {}", e.getMessage());
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(RsData.fail("F-409", e.getMessage()));
+                .body(new RsData<>("F-409", e.getMessage(), null));
     }
 
     //@Valid 유효성 검증 실패 처리
@@ -66,7 +64,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(RsData.fail("F-400", message));
+                .body(new RsData<>("F-400", message, null));
     }
 
 
@@ -77,6 +75,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(RsData.fail("F-500", "서버 오류가 발생했습니다."));
+                .body(new RsData<>("F-500", "서버 오류가 발생했습니다.", null));
     }
 }

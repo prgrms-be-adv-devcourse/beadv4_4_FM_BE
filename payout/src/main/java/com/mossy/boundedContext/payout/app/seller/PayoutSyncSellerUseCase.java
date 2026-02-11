@@ -40,7 +40,7 @@ public class PayoutSyncSellerUseCase {
         }
 
         // SellerPayload를 PayoutSellerDto로 변환
-        PayoutSellerDto dto = PayoutSellerDto.from(seller);
+        PayoutSellerDto dto = payoutMapper.toDto(seller);
 
         payoutSellerRepository.findById(dto.sellerId())
                 .ifPresentOrElse(
@@ -58,7 +58,7 @@ public class PayoutSyncSellerUseCase {
     private void createPayoutSeller(PayoutSellerDto dto) {
         PayoutSeller newSeller = payoutMapper.toEntity(dto);
         PayoutSeller saved = payoutSellerRepository.save(newSeller);
-        eventPublisher.publish(new PayoutSellerCreatedEvent(saved.toDto()));
+        eventPublisher.publish(new PayoutSellerCreatedEvent(payoutMapper.toPayload(saved)));
     }
 }
 

@@ -38,7 +38,7 @@ public class PayoutSyncUserUseCase {
             throw new DomainException(ErrorCode.INVALID_USER_DATA);
         }
 
-        PayoutUserDto dto = PayoutUserDto.from(user);
+        PayoutUserDto dto = payoutMapper.toDto(user);
         payoutUserRepository.findById(dto.id())
                 .ifPresentOrElse(
                         // 기존 사용자: changeUser로 업데이트 (더티 체킹으로 변경된 필드만 UPDATE)
@@ -55,6 +55,6 @@ public class PayoutSyncUserUseCase {
     private void createPayoutUser(PayoutUserDto dto) {
         PayoutUser newUser = payoutMapper.toEntity(dto);
         PayoutUser saved = payoutUserRepository.save(newUser);
-        eventPublisher.publish(new PayoutUserCreatedEvent(saved.toDto()));
+        eventPublisher.publish(new PayoutUserCreatedEvent(payoutMapper.toPayload(saved)));
     }
 }

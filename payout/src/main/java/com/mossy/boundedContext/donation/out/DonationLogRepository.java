@@ -13,13 +13,6 @@ import java.util.List;
  * 도메인 특화된 쿼리 메서드를 정의
  */
 public interface DonationLogRepository extends JpaRepository<DonationLog, Long> {
-
-    /**
-     * 아직 정산 처리되지 않은(isSettled가 false인) 모든 기부 로그를 조회
-     * @return 미정산된 기부 로그 리스트
-     */
-    List<DonationLog> findByIsSettledFalse();
-
     /**
      * 특정 사용자(PayoutUser)가 생성한 모든 기부 로그를 조회
      * @param user 기부 로그를 조회할 PayoutUser 객체

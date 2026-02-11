@@ -13,6 +13,7 @@ import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateD
 import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
 import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
 
+
 import com.mossy.shared.payout.enums.PayoutEventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -101,26 +102,15 @@ public class PayoutAddPayoutCandidateItemsUseCase {
         }
 
         // --- 계산된 금액을 바탕으로 3가지 종류의 정산 후보 아이템을 생성 ---
-        // 아이템 1: 플랫폼 수수료 (구매자 -> 시스템)
-        makePayoutCandidateItem(PayoutCandidateItemCreateDto.of(
-                dto.paymentDate(), dto, PayoutEventType.정산__상품판매_수수료,
-                buyer, system, adjustedFee,
-                dto.weightGrade(), dto.deliveryDistance(), carbonKg
-        ));
+        makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
+                dto, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee, carbonKg));
 
-        // 아이템 2: 판매 대금 (구매자 -> 판매자)
-        makePayoutCandidateItem(PayoutCandidateItemCreateDto.of(
-                dto.paymentDate(), dto, PayoutEventType.정산__상품판매_대금,
-                buyer, seller, salePriceWithoutFee,
-                dto.weightGrade(), dto.deliveryDistance(), carbonKg
-        ));
+        makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
+                dto, PayoutEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee, carbonKg));
 
-        // 아이템 3: 기부금 (구매자 -> 기부금 수령처)
-        makePayoutCandidateItem(PayoutCandidateItemCreateDto.of(
-                dto.paymentDate(), dto, PayoutEventType.정산__상품판매_기부금,
-                buyer, donation, donationAmount,
-                dto.weightGrade(), dto.deliveryDistance(), carbonKg
-        ));
+        makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
+                dto, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount, carbonKg));
+
     }
 
     /**
@@ -131,3 +121,4 @@ public class PayoutAddPayoutCandidateItemsUseCase {
         payoutCandidateItemRepository.save(payoutCandidateItem);
     }
 }
+
