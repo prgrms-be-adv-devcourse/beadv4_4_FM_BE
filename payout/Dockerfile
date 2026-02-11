@@ -2,31 +2,30 @@
 # 1단계: 빌드 스테이지 (JDK 21 사용)
 # ============================================
 FROM eclipse-temurin:21-jdk-alpine AS build
-WORKDIR /app`
+WORKDIR /app
 
-# 1. Gradle 래퍼 및 설정 파일 복사
+# 1. Gradle 래퍼 복사
 COPY gradlew .
 COPY gradle gradle
-# 루트에 build.gradle.kts가 있다면 복사 (없다면 아래 줄을 주석 처리하세요)
-COPY build.gradle.kts . 
 
-# 2. 빌드 구조 동적 생성 (payout-service와 common만 포함하여 빌드 속도 최적화)
-RUN printf 'rootProject.name = "backend"\ninclude("common")\ninclude("payout-service")\n' > settings.gradle.kts
+# 2. 빌드에 필요한 모듈만 포함하는 settings.gradle.kts 생성
+RUN echo 'rootProject.name = "Mossy"' > settings.gradle.kts && \
+    echo 'include("common")' >> settings.gradle.kts && \
+    echo 'include("payout")' >> settings.gradle.kts
 
 # 3. 의존성 캐싱을 위한 build 파일 선복사
-RUN mkdir -p common payout-service
 COPY common/build.gradle.kts common/
-COPY payout-service/build.gradle.kts payout-service/
+COPY payout/build.gradle.kts payout/
 
 # 의존성 먼저 다운로드 (라이브러리 캐싱 레이어)
-RUN chmod +x gradlew && ./gradlew dependencies --no-daemon || true
+RUN chmod +x gradlew && ./gradlew :common:dependencies :payout:dependencies --no-daemon || true
 
 # 4. 실제 소스 코드 복사
 COPY common/src common/src
-COPY payout-service/src payout-service/src
+COPY payout/src payout/src
 
 # 5. JAR 빌드 (테스트 스킵)
-RUN ./gradlew :payout-service:bootJar --no-daemon -x test
+RUN ./gradlew :payout:bootJar --no-daemon -x test
 
 # ============================================
 # 2단계: 실행 스테이지 (JRE 21 사용 - 경량화 및 보안)
@@ -36,6 +35,7 @@ WORKDIR /app
 
 ENV TZ=Asia/Seoul
 
+
 # 시스템 패키지 업데이트 및 보안 설정 (비루트 사용자)
 RUN apk add --no-cache tzdata && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
@@ -44,7 +44,7 @@ RUN apk add --no-cache tzdata && \
     adduser -u 1001 -S appuser -G appgroup
 
 # 빌드 결과물만 복사
-COPY --from=build /app/payout-service/build/libs/*.jar app.jar
+COPY --from=build /app/payout/build/libs/*.jar app.jar
 
 # 권한 부여 및 사용자 전환
 RUN chown appuser:appgroup app.jar
