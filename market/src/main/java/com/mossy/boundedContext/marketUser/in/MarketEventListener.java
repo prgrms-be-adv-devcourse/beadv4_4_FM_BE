@@ -2,7 +2,7 @@ package com.mossy.boundedContext.marketUser.in;
 
 import com.mossy.boundedContext.cart.app.CartFacade;
 import com.mossy.boundedContext.marketUser.app.MarketFacade;
-import com.mossy.boundedContext.marketUser.in.dto.event.MarketUserEvent;
+import com.mossy.boundedContext.marketUser.in.dto.event.MarketUserCreatedEvent;
 import com.mossy.boundedContext.order.app.OrderFacade;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
 import com.mossy.shared.market.event.OrderPaidEvent;
@@ -51,7 +51,7 @@ public class MarketEventListener {
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void MarketCartCreatedEvent(MarketUserEvent event) {
+    public void MarketCartCreatedEvent(MarketUserCreatedEvent event) {
         cartFacade.createCart(event.buyer());
     }
 
