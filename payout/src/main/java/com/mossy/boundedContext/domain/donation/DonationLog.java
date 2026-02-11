@@ -46,51 +46,34 @@ public class DonationLog extends BaseIdAndTime {
     private BigDecimal amount;
 
     /**
-     * 이 기부로 인해 상쇄된 탄소량(그램 단위)
+     * 이 기부로 인해 상쇄된 탄소량 (kg 단위)
      */
-    @Column(name = "carbon_offset_g", nullable = false)
-    private Double carbonOffsetG;
-
-    /**
-     * 이 기부 로그가 월말 정산 프로세스에 반영되어 처리 완료되었는지 여부를 나타냄
-     * 기본값은 false이며, 정산이 완료되면 true로 변경
-     */
-    @Column(name = "is_settled", nullable = false)
-    private Boolean isSettled = false;
+    @Column(name = "carbon_offset", nullable = false)
+    private BigDecimal carbonOffset;
 
     /**
      * DonationLog 엔티티를 생성하는 빌더 패턴 생성자
+     * 정산 완료 후에 생성되므로 생성 시점에 이미 정산 완료 상태
+     *
      * @param user 기부를 한 사용자
      * @param orderItemId 관련 주문 아이템 ID
      * @param amount 기부 금액
-     * @param carbonOffsetG 상쇄된 탄소량(그램)
+     * @param carbonOffset 상쇄된 탄소량 (kg)
      */
     @Builder
-    public DonationLog(PayoutUser user, Long orderItemId, BigDecimal amount, Double carbonOffsetG) {
+    public DonationLog(PayoutUser user, Long orderItemId, BigDecimal amount, BigDecimal carbonOffset) {
         validateDonation(user, orderItemId, amount);
         this.user = user;
         this.orderItemId = orderItemId;
         this.amount = amount;
-        this.carbonOffsetG = carbonOffsetG;
-        this.isSettled = false; // 새로 생성된 기부 로그는 기본적으로 정산되지 않은 상태입니다.
+        this.carbonOffset = carbonOffset;
     }
+
     private void validateDonation(PayoutUser user, Long orderItemId, BigDecimal amount) {
         if (user == null) throw new DomainException(ErrorCode.PAYOUT_USER_NOT_FOUND);
         if (orderItemId == null) throw new DomainException(ErrorCode.ORDER_NOT_FOUND);
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new DomainException(ErrorCode.INVALID_DONATION_AMOUNT);
         }
-    }
-
-
-    /**
-     * 이 기부 로그의 정산 상태를 '정산 완료(true)'로 변경
-     * Payout 프로세스에 의해 호출
-     */
-    public void settle() {
-        if (Boolean.TRUE.equals(this.isSettled)) {
-            throw new DomainException(ErrorCode.ALREADY_SETTLED_DONATION);
-        }
-        this.isSettled = true;
     }
 }
