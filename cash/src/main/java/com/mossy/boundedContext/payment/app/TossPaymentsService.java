@@ -1,8 +1,12 @@
-package com.mossy.boundedContext.app.payment;
+package com.mossy.boundedContext.payment.app;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.shared.market.dto.toss.*;
+import com.mossy.boundedContext.payment.in.dto.request.TossCancelRequest;
+import com.mossy.boundedContext.payment.in.dto.request.TossConfirmRequest;
+import com.mossy.boundedContext.payment.in.dto.response.TossCancelResponse;
+import com.mossy.boundedContext.payment.in.dto.response.TossConfirmResponse;
+import com.mossy.boundedContext.payment.in.dto.response.TossPaymentResponse;
+import com.mossy.exception.ErrorCode;
+import com.mossy.exception.DomainException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;

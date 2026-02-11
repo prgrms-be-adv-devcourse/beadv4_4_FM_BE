@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.wishList.app;
 
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
 import com.mossy.boundedContext.marketUser.out.MarketUserRepository;
 import com.mossy.boundedContext.product.domain.Product;

@@ -2,10 +2,10 @@ package com.mossy.boundedContext.cash.app.usecase.seller;
 
 import com.mossy.boundedContext.cash.app.mapper.CashMapper;
 import com.mossy.boundedContext.cash.domain.seller.CashSeller;
-import com.mossy.boundedContext.cash.in.dto.common.CashSellerDto;
+import com.mossy.boundedContext.cash.in.dto.command.CashSellerDto;
 import com.mossy.boundedContext.cash.out.seller.CashSellerRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.shared.cash.event.CashSellerCreatedEvent;
+import com.mossy.boundedContext.cash.in.dto.event.CashSellerCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,19 +22,12 @@ public class CashSyncSellerUseCase {
     public void syncSeller(CashSellerDto seller) {
         cashSellerRepository.findById(seller.sellerId())
             .ifPresentOrElse(
-                existingSeller -> existingSeller.update(
-                    seller.sellerType(),
-                    seller.storeName(),
-                    seller.businessNum(),
-                    seller.latitude(),
-                    seller.longitude(),
-                    seller.status()
-                ),
+                existingSeller -> existingSeller.update(seller),
 
                 () -> {
                     CashSeller newSeller = cashSellerRepository.save(mapper.toEntity(seller));
                     eventPublisher.publish(
-                        new CashSellerCreatedEvent(mapper.toPayload(newSeller))
+                        new CashSellerCreatedEvent(mapper.toDto(newSeller))
                     );
                 }
             );

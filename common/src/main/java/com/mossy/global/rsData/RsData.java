@@ -21,7 +21,6 @@ public class RsData<T> implements ResultType {
         this(resultCode, msg, null);
     }
 
-    //성공할 경우
     public static <T> RsData<T> success(BaseCode successCode) {
         return new RsData<>("S-" + successCode.getStatus(), successCode.getMsg(), null);
     }
@@ -31,12 +30,18 @@ public class RsData<T> implements ResultType {
     }
 
     //실패할 경우
-    public static <T> RsData<T> fail(BaseCode errorCode) {
-        return new RsData<>("F-" + errorCode.getStatus(), errorCode.getMsg(), null);
+    public static<T> RsData<T> fail(BaseCode errorCode) {
+        return new RsData<>(
+                "F-" + errorCode.getStatus(),
+                errorCode.getMsg(),
+                null
+        );
     }
-
-    public static <T> RsData<T> fail(BaseCode errorCode, T data) {
-        return new RsData<>("F-" + errorCode.getStatus(), errorCode.getMsg(), data);
+    public static<T> RsData<T> fail(BaseCode errorCode, T data) {
+        return new RsData<>(
+            "F-" + errorCode.getStatus(),
+            errorCode.getMsg(),
+            data
+        );
     }
-
 }

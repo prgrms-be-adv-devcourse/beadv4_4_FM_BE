@@ -4,9 +4,9 @@ import com.mossy.boundedContext.cart.domain.Cart;
 import com.mossy.boundedContext.cart.out.CartRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

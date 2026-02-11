@@ -29,10 +29,13 @@ public class OrderItem extends BaseIdAndTime {
     @Column(name = "product_id")
     private Long productId;
 
+    @Column(name = "user_coupon_id")
+    private Long userCouponId;
+
     private int quantity;
 
     @Column(name = "order_price", precision = 18, scale = 2, nullable = false)
-    private BigDecimal orderPrice;
+    private BigDecimal originalPrice;;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -41,19 +44,22 @@ public class OrderItem extends BaseIdAndTime {
     @Column(name="cancel_reason")
     private String cancelReason;
 
+    @Column(name = "discount_amount", precision = 18, scale = 2)
+    private BigDecimal discountAmount;
+
     static OrderItem create(
             Order order,
             MarketSeller seller,
             Long productId,
             int quantity,
-            BigDecimal orderPrice
+            BigDecimal originalPrice
     ) {
         return OrderItem.builder()
                 .order(order)
                 .seller(seller)
                 .productId(productId)
                 .quantity(quantity)
-                .orderPrice(orderPrice)
+                .originalPrice(originalPrice)
                 .state(OrderState.PENDING)
                 .build();
     }

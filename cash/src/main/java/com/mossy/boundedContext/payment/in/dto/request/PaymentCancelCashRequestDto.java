@@ -1,7 +1,7 @@
-package com.mossy.shared.market.dto.toss;
+package com.mossy.boundedContext.payment.in.dto.request;
 
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
+import com.mossy.exception.ErrorCode;
+import com.mossy.exception.DomainException;
 import java.math.BigDecimal;
 
 public record PaymentCancelCashRequestDto(

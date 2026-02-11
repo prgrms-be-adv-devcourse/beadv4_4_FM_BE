@@ -1,70 +1,44 @@
 package com.mossy.boundedContext.product.app;
 
-import com.mossy.boundedContext.marketUser.domain.MarketSeller;
-import com.mossy.boundedContext.product.app.mapper.ProductMapper;
-import com.mossy.boundedContext.product.domain.*;
-import com.mossy.boundedContext.product.domain.event.ProductRegisteredEvent;
-import com.mossy.boundedContext.product.in.dto.request.ProductCreateRequest;
+import com.mossy.infra.storage.adapter.S3Adapter;
+import com.mossy.boundedContext.marketUser.out.MarketSellerRepository;
+import com.mossy.boundedContext.product.out.CategoryRepository;
 import com.mossy.boundedContext.product.out.ProductRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MarketRegisterProductUseCase {
     private final ProductRepository productRepository;
-    private final ProductSupport productSupport;
-    private final ProductMapper productMapper;
+    private final MarketSellerRepository marketSellerRepository;
+    private final CategoryRepository categoryRepository;
     private final EventPublisher eventPublisher;
+    private final S3Adapter s3Adapter;
 
-    @Transactional
-    public Product register(ProductCreateRequest request) {
-        // 1. 검증 및 조회
-        MarketSeller seller = productSupport.findSellerOrThrow(request.sellerId());
-        CatalogProduct catalog = productSupport.findCatalogOrThrow(request.catalogId());
+    @Value("${app.s3.dirs.product:product}") // 기본값 product 설정
+    private String productDir;
 
-        // 2. 엔티티 변환
-        Product product = productMapper.toEntity(request, seller, catalog);
-
-        // 옵션 그룹(OptionGroup) 생성
-        List<ProductOptionGroup> optionGroups = new ArrayList<>();
-        if (request.optionGroupNames() != null) {
-            for (String groupName : request.optionGroupNames()) {
-                ProductOptionGroup group = ProductOptionGroup.builder()
-                        .name(groupName)
-                        .build();
-                product.addOptionGroup(group);
-                optionGroups.add(group);
-            }
-        }
-
-        // 옵션값(OptionValue) 저장
-        request.items().forEach(itemRequest -> {
-            String uniqueSku = productSupport.generateUniqueSkuCode(
-                    seller.getId(), catalog.getId(), itemRequest.optionCombination());
-
-            ProductItem item = productMapper.toItemEntity(itemRequest, uniqueSku);
-            product.addProductItem(item);
-
-            // 상세 옵션값 파싱 및 생성
-            String[] values = itemRequest.optionCombination().split("/");
-            for (int i = 0; i < values.length; i++) {
-                ProductOptionValue optionValue = ProductOptionValue.builder()
-                        .optionGroup(optionGroups.get(i))
-                        .value(values[i].trim())
-                        .build();
-                item.addOptionValue(optionValue);
-            }
-        });
-
-        productRepository.save(product);
-        eventPublisher.publish(new ProductRegisteredEvent(product.getId()));
-
-        return product;
-    }
+//    @Transactional
+//    public Product register(ProductCreateRequest request) {
+//
+//        MarketSeller seller = marketSellerRepository.findById(request.sellerId())
+//                .orElseThrow(() -> new IllegalArgumentException("판매자가 아닙니다. ID: " + request.sellerId()));
+//
+//        Category category = categoryRepository.findById(request.categoryId())
+//                .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
+//
+//
+//        List<String> imageUrls = s3Adapter.uploadFiles(request.images(), productDir);
+//
+//        Product product = request.toEntity(seller, category);
+//        product.addImages(imageUrls);
+//
+//        productRepository.save(product);
+//        eventPublisher.publish(new ProductRegisteredEvent(product.getId()));
+//
+//        return product;
+//    }
 }

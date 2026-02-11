@@ -1,0 +1,16 @@
+package com.mossy.boundedContext.payment.out;
+
+import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@FeignClient(name = "market", url = "http://localhost:8081")
+public interface MarketFeignClient {
+
+    @GetMapping("/api/v1/internal/orders/{orderId}")
+    MarketOrderResponse getOrder(@PathVariable("orderId") Long orderId);
+
+    @GetMapping("/api/v1/internal/orders/by-order-no/{orderNo}")
+    MarketOrderResponse getOrderByOrderNo(@PathVariable("orderNo") String orderNo);
+}
