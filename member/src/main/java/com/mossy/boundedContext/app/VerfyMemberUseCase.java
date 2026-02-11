@@ -3,14 +3,10 @@ package com.mossy.boundedContext.app;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
 import com.mossy.boundedContext.out.external.dto.response.MemberVerifyExternResponse;
-import com.mossy.shared.member.domain.role.RoleCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +21,7 @@ public class VerfyMemberUseCase {
 
         boolean isValid = passwordEncoder.matches(password, user.getPassword());
 
-        List<RoleCode> roles = user.getUserRoles().stream()
-                .map(ur -> ur.getRole().getCode())
-                .collect(Collectors.toList());
-
-        return new MemberVerifyExternResponse(user.getId(), roles, isValid);
+        return MemberVerifyExternResponse.of(user, isValid);
 
     }
 }
