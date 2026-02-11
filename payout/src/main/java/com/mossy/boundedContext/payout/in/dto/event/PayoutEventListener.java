@@ -16,7 +16,7 @@ import com.mossy.shared.payout.enums.PayoutEventType;
 import com.mossy.shared.payout.event.PayoutCompletedEvent;
 import com.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import com.mossy.boundedContext.payout.app.PayoutSupport;
-import com.mossy.boundedContext.payout.app.common.DistanceCalculator;
+import com.mossy.boundedContext.payout.domain.calculator.DistanceCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

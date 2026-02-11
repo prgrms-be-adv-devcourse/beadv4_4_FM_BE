@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.donation.domain;
+package com.mossy.boundedContext.payout.domain.calculator;
 
 
 import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;

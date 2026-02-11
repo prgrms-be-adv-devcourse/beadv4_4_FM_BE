@@ -1,14 +1,13 @@
 package com.mossy.boundedContext.payout.app.common;
 
-import com.mossy.boundedContext.donation.domain.DonationCalculator;
-import com.mossy.boundedContext.donation.domain.FeeCalculator;
+import com.mossy.boundedContext.payout.domain.calculator.DonationCalculator;
+import com.mossy.boundedContext.payout.domain.calculator.FeeCalculator;
 import com.mossy.boundedContext.payout.app.PayoutSupport;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
-import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateDto;
 import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
 
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * [UseCase] 정산 후보 아이템 생성을 담당하는 서비스 클래스

@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.payout.app.common;
+package com.mossy.boundedContext.payout.domain.calculator;
 
 import org.springframework.stereotype.Component;
 

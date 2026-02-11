@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.donation.app;
 
-import com.mossy.boundedContext.donation.domain.DonationCalculator;
+import com.mossy.boundedContext.payout.domain.calculator.DonationCalculator;
 import com.mossy.boundedContext.donation.domain.DonationLog;
 import com.mossy.boundedContext.donation.out.DonationLogRepository;
 import com.mossy.exception.DomainException;
