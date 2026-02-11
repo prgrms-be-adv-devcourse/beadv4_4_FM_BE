@@ -24,8 +24,7 @@ public interface PayoutMapper {
         // --- [기존 UseCase/Entity 매핑] ---
         @Mapping(target = "id", source = "sellerId")
         PayoutSeller toEntity(PayoutSellerDto dto);
-
-        @Mapping(target = "id", source = "id")
+        
         PayoutUser toEntity(PayoutUserDto dto);
 
         @Mapping(target = "relTypeCode", constant = "OrderItem")
