@@ -19,4 +19,4 @@ services:
 
 networks:
   mossy-network:
-    external: true
+    name: mossy-network

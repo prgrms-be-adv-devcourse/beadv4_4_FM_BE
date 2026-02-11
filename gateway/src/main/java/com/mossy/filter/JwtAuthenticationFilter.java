@@ -31,30 +31,37 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            ServerHttpRequest request = exchange.getRequest();
 
-            // 1. 헤더에 Authorization 키가 있는지 확인
+            // 1. 기존 요청에서 X-User-Id 헤더를 제거한 새로운 요청 생성
+            ServerHttpRequest request = exchange.getRequest().mutate()
+                    .headers(httpHeaders -> {
+                        httpHeaders.remove("X-User-Id");
+                    })
+                    .build();
+
+            // 2. Authorization 헤더 확인
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
 
-            // 2. Bearer 토큰 추출
+            // 3. Bearer 토큰 추출
             String authHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authHeader.replace("Bearer ", "");
 
-            // 3. 토큰 유효성 검사
+            // 4. 토큰 유효성 검사
             if (!jwtProvider.verifyToken(jwt)) {
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
 
-            // 4. (선택) 토큰에서 정보를 꺼내 내부 서비스에 헤더로 전달
-            // 예: X-User-Id 헤더에 유저 ID를 담아 보내면 내부 서비스가 편해집니다.
+            // 5. 토큰에서 정보를 꺼내 X-User-Id 주입
             Long userId = jwtProvider.getUserId(jwt);
-            ServerHttpRequest modifiedRequest = request.mutate()
+
+            // 최종적으로 수정된 헤더를 가진 요청을 다시 mutate
+            ServerHttpRequest finalRequest = request.mutate()
                     .header("X-User-Id", userId.toString())
                     .build();
 
-            return chain.filter(exchange.mutate().request(modifiedRequest).build());
+            return chain.filter(exchange.mutate().request(finalRequest).build());
         };
     }
 

@@ -2,11 +2,11 @@ package com.mossy.boundedContext.app.seller;
 
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
-import com.mossy.boundedContext.out.seller.SellerRequestRepository;
-import com.mossy.boundedContext.out.user.UserRepository;
+import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
+import com.mossy.boundedContext.out.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
