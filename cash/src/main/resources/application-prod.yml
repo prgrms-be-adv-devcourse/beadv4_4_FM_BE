@@ -4,23 +4,27 @@ spring:
       on-profile: prod
 
   datasource:
-    url: jdbc:mysql://${DB_HOST}:3306/${DB_NAME}?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
 
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
     show-sql: false
 
+
+  # Redis 설정 (직접 IP를 넣거나 환경 변수명을 정확히 적어야 합니다)
   data:
     redis:
-      host: ${REDIS_HOST}
+      host: ${REDIS_HOST:localhost} # 환경변수가 없으면 localhost 사용
       port: 6379
 
   elasticsearch:
@@ -30,3 +34,5 @@ spring:
 logging:
   level:
     root: INFO
+    # 운영 환경에서는 Feign 로그를 좀 더 간결하게
+    com.mossy.boundedContext.payment.out.com.mossy.boundedContext.payment.out.MarketFeignClient: INFO

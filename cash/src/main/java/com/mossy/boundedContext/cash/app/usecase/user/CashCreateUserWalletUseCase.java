@@ -3,7 +3,7 @@ package com.mossy.boundedContext.cash.app.usecase.user;
 import com.mossy.boundedContext.cash.app.CashSupport;
 import com.mossy.boundedContext.cash.domain.user.CashUser;
 import com.mossy.boundedContext.cash.domain.user.UserWallet;
-import com.mossy.boundedContext.cash.in.dto.common.CashUserDto;
+import com.mossy.boundedContext.cash.in.dto.command.CashUserDto;
 import com.mossy.boundedContext.cash.out.user.CashUserRepository;
 import com.mossy.boundedContext.cash.out.user.UserWalletRepository;
 import lombok.RequiredArgsConstructor;

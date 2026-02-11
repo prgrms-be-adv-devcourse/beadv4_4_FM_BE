@@ -5,13 +5,9 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 
 import com.mossy.boundedContext.cash.app.CashFacade;
 import com.mossy.boundedContext.cash.app.mapper.CashMapper;
-import com.mossy.boundedContext.payment.app.PaymentFacade;
-import com.mossy.shared.cash.event.CashSellerCreatedEvent;
-import com.mossy.shared.cash.event.CashUserCreatedEvent;
-import com.mossy.shared.cash.event.PaymentCompletedEvent;
-import com.mossy.shared.market.event.OrderCashPaymentRequestEvent;
-import com.mossy.shared.market.event.OrderCashPrePaymentEvent;
-import com.mossy.shared.market.event.PaymentRefundEvent;
+import com.mossy.boundedContext.cash.in.dto.event.CashSellerCreatedEvent;
+import com.mossy.boundedContext.cash.in.dto.event.CashUserCreatedEvent;
+import com.mossy.shared.cash.event.PaymentRefundEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
 import com.mossy.shared.member.event.UserUpdatedEvent;
@@ -27,7 +23,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class CashEventListener {
 
     private final CashFacade cashFacade;
-    private final PaymentFacade paymentFacade;
     private final CashMapper mapper;
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
@@ -57,31 +52,13 @@ public class CashEventListener {
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void cashUserCreatedEvent(CashUserCreatedEvent event) {
-        cashFacade.createUserWallet(mapper.toCashUserDto(event.user()));
+        cashFacade.createUserWallet(event.user());
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void cashSellerCreatedEvent(CashSellerCreatedEvent event) {
-        cashFacade.createSellerWallet(mapper.toCashSellerDto(event.seller()));
-    }
-
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void orderCashPaymentRequestEvent(OrderCashPaymentRequestEvent event) {
-        paymentFacade.confirmCashPayment(mapper.toPaymentConfirmCashRequestDto(event));
-    }
-
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void orderCashPrePaymentEvent(OrderCashPrePaymentEvent event) {
-        cashFacade.deductUserBalance(mapper.toUserBalanceRequestDto(event));
-    }
-
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void paymentCompletedEvent(PaymentCompletedEvent event) {
-        cashFacade.cashHolding(mapper.toCashHoldingRequestDto(event));
+        cashFacade.createSellerWallet(event.seller());
     }
 
     @EventListener

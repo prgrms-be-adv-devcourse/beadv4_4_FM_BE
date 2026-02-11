@@ -1,12 +1,12 @@
 package com.mossy.boundedContext.exception;
 
-import com.mossy.global.exception.BaseErrorCode;
+import com.mossy.global.exception.BaseCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ErrorCode implements BaseErrorCode {
+public enum ErrorCode implements BaseCode {
 
     // ========================================
     // 400 Bad Request (회원가입/유효성 검증)

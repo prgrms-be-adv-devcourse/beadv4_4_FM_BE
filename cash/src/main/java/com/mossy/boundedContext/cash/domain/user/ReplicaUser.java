@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.cash.domain.user;
 
+import com.mossy.boundedContext.cash.in.dto.command.CashUserDto;
 import com.mossy.shared.member.domain.entity.BaseUser;
 import com.mossy.shared.member.domain.enums.UserStatus;
 import jakarta.persistence.Column;
@@ -40,5 +41,16 @@ public abstract class ReplicaUser extends BaseUser {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    protected void update(CashUserDto cashUserDto) {
+        this.name = cashUserDto.name();
+        this.email = cashUserDto.email();
+        this.address = cashUserDto.address();
+        this.nickname = cashUserDto.nickname();
+        this.profileImage = cashUserDto.profileImage();
+        this.status = cashUserDto.status();
+        this.latitude = cashUserDto.latitude();
+        this.longitude = cashUserDto.longitude();
     }
 }

@@ -2,7 +2,7 @@ package com.mossy.boundedContext.cash.app.usecase.seller;
 
 import com.mossy.boundedContext.cash.app.mapper.CashMapper;
 import com.mossy.exception.DomainException;
-import com.mossy.exception.CashErrorCode;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +20,6 @@ public class CashGetSellerWalletInfoUseCase {
     public SellerWalletResponseDto getSellerWalletInfo(Long sellerId) {
         return sellerWalletRepository.findWalletBySellerId(sellerId)
             .map(mapper::toResponseDto)
-            .orElseThrow(() -> new DomainException(CashErrorCode.SELLER_WALLET_NOT_FOUND));
+            .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
     }
 }

@@ -6,6 +6,7 @@ import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
+import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,7 +42,7 @@ public class ApiV1WalletController {
             @PathVariable("userId") Long userId,
             @RequestBody UserBalanceRequestDto request) {
         cashFacade.creditUserBalance(request.withUserId(userId));
-        return new RsData<>("C-200", "예치금이 성공적으로 충전되었습니다.");
+        return RsData.success(SuccessCode.CASH_CREDIT_SUCCESS);
     }
 
     @Operation(summary = "구매자 예치금 차감", description = "주문 결제 등의 사유로 구매자의 예치금을 차감합니다.")
@@ -55,7 +56,7 @@ public class ApiV1WalletController {
             @PathVariable("userId") Long userId,
             @RequestBody UserBalanceRequestDto request) {
         cashFacade.deductUserBalance(request.withUserId(userId));
-        return new RsData<>("C-200", "예치금 차감이 완료되었습니다.");
+        return RsData.success(SuccessCode.CASH_DEDUCT_SUCCESS);
     }
 
     @Operation(summary = "구매자 지갑 상세 조회", description = "지갑 ID, 현재 잔액, 사용자 정보를 포함한 상세 내역을 조회합니다.")
@@ -66,7 +67,7 @@ public class ApiV1WalletController {
     public RsData<UserWalletResponseDto> getUserWallet(
             @PathVariable("userId") Long userId) {
         UserWalletResponseDto wallet = cashFacade.findUserWallet(userId);
-        return new RsData<>("C-200", "회원(%d)의 지갑 정보가 정상적으로 조회되었습니다.".formatted(userId), wallet);
+        return RsData.success(SuccessCode.USER_WALLET_FOUND, wallet);
     }
 
     @Operation(summary = "구매자 잔액 단건 조회", description = "결제 가능 여부 확인을 위해 현재 잔액(BigDecimal)만 신속하게 조회합니다.")
@@ -74,7 +75,7 @@ public class ApiV1WalletController {
     public RsData<BigDecimal> getUserBalance(
             @PathVariable("userId") Long userId) {
         BigDecimal balance = cashFacade.findUserBalance(userId);
-        return new RsData<>("C-200", "구매자 잔액 조회 성공", balance);
+        return RsData.success(SuccessCode.USER_BALANCE_FOUND, balance);
     }
 
     @Operation(summary = "구매자 캐시 사용 내역 조회", description = "현재 로그인한 사용자의 모든 캐시 충전, 사용, 환불 이력(UserCashLog)을 리스트로 조회합니다.")
@@ -83,7 +84,7 @@ public class ApiV1WalletController {
     public RsData<List<UserCashLogResponseDto>> getUserCashLogs(
             @PathVariable("userId") Long userId) {
         List<UserCashLogResponseDto> logs = cashFacade.findAllCashLogs(userId);
-        return new RsData<>("C-200", "캐시 내역 조회 성공", logs);
+        return RsData.success(SuccessCode.USER_CASH_LOGS_FOUND, logs);
     }
 
     // --- [판매자(Seller) 관련 API] ---
@@ -97,7 +98,7 @@ public class ApiV1WalletController {
             @PathVariable("sellerId") Long sellerId,
             @RequestBody SellerBalanceRequestDto request) {
         cashFacade.creditSellerBalance(request.withSellerId(sellerId));
-        return new RsData<>("C-200", "판매 대금 입금이 완료되었습니다.");
+        return RsData.success(SuccessCode.SELLER_CREDIT_SUCCESS);
     }
 
     @Operation(summary = "판매자 정산금 출금", description = "판매자의 정산 신청 시 지갑에서 해당 금액만큼 차감합니다.")
@@ -110,7 +111,7 @@ public class ApiV1WalletController {
             @PathVariable("sellerId") Long sellerId,
             @RequestBody SellerBalanceRequestDto request) {
         cashFacade.deductSellerBalance(request.withSellerId(sellerId));
-        return new RsData<>("C-200", "정산용 잔액 차감이 완료되었습니다.");
+        return RsData.success(SuccessCode.SELLER_DEDUCT_SUCCESS);
     }
 
     @Operation(summary = "판매자 정산 지갑 상세 조회", description = "판매자 지갑 정보와 정산에 필요한 레플리카 정보를 상세 조회합니다.")
@@ -118,7 +119,7 @@ public class ApiV1WalletController {
     public RsData<SellerWalletResponseDto> getSellerWallet(
             @PathVariable("sellerId") Long sellerId) {
         SellerWalletResponseDto wallet = cashFacade.findSellerWallet(sellerId);
-        return new RsData<>("C-200", "판매자(%d)님의 지갑 정보가 정상적으로 조회되었습니다.".formatted(sellerId), wallet);
+        return RsData.success(SuccessCode.SELLER_WALLET_FOUND, wallet);
     }
 
     @Operation(summary = "판매자 정산 가능 잔액 조회", description = "판매자 지갑의 현재 출금 가능 잔액만을 조회합니다.")
@@ -126,6 +127,6 @@ public class ApiV1WalletController {
     public RsData<BigDecimal> getSellerBalance(
             @PathVariable("sellerId") Long sellerId) {
         BigDecimal balance = cashFacade.findSellerBalance(sellerId);
-        return new RsData<>("C-200", "판매자 잔액 조회 성공", balance);
+        return RsData.success(SuccessCode.SELLER_BALANCE_FOUND, balance);
     }
 }

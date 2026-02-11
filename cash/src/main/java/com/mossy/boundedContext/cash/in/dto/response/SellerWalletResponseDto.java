@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.cash.in.dto.response;
 
-import com.mossy.boundedContext.cash.in.dto.common.CashSellerDto;
+import com.mossy.boundedContext.cash.in.dto.command.CashSellerDto;
 import java.math.BigDecimal;
 import lombok.Builder;
 

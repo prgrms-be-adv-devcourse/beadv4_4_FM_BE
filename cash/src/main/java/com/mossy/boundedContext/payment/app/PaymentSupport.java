@@ -1,18 +1,19 @@
-package com.mossy.boundedContext.app.payment;
+package com.mossy.boundedContext.payment.app;
 
-import com.mossy.boundedContext.domain.order.Order;
-import com.mossy.boundedContext.domain.payment.Payment;
-import com.mossy.boundedContext.out.order.OrderRepository;
-import com.mossy.boundedContext.out.payment.PaymentRepository;
-import com.mossy.global.exception.DomainException;
-import com.mossy.global.exception.ErrorCode;
-import com.mossy.shared.market.dto.toss.TossCancelResponse;
-import com.mossy.shared.market.dto.toss.TossConfirmRequest;
-import com.mossy.shared.market.dto.toss.TossConfirmResponse;
+import com.mossy.boundedContext.payment.domain.Payment;
+import com.mossy.boundedContext.payment.in.dto.event.PaymentCanceledEvent;
+import com.mossy.boundedContext.payment.in.dto.request.TossConfirmRequest;
+import com.mossy.boundedContext.payment.in.dto.response.TossCancelResponse;
+import com.mossy.boundedContext.payment.in.dto.response.TossConfirmResponse;
+import com.mossy.boundedContext.payment.out.MarketFeignClient;
+import com.mossy.boundedContext.payment.out.PaymentRepository;
+import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
+import com.mossy.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.shared.cash.enums.PayMethod;
+import com.mossy.shared.cash.enums.PaymentStatus;
+import com.mossy.boundedContext.payment.in.dto.event.PaymentCancelFailedEvent;
 import com.mossy.shared.market.enums.OrderState;
-import com.mossy.shared.market.enums.PayMethod;
-import com.mossy.shared.market.enums.PaymentStatus;
-import com.mossy.shared.market.event.PaymentCancelFailedEvent;
 
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
@@ -25,28 +26,45 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PaymentSupport {
 
-    private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
     private final TossPaymentsService tossPaymentsService;
     private final ApplicationEventPublisher eventPublisher;
+    private final MarketFeignClient marketFeignClient;
 
-    public Order findOrder(String orderNo) {
-        return orderRepository.findByOrderNo(orderNo)
-            .orElseThrow(() -> {return new DomainException(ErrorCode.PENDING_ORDER_NOT_FOUND);
-            });
-    }
+    // ── 결제 조회 ──
+
     public Payment findPayment(String orderNo) {
         return paymentRepository.findByOrderNoAndStatus(orderNo, PaymentStatus.PAID)
-            .orElseThrow(() -> {return new DomainException(ErrorCode.PAID_PAYMENT_NOT_FOUND);
-            });
+            .orElseThrow(() -> new DomainException(ErrorCode.PAID_PAYMENT_NOT_FOUND));
     }
 
-    public Order findPendingOrder(String orderNo) {
-        Order order = orderRepository.findByOrderNo(orderNo)
-            .orElseThrow(() -> new DomainException(ErrorCode.PENDING_ORDER_NOT_FOUND));
-        order.validatePendingState();
+    // ── 주문 조회 (FeignClient) ──
+
+    public MarketOrderResponse findPendingOrder(String orderNo) {
+        MarketOrderResponse order = marketFeignClient.getOrderByOrderNo(orderNo);
+        if (order.status() != OrderState.PENDING) {
+            throw new DomainException(ErrorCode.PENDING_ORDER_NOT_FOUND);
+        }
         return order;
     }
+
+    public MarketOrderResponse findOrderForCancel(Long orderId) {
+        MarketOrderResponse order = marketFeignClient.getOrder(orderId);
+        if (order.status() != OrderState.PAID) {
+            throw new DomainException(ErrorCode.PAID_ORDER_NOT_FOUND);
+        }
+        return order;
+    }
+
+    // ── 금액 검증 ──
+
+    public void validateAmount(BigDecimal orderAmount, BigDecimal requestAmount) {
+        if (orderAmount.compareTo(requestAmount) != 0) {
+            throw new DomainException(ErrorCode.ORDER_AMOUNT_MISMATCH);
+        }
+    }
+
+    // ── 토스 API 호출 ──
 
     public TossConfirmResponse requestTossConfirm(String paymentKey, String orderId, BigDecimal amount) {
         TossConfirmRequest request = TossConfirmRequest.of(paymentKey, orderId, amount);
@@ -62,38 +80,40 @@ public class PaymentSupport {
         }
     }
 
-    public Order findOrderForCancel(String orderNo) {
-        return orderRepository.findByOrderNo(orderNo)
-            .filter(order -> order.getState() == OrderState.PAID)
-            .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND)); // 또는 적절한 에러코드
+    // ── 결제 저장 ──
+
+    public Payment saveTossPayment(Long orderId, String paymentKey, String orderNo, BigDecimal amount) {
+        Payment payment = Payment.createTossPaid(orderId, paymentKey, orderNo, amount, PayMethod.CARD);
+        return paymentRepository.save(payment);
+    }
+
+    public Payment saveCashPayment(Long orderId, String orderNo, BigDecimal amount) {
+        Payment payment = Payment.createCashPaid(orderId, orderNo, amount, PayMethod.CASH);
+        return paymentRepository.save(payment);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveFailure(String orderNo, String paymentKey, BigDecimal amount,
+    public void saveFailure(Long orderId, String orderNo, String paymentKey, BigDecimal amount,
                             PayMethod method, String failReason) {
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(
-            () -> { return new DomainException(ErrorCode.ORDER_NOT_FOUND);}
-        );
-        order.failPayment(paymentKey, amount, method, failReason);
-        orderRepository.save(order);
+        Payment failed = Payment.createFailed(orderId, paymentKey, orderNo, amount, method, failReason);
+        paymentRepository.save(failed);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void processCancel(String orderNo, String paymentKey, BigDecimal amount,
         PayMethod method, String cancelReason) {
-        Order order = orderRepository.findByOrderNo(orderNo).orElseThrow(
-            () -> { return new DomainException(ErrorCode.ORDER_NOT_FOUND);}
-        );
-        order.cancelPayment(paymentKey, amount, method, cancelReason);
-        orderRepository.save(order);
+        Payment canceled = Payment.createCanceled(null, paymentKey, orderNo, amount, method, cancelReason);
+        paymentRepository.save(canceled);
     }
+
+    // ── 유틸 ──
 
     public static String resolveOriginalOrderNo(String pgOrderId) {
         if (pgOrderId == null) return null;
         int index = pgOrderId.indexOf("__");
         if (index > 0) {
-            return pgOrderId.substring(0, index); // 구분자가 있을 때만 자름
+            return pgOrderId.substring(0, index);
         }
-        return pgOrderId; // 구분자가 없으면 받은 값 그대로 반환 (프론트 수정 전 대응용)
+        return pgOrderId;
     }
 }
