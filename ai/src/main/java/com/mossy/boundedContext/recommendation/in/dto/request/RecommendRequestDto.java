@@ -1,0 +1,4 @@
+package com.mossy.boundedContext.recommendation.in.dto.request;
+
+public record RecommendRequestDto() {
+}
