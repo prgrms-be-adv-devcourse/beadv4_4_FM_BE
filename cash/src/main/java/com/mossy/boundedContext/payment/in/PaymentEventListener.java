@@ -1,9 +1,9 @@
-package com.mossy.boundedContext.in.payment;
+package com.mossy.boundedContext.payment.in;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
 
-import com.mossy.boundedContext.app.payment.PaymentFacade;
+import com.mossy.boundedContext.payment.app.PaymentFacade;
 import com.mossy.shared.market.event.OrderCancelEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -2,7 +2,7 @@ package com.mossy.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mossy.global.exception.BaseErrorCode;
+import com.mossy.global.exception.BaseCode;
 import com.mossy.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -26,7 +26,7 @@ public class RestAuthenticationEntryPoint implements ServerAuthenticationEntryPo
         ServerHttpResponse response = exchange.getResponse();
 
         // 에러 코드 설정 (전략: Request Attribute에서 에러를 찾거나 기본값 사용)
-        BaseErrorCode errorCode = exchange.getAttributeOrDefault("AUTH_ERROR", new BaseErrorCode() {
+        BaseCode errorCode = exchange.getAttributeOrDefault("AUTH_ERROR", new BaseCode() {
             @Override public int getStatus() { return 401; }
             @Override public String getMsg() { return "인증에 실패했습니다."; }
         });

@@ -1,6 +1,5 @@
 package com.mossy.boundedContext.marketUser.domain;
 
-import com.mossy.shared.market.dto.event.MarketSellerDto;
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;
 import com.mossy.shared.member.payload.SellerPayload;
@@ -62,20 +61,6 @@ public class MarketSeller extends ReplicaSeller {
                 .status(seller.status())
                 .createdAt(seller.createdAt())
                 .updatedAt(seller.updatedAt())
-                .build();
-    }
-
-    public MarketSellerDto toDto() {
-        return MarketSellerDto.builder()
-                .sellerId(getId())
-                .userId(getUserId())
-                .sellerType(getSellerType())
-                .storeName(getStoreName())
-                .businessNum(getBusinessNum())
-                .latitude(getLatitude())
-                .longitude(getLongitude())
-                .createdAt(getCreatedAt())
-                .updatedAt(getUpdatedAt())
                 .build();
     }
 

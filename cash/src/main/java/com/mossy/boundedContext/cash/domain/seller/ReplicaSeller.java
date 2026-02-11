@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.cash.domain.seller;
 
+import com.mossy.boundedContext.cash.in.dto.command.CashSellerDto;
 import com.mossy.shared.member.domain.entity.BaseSeller;
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;
@@ -51,6 +52,14 @@ public abstract class ReplicaSeller extends BaseSeller {
         this.id = id;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+    protected void update(CashSellerDto seller) {
+        this.sellerType = seller.sellerType();
+        this.storeName = seller.storeName();
+        this.businessNum = seller.businessNum();
+        this.latitude = seller.latitude();
+        this.longitude = seller.longitude();
+        this.status = seller.status();
     }
 }
 

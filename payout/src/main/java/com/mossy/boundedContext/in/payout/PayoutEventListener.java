@@ -2,7 +2,6 @@ package com.mossy.member.in.payout;
 
 import com.mossy.member.payout.app.donation.DonationFacade;
 import com.mossy.member.payout.app.payout.PayoutFacade;
-import com.mossy.shared.cash.event.PaymentCompletedEvent;
 import com.mossy.shared.market.out.MarketApiClient;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
@@ -21,62 +20,62 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 @Component
 @RequiredArgsConstructor
 public class PayoutEventListener {
-    private final PayoutFacade payoutFacade;
-    private final DonationFacade donationFacade;
-    private final MarketApiClient marketApiClient;
+   private final PayoutFacade payoutFacade;
+   private final DonationFacade donationFacade;
+   private final MarketApiClient marketApiClient;
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void sellerJoinedEvent(SellerJoinedEvent event) {
-        payoutFacade.syncSeller(event.seller());
-    }
+   @TransactionalEventListener(phase = AFTER_COMMIT)
+   @Transactional(propagation = REQUIRES_NEW)
+   public void sellerJoinedEvent(SellerJoinedEvent event) {
+       payoutFacade.syncSeller(event.seller());
+   }
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void sellerUpdatedEvent(SellerUpdatedEvent event) {
-        payoutFacade.syncSeller(event.seller());
-    }
+   @TransactionalEventListener(phase = AFTER_COMMIT)
+   @Transactional(propagation = REQUIRES_NEW)
+   public void sellerUpdatedEvent(SellerUpdatedEvent event) {
+       payoutFacade.syncSeller(event.seller());
+   }
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void userJoinedEvent(UserJoinedEvent event) {
-        payoutFacade.syncUser(event.user());
-    }
+   @TransactionalEventListener(phase = AFTER_COMMIT)
+   @Transactional(propagation = REQUIRES_NEW)
+   public void userJoinedEvent(UserJoinedEvent event) {
+       payoutFacade.syncUser(event.user());
+   }
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void userUpdatedEvent(UserUpdatedEvent event) {
-        payoutFacade.syncUser(event.user());
-    }
+   @TransactionalEventListener(phase = AFTER_COMMIT)
+   @Transactional(propagation = REQUIRES_NEW)
+   public void userUpdatedEvent(UserUpdatedEvent event) {
+       payoutFacade.syncUser(event.user());
+   }
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void payoutSellerCreatedEvent(PayoutSellerCreatedEvent event) {
-        payoutFacade.createPayout(event.seller().id());
-    }
+   @TransactionalEventListener(phase = AFTER_COMMIT)
+   @Transactional(propagation = REQUIRES_NEW)
+   public void payoutSellerCreatedEvent(PayoutSellerCreatedEvent event) {
+       payoutFacade.createPayout(event.seller().id());
+   }
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void paymentCompletedEvent(PaymentCompletedEvent event) {
-        // Payment 도메인에서 결제 완료 시 발행되는 이벤트 처리
-        // API로 OrderItem들을 조회하여 정산 후보 생성 및 기부 로그 생성
-        marketApiClient.getOrderItems(event.orderId())
-                .forEach(orderItem -> {
-                    // 1. 정산 후보 항목 생성 (수수료, 판매 대금, 기부금)
-                    payoutFacade.addPayoutCandidateItem(orderItem, event.paymentDate());
+   @TransactionalEventListener(phase = AFTER_COMMIT)
+   @Transactional(propagation = REQUIRES_NEW)
+   public void paymentCompletedEvent(PaymentCompletedEvent event) {
+       // Payment 도메인에서 결제 완료 시 발행되는 이벤트 처리
+       // API로 OrderItem들을 조회하여 정산 후보 생성 및 기부 로그 생성
+       marketApiClient.getOrderItems(event.orderId())
+               .forEach(orderItem -> {
+                   // 1. 정산 후보 항목 생성 (수수료, 판매 대금, 기부금)
+                   payoutFacade.addPayoutCandidateItem(orderItem, event.paymentDate());
 
-                    // 2. 기부 로그 생성
-                    donationFacade.createDonationLog(orderItem);
-                });
-    }
+                   // 2. 기부 로그 생성
+                   donationFacade.createDonationLog(orderItem);
+               });
+   }
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void payoutCompletedEvent(PayoutCompletedEvent event) {
-        // 1. 정산 완료된 기부 로그 업데이트
-        donationFacade.settleDonationLogs(event.payout().id());
+   @TransactionalEventListener(phase = AFTER_COMMIT)
+   @Transactional(propagation = REQUIRES_NEW)
+   public void payoutCompletedEvent(PayoutCompletedEvent event) {
+       // 1. 정산 완료된 기부 로그 업데이트
+       donationFacade.settleDonationLogs(event.payout().id());
 
-        // 2. 다음 정산을 위한 새 Payout 생성
-        payoutFacade.createPayout(event.payout().payeeId());
-    }
+       // 2. 다음 정산을 위한 새 Payout 생성
+       payoutFacade.createPayout(event.payout().payeeId());
+   }
 }

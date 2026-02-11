@@ -1,13 +1,15 @@
 package com.mossy.shared.cash.event;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.Builder;
 
-/**
- * 결제 완료 이벤트
- * Payment 도메인에서 결제가 완료되었을 때 발행
- */
+@Builder
 public record PaymentCompletedEvent(
-        Long orderId,
-        LocalDateTime paymentDate
+    Long orderId,
+    Long buyerId,
+    LocalDateTime paymentDate,
+    BigDecimal amount,
+    String payMethod
 ) {
 }

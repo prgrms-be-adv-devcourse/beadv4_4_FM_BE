@@ -2,7 +2,7 @@ package com.mossy.boundedContext.order.app;
 
 import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest;
 import com.mossy.boundedContext.order.in.dto.response.*;
-import com.mossy.shared.market.event.PaymentCompletedEvent;
+import com.mossy.shared.cash.event.PaymentCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

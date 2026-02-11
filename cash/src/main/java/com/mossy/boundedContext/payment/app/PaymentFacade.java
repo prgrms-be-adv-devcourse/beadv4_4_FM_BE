@@ -1,24 +1,33 @@
-package com.mossy.boundedContext.app.payment;
+package com.mossy.boundedContext.payment.app;
 
-import com.mossy.boundedContext.domain.payment.Payment;
-import com.mossy.shared.market.dto.toss.PaymentCancelCashRequestDto;
-import com.mossy.shared.market.dto.toss.PaymentCancelTossRequestDto;
-import com.mossy.shared.market.dto.toss.PaymentConfirmCashRequestDto;
-import com.mossy.shared.market.dto.toss.PaymentConfirmTossRequestDto;
-import com.mossy.shared.market.dto.toss.TossPaymentResponse;
-import com.mossy.shared.market.enums.PayMethod;
+import com.mossy.boundedContext.payment.app.usecase.PaymentCancelCashUseCase;
+import com.mossy.boundedContext.payment.app.usecase.PaymentCancelTossUseCase;
+import com.mossy.boundedContext.payment.app.usecase.PaymentConfirmCashUseCase;
+import com.mossy.boundedContext.payment.app.usecase.PaymentConfirmTossUseCase;
+import com.mossy.boundedContext.payment.app.usecase.PaymentFindAllUseCase;
+import com.mossy.boundedContext.payment.app.usecase.PaymentRetrieveUseCase;
+import com.mossy.boundedContext.payment.domain.Payment;
+import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelCashRequestDto;
+import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelTossRequestDto;
+import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmCashRequestDto;
+import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmTossRequestDto;
+import com.mossy.boundedContext.payment.in.dto.response.PaymentResponse;
+import com.mossy.boundedContext.payment.in.dto.response.TossPaymentResponse;
+import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.market.event.OrderCancelEvent;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentFacade {
 
-    private final PaymentConfirmTossUseCase paymentConfirmUseCase;
+    private final PaymentConfirmTossUseCase paymentConfirmTossUseCase;
     private final PaymentCancelCashUseCase paymentCancelCashUseCase;
-    private final PaymentConfirmCashUseCase paymentConfirmCashUserCase;
+    private final PaymentConfirmCashUseCase paymentConfirmCashUseCase;
     private final PaymentCancelTossUseCase paymentCancelTossUseCase;
     private final PaymentFindAllUseCase paymentGetInfoUseCase;
     private final PaymentRetrieveUseCase paymentRetrieveUseCase;
@@ -26,17 +35,17 @@ public class PaymentFacade {
 
     // PG 결제 승인
     public void confirmTossPayment(PaymentConfirmTossRequestDto request) {
-        paymentConfirmUseCase.confirmToss(request);
+        paymentConfirmTossUseCase.confirmToss(request);
     }
 
     // 예치금 결제 승인
     public void confirmCashPayment(PaymentConfirmCashRequestDto request) {
-        paymentConfirmCashUserCase.confirmCash(request);
+        paymentConfirmCashUseCase.confirmCash(request);
     }
 
     // PG 결제 취소
-    public void cancelTossPayment(PaymentCancelTossRequestDto event) {
-        paymentCancelTossUseCase.cancelTossPayment(event);
+    public void cancelTossPayment(PaymentCancelTossRequestDto request) {
+        paymentCancelTossUseCase.cancelTossPayment(request);
     }
 
     // 주문 취소로 인한 결제 취소
@@ -57,14 +66,12 @@ public class PaymentFacade {
     }
 
     // PG-승인된 결제 내역 조회
-    @Transactional(readOnly = true)
     public TossPaymentResponse findTossPayment(String orderNo) {
         return paymentRetrieveUseCase.getTossPaymentInfo(orderNo);
     }
 
-//    // 주문별 결제 내역 조회
-//    @Transactional(readOnly = true)
-//    public List<PaymentResponse> findAllPayments(String orderNo) {
-//        return paymentGetInfoUseCase.findAllPayment(orderNo);
-//    }
+    // 주문별 결제 내역 조회
+    public List<PaymentResponse> findAllPayments(String orderNo) {
+        return paymentGetInfoUseCase.findAllPayment(orderNo);
+    }
 }

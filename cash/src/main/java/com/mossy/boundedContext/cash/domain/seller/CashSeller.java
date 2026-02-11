@@ -1,9 +1,8 @@
 package com.mossy.boundedContext.cash.domain.seller;
 
+import com.mossy.boundedContext.cash.in.dto.command.CashSellerDto;
 import com.mossy.shared.member.domain.enums.SellerStatus;
 import com.mossy.shared.member.domain.enums.SellerType;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -18,12 +17,11 @@ import java.time.LocalDateTime;
 @Table(name = "CASH_SELLER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AttributeOverride(name = "id", column = @Column(name = "seller_id"))
 public class CashSeller extends ReplicaSeller {
 
     @Builder
     public CashSeller(
-        Long id,
+        Long sellerId,
         Long userId,
         SellerType sellerType,
         String storeName,
@@ -35,7 +33,7 @@ public class CashSeller extends ReplicaSeller {
         LocalDateTime updatedAt
     ) {
         super(
-            id,
+            sellerId,
             userId,
             sellerType,
             storeName,
@@ -48,13 +46,7 @@ public class CashSeller extends ReplicaSeller {
         );
     }
 
-    public void update(SellerType sellerType, String storeName, String businessNum,
-        BigDecimal latitude, BigDecimal longitude, SellerStatus status) {
-        this.sellerType = sellerType;
-        this.storeName = storeName;
-        this.businessNum = businessNum;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.status = status;
+    public void update(CashSellerDto cashSellerDto) {
+        super.update(cashSellerDto);
     }
 }

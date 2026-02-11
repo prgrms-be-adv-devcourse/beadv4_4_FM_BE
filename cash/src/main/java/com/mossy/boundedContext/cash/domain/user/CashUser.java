@@ -1,8 +1,7 @@
 package com.mossy.boundedContext.cash.domain.user;
 
+import com.mossy.boundedContext.cash.in.dto.command.CashUserDto;
 import com.mossy.shared.member.domain.enums.UserStatus;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -17,7 +16,6 @@ import java.time.LocalDateTime;
 @Table(name = "CASH_USER")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AttributeOverride(name = "id", column = @Column(name = "user_id"))
 public class CashUser extends ReplicaUser {
 
     @Builder
@@ -37,16 +35,7 @@ public class CashUser extends ReplicaUser {
         super(id, email, name, address, nickname, profileImage,
             createdAt, updatedAt, status, longitude, latitude);
     }
-
-    public void update(String name, String email, String address, String nickname,
-        String profileImage, UserStatus status, BigDecimal latitude, BigDecimal longitude) {
-        this.name = name;
-        this.email = email;
-        this.address = address;
-        this.nickname = nickname;
-        this.profileImage = profileImage;
-        this.status = status;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public void update(CashUserDto cashUserDto) {
+        super.update(cashUserDto);
     }
 }

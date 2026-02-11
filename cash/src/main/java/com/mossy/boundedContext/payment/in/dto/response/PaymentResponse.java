@@ -1,7 +1,7 @@
-package com.mossy.shared.market.dto.response;
+package com.mossy.boundedContext.payment.in.dto.response;
 
-import com.mossy.shared.market.enums.PayMethod;
-import com.mossy.shared.market.enums.PaymentStatus;
+import com.mossy.shared.cash.enums.PayMethod;
+import com.mossy.shared.cash.enums.PaymentStatus;
 import lombok.Builder;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
