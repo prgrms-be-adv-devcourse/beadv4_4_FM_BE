@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
         int status = e.getHttpStatus();
         return ResponseEntity
                 .status(status)
-                .body(RsData.fail(e.getResultCode(), e.getMsg()));
+                .body(new RsData<>(e.getResultCode(), e.getMsg(), null));
     }
 
     //IllegalArgumentException 처리 (DTO 유효성 검증 실패 등)
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(RsData.fail("F-400", e.getMessage()));
+                .body(new RsData<>("F-400", e.getMessage(), null));
     }
 
 
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(RsData.fail("F-409", e.getMessage()));
+                .body(new RsData<>("F-409", e.getMessage(), null));
     }
 
     //@Valid 유효성 검증 실패 처리
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(RsData.fail("F-400", message));
+                .body(new RsData<>("F-400", message, null));
     }
 
 
@@ -75,6 +75,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(RsData.fail("F-500", "서버 오류가 발생했습니다."));
+                .body(new RsData<>("F-500", "서버 오류가 발생했습니다.", null));
     }
 }

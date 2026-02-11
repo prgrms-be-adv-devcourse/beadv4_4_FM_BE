@@ -11,11 +11,23 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         default_batch_fetch_size: 100
+
   cache:
     type: redis
 
@@ -25,6 +37,19 @@ springdoc:
     path: /mossy-docs
   api-docs:
     path: /v3/api-docs
+
+# OpenFeign 설정 (로깅 및 타임아웃)
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+# 로깅 설정 (Feign 통신 확인용)
+logging:
+  level:
+    com.mossy.boundedContext.payment.out.com.mossy.boundedContext.payment.out.MarketFeignClient: DEBUG
 
 toss:
   payments:

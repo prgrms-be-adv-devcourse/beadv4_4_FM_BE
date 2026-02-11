@@ -1,11 +1,9 @@
 package com.mossy.global.rsData;
 
-import com.mossy.global.exception.BaseErrorCode;
+import com.mossy.global.exception.BaseCode;
 import com.mossy.standard.resultType.ResultType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mossy.global.exception.BaseErrorCode;
-import com.mossy.standard.resultType.ResultType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -23,26 +21,27 @@ public class RsData<T> implements ResultType {
         this(resultCode, msg, null);
     }
 
-    //성공할 경우
-    public static <T> RsData<T> success(String msg, T data) {
-        return new RsData<>("S-200", msg, data);
+    public static <T> RsData<T> success(BaseCode successCode) {
+        return new RsData<>("S-" + successCode.getStatus(), successCode.getMsg(), null);
     }
 
-    public static <T> RsData<T> success(String msg) {
-        return success(msg, null);
+    public static <T> RsData<T> success(BaseCode successCode, T data) {
+        return new RsData<>("S-" + successCode.getStatus(), successCode.getMsg(), data);
     }
 
     //실패할 경우
-    public static<T> RsData<T> fail(BaseErrorCode errorCode) {
+    public static<T> RsData<T> fail(BaseCode errorCode) {
         return new RsData<>(
                 "F-" + errorCode.getStatus(),
                 errorCode.getMsg(),
                 null
         );
     }
-
-    public static <T> RsData<T> fail(String resultCode, String msg) {
-        return new RsData<>(resultCode, msg, null);
+    public static<T> RsData<T> fail(BaseCode errorCode, T data) {
+        return new RsData<>(
+            "F-" + errorCode.getStatus(),
+            errorCode.getMsg(),
+            data
+        );
     }
-
 }

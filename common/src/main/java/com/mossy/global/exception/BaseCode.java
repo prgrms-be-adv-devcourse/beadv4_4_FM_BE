@@ -1,6 +1,6 @@
 package com.mossy.global.exception;
 
-public interface BaseErrorCode {
+public interface BaseCode {
     int getStatus();
     String getMsg();
 }

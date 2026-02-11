@@ -7,6 +7,7 @@ import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmCashRequest
 import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmTossRequestDto;
 import com.mossy.boundedContext.payment.in.dto.response.PaymentResponse;
 import com.mossy.boundedContext.payment.in.dto.response.TossPaymentResponse;
+import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,7 +38,7 @@ public class ApiV1PaymentController {
     @PostMapping("/confirm/toss")
     public RsData<Void> confirmTossPayment(@RequestBody PaymentConfirmTossRequestDto request) {
         paymentFacade.confirmTossPayment(request);
-        return new RsData<>("200", "결제가 완료되었습니다.");
+        return RsData.success(SuccessCode.TOSS_PAYMENT_CONFIRMED);
     }
 
     @Operation(
@@ -51,7 +52,7 @@ public class ApiV1PaymentController {
     @PostMapping("/confirm/cash")
     public RsData<Void> confirmCashPayment(@RequestBody PaymentConfirmCashRequestDto request) {
         paymentFacade.confirmCashPayment(request);
-        return new RsData<>("200", "예치금 결제가 완료되었습니다.");
+        return RsData.success(SuccessCode.CASH_PAYMENT_CONFIRMED);
     }
 
     @Operation(
@@ -65,7 +66,7 @@ public class ApiV1PaymentController {
     @PostMapping("/cancel/toss")
     public RsData<Void> cancelTossPayment(@Valid @RequestBody PaymentCancelTossRequestDto request) {
         paymentFacade.cancelTossPayment(request);
-        return new RsData<>("200", "PG-결제가 취소되었습니다.");
+        return RsData.success(SuccessCode.TOSS_PAYMENT_CANCELLED);
     }
 
     @Operation(
@@ -78,7 +79,7 @@ public class ApiV1PaymentController {
     @PostMapping("/cancel/cash")
     public RsData<Void> cancelCashPayment(@Valid @RequestBody PaymentCancelCashRequestDto request) {
         paymentFacade.cancelCashPayment(request);
-        return new RsData<>("200", "예치금 결제가 취소되었습니다.");
+        return RsData.success(SuccessCode.CASH_PAYMENT_CANCELLED);
     }
 
     @Operation(
@@ -92,7 +93,7 @@ public class ApiV1PaymentController {
     @GetMapping("/orders/{orderNo}")
     public RsData<List<PaymentResponse>> getPaymentsByOrder(@PathVariable String orderNo) {
         List<PaymentResponse> responses = paymentFacade.findAllPayments(orderNo);
-        return new RsData<>("200", "주문 결제 이력 조회 성공", responses);
+        return RsData.success(SuccessCode.PAYMENT_HISTORY_FOUND, responses);
     }
 
     @Operation(
@@ -109,6 +110,6 @@ public class ApiV1PaymentController {
         @PathVariable String orderNo
     ) {
         TossPaymentResponse response = paymentFacade.findTossPayment(orderNo);
-        return new RsData<>("200", "토스 결제 원본 정보 조회 성공", response);
+        return RsData.success(SuccessCode.TOSS_PAYMENT_INFO_FOUND, response);
     }
 }
