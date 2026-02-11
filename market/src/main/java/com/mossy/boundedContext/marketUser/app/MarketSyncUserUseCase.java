@@ -1,9 +1,9 @@
 package com.mossy.boundedContext.marketUser.app;
 
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
+import com.mossy.boundedContext.marketUser.in.dto.event.MarketUserCreatedEvent;
 import com.mossy.boundedContext.marketUser.out.MarketUserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.boundedContext.marketUser.in.dto.event.MarketUserPayload;
 import com.mossy.shared.member.payload.UserPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class MarketSyncUserUseCase {
                 existingUser -> existingUser.updateUser(user),
                 () -> {
                     MarketUser newUser = marketUserRepository.save(MarketUser.from(user));
-                    eventPublisher.publish(new MarketUserPayload(newUser.toDto()));
+                    eventPublisher.publish(new MarketUserCreatedEvent(newUser.toDto()));
                 }
             );
     }
