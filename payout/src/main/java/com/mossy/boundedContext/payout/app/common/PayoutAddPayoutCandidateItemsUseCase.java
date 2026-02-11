@@ -2,6 +2,7 @@ package com.mossy.boundedContext.payout.app.common;
 
 import com.mossy.boundedContext.payout.domain.calculator.DonationCalculator;
 import com.mossy.boundedContext.payout.domain.calculator.FeeCalculator;
+import com.mossy.boundedContext.payout.domain.calculator.CarbonCalculator;
 import com.mossy.boundedContext.payout.app.PayoutSupport;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
@@ -10,6 +11,7 @@ import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateDto;
 import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
+import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
 
 import com.mossy.shared.payout.enums.PayoutEventType;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
     private final DonationCalculator donationCalculator;
     private final FeeCalculator feeCalculator;
+    private final CarbonCalculator carbonCalculator;
     private final PayoutMapper payoutMapper;
 
     /**
@@ -37,7 +40,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
      * @param dto 정산 후보 생성을 위한 DTO (OrderItem 정보 + 계산된 거리/무게등급 포함)
      */
     @Transactional
-    public void addPayoutCandidateItem(com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto dto) {
+    public void addPayoutCandidateItem(CreatePayoutCandidateDto dto) {
         if (dto == null) {
             throw new DomainException(ErrorCode.ORDERITEM_IS_NULL);
         }
@@ -79,6 +82,12 @@ public class PayoutAddPayoutCandidateItemsUseCase {
             throw new DomainException(ErrorCode.INVALID_DONATION_AMOUNT);
         }
 
+        // 2-1. 탄소 배출량 계산 (kg 단위)
+        BigDecimal carbonKg = carbonCalculator.calculate(dto);
+        if (carbonKg == null || carbonKg.signum() < 0) {
+            throw new DomainException(ErrorCode.INVALID_CARBON_AMOUNT);
+        }
+
         // 3. 조정된 수수료를 계산합니다. (원래 수수료 - 기부금)
         BigDecimal adjustedFee = payoutFee.subtract(donationAmount);
         if (adjustedFee.signum() < 0) {
@@ -96,21 +105,21 @@ public class PayoutAddPayoutCandidateItemsUseCase {
         makePayoutCandidateItem(PayoutCandidateItemCreateDto.of(
                 dto.paymentDate(), dto, PayoutEventType.정산__상품판매_수수료,
                 buyer, system, adjustedFee,
-                dto.weightGrade(), dto.deliveryDistance()
+                dto.weightGrade(), dto.deliveryDistance(), carbonKg
         ));
 
         // 아이템 2: 판매 대금 (구매자 -> 판매자)
         makePayoutCandidateItem(PayoutCandidateItemCreateDto.of(
                 dto.paymentDate(), dto, PayoutEventType.정산__상품판매_대금,
                 buyer, seller, salePriceWithoutFee,
-                dto.weightGrade(), dto.deliveryDistance()
+                dto.weightGrade(), dto.deliveryDistance(), carbonKg
         ));
 
         // 아이템 3: 기부금 (구매자 -> 기부금 수령처)
         makePayoutCandidateItem(PayoutCandidateItemCreateDto.of(
                 dto.paymentDate(), dto, PayoutEventType.정산__상품판매_기부금,
                 buyer, donation, donationAmount,
-                dto.weightGrade(), dto.deliveryDistance()
+                dto.weightGrade(), dto.deliveryDistance(), carbonKg
         ));
     }
 

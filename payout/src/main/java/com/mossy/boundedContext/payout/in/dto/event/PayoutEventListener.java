@@ -1,5 +1,8 @@
 package com.mossy.boundedContext.payout.in.dto.event;
 
+import com.mossy.boundedContext.payout.app.common.PayoutMapper;
+import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
+import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.donation.app.DonationFacade;
@@ -15,13 +18,16 @@ import com.mossy.shared.member.event.UserUpdatedEvent;
 import com.mossy.shared.payout.enums.PayoutEventType;
 import com.mossy.shared.payout.event.PayoutCompletedEvent;
 import com.mossy.shared.payout.event.PayoutSellerCreatedEvent;
+import com.mossy.shared.payout.event.DonationLogCreateEvent;
 import com.mossy.boundedContext.payout.app.PayoutSupport;
 import com.mossy.boundedContext.payout.domain.calculator.DistanceCalculator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
@@ -31,10 +37,11 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 @RequiredArgsConstructor
 public class PayoutEventListener {
     private final PayoutFacade payoutFacade;
-    private final DonationFacade donationFacade;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
     private final PayoutSupport payoutSupport;
     private final DistanceCalculator distanceCalculator;
+    private final PayoutMapper payoutMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
@@ -74,32 +81,20 @@ public class PayoutEventListener {
         event.orderItems()
                 .forEach(orderItem -> {
                     // 1. buyer와 seller 조회
-                    var buyer = payoutSupport.findUserById(event.buyerId())
+                    PayoutUser buyer = payoutSupport.findUserById(event.buyerId())
                             .orElseThrow(() -> new DomainException(ErrorCode.BUYER_NOT_FOUND));
-                    var seller = payoutSupport.findSellerById(orderItem.sellerId())
+                    PayoutSeller seller = payoutSupport.findSellerById(orderItem.sellerId())
                             .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND));
 
                     // 2. 배송 거리 계산 (buyer와 seller의 위도/경도 기반)
-                    var deliveryDistance = distanceCalculator.calculateDistance(
+                    BigDecimal deliveryDistance = distanceCalculator.calculateDistance(
                             buyer.getLatitude(), buyer.getLongitude(),
                             seller.getLatitude(), seller.getLongitude()
                     );
 
                     // 3. Payout 도메인 내부용 DTO 생성
-                    var createPayoutCandidateDto = CreatePayoutCandidateDto.builder()
-                            .orderItemId(orderItem.orderItemId())
-                            .orderId(event.orderId())
-                            .buyerId(event.buyerId())
-                            .buyerName(event.buyerName())
-                            .sellerId(orderItem.sellerId())
-                            .productId(orderItem.productId())
-                            .orderPrice(orderItem.orderPrice())
-                            .orderItemCreatedAt(orderItem.createdAt())
-                            .orderItemUpdatedAt(orderItem.updatedAt())
-                            .weightGrade("소형")  // 최저 단계로 임시 설정
-                            .deliveryDistance(deliveryDistance)  // 계산된 거리
-                            .paymentDate(event.createdAt())  // 결제 일시
-                            .build();
+                    CreatePayoutCandidateDto createPayoutCandidateDto =
+                            payoutMapper.toCreatePayoutCandidateDto(event, orderItem, deliveryDistance);
 
                     // 4. 정산 후보 항목 생성 (수수료, 판매 대금, 기부금)
                     payoutFacade.addPayoutCandidateItem(createPayoutCandidateDto);
@@ -115,21 +110,18 @@ public class PayoutEventListener {
         List<PayoutCandidateItem> donationCandidates = payoutCandidateItemRepository
                 .findByPayoutItem_Payout_IdAndEventType(payoutId, PayoutEventType.정산__상품판매_기부금);
 
-        // 2. 각 기부금 후보 항목에 대해 기부 로그 생성
+        // 2. 각 기부금 후보 항목에 대해 기부 로그 생성 이벤트 발행
         donationCandidates.forEach(candidate -> {
-            donationFacade.createDonationLogDirect(
-                    candidate.getRelId(),                    // orderItemId
-                    candidate.getPayer().getId(),        // buyerId
-                    candidate.getAmount(),                   // 이미 계산된 기부금액
-                    candidate.getWeightGrade(),              // weightGrade
-                    candidate.getDeliveryDistance()          // deliveryDistance
+            DonationLogCreateEvent donationEvent = new DonationLogCreateEvent(
+                    candidate.getRelId(),           // orderItemId
+                    candidate.getPayer().getId(),   // buyerId
+                    candidate.getAmount(),          // 이미 계산된 기부금액
+                    candidate.getCarbonKg()         // 이미 계산된 탄소 배출량 (kg)
             );
+            eventPublisher.publishEvent(donationEvent);
         });
 
-        // 3. 정산 완료된 기부 로그 업데이트
-        donationFacade.settleDonationLogs(payoutId);
-
-        // 4. 다음 정산을 위한 새 Payout 생성
+        // 3. 다음 정산을 위한 새 Payout 생성
         payoutFacade.createPayout(event.payout().payeeId());
     }
 }

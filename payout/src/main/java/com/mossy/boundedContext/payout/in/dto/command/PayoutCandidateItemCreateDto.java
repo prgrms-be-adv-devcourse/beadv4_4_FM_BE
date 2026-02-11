@@ -17,15 +17,16 @@ public record PayoutCandidateItemCreateDto(
         PayoutSeller payee,
         BigDecimal amount,
         String weightGrade,
-        BigDecimal deliveryDistance
+        BigDecimal deliveryDistance,
+        BigDecimal carbonKg
 ) {
     public static PayoutCandidateItemCreateDto of(
             LocalDateTime paymentDate, CreatePayoutCandidateDto orderItem, PayoutEventType eventType,
             PayoutUser payer, PayoutSeller payee, BigDecimal amount,
-            String weightGrade, BigDecimal deliveryDistance
+            String weightGrade, BigDecimal deliveryDistance, BigDecimal carbonKg
     ) {
         return new PayoutCandidateItemCreateDto(
-                paymentDate, orderItem, eventType, payer, payee, amount, weightGrade, deliveryDistance
+                paymentDate, orderItem, eventType, payer, payee, amount, weightGrade, deliveryDistance, carbonKg
         );
     }
 

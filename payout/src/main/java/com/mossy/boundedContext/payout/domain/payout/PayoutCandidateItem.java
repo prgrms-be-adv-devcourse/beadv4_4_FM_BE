@@ -90,6 +90,12 @@ public class PayoutCandidateItem extends BaseIdAndTime {
     private BigDecimal deliveryDistance;
 
     /**
+     * 계산된 탄소 배출량 (kg 단위)
+     */
+    @Column(name = "carbon_kg")
+    private BigDecimal carbonKg;
+
+    /**
      * 이 정산 후보 아이템이 실제 정산(Payout)에 포함되어 {@link PayoutItem}으로 변환되었을 때,
      * 해당 PayoutItem을 참조합니다. 이 필드가 채워지면 더 이상 정산 후보가 아님을 나타냄
      * PayoutItem 엔티티와의 일대일(OneToOne) 관계를 가짐
@@ -110,11 +116,12 @@ public class PayoutCandidateItem extends BaseIdAndTime {
      * @param amount           금액
      * @param weightGrade      무게 등급 (탄소 배출량 계산용)
      * @param deliveryDistance 배송 거리 (탄소 배출량 계산용)
+     * @param carbonKg         탄소 배출량 (kg 단위)
      */
     @Builder
     public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
                                LocalDateTime paymentDate, PayoutUser payer, PayoutSeller payee, BigDecimal amount,
-                               String weightGrade, BigDecimal deliveryDistance) {
+                               String weightGrade, BigDecimal deliveryDistance, BigDecimal carbonKg) {
 
         if (eventType == null) {
             throw new DomainException(ErrorCode.PAYOUT_EVENT_TYPE_IS_NULL); // status: 400
@@ -143,6 +150,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
         this.amount = (amount != null) ? amount : BigDecimal.ZERO;
         this.weightGrade = weightGrade;
         this.deliveryDistance = deliveryDistance;
+        this.carbonKg = carbonKg;
     }
 
     /**

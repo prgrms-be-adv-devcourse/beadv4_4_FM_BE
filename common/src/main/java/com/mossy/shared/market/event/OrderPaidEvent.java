@@ -9,9 +9,9 @@ public record OrderPaidEvent(
         Long buyerId,
         String buyerName,
         LocalDateTime createdAt,
-        List<OrderItemInfo> orderItems
+        List<OrderItem> orderItems
 ) {
-    public record OrderItemInfo(
+    public record OrderItem(
             Long orderItemId,
             Long sellerId,
             Long productId,
