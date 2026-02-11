@@ -21,21 +21,18 @@ public record PayoutSellerDto(
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
-    /**
-     * SellerPayload로부터 PayoutSellerDto를 생성하는 정적 팩토리 메서드
-     */
     public static PayoutSellerDto from(SellerPayload seller) {
-        return new PayoutSellerDto(
-                seller.sellerId(),
-                seller.userId(),
-                seller.sellerType(),
-                seller.storeName(),
-                seller.businessNum(),
-                seller.latitude(),
-                seller.longitude(),
-                seller.status(),
-                seller.createdAt(),
-                seller.updatedAt()
-        );
+        return PayoutSellerDto.builder()
+                .sellerId(seller.sellerId())
+                .userId(seller.userId())
+                .sellerType(seller.sellerType())
+                .storeName(seller.storeName())
+                .businessNum(seller.businessNum())
+                .latitude(seller.latitude())
+                .longitude(seller.longitude())
+                .status(seller.status())
+                .createdAt(seller.createdAt())
+                .updatedAt(seller.updatedAt())
+                .build();
     }
 }

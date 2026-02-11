@@ -25,9 +25,17 @@ public record PayoutCandidateItemCreateDto(
             PayoutUser payer, PayoutSeller payee, BigDecimal amount,
             String weightGrade, BigDecimal deliveryDistance, BigDecimal carbonKg
     ) {
-        return new PayoutCandidateItemCreateDto(
-                paymentDate, orderItem, eventType, payer, payee, amount, weightGrade, deliveryDistance, carbonKg
-        );
+        return PayoutCandidateItemCreateDto.builder()
+                .paymentDate(paymentDate)
+                .orderItem(orderItem)
+                .eventType(eventType)
+                .payer(payer)
+                .payee(payee)
+                .amount(amount)
+                .weightGrade(weightGrade)
+                .deliveryDistance(deliveryDistance)
+                .carbonKg(carbonKg)
+                .build();
     }
 
 }

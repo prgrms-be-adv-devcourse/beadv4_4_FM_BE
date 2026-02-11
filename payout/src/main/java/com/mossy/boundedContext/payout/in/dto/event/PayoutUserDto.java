@@ -23,15 +23,19 @@ public record PayoutUserDto(
         LocalDateTime updatedAt
 
 ) {
-    /**
-     * UserPayload로부터 PayoutUserCreateDto를 생성하는 정적 팩토리 메서드
-     */
     public static PayoutUserDto from(UserPayload user) {
-        return new PayoutUserDto(
-                user.id(), user.email(), user.name(), user.address(),
-                user.nickname(), user.latitude(), user.longitude(),
-                user.profileImage(),user.status(), user.createdAt(), user.updatedAt()
-
-        );
+        return PayoutUserDto.builder()
+                .id(user.id())
+                .email(user.email())
+                .name(user.name())
+                .address(user.address())
+                .nickname(user.nickname())
+                .latitude(user.latitude())
+                .longitude(user.longitude())
+                .profileImage(user.profileImage())
+                .status(user.status())
+                .createdAt(user.createdAt())
+                .updatedAt(user.updatedAt())
+                .build();
     }
 }

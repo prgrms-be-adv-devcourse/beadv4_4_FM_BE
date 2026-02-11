@@ -57,7 +57,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
      * @param dto 정산 후보 생성을 위한 DTO (OrderItem 정보 + 계산된 거리/무게등급 포함)
      */
     private void makePayoutCandidateItems(
-            com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto dto
+            CreatePayoutCandidateDto dto
     ) {
         // --- 정산에 필요한 주요 주체(Actor)들을 조회 ---
         PayoutSeller system = payoutSupport.findSystemSeller()
