@@ -13,11 +13,9 @@ import java.time.LocalDateTime;
 public record CreatePayoutCandidateDto(
         // OrderItem 기본 정보
         Long orderItemId,
-        Long orderId,
         Long buyerId,
         String buyerName,
         Long sellerId,
-        Long productId,
         BigDecimal orderPrice,
         LocalDateTime orderItemCreatedAt,
         LocalDateTime orderItemUpdatedAt,
