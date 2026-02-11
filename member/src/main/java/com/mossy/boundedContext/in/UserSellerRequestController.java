@@ -3,6 +3,7 @@ package com.mossy.boundedContext.in;
 
 import com.mossy.boundedContext.app.seller.SellerRequestUserFacade;
 import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
+import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +26,6 @@ public class UserSellerRequestController {
             @RequestBody @Valid SellerRequestCreateRequest req
     ) {
         Long requestId = sellerRequestUserFacade.request(userId, req);
-        return RsData.success("판매자 신청 완료", requestId);
+        return RsData.success(SuccessCode.SELLER_REQUEST_COMPLETE, requestId);
     }
 }

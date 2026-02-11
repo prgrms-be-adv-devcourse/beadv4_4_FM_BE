@@ -6,6 +6,7 @@ import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.in.dto.UserInfoDTO;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
+import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 
 import com.mossy.shared.member.domain.enums.SellerRequestStatus;
@@ -30,7 +31,7 @@ public class UserController {
             description = "일반 유저(USER)로 가입")
     @PostMapping("/signup")
     public RsData<Long> signup(@RequestBody SignupRequest req) {
-        return RsData.success("회원가입 성공", userFacade.signup(req));
+        return RsData.success(SuccessCode.SIGNUP_COMPLETE, userFacade.signup(req));
     }
 
     @Operation(
@@ -58,7 +59,7 @@ public class UserController {
                 status
         );
 
-        return RsData.success("내 정보 조회 성공", dto);
+        return RsData.success(SuccessCode.GET_MY_INFO_COMPLETE, dto);
 
     }
 }
