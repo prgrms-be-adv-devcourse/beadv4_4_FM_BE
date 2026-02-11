@@ -3,7 +3,7 @@ package com.mossy.boundedContext.cart.app;
 import com.mossy.boundedContext.cart.in.dto.request.CartItemAddRequest;
 import com.mossy.boundedContext.cart.in.dto.request.CartItemUpdateRequest;
 import com.mossy.boundedContext.cart.in.dto.response.CartResponse;
-import com.mossy.shared.market.dto.event.MarketUserDto;
+import com.mossy.boundedContext.marketUser.in.dto.command.MarketUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -2,8 +2,8 @@ package com.mossy.boundedContext.cart.app;
 
 import com.mossy.boundedContext.cart.domain.Cart;
 import com.mossy.boundedContext.cart.out.CartRepository;
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

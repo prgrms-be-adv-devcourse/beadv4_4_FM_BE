@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.marketUser.domain;
 
-import com.mossy.shared.market.dto.event.MarketUserDto;
+import com.mossy.boundedContext.marketUser.in.dto.command.MarketUserDto;
 import com.mossy.shared.member.domain.enums.UserStatus;
 import com.mossy.shared.member.payload.UserPayload;
 import jakarta.persistence.AttributeOverride;

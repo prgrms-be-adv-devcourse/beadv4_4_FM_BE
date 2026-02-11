@@ -30,26 +30,20 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-data-redis")
 
     // Web 의존성은 필터
-    api("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.springframework.boot:spring-boot-starter-web")
 
-    // 2. Security & JWT
-    api("org.springframework.boot:spring-boot-starter-security")
-    api("io.jsonwebtoken:jjwt-api:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
-
-    // 3. QueryDSL & JPA
+    // 2. QueryDSL & JPA
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
-    // 4. Lombok
+    // 3. Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
-    // 5. Swagger & Utils
-    api("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
+    // 4. Swagger & Utils
+    api("org.springdoc:springdoc-openapi-starter-common:2.8.3")
 
     // 6. Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
