@@ -1,16 +1,16 @@
 package com.mossy.boundedContext.app.user;
 
 import com.mossy.boundedContext.domain.user.User;
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.Code;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
+import com.mossy.boundedContext.global.ut.EncryptionUtils;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
-import com.mossy.boundedContext.out.user.RoleRepository;
-import com.mossy.boundedContext.out.user.UserRepository;
+import com.mossy.boundedContext.out.repository.user.RoleRepository;
+import com.mossy.boundedContext.out.repository.user.UserRepository;
 import com.mossy.shared.member.domain.enums.UserStatus;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
 import com.mossy.boundedContext.domain.role.UserRole;
-import com.mossy.standard.ut.EncryptionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,10 +29,10 @@ public class SignupUseCase {
     public User execute(SignupRequest req) {
 
         if (userRepository.existsByEmail(req.email())) {
-            throw new DomainException(Code.DUPLICATE_EMAIL);
+            throw new DomainException(ErrorCode.DUPLICATE_EMAIL);
         }
         if (userRepository.existsByNickname(req.nickname())) {
-            throw new DomainException(Code.DUPLICATE_NICKNAME);
+            throw new DomainException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
         User user = User.builder()
@@ -50,7 +50,7 @@ public class SignupUseCase {
                 .build();
 
         Role roleUser = roleRepository.findByCode(RoleCode.USER)
-                .orElseThrow(() -> new DomainException(Code.ROLE_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ErrorCode.ROLE_NOT_FOUND));
 
         user.addUserRole(new UserRole(user, roleUser));
 

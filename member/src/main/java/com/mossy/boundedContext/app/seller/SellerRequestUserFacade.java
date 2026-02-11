@@ -2,11 +2,11 @@ package com.mossy.boundedContext.app.seller;
 
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.Code;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
-import com.mossy.boundedContext.out.seller.SellerRequestRepository;
-import com.mossy.boundedContext.out.user.UserRepository;
+import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
+import com.mossy.boundedContext.out.repository.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,16 +23,16 @@ public class SellerRequestUserFacade {
     public Long request(Long userId, SellerRequestCreateRequest req) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DomainException(Code.USER_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
         if (sellerRequestRepository.existsByActiveUserId(userId)) {
-            throw new DomainException(Code.DUPLICATE_BUSINESS_NUMBER);
+            throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 
         String normalizedBiz = normalizeBusinessNum(req.businessNum());
 
         if (sellerRequestRepository.existsByBusinessNum(normalizedBiz)) {
-            throw new DomainException(Code.DUPLICATE_BUSINESS_NUMBER);
+            throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 
         SellerRequest entity = SellerRequest.pending(

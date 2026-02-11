@@ -16,7 +16,7 @@ public class GatewaySecurityConfig {
         return http
                 // 1. CSRF, FormLogin, HttpBasic 비활성화 (Stateless API)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .formLogin(form -> form.disable())
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
 
                 // 2. 세션을 사용하지 않도록 설정 (JWT 사용 환경)

@@ -1,9 +1,9 @@
 package com.mossy.boundedContext.app.seller;
 
 import com.mossy.boundedContext.domain.seller.SellerRequest;
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.Code;
-import com.mossy.boundedContext.out.seller.SellerRequestRepository;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
+import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ public class LockUseCase {
 
     public SellerRequest lockAndGet(Long requestId) {
         return sellerRequestRepository.findByIdForUpdate(requestId)
-                .orElseThrow(() -> new DomainException(Code.SELLER_REQUEST_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ErrorCode.SELLER_REQUEST_NOT_FOUND));
     }
 }

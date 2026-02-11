@@ -1,8 +1,9 @@
 package com.mossy.boundedContext.in;
 
 import com.mossy.boundedContext.app.AuthFacade;
-import com.mossy.boundedContext.in.dto.LoginRequest;
-import com.mossy.boundedContext.in.dto.LoginResponse;
+import com.mossy.boundedContext.in.dto.request.LoginRequest;
+import com.mossy.boundedContext.in.dto.response.LoginResponse;
+import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,19 +19,11 @@ public class AuthController {
     private final AuthFacade authFacade;
 
     @Operation(
-            summary = "회원가입",
-            description = "일반 유저(USER)로 가입")
-    @PostMapping("/signup")
-    public RsData<LoginResponse> signup(@RequestBody LoginRequest req) {
-        return RsData.success("회원가입 성공", authFacade.login(req));
-    }
-
-    @Operation(
             summary = "로그인",
             description = "이메일과 비밀번호로 , 토큰 발급")
     @PostMapping("/login")
     public RsData<LoginResponse> login(@RequestBody LoginRequest request) {
-        return RsData.success("로그인 성공", authFacade.login(request));
+        return RsData.success(SuccessCode.LOGIN_COMPLETE, authFacade.login(request));
     }
 
     @Operation(
@@ -39,7 +32,7 @@ public class AuthController {
     )
     @PostMapping("/reissue")
     public RsData<LoginResponse> reissue(@RequestHeader("RefreshToken") String refreshToken) {
-        return RsData.success("토큰 재발급 성공",authFacade.reissue(refreshToken));
+        return RsData.success(SuccessCode.REISSUE_COMPLETE,authFacade.reissue(refreshToken));
 
     }
 
@@ -50,7 +43,7 @@ public class AuthController {
     @PostMapping("/logout")
     public RsData<Void> logout(@RequestHeader("RefreshToken") String refreshToken) {
         authFacade.logout(refreshToken);
-        return RsData.success("로그아웃 성공");
+        return RsData.success(SuccessCode.LOGOUT_COMPLETE, null);
     }
 
     @Operation(
@@ -59,7 +52,7 @@ public class AuthController {
     )
     @GetMapping("/ping")
     public RsData<String> ping() {
-        return RsData.success("pong", "pong");
+        return RsData.success(SuccessCode.OK, "pong");
     }
 
 }

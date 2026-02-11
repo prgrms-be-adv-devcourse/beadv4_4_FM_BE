@@ -5,11 +5,11 @@ import com.mossy.boundedContext.domain.role.UserRole;
 import com.mossy.boundedContext.domain.seller.Seller;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
-import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.Code;
-import com.mossy.boundedContext.out.seller.SellerRepository;
-import com.mossy.boundedContext.out.user.RoleRepository;
-import com.mossy.boundedContext.out.user.UserRepository;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
+import com.mossy.boundedContext.out.repository.seller.SellerRepository;
+import com.mossy.boundedContext.out.repository.user.RoleRepository;
+import com.mossy.boundedContext.out.repository.user.UserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import com.mossy.shared.member.domain.role.Role;
@@ -35,20 +35,20 @@ public class SellerRequestAdminFacade {
         SellerRequest req = lockUseCase.lockAndGet(requestId);
 
         if (req.getStatus() != SellerRequestStatus.PENDING) {
-            throw new DomainException(Code.SELLER_REQUEST_NOT_PENDING);
+            throw new DomainException(ErrorCode.SELLER_REQUEST_NOT_PENDING);
         }
 
         Long userId = req.getUserId();
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DomainException(Code.USER_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
         if (sellerRepository.existsByUserId(userId)) {
-            throw new DomainException(Code.DUPLICATE_SELLER);
+            throw new DomainException(ErrorCode.DUPLICATE_SELLER);
         }
 
         if (sellerRepository.existsByBusinessNum(req.getBusinessNum())) {
-            throw new DomainException(Code.DUPLICATE_BUSINESS_NUMBER);
+            throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 
         req.approve();
@@ -56,7 +56,7 @@ public class SellerRequestAdminFacade {
         Seller seller = sellerRepository.save(Seller.createFromRequest(req));
 
         Role sellerRole = roleRepository.findByCode(RoleCode.SELLER)
-                .orElseThrow(() -> new DomainException(Code.SELLER_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND));
 
         boolean hasSellerRole = user.getUserRoles().stream()
                 .anyMatch(r -> r.getRole() != null && r.getRole().getCode() == RoleCode.SELLER);
@@ -89,7 +89,7 @@ public class SellerRequestAdminFacade {
         SellerRequest req = lockUseCase.lockAndGet(requestId);
 
         if (req.getStatus() != SellerRequestStatus.PENDING) {
-            throw new DomainException(Code.SELLER_REQUEST_NOT_PENDING);
+            throw new DomainException(ErrorCode.SELLER_REQUEST_NOT_PENDING);
         }
 
         req.reject();

@@ -4,6 +4,7 @@ import com.mossy.boundedContext.out.AuthFacade;
 import com.mossy.boundedContext.app.seller.SellerRequestAdminFacade;
 import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.in.dto.response.SellerApproveResponse;
+import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +30,7 @@ public class AdminSellerRequestController {
 
         LoginResponse tokens = authFacade.issueForSellerApproved(result.userId(), result.sellerId());
 
-        return RsData.success("판매자 승인 완료",
+        return RsData.success(SuccessCode.SELLER_APPROVE_COMPLETE,
                 new SellerApproveResponse(result.sellerId(), tokens.accessToken(), tokens.refreshToken())
         );
     }
@@ -38,6 +39,6 @@ public class AdminSellerRequestController {
     @PatchMapping("/{id}/reject")
     public RsData<Void> reject(@PathVariable Long id) {
         sellerRequestAdminFacade.reject(id);
-        return RsData.success("판매자 반려 완료", null);
+        return RsData.success(SuccessCode.SELLER_REJECT_COMPLETE, null);
     }
 }

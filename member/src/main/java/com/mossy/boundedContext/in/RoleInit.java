@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.in;
 
-import com.mossy.boundedContext.out.user.RoleRepository;
+import com.mossy.boundedContext.out.repository.user.RoleRepository;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
 import jakarta.transaction.Transactional;
