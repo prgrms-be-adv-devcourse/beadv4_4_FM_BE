@@ -26,6 +26,7 @@ public class UserFacade {
     private final VerfyMemberUseCase verfyMemberUseCase;
     private final UserMapper userMapper;
     private final SellerRequestRepository sellerRequestRepository;
+    private final GetUserInfoUseCase getUserInfoUseCase;
 
     public Long signup(SignupRequest req){
         User savedUser = signupUseCase.execute(req);
@@ -37,11 +38,7 @@ public class UserFacade {
     }
 
     public UserInfoDto getUserInfo(Long userId, String nickname, String name) {
-        SellerRequestStatus status = sellerRequestRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
-                .map(SellerRequest::getStatus)
-                .orElse(null);
-
-        return UserInfoDto.of(userId, nickname, name, status);
+        return getUserInfoUseCase.execute(userId, nickname, name);
     }
 
 
