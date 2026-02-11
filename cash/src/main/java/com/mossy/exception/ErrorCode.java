@@ -6,11 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-<<<<<<<< HEAD:cash/src/main/java/com/mossy/exception/CashCode.java
-public enum CashCode implements BaseCode {
-========
 public enum ErrorCode implements BaseCode {
->>>>>>>> 0c9fd7687d42d4ccdf9dbc123eaea6cb9fbeb1fc:cash/src/main/java/com/mossy/exception/ErrorCode.java
 
     // =============================================================
     // === Cash (지갑 · 예치금 · 캐시 로그) ===
