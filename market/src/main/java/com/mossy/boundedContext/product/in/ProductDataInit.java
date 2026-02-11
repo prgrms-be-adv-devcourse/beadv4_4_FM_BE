@@ -2,7 +2,6 @@ package com.mossy.boundedContext.product.in;
 
 import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.domain.ProductDocument;
-import com.mossy.boundedContext.product.out.ProductElasticRepository;
 import com.mossy.boundedContext.product.out.ProductRepository;
 import com.mossy.shared.market.enums.ProductStatus;
 import lombok.RequiredArgsConstructor;

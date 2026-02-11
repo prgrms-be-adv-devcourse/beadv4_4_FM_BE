@@ -1,49 +1,43 @@
 package com.mossy.boundedContext.product.app;
 
-import com.mossy.infra.storage.adapter.S3Adapter;
 import com.mossy.boundedContext.marketUser.domain.MarketSeller;
-import com.mossy.boundedContext.marketUser.out.MarketSellerRepository;
-import com.mossy.boundedContext.product.domain.Category;
+import com.mossy.boundedContext.product.app.mapper.ProductMapper;
+import com.mossy.boundedContext.product.domain.CatalogProduct;
 import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.domain.ProductItem;
 import com.mossy.boundedContext.product.domain.event.ProductRegisteredEvent;
 import com.mossy.boundedContext.product.in.dto.request.ProductCreateRequest;
-import com.mossy.boundedContext.product.out.CategoryRepository;
 import com.mossy.boundedContext.product.out.ProductRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MarketRegisterProductUseCase {
     private final ProductRepository productRepository;
-    private final MarketSellerRepository marketSellerRepository;
-    private final CategoryRepository categoryRepository;
+    private final ProductSupport productSupport;
+    private final ProductMapper productMapper;
     private final EventPublisher eventPublisher;
-    private final S3Adapter s3Adapter;
-
-    @Value("${app.s3.dirs.product:product}") // 기본값 product 설정
-    private String productDir;
 
     @Transactional
     public Product register(ProductCreateRequest request) {
+        // 1. 검증 및 조회
+        MarketSeller seller = productSupport.findSellerOrThrow(request.sellerId());
+        CatalogProduct catalog = productSupport.findCatalogOrThrow(request.catalogId());
 
-        MarketSeller seller = marketSellerRepository.findById(request.sellerId())
-                .orElseThrow(() -> new IllegalArgumentException("판매자가 아닙니다. ID: " + request.sellerId()));
+        // 2. 매퍼를 통한 엔티티 변환
+        Product product = productMapper.toEntity(request, seller, catalog);
 
-        Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
+        // 3. 아이템 변환 및 추가
+        request.items().forEach(itemRequest -> {
+            String uniqueSku = productSupport.generateUniqueSkuCode(
+                    seller.getId(), catalog.getId(), itemRequest.optionCombination());
 
-
-        List<String> imageUrls = s3Adapter.uploadFiles(request.images(), productDir);
-
-        Product product = request.toEntity(seller, category);
-        product.addImages(imageUrls);
+            ProductItem item = productMapper.toItemEntity(itemRequest, uniqueSku);
+            product.addProductItem(item); // 연관관계 편의 메서드 활용
+        });
 
         productRepository.save(product);
         eventPublisher.publish(new ProductRegisteredEvent(product.getId()));

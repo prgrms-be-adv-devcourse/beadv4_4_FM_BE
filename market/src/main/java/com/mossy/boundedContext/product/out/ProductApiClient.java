@@ -22,13 +22,4 @@ public class ProductApiClient {
     public List<ProductInfoResponse> findCartItemsByBuyerId(Long userId) {
         return productRepository.findCartItemsByBuyerId(userId);
     }
-
-    public Map<Long, BigDecimal> getWeights(List<Long> productIds) {
-        List<Product> products = productRepository.findByIdIn(productIds);
-        Map<Long, BigDecimal> weightMap = new HashMap<>();
-        for (Product product : products) {
-            weightMap.put(product.getId(), product.getWeight());
-        }
-        return weightMap;
-    }
 }

@@ -2,7 +2,7 @@ package com.mossy.boundedContext.global.security;
 
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.exception.Code;
 import com.mossy.boundedContext.out.user.UserRepository;
 import com.mossy.global.config.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email) {
         User user = userRepository.findByEmailWithRoles(email)
-                .orElseThrow(()  -> new DomainException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(()  -> new DomainException(Code.USER_NOT_FOUND));
 
         return new UserDetailsImpl(
                 user.getId(),
@@ -41,7 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetailsImpl loadUserById(Long userId) {
         User user = userRepository.findByIdWithRoles(userId)
-                .orElseThrow(()  -> new DomainException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(()  -> new DomainException(Code.USER_NOT_FOUND));
 
         return new UserDetailsImpl(
                 user.getId(),

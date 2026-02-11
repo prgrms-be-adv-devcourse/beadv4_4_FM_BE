@@ -1,4 +1,4 @@
-package com.mossy.global.exception;
+package com.mossy.exception;
 
 import com.mossy.global.rsData.RsData;
 import lombok.extern.slf4j.Slf4j;

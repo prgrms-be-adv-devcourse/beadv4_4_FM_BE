@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.product.out;
 
 import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.in.dto.command.CatalogSummary;
 import com.mossy.shared.market.enums.ProductStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
@@ -33,15 +34,28 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
     @Query("select p from Product p where p.id = :id")
     Optional<Product> findByIdWithPessimisticLock(Long id);
 
+    // ProductRepository 예시
     @Query("select p from Product p " +
-            "join fetch p.category " +
             "join fetch p.seller " +
-            "left join fetch p.images " +
-            "where p.id = :id")
-    Optional<Product> findByIdWithDetails(@Param("id") Long id);
+            "join fetch p.catalogProduct cp " +
+            "join fetch cp.category " +
+            "join fetch p.items " + // ProductItem까지 한 번에 가져옴
+            "where p.id = :productId")
+    Optional<Product> findByIdWithDetails(@Param("productId") Long productId);
 
     @Query("SELECT p FROM Product p WHERE p.id IN :ids")
     List<Product> findByIdIn(@Param("ids") List<Long> ids);
+
+    @Query("SELECT p.catalogProduct.id FROM Product p WHERE p.id = :productId")
+    Optional<Long> findCatalogIdByProductId(@Param("productId") Long productId);
+
+    @Query("SELECT new com.mossy.boundedContext.product.in.dto.command.CatalogSummary(" +
+            "MIN(p.basePrice + i.additionalPrice), " +
+            "COUNT(DISTINCT p.seller.id)) " +
+            "FROM Product p JOIN p.items i " +
+            "WHERE p.catalogProduct.id = :catalogId " +
+            "AND p.status = 'FOR_SALE'")
+    CatalogSummary getCatalogSummary(@Param("catalogId") Long catalogId);
 
 }
 

@@ -1,0 +1,10 @@
+package com.mossy.boundedContext.product.out;
+
+import com.mossy.boundedContext.product.domain.CatalogDocument;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CatalogSearchRepository extends ElasticsearchRepository<CatalogDocument, Long> {
+
+}

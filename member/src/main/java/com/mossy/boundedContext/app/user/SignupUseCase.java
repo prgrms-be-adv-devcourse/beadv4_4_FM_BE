@@ -2,7 +2,7 @@ package com.mossy.boundedContext.app.user;
 
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.exception.Code;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.out.user.RoleRepository;
 import com.mossy.boundedContext.out.user.UserRepository;
@@ -29,10 +29,10 @@ public class SignupUseCase {
     public User execute(SignupRequest req) {
 
         if (userRepository.existsByEmail(req.email())) {
-            throw new DomainException(ErrorCode.DUPLICATE_EMAIL);
+            throw new DomainException(Code.DUPLICATE_EMAIL);
         }
         if (userRepository.existsByNickname(req.nickname())) {
-            throw new DomainException(ErrorCode.DUPLICATE_NICKNAME);
+            throw new DomainException(Code.DUPLICATE_NICKNAME);
         }
 
         User user = User.builder()
@@ -50,7 +50,7 @@ public class SignupUseCase {
                 .build();
 
         Role roleUser = roleRepository.findByCode(RoleCode.USER)
-                .orElseThrow(() -> new DomainException(ErrorCode.ROLE_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(Code.ROLE_NOT_FOUND));
 
         user.addUserRole(new UserRole(user, roleUser));
 

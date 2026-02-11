@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.cash.domain.user;
 
 import com.mossy.exception.DomainException;
-import com.mossy.exception.CashErrorCode;
+import com.mossy.exception.CashCode;
 import com.mossy.global.jpa.entity.BaseManualIdAndTime;
 import com.mossy.shared.cash.enums.UserEventType;
 import jakarta.persistence.*;
@@ -47,7 +47,7 @@ public class UserWallet extends BaseManualIdAndTime {
         validateAmount(amount);
 
         if (this.balance.compareTo(amount) < 0) {
-            throw new DomainException(CashErrorCode.INSUFFICIENT_BALANCE);
+            throw new DomainException(CashCode.INSUFFICIENT_BALANCE);
         }
         this.balance = this.balance.subtract(amount);
         addUserCashLog(amount.negate(), eventType, relTypeCode, relId);
@@ -69,7 +69,7 @@ public class UserWallet extends BaseManualIdAndTime {
 
     private void validateAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new DomainException(CashErrorCode.INVALID_AMOUNT);
+            throw new DomainException(CashCode.INVALID_AMOUNT);
         }
     }
 }

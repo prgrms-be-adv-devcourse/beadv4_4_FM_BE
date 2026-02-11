@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.app;
 
 import com.mossy.boundedContext.exception.DomainException;
-import com.mossy.boundedContext.exception.ErrorCode;
+import com.mossy.boundedContext.exception.Code;
 import com.mossy.boundedContext.infra.jwt.JwtProperties;
 import com.mossy.boundedContext.out.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +24,10 @@ public class RefreshTokenUseCase {
 
     public String validateAndGetUserId(String refreshToken) {
         String userIdStr = refreshTokenRepository.getUserIdByToken(refreshToken);
-        if (userIdStr == null) throw new DomainException(ErrorCode.INVALID_TOKEN);
+        if (userIdStr == null) throw new DomainException(Code.INVALID_TOKEN);
 
         if (!refreshTokenRepository.existsInUserSet(userIdStr, refreshToken)) {
-            throw new DomainException(ErrorCode.INVALID_TOKEN);
+            throw new DomainException(Code.INVALID_TOKEN);
         }
         return userIdStr;
     }

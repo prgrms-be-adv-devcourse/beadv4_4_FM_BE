@@ -7,7 +7,7 @@ public class DomainException extends RuntimeException {
 
     private final String resultCode;
     private final String msg;
-    private final CashErrorCode errorCode;
+    private final CashCode errorCode;
 
     public DomainException(String resultCode, String msg) {
         super(resultCode + ":" + msg);
@@ -16,7 +16,7 @@ public class DomainException extends RuntimeException {
         this.errorCode = null;
     }
 
-    public DomainException(CashErrorCode errorCode) {
+    public DomainException(CashCode errorCode) {
         super(errorCode.getMsg());
         this.resultCode = "F-" + errorCode.getStatus();
         this.msg = errorCode.getMsg();

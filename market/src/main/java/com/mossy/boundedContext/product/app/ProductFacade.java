@@ -37,8 +37,9 @@ public class ProductFacade {
 
     // 상품 등록
     @Transactional
-    public Product registerProduct(ProductCreateRequest request) {
-        return marketRegisterProductUseCase.register(request);
+    public Long registerProduct(ProductCreateRequest request) {
+        Product product = marketRegisterProductUseCase.register(request);
+        return product.getId();
     }
 
     // 상품 정보 수정

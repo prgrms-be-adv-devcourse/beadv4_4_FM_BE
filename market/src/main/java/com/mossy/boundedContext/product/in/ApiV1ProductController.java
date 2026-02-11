@@ -58,13 +58,13 @@ public class ApiV1ProductController {
     // 상품 등록
     @Operation(
             summary = "상품 등록",
-            description = "상품 등록합니다.")
+            description = "카탈로그 기반으로 새로운 판매 상품을 등록합니다.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RsData<Void> createProduct(
-            @ModelAttribute @Valid ProductCreateRequest request) {
-        productFacade.registerProduct(request);
-        return new RsData<>("201", "상품이 등록되었습니다");
+    public RsData<Long> createProduct(
+            @RequestBody @Valid ProductCreateRequest request) {
+        Long productId = productFacade.registerProduct(request);
+        return new RsData<>("201", "상품이 등록되었습니다", productId);
     }
 
     // 상품 수정
