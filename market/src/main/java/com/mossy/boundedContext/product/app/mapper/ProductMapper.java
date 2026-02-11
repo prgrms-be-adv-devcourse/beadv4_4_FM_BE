@@ -12,11 +12,11 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
-    // 1. 기본 Product 정보 변환 (Seller, Catalog 등은 외부에서 주입)
+    // 1. 기본 Product 정보 변환
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "seller", source = "seller")
     @Mapping(target = "catalogProduct", source = "catalog")
-    @Mapping(target = "items", ignore = true) // 아이템은 별도로 추가
+    @Mapping(target = "productItems", ignore = true) // 아이템은 별도로 추가
     @Mapping(target = "status", constant = "FOR_SALE")
     Product toEntity(ProductCreateRequest request, MarketSeller seller, CatalogProduct catalog);
 

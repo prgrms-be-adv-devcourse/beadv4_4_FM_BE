@@ -13,5 +13,6 @@ public record ProductCreateRequest(
         Long sellerId,
         Long catalogId,
         BigDecimal basePrice,
+        List<String> optionGroupNames,
         List<ProductItemRequest> items // 옵션 리스트
 ) {}

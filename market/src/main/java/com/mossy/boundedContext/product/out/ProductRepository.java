@@ -18,16 +18,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 
     Page<Product> findByStatus(ProductStatus status, Pageable pageable);
 
-    @Query("SELECT p FROM Product p " +
-            "JOIN FETCH p.category " +
-            "WHERE p.id = :productId")
     Optional<Product> findById(@Param("productId") Long productId);
 
-    @Query("SELECT DISTINCT p FROM Product p " +
-            "JOIN FETCH p.category " +
-            "LEFT JOIN FETCH p.images " +
-            "WHERE p.status = :status")
-    List<Product> findAllWithCategoryAndImages(@Param("status") ProductStatus status);
+    //List<Product> findAllWithCategoryAndImages(@Param("status") ProductStatus status);
 
     // 비관적 락
     @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -39,7 +32,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             "join fetch p.seller " +
             "join fetch p.catalogProduct cp " +
             "join fetch cp.category " +
-            "join fetch p.items " + // ProductItem까지 한 번에 가져옴
+            "join fetch p.productItems " + // ProductItem까지 한 번에 가져옴
             "where p.id = :productId")
     Optional<Product> findByIdWithDetails(@Param("productId") Long productId);
 
@@ -52,7 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
     @Query("SELECT new com.mossy.boundedContext.product.in.dto.command.CatalogSummary(" +
             "MIN(p.basePrice + i.additionalPrice), " +
             "COUNT(DISTINCT p.seller.id)) " +
-            "FROM Product p JOIN p.items i " +
+            "FROM Product p JOIN p.productItems i " +
             "WHERE p.catalogProduct.id = :catalogId " +
             "AND p.status = 'FOR_SALE'")
     CatalogSummary getCatalogSummary(@Param("catalogId") Long catalogId);

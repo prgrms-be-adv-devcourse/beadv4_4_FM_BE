@@ -27,33 +27,33 @@ public class ApiV1ProductController {
     private final ProductFacade productFacade;
 
     // 메인 화면 상품 리스트
-    @Operation(
-            summary = "메인 화면 상품",
-            description = "메인 화면 상품 리스트 조회합니다.")
-    @GetMapping
-    @Transactional(readOnly = true)
-    public RsData<Page<ProductResponse>> getProductList(
-            @RequestParam (defaultValue = "0") int page,
-            @RequestParam (defaultValue = "10") int size,
-            @RequestParam (defaultValue = "createdAt") String sort
-    ) {
-        System.out.println(("sort: " + sort));
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
-        Page<ProductResponse> productsList = productFacade
-                .getProductList(pageable)
-                .map(ProductResponse::from);
-        return new RsData<>("200", "", productsList);
-    }
+//    @Operation(
+//            summary = "메인 화면 상품",
+//            description = "메인 화면 상품 리스트 조회합니다.")
+//    @GetMapping
+//    @Transactional(readOnly = true)
+//    public RsData<Page<ProductResponse>> getProductList(
+//            @RequestParam (defaultValue = "0") int page,
+//            @RequestParam (defaultValue = "10") int size,
+//            @RequestParam (defaultValue = "createdAt") String sort
+//    ) {
+//        System.out.println(("sort: " + sort));
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+//        Page<ProductResponse> productsList = productFacade
+//                .getProductList(pageable)
+//                .map(ProductResponse::from);
+//        return new RsData<>("200", "", productsList);
+//    }
 
     // 상품 상세 정보
-    @Operation(
-            summary = "상품 상세 정보",
-            description = "상품 상세 정보를 조회 합니다")
-    @GetMapping("/{productId}")
-    public RsData<ProductDetailResponse> getProductById(@PathVariable Long productId) {
-        ProductDetailResponse response = productFacade.getProductById(productId);
-        return new RsData<>("200", "", response);
-    }
+//    @Operation(
+//            summary = "상품 상세 정보",
+//            description = "상품 상세 정보를 조회 합니다")
+//    @GetMapping("/{productId}")
+//    public RsData<ProductDetailResponse> getProductById(@PathVariable Long productId) {
+//        ProductDetailResponse response = productFacade.getProductById(productId);
+//        return new RsData<>("200", "", response);
+//    }
 
     // 상품 등록
     @Operation(
@@ -68,45 +68,45 @@ public class ApiV1ProductController {
     }
 
     // 상품 수정
-    @Operation(
-            summary = "상품 수정",
-            description = "상품을 수정합니다")
-    @PutMapping("/{productId}")
-    public RsData<Long> updateProduct(
-            @PathVariable Long productId,
-            @RequestHeader("X-Seller-Id") Long currentSellerId,
-            @ModelAttribute @Valid ProductUpdateRequest request) {
-        productFacade.updateProduct(productId, currentSellerId, request);
-
-        return new RsData<>("200", "상품이 수정되었습니다.", productId);
-    }
+//    @Operation(
+//            summary = "상품 수정",
+//            description = "상품을 수정합니다")
+//    @PutMapping("/{productId}")
+//    public RsData<Long> updateProduct(
+//            @PathVariable Long productId,
+//            @RequestHeader("X-Seller-Id") Long currentSellerId,
+//            @ModelAttribute @Valid ProductUpdateRequest request) {
+//        productFacade.updateProduct(productId, currentSellerId, request);
+//
+//        return new RsData<>("200", "상품이 수정되었습니다.", productId);
+//    }
 
     // 상품 상태 수정
-    @Operation(
-            summary = "상품 상태 수정",
-            description = "상품 상태를 수정합니다.")
-    @PatchMapping("/{productId}/status")
-    public RsData<Long> changeStatus(
-            @PathVariable Long productId,
-            @RequestHeader("X-Seller-Id") Long currentSellerId,
-            @Valid @RequestBody ProductStatusUpdateRequest request) {
-        productFacade.changeProductStatus(productId, currentSellerId, request);
-
-        return new RsData<>("200", "상품 상태가 수정되었습니다.", productId);
-    }
+//    @Operation(
+//            summary = "상품 상태 수정",
+//            description = "상품 상태를 수정합니다.")
+//    @PatchMapping("/{productId}/status")
+//    public RsData<Long> changeStatus(
+//            @PathVariable Long productId,
+//            @RequestHeader("X-Seller-Id") Long currentSellerId,
+//            @Valid @RequestBody ProductStatusUpdateRequest request) {
+//        productFacade.changeProductStatus(productId, currentSellerId, request);
+//
+//        return new RsData<>("200", "상품 상태가 수정되었습니다.", productId);
+//    }
 
     // 상품 삭제
-    @Operation(
-            summary = "상품 삭제",
-            description = "상품을 삭제합니다.")
-    @DeleteMapping("/{productId}")
-    public RsData<Long> deleteProduct(
-            @PathVariable Long productId,
-            @RequestHeader("X-Seller-Id") Long currentSellerId) {
-        productFacade.deleteProduct(productId, currentSellerId);
-
-        return new RsData<>("200", "상품이 삭제되었습니다.", productId);
-    }
+//    @Operation(
+//            summary = "상품 삭제",
+//            description = "상품을 삭제합니다.")
+//    @DeleteMapping("/{productId}")
+//    public RsData<Long> deleteProduct(
+//            @PathVariable Long productId,
+//            @RequestHeader("X-Seller-Id") Long currentSellerId) {
+//        productFacade.deleteProduct(productId, currentSellerId);
+//
+//        return new RsData<>("200", "상품이 삭제되었습니다.", productId);
+//    }
 
 
 }

@@ -2,6 +2,7 @@ package com.mossy.boundedContext.product.in;
 
 import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.domain.ProductDocument;
+import com.mossy.boundedContext.product.out.CatalogProductRepository;
 import com.mossy.boundedContext.product.out.ProductRepository;
 import com.mossy.shared.market.enums.ProductStatus;
 import lombok.RequiredArgsConstructor;
@@ -17,23 +18,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductDataInit {
     private final ProductRepository productRepository;
-    private final ProductElasticRepository esRepository;
+    private final CatalogProductRepository catalogProductRepository;
 
     @Bean
     public ApplicationRunner productDateInitRunner() {
         return args -> {
-            esRepository.deleteAll();
+            catalogProductRepository.deleteAll();
             migrateAll();
         };
     }
 
     private void migrateAll() {
-        List<Product> products = productRepository.findAllWithCategoryAndImages(ProductStatus.FOR_SALE);
 
-        List<ProductDocument> documents = products.stream()
-                .map(ProductDocument::from)
-                .toList();
-
-        esRepository.saveAll(documents);
     }
 }

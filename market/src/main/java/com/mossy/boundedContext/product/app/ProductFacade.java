@@ -14,26 +14,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ProductFacade {
-    private final MarketGetProductListUseCase marketGetProductListUseCase;
-    private final MarketGetProductDetailUseCase marketGetProductDetailUseCase;
+    //private final MarketGetProductListUseCase marketGetProductListUseCase;
+    //private final MarketGetProductDetailUseCase marketGetProductDetailUseCase;
     private final MarketRegisterProductUseCase marketRegisterProductUseCase;
-    private final MarketUpdateProductUseCase marketUpdateProductUseCase;
-    private final MarketChangeProductStatusUseCase marketChangeProductStatusUseCase;
-    private final MarketDecreaseStockUseCase marketDecreaseStockUseCase;
-    private final MarketDeleteProductUseCase marketDeleteProductUseCase;
+   // private final MarketUpdateProductUseCase marketUpdateProductUseCase;
+    //private final MarketChangeProductStatusUseCase marketChangeProductStatusUseCase;
+    //private final MarketDecreaseStockUseCase marketDecreaseStockUseCase;
+    //private final MarketDeleteProductUseCase marketDeleteProductUseCase;
 
     // 메인 화면 상품 리스트
-    @Transactional(readOnly = true)
-    public Page<Product> getProductList(Pageable pageable) {
-        return marketGetProductListUseCase.getProductList(pageable);
-    }
+//    @Transactional(readOnly = true)
+//    public Page<Product> getProductList(Pageable pageable) {
+//        return marketGetProductListUseCase.getProductList(pageable);
+//    }
 
     // 상품 상세 정보 조회
-    @Transactional(readOnly = true)
-    public ProductDetailResponse getProductById(Long productId) {
-        Product product = marketGetProductDetailUseCase.execute(productId);
-        return ProductDetailResponse.from(product);
-    }
+//    @Transactional(readOnly = true)
+//    public ProductDetailResponse getProductById(Long productId) {
+//        Product product = marketGetProductDetailUseCase.execute(productId);
+//        return ProductDetailResponse.from(product);
+//    }
 
     // 상품 등록
     @Transactional
@@ -43,26 +43,26 @@ public class ProductFacade {
     }
 
     // 상품 정보 수정
-    @Transactional
-    public void updateProduct(Long productId, Long currentSellerId, ProductUpdateRequest request) {
-        marketUpdateProductUseCase.update(productId, currentSellerId, request);
-    }
-
-    // 상품 상태 직접 변경 (판매자 조작)
-    @Transactional
-    public void changeProductStatus(Long productId, Long currentSellerId, ProductStatusUpdateRequest request) {
-        marketChangeProductStatusUseCase.changeStatus(productId, currentSellerId, request);
-    }
-
-    // 상품 삭제
-    @Transactional
-    public void deleteProduct(Long productId, Long currentSellerId) {
-        marketDeleteProductUseCase.delete(productId, currentSellerId);
-    }
-
-    // 결제 시 재고 감소
-    @Transactional
-    public void decreaseProductStock(Long productId, Integer quantity) {
-        marketDecreaseStockUseCase.decrease(productId, quantity);
-    }
+//    @Transactional
+//    public void updateProduct(Long productId, Long currentSellerId, ProductUpdateRequest request) {
+//        marketUpdateProductUseCase.update(productId, currentSellerId, request);
+//    }
+//
+//    // 상품 상태 직접 변경 (판매자 조작)
+//    @Transactional
+//    public void changeProductStatus(Long productId, Long currentSellerId, ProductStatusUpdateRequest request) {
+//        marketChangeProductStatusUseCase.changeStatus(productId, currentSellerId, request);
+//    }
+//
+//    // 상품 삭제
+//    @Transactional
+//    public void deleteProduct(Long productId, Long currentSellerId) {
+//        marketDeleteProductUseCase.delete(productId, currentSellerId);
+//    }
+//
+//    // 결제 시 재고 감소
+//    @Transactional
+//    public void decreaseProductStock(Long productId, Integer quantity) {
+//        marketDecreaseStockUseCase.decrease(productId, quantity);
+//    }
 }

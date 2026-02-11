@@ -10,16 +10,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
-@RequiredArgsConstructor
-public class ProductApiClient {
-    private final ProductRepository productRepository;
-
-    public boolean exists(Long productId) {
-        return productRepository.existsById(productId);
-    }
-
-    public List<ProductInfoResponse> findCartItemsByBuyerId(Long userId) {
-        return productRepository.findCartItemsByBuyerId(userId);
-    }
-}
+//@Component
+//@RequiredArgsConstructor
+//public class ProductApiClient {
+//    private final ProductRepository productRepository;
+//
+//    public boolean exists(Long productId) {
+//        return productRepository.existsById(productId);
+//    }
+//
+//    public List<ProductInfoResponse> findCartItemsByBuyerId(Long userId) {
+//        return productRepository.findCartItemsByBuyerId(userId);
+//    }
+//}

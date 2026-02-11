@@ -46,6 +46,7 @@ dependencies {
     // MapStruct
     implementation ("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    annotationProcessor ("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
     // 컴파일 도구 및 DB 드라이버
     compileOnly("org.projectlombok:lombok")

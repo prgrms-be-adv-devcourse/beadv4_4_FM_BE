@@ -19,4 +19,8 @@ public class ProductOptionGroup extends BaseIdAndTime {
 
     @Column(nullable = false)
     private String name; // 예: "색상", "사이즈"
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 }
