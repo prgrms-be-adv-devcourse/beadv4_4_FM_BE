@@ -1,12 +1,10 @@
 package com.mossy.boundedContext.app;
 
-import com.mossy.boundedContext.global.jwt.JwtProvider;
-import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.out.dto.request.MemberVerifyExternRequest;
 import com.mossy.boundedContext.out.dto.response.MemberVerifyResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.boundedContext.out.external.MemberServiceClient;
+import com.mossy.boundedContext.out.external.MemberFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LoginUseCase {
 
-    private final MemberServiceClient memberServiceClient;
+    private final MemberFeignClient memberFeignClient;
 
     @Transactional(readOnly = true)
     public LoginContext execute(String email, String password) {
-        MemberVerifyResponse response = memberServiceClient.verify(
+        MemberVerifyResponse response = memberFeignClient.verify(
                 new MemberVerifyExternRequest(email, password)
         );
 

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "auth", url = "localhost:8086")
 public interface AuthFeignClient {
 
-    @PostMapping("/api/v1/user/auth/verify")
+    @PostMapping("/api/v1/users/auth/verify")
     MemberVerifyExternResponse verify(@RequestBody MemberVerifyRequest request);
 
     @PostMapping("/api/v1/seller/auth/issue-seller-token")

@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "member", url = "http://localhost:8082")
-public interface MemberServiceClient {
+public interface MemberFeignClient {
 
-    @PostMapping("api/v1/internal/members/verify")
+    @PostMapping("api/v1/auth/users/verify")
     MemberVerifyResponse verify(@RequestBody MemberVerifyExternRequest request);
 }
