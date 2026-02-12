@@ -3,11 +3,11 @@ package com.mossy.boundedContext.payout.in.dto.event;
 import com.mossy.boundedContext.payout.app.common.PayoutMapper;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
+import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.app.PayoutFacade;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
-import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
 import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
 import com.mossy.shared.market.event.OrderPaidEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
@@ -20,6 +20,7 @@ import com.mossy.shared.payout.event.PayoutSellerCreatedEvent;
 import com.mossy.boundedContext.payout.out.external.dto.event.DonationLogCreateEvent;
 import com.mossy.boundedContext.payout.app.PayoutSupport;
 import com.mossy.boundedContext.payout.domain.calculator.DistanceCalculator;
+import com.mossy.boundedContext.payout.domain.calculator.WeightCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,7 @@ public class PayoutEventListener {
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
     private final PayoutSupport payoutSupport;
     private final DistanceCalculator distanceCalculator;
+    private final WeightCalculator weightCalculator;
     private final PayoutMapper payoutMapper;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -91,12 +93,15 @@ public class PayoutEventListener {
                             seller.getLatitude(), seller.getLongitude()
                     );
 
-                    // 3. Payout 도메인 내부용 DTO 생성
-                    CreatePayoutCandidateDto createPayoutCandidateDto =
-                            payoutMapper.toCreatePayoutCandidateDto(event, orderItem, deliveryDistance);
+                    // 3. 무게 등급 계산 (상품 무게 기반)
+                    String weightGrade = weightCalculator.determineWeightGrade(orderItem.weight());
 
-                    // 4. 정산 후보 항목 생성 (수수료, 판매 대금, 기부금)
-                    payoutFacade.addPayoutCandidateItem(createPayoutCandidateDto);
+                    // 4. Payout 도메인 내부용 DTO 생성
+                    PayoutCandidateCreateDto payoutCandidateCreateDto =
+                            payoutMapper.toCreatePayoutCandidateDto(event, orderItem, deliveryDistance, weightGrade);
+
+                    // 5. 정산 후보 항목 생성 (수수료, 판매 대금, 기부금)
+                    payoutFacade.addPayoutCandidateItem(payoutCandidateCreateDto);
                 });
     }
 

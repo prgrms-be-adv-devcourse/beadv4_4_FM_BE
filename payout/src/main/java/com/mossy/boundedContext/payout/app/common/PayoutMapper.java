@@ -3,7 +3,7 @@ package com.mossy.boundedContext.payout.app.common;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
-import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
+import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateDto;
 import com.mossy.boundedContext.payout.in.dto.event.PayoutSellerDto;
 import com.mossy.boundedContext.payout.in.dto.event.PayoutUserDto;
@@ -57,7 +57,7 @@ public interface PayoutMapper {
         @Mapping(target = "deliveryDistance", source = "dto.deliveryDistance")
         @Mapping(target = "carbonKg", source = "carbonKg")
         PayoutCandidateItemCreateDto toCandidateItemCreateDto(
-                CreatePayoutCandidateDto dto,
+                PayoutCandidateCreateDto dto,
                 PayoutEventType eventType,
                 PayoutUser payer,
                 PayoutSeller payee,
@@ -73,13 +73,12 @@ public interface PayoutMapper {
         @Mapping(target = "orderPrice", source = "orderItem.orderPrice")
         @Mapping(target = "orderItemCreatedAt", source = "orderItem.createdAt")
         @Mapping(target = "orderItemUpdatedAt", source = "orderItem.updatedAt")
-        @Mapping(target = "weightGrade", constant = "소형")
-        @Mapping(target = "deliveryDistance", source = "deliveryDistance")
         @Mapping(target = "paymentDate", source = "event.createdAt")
-        CreatePayoutCandidateDto toCreatePayoutCandidateDto(
+        PayoutCandidateCreateDto toCreatePayoutCandidateDto(
                 OrderPaidEvent event,
                 OrderPaidEvent.OrderItem orderItem,
-                BigDecimal deliveryDistance
+                BigDecimal deliveryDistance,
+                String weightGrade
         );
 
 
