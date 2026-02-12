@@ -6,6 +6,9 @@ import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
+import com.mossy.boundedContext.out.repository.user.UserRepository;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.boundedContext.out.external.dto.response.MemberVerifyExternResponse;
 import com.mossy.shared.member.domain.enums.SellerRequestStatus;
@@ -27,6 +30,7 @@ public class UserFacade {
     private final UserMapper userMapper;
     private final SellerRequestRepository sellerRequestRepository;
     private final GetUserInfoUseCase getUserInfoUseCase;
+    private final UserRepository userRepository;
 
     public Long signup(SignupRequest req){
         User savedUser = signupUseCase.execute(req);
@@ -37,8 +41,22 @@ public class UserFacade {
         return savedUser.getId();
     }
 
-    public UserInfoDto getUserInfo(Long userId, String nickname, String name) {
-        return getUserInfoUseCase.execute(userId, nickname, name);
+    public UserInfoDto getUserInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+
+        SellerRequestStatus status = sellerRequestRepository
+                .findTopByUserIdOrderByCreatedAtDesc(userId)
+                .map(SellerRequest::getStatus)
+                .orElse(SellerRequestStatus.NONE);
+
+
+        return UserInfoDto.of(
+                user.getId(),
+                user.getNickname(),
+                user.getName(),
+                status
+        );
     }
 
 
