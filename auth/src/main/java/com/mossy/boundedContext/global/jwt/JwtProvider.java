@@ -1,8 +1,11 @@
 package com.mossy.boundedContext.global.jwt;
 
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -10,15 +13,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
 
     private final SecretKey key;
     private final JwtProperties jwtProperties;
 
-    public JwtProvider(JwtProperties jwtProperties) {
-        this.jwtProperties = jwtProperties;
-        this.key = Keys.hmacShaKeyFor(jwtProperties.secret().getBytes(StandardCharsets.UTF_8));
-    }
+    private static final String CLAIM_ROLE = "role";
+    private static final String CLAIM_SELLER_ID = "seller_id";
+
 
     public String createAccessToken(Long userId, String role, Long sellerId) {
         return createToken(userId, role, sellerId, jwtProperties.accessTokenExpireMs());
@@ -50,26 +53,40 @@ public class JwtProvider {
     }
 
     public Claims parseClaims(String token) {
-        return Jwts.parser()
-                .verifyWith((SecretKey) key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+       try {
+           return Jwts.parser()
+                   .verifyWith(key)
+                   .build()
+                   .parseSignedClaims(token)
+                   .getPayload();
+       } catch (io.jsonwebtoken.ExpiredJwtException e) {
+           throw e;
+       } catch (Exception e) {
+           throw new DomainException(ErrorCode.INVALID_TOKEN);
+       }
     }
 
     public Long getUserId(String token) {
         return Long.valueOf(parseClaims(token).getSubject());
     }
 
+    //AccessToken 인가에 사용
     public String getRole(String token) {
-        return parseClaims(token).get("role", String.class);
+        return parseClaims(token).get(CLAIM_ROLE, String.class);
     }
 
+    //seller 관련 인가
     public Long getSellerId(String token) {
+        return parseClaims(token).get(CLAIM_SELLER_ID, Long.class);
+    }
+
+    public JwtUserClaim getUserClaim(String token) {
         Claims claims = parseClaims(token);
-        Object raw = claims.get("seller_Id");
-        if (raw == null) return null;
-        return (raw instanceof Number) ? ((Number) raw).longValue() : Long.valueOf(raw.toString());
+        return new JwtUserClaim(
+                Long.valueOf(claims.getSubject()),
+                claims.get(CLAIM_ROLE, String.class),
+                claims.get(CLAIM_SELLER_ID, Long.class)
+        );
     }
 
     public boolean verifyToken(String token) {
@@ -79,6 +96,11 @@ public class JwtProvider {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public Long verifyRefreshANdGetUserId(String refreshToken) {
+        Claims claims = parseClaims(refreshToken);
+        return Long.valueOf(claims.getSubject());
     }
 
     public long getRemainingTime(String token) {
