@@ -1,9 +1,6 @@
 package com.mossy.boundedContext.payout.app;
 
-import com.mossy.boundedContext.payout.app.common.PayoutAddPayoutCandidateItemsUseCase;
-import com.mossy.boundedContext.payout.app.common.PayoutCollectPayoutItemsMoreUseCase;
-import com.mossy.boundedContext.payout.app.common.PayoutCompletePayoutsMoreUseCase;
-import com.mossy.boundedContext.payout.app.common.PayoutCreatePayoutUseCase;
+import com.mossy.boundedContext.payout.app.common.*;
 import com.mossy.boundedContext.payout.app.seller.PayoutSyncSellerUseCase;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.boundedContext.payout.app.user.PayoutSyncUserUseCase;
@@ -15,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 /**
  * 정산(Payout) 기능의 메인 진입점 역할을 하는 파사드(Facade)
@@ -35,6 +34,7 @@ public class PayoutFacade {
     private final PayoutAddPayoutCandidateItemsUseCase payoutAddPayoutCandidateItemsUseCase;
     private final PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
     private final PayoutCompletePayoutsMoreUseCase payoutCompletePayoutsMoreUseCase;
+    private final PayoutRefundUseCase payoutRefundUseCase;
     private final PayoutSupport payoutSupport;
 
     /**
@@ -98,5 +98,10 @@ public class PayoutFacade {
     @Transactional(propagation = Propagation.MANDATORY)
     public RsData<Integer> completePayoutsMore(int limit) {
         return payoutCompletePayoutsMoreUseCase.completePayoutsMore(limit);
+    }
+
+    @Transactional
+    public void processRefund(Long OrderItemId, BigDecimal refundAmount) {
+        payoutRefundUseCase.processRefund(OrderItemId, refundAmount);
     }
 }
