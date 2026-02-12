@@ -34,12 +34,16 @@ public class PayoutCreatePayoutUseCase {
             throw new DomainException(ErrorCode.INVALID_PAYEE_ID);
         }
         // 1. 주어진 payeeId를 사용하여 PayoutSeller 엔티티를 조회
-        PayoutSeller _payee = payoutSellerRepository.findById(payeeId)
-                .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND));
+
+        if (!payoutSellerRepository.existsById(payeeId)) {
+            throw new DomainException(ErrorCode.SELLER_NOT_FOUND);
+        }
+        PayoutSeller payeeRef = payoutSellerRepository.getReferenceById(payeeId);
+
 
         // 2. 해당 수취인(_payee)에 대해 아직 정산일(payoutDate)이 지정되지 않은(NULL) 활성화된 Payout이 있는지 확인
         //    만약 있다면 기존 Payout을 반환하고, 없다면 새로운 Payout을 생성하여 저장
-        payoutRepository.findByPayeeAndPayoutDateIsNull(_payee)
-                .orElseGet(() -> payoutRepository.save(new Payout(_payee)));
+        payoutRepository.findByPayeeAndPayoutDateIsNull(payeeRef)
+                .orElseGet(() -> payoutRepository.save(new Payout(payeeRef)));
     }
 }
