@@ -1,6 +1,8 @@
 package com.mossy.kafka.publisher;
 
 import com.mossy.kafka.KafkaTopics;
+import com.mossy.shared.cash.event.PaymentRefundEvent;
+import com.mossy.shared.market.event.OrderCancelEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -24,7 +26,8 @@ public class KafkaEventPublisher {
 
     private String resolveTopicName(Object event) {
         return switch (event) {
-            case UserJoinedEvent e -> KafkaTopics.USER_JOINED;
+            case PaymentRefundEvent e -> KafkaTopics.PAYMENT_REFUND;
+            case OrderCancelEvent e -> KafkaTopics.ORDER_CANCEL;
             default -> null;
         };
     }

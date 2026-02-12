@@ -5,6 +5,7 @@ import com.mossy.boundedContext.payment.domain.Payment;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelCashRequestDto;
 import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.global.eventPublisher.EventPublisher;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentRefundEvent;
 import com.mossy.shared.market.event.OrderCancelEvent;
@@ -27,7 +28,7 @@ public class PaymentCancelCashUseCase {
     // private final EventPublisher eventPublisher;
 
     // Kafka
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     @Value("${app.kafka.topics.payment.refund:payment.refund}")
     private String paymentRefundTopic;
@@ -59,7 +60,7 @@ public class PaymentCancelCashUseCase {
 
         log.info("카프카 이벤트 보냈다!");
 
-        kafkaTemplate.send(paymentRefundTopic, refundEvent);
+        kafkaEventPublisher.publish(refundEvent);
 
         paymentSupport.processCancel(orderNo, null, cancelAmount, PayMethod.CASH, cancelReason);
     }
