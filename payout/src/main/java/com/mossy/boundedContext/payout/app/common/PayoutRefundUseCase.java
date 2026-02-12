@@ -68,38 +68,57 @@ public class PayoutRefundUseCase {
             List<PayoutCandidateItem> candidates,
             BigDecimal refundAmount
     ) {
-        // 총액 계산
         BigDecimal totalAmount = candidates.stream()
                 .map(PayoutCandidateItem::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // 각 항목별로 비율 적용해서 환불
-        candidates.forEach(candidate -> {
+        if (totalAmount.compareTo(BigDecimal.ZERO) == 0) {
+            throw new DomainException(ErrorCode.INVALID_PAYOUT_EVENT_TYPE); 
+        }
 
-            // 비율 계산
+        List<BigDecimal> allocatedAmounts = new java.util.ArrayList<>();
+        BigDecimal allocatedSum = BigDecimal.ZERO;
+
+        // 금액 배분: 일단 내림 처리
+        for (PayoutCandidateItem candidate : candidates) {
             BigDecimal ratio = candidate.getAmount()
-                    .divide(totalAmount, 4, RoundingMode.HALF_UP);
+                    .divide(totalAmount, 12, RoundingMode.HALF_UP);
 
-            // 환불 금액 (비율 적용)
             BigDecimal itemRefundAmount = refundAmount
                     .multiply(ratio)
-                    .setScale(0, RoundingMode.HALF_UP);
+                    .setScale(0, RoundingMode.DOWN);
 
-            // 탄소 배출량 (비율 적용)
+            allocatedAmounts.add(itemRefundAmount);
+            allocatedSum = allocatedSum.add(itemRefundAmount);
+        }
+
+        // 잔여금 보정: 최종 합계를 refundAmount와 정확히 일치시킴
+        BigDecimal remainder = refundAmount.subtract(allocatedSum);
+        if (!allocatedAmounts.isEmpty() && remainder.compareTo(BigDecimal.ZERO) != 0) {
+            int lastIndex = allocatedAmounts.size() - 1;
+            allocatedAmounts.set(lastIndex, allocatedAmounts.get(lastIndex).add(remainder));
+        }
+
+        // 음수 환불 항목 저장
+        for (int i = 0; i < candidates.size(); i++) {
+            PayoutCandidateItem candidate = candidates.get(i);
+
+            BigDecimal ratio = candidate.getAmount()
+                    .divide(totalAmount, 12, RoundingMode.HALF_UP);
+
             BigDecimal itemRefundCarbon = candidate.getCarbonKg()
                     .multiply(ratio)
                     .setScale(2, RoundingMode.HALF_UP);
 
-            // 음수 항목 생성 (상계)
             PayoutCandidateItem refundItem = payoutMapper.createRefundItem(
                     candidate,
                     convertToRefundEventType(candidate.getEventType()),
-                    itemRefundAmount.negate(),
+                    allocatedAmounts.get(i).negate(),
                     itemRefundCarbon.negate()
             );
 
             payoutCandidateItemRepository.save(refundItem);
-        });
+        }
     }
 
     /**
