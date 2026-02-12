@@ -5,7 +5,7 @@ import com.mossy.boundedContext.donation.domain.DonationLog;
 import com.mossy.boundedContext.donation.out.DonationLogRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.boundedContext.payout.app.PayoutSupport;
+
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DonationCreateLogUseCase {
 
     private final DonationLogRepository donationLogRepository;
-    private final PayoutSupport payoutSupport;
+    private final DonationSupport donationSupport;
     private final DonationMapper donationMapper;
 
     /**
@@ -44,8 +44,10 @@ public class DonationCreateLogUseCase {
         }
 
         // 1. 기부자(구매자) 정보를 조회
-        PayoutUser user = payoutSupport.findUserById(createDonationLogDto.buyerId())
-                .orElseThrow(() -> new DomainException(ErrorCode.PAYOUT_USER_NOT_FOUND));
+        if (!donationSupport.existsUserById(createDonationLogDto.buyerId())) {
+            throw new DomainException(ErrorCode.PAYOUT_USER_NOT_FOUND);
+        }
+        PayoutUser user = donationSupport.getUserReferenceById(createDonationLogDto.buyerId());
 
         // 3. DonationLog 엔티티를 생성하고 저장
         DonationLog donationLog = donationMapper.toEntity(user, createDonationLogDto);
