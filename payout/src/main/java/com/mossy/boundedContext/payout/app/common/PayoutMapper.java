@@ -85,4 +85,22 @@ public interface PayoutMapper {
         // --- [조회 응답 매핑] ---
 
 
+        //---[환불 처리 매핑] ---
+        @Mapping(target = "eventType", source = "refundEventType")
+        @Mapping(target = "relTypeCode", source = "original.relTypeCode")
+        @Mapping(target = "relId", source = "original.relId")
+        @Mapping(target = "paymentDate", expression = "java(java.time.LocalDateTime.now())")
+        @Mapping(target = "payer", source = "original.payer")
+        @Mapping(target = "payee", source = "original.payee")
+        @Mapping(target = "amount", source = "refundAmount")
+        @Mapping(target = "weightGrade", source = "original.weightGrade")
+        @Mapping(target = "deliveryDistance", source = "original.deliveryDistance")
+        @Mapping(target = "carbonKg", source = "refundCarbon")
+        PayoutCandidateItem createRefundItem(
+                PayoutCandidateItem original,
+                PayoutEventType refundEventType,
+                BigDecimal refundAmount,
+                BigDecimal refundCarbon
+        );
+
 }

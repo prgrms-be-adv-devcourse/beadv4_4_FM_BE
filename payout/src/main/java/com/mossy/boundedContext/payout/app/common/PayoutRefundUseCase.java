@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,6 +22,7 @@ import java.util.List;
 public class PayoutRefundUseCase {
 
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
+    private final PayoutMapper payoutMapper;
 
     /**
      * 환불 처리: orderItem의 정산 후보를 조회하여 비율대로 상계
@@ -91,18 +91,12 @@ public class PayoutRefundUseCase {
                     .setScale(2, RoundingMode.HALF_UP);
 
             // 음수 항목 생성 (상계)
-            PayoutCandidateItem refundItem = PayoutCandidateItem.builder()
-                    .eventType(convertToRefundEventType(candidate.getEventType()))
-                    .relTypeCode(candidate.getRelTypeCode())
-                    .relId(candidate.getRelId())
-                    .paymentDate(LocalDateTime.now())
-                    .payer(candidate.getPayer())
-                    .payee(candidate.getPayee())
-                    .amount(itemRefundAmount.negate())
-                    .weightGrade(candidate.getWeightGrade())
-                    .deliveryDistance(candidate.getDeliveryDistance())
-                    .carbonKg(itemRefundCarbon.negate())
-                    .build();
+            PayoutCandidateItem refundItem = payoutMapper.createRefundItem(
+                    candidate,
+                    convertToRefundEventType(candidate.getEventType()),
+                    itemRefundAmount.negate(),
+                    itemRefundCarbon.negate()
+            );
 
             payoutCandidateItemRepository.save(refundItem);
         });
