@@ -35,4 +35,6 @@ public interface PayoutCandidateItemRepository extends JpaRepository<PayoutCandi
      * @return 조회 조건에 맞는 정산 후보 아이템 리스트
      */
     List<PayoutCandidateItem> findByPayoutItem_Payout_IdAndEventType(Long payoutId, PayoutEventType eventType);
+
+    List<PayoutCandidateItem> findByRelIdAndRelTypeCode(Long relId, String relTypeCode);
 }
