@@ -32,3 +32,8 @@ services:
 volumes:
   es_data:
     driver: local
+
+networks:
+  mossy-network:
+    name: mossy-network
+    driver: bridge

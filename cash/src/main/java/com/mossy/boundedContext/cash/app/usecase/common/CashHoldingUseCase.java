@@ -12,11 +12,13 @@ import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.enums.SellerEventType;
 import com.mossy.shared.cash.enums.UserEventType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CashHoldingUseCase {
@@ -74,5 +76,7 @@ public class CashHoldingUseCase {
                 request.orderId()
             );
         }
+
+        log.info("카프카 이벤트 잘 받았다!");
     }
 }

@@ -31,6 +31,20 @@ spring:
   cache:
     type: redis
 
+  # Kafka 설정 (공통 설정은 kafka 모듈에서 상속)
+  kafka:
+    consumer:
+      group-id: cash
+
+# 토픽
+app:
+  kafka:
+    topics:
+      order:
+        cancel: order.cancel
+      payment:
+        refund: payment.refund
+
 # 모든 서비스에서 동일한 경로로 스웨거 사용
 springdoc:
   swagger-ui:

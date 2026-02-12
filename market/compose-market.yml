@@ -1,5 +1,6 @@
 include:
   - ../compose-infra.yml
+  - ../compose-kafka.yml
   - ../elasticsearch/compose-es.yml
 
 services:
@@ -20,5 +21,12 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      redpanda:
+        condition: service_healthy
     networks:
       - mossy-network
+
+networks:
+  mossy-network:
+    name: mossy-network
+    driver: bridge

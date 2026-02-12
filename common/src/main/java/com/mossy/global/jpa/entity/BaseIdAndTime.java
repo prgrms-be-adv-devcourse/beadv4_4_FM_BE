@@ -21,9 +21,9 @@ public abstract class BaseIdAndTime extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp
-    @Column(updatable = false)
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 }

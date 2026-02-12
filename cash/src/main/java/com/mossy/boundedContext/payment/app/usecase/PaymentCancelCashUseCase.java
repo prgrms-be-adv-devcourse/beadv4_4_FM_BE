@@ -10,15 +10,27 @@ import com.mossy.shared.cash.event.PaymentRefundEvent;
 import com.mossy.shared.market.event.OrderCancelEvent;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentCancelCashUseCase {
 
     private final PaymentSupport paymentSupport;
-    private final EventPublisher eventPublisher;
+
+    // Spring Event
+    // private final EventPublisher eventPublisher;
+
+    // Kafka
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Value("${app.kafka.topics.payment.refund:payment.refund}")
+    private String paymentRefundTopic;
 
     @Transactional
     public void orderCancelCashPayment(OrderCancelEvent event) {
@@ -29,12 +41,25 @@ public class PaymentCancelCashUseCase {
 
         MarketOrderResponse order = paymentSupport.findOrderForCancel(payment.getOrderId());
 
-        eventPublisher.publish(new PaymentRefundEvent(
+        // Spring Event
+        // eventPublisher.publish(new PaymentRefundEvent(
+        //     order.orderId(),
+        //     order.buyerId(),
+        //     cancelAmount,
+        //     PayMethod.CASH
+        // ));
+
+        // Kafka
+        PaymentRefundEvent refundEvent = new PaymentRefundEvent(
             order.orderId(),
             order.buyerId(),
             cancelAmount,
             PayMethod.CASH
-        ));
+        );
+
+        log.info("카프카 이벤트 보냈다!");
+
+        kafkaTemplate.send(paymentRefundTopic, refundEvent);
 
         paymentSupport.processCancel(orderNo, null, cancelAmount, PayMethod.CASH, cancelReason);
     }

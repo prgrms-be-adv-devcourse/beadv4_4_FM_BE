@@ -34,6 +34,9 @@ dependencyManagement {
 dependencies {
     // common 모듈
     implementation(project(":common"))
+    // kafka 모듈
+    implementation(project(":kafka"))
+
     implementation("org.springframework.boot:spring-boot-starter-web")
     runtimeOnly("org.postgresql:postgresql")
 
