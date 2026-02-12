@@ -10,6 +10,7 @@ import com.mossy.boundedContext.payout.app.PayoutFacade;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
 import com.mossy.shared.market.event.OrderPaidEvent;
+import com.mossy.shared.market.event.OrderRefundedEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;
@@ -127,5 +128,13 @@ public class PayoutEventListener {
 
         // 3. 다음 정산을 위한 새 Payout 생성
         payoutFacade.createPayout(event.payout().payeeId());
+    }
+    public void orderRefundedEvent(OrderRefundedEvent event) {
+        event.refundItems().forEach(refundItem -> {
+           payoutFacade.processRefund(
+                   refundItem.orderItemId(),
+                   refundItem.refundAmount()
+           );
+        });
     }
 }
