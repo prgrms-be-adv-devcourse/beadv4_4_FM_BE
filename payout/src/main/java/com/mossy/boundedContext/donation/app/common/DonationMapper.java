@@ -17,7 +17,6 @@ public interface DonationMapper {
     CreateDonationLogDto toDto(DonationLogCreateEvent event);
 
     // DTO → Entity 변환
-    @Mapping(target = "user", source = "user")
     @Mapping(target = "orderItemId", source = "dto.OrderItemId")
     @Mapping(target = "amount", source = "dto.donationAmount")
     @Mapping(target = "carbonOffset", source = "dto.carbonKg")
