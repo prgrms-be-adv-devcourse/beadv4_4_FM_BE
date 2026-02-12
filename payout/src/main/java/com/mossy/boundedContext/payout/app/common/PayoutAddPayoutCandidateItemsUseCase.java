@@ -103,10 +103,10 @@ public class PayoutAddPayoutCandidateItemsUseCase {
 
         // --- 계산된 금액을 바탕으로 3가지 종류의 정산 후보 아이템을 생성 ---
         makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
-                dto, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee, carbonKg));
+                dto, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee,BigDecimal.ZERO));
 
         makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
-                dto, PayoutEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee, carbonKg));
+                dto, PayoutEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee, BigDecimal.ZERO));
 
         makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
                 dto, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount, carbonKg));
