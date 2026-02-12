@@ -4,6 +4,7 @@ import com.mossy.boundedContext.payout.app.common.*;
 import com.mossy.boundedContext.payout.app.seller.PayoutSyncSellerUseCase;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.boundedContext.payout.app.user.PayoutSyncUserUseCase;
+import com.mossy.shared.market.event.OrderPaidEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.global.rsData.RsData;
 
@@ -34,6 +35,7 @@ public class PayoutFacade {
     private final PayoutAddPayoutCandidateItemsUseCase payoutAddPayoutCandidateItemsUseCase;
     private final PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
     private final PayoutCompletePayoutsMoreUseCase payoutCompletePayoutsMoreUseCase;
+    private final PayoutHandleOrderPaidUseCase payoutHandleOrderPaidUseCase;
     private final PayoutRefundUseCase payoutRefundUseCase;
     private final PayoutSupport payoutSupport;
 
@@ -103,5 +105,9 @@ public class PayoutFacade {
     @Transactional
     public void processRefund(Long OrderItemId, BigDecimal refundAmount) {
         payoutRefundUseCase.processRefund(OrderItemId, refundAmount);
+    }
+
+    public void handleOrderPaid(OrderPaidEvent event) {
+        payoutHandleOrderPaidUseCase.handle(event);
     }
 }
