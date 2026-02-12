@@ -15,6 +15,7 @@ public record OrderPaidEvent(
             Long orderItemId,
             Long sellerId,
             Long productId,
+            BigDecimal weight,
             BigDecimal orderPrice,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
