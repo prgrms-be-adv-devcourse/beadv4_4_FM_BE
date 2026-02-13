@@ -16,7 +16,7 @@ public class CashKafkaEventListener {
     private final CashFacade cashFacade;
     private final CashMapper mapper;
 
-    @KafkaListener(topics = "${app.kafka.topics.payment.refund:payment.refund}")
+    @KafkaListener(topics = "${app.kafka.topics.payment.refund}")
     public void handlePaymentRefundEvent(PaymentRefundEvent event) {
         cashFacade.processRefund(mapper.toCashRefundRequestDto(event));
     }
