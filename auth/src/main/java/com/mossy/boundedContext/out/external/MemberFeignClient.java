@@ -15,6 +15,6 @@ public interface MemberFeignClient {
     @PostMapping("api/v1/auth/users/verify")
     MemberVerifyResponse verify(@RequestBody MemberVerifyExternRequest request);
 
-    @GetMapping("/internal/auth/{userId")
+    @GetMapping("api/v1/auth/users/{userId}")
     MemberAuthInfoResponse getAuthInfo(@PathVariable("userId") Long userId);
 }

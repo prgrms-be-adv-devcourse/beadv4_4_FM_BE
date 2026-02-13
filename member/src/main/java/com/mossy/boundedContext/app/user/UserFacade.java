@@ -5,6 +5,7 @@ import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
+import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
 import com.mossy.exception.DomainException;
@@ -62,6 +63,10 @@ public class UserFacade {
 
     public MemberVerifyExternResponse verifyMember(String email, String password) {
         return verfyMemberUseCase.execute(email, password);
+    }
+
+    public MemberAuthInfoResponse getAuthInfo(Long userId) {
+        return getUserInfoUseCase.tokenExecute(userId);
     }
 
 
