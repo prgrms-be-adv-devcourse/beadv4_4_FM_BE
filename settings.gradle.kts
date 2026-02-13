@@ -1,6 +1,7 @@
 rootProject.name = "Mossy"
 
 include("common")
+include("kafka")
 include("gateway")
 include("member")
 include("auth")

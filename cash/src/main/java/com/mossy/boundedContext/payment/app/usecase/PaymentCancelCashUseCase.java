@@ -4,21 +4,29 @@ import com.mossy.boundedContext.payment.app.PaymentSupport;
 import com.mossy.boundedContext.payment.domain.Payment;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelCashRequestDto;
 import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
-import com.mossy.global.eventPublisher.EventPublisher;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentRefundEvent;
 import com.mossy.shared.market.event.OrderCancelEvent;
-import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentCancelCashUseCase {
 
     private final PaymentSupport paymentSupport;
-    private final EventPublisher eventPublisher;
+
+    // Spring Event
+    // private final EventPublisher eventPublisher;
+
+    // Kafka
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     @Transactional
     public void orderCancelCashPayment(OrderCancelEvent event) {
@@ -29,12 +37,23 @@ public class PaymentCancelCashUseCase {
 
         MarketOrderResponse order = paymentSupport.findOrderForCancel(payment.getOrderId());
 
-        eventPublisher.publish(new PaymentRefundEvent(
+        // Spring Event
+        // eventPublisher.publish(new PaymentRefundEvent(
+        //     order.orderId(),
+        //     order.buyerId(),
+        //     cancelAmount,
+        //     PayMethod.CASH
+        // ));
+
+        // Kafka
+        PaymentRefundEvent refundEvent = new PaymentRefundEvent(
             order.orderId(),
             order.buyerId(),
             cancelAmount,
             PayMethod.CASH
-        ));
+        );
+
+        kafkaEventPublisher.publish(refundEvent);
 
         paymentSupport.processCancel(orderNo, null, cancelAmount, PayMethod.CASH, cancelReason);
     }
