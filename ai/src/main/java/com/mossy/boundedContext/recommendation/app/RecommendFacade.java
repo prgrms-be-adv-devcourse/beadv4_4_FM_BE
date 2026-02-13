@@ -7,6 +7,7 @@ import com.mossy.boundedContext.recommendation.out.RecommendFeignClient;
 import com.mossy.boundedContext.recommendation.out.dto.response.MarketProductResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
+import com.mossy.shared.market.event.ProductUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -24,6 +25,10 @@ public class RecommendFacade {
 
     public Mono<Void> syncItem(ProductCreateRequestDto request) {
         return recommendSyncItemUseCase.syncItem(request);
+    }
+
+    public Mono<Void> syncUpdate(ProductUpdatedEvent event) {
+        return recommendSyncItemUseCase.syncUpdate(event);
     }
 
     public Mono<List<MarketProductResponse>> searchRecommendations(Long productId) {
