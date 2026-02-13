@@ -41,6 +41,9 @@ dependencies {
     // WebFlux (논블로킹/리액티브)
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
+    // OpenFeign (blocking HTTP client for inter-service calls)
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
     // R2DBC (PostgreSQL)
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
