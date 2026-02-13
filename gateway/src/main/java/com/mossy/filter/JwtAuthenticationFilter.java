@@ -2,6 +2,7 @@ package com.mossy.filter;
 
 import com.mossy.security.jwt.JwtProvider;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +13,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-@Component
+import static java.rmi.server.LogStream.log;
+
+@Slf4j
+@Component("JwtAuthenticationFilter")
 public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
 
     private final JwtProvider jwtProvider;
@@ -32,36 +36,41 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
 
-            // 1. 기존 요청에서 X-User-Id 헤더를 제거한 새로운 요청 생성
-            ServerHttpRequest request = exchange.getRequest().mutate()
-                    .headers(httpHeaders -> {
-                        httpHeaders.remove("X-User-Id");
-                    })
-                    .build();
+            log(">>>>>> Gateway Filter Access: " + exchange.getRequest().getPath());
 
-            // 2. Authorization 헤더 확인
+            ServerHttpRequest request = exchange.getRequest();
+
+            // 1. Authorization 헤더가 아예 없는 경우 차단
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
 
-            // 3. Bearer 토큰 추출
-            String authHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-            String jwt = authHeader.replace("Bearer ", "");
+            String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-            // 4. 토큰 유효성 검사
-            if (!jwtProvider.verifyToken(jwt)) {
-                return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
+            // 2. Bearer 형식이 아닌 경우 차단
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return onError(exchange, "Invalid token format", HttpStatus.UNAUTHORIZED);
             }
 
-            // 5. 토큰에서 정보를 꺼내 X-User-Id 주입
-            Long userId = jwtProvider.getUserId(jwt);
+            String jwt = authHeader.substring(7);
 
-            // 최종적으로 수정된 헤더를 가진 요청을 다시 mutate
-            ServerHttpRequest finalRequest = request.mutate()
-                    .header("X-User-Id", userId.toString())
-                    .build();
+            try {
+                // 3. 핵심: parseClaims(jwt)가 실행될 때 만료/변조된 토큰은 예외(Exception)를 던집니다.
+                // jwtProvider.verifyToken을 따로 부를 필요 없이 try-catch로 잡는 게 정확합니다.
+                Long userId = jwtProvider.getUserId(jwt);
 
-            return chain.filter(exchange.mutate().request(finalRequest).build());
+                // 4. 안전하게 변조된 헤더 주입 (기존 X-User-Id는 삭제/덮어쓰기)
+                ServerHttpRequest mutatedRequest = request.mutate()
+                        .header("X-User-Id", userId.toString())
+                        .build();
+
+                return chain.filter(exchange.mutate().request(mutatedRequest).build());
+
+            } catch (Exception e) {
+                // 토큰이 만료되었거나(ExpiredJwtException), 가짜 숫자를 넣었을 때 여기서 잡힙니다.
+                System.out.println("토큰 검증 실패: " + e.getMessage());
+                return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
+            }
         };
     }
 
