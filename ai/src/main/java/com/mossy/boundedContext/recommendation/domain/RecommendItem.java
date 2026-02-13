@@ -1,9 +1,12 @@
 package com.mossy.boundedContext.recommendation.domain;
 
 import com.mossy.global.jpa.entity.BaseManualIdAndTime;
+import com.mossy.shared.market.enums.ProductStatus;
 import lombok.*;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.math.BigDecimal;
 
 @Table("recommend_item")
 @Getter
@@ -21,4 +24,8 @@ public class RecommendItem extends BaseManualIdAndTime {
     // pgvector 데이터
     @Column("vector_data")
     private String vectorData;
+
+    private BigDecimal price;
+
+    private ProductStatus status;
 }
