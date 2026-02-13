@@ -1,20 +1,22 @@
 package com.mossy.boundedContext.payout.app;
 
-import com.mossy.boundedContext.payout.app.common.PayoutAddPayoutCandidateItemsUseCase;
-import com.mossy.boundedContext.payout.app.common.PayoutCollectPayoutItemsMoreUseCase;
-import com.mossy.boundedContext.payout.app.common.PayoutCompletePayoutsMoreUseCase;
-import com.mossy.boundedContext.payout.app.common.PayoutCreatePayoutUseCase;
+import com.mossy.boundedContext.payout.app.common.*;
 import com.mossy.boundedContext.payout.app.seller.PayoutSyncSellerUseCase;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.boundedContext.payout.app.user.PayoutSyncUserUseCase;
+import com.mossy.shared.market.event.OrderPaidEvent;
+import com.mossy.shared.market.event.OrderRefundedEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.global.rsData.RsData;
 
 import com.mossy.shared.member.payload.UserPayload;
+import com.mossy.shared.payout.event.PayoutCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 /**
  * 정산(Payout) 기능의 메인 진입점 역할을 하는 파사드(Facade)
@@ -35,7 +37,10 @@ public class PayoutFacade {
     private final PayoutAddPayoutCandidateItemsUseCase payoutAddPayoutCandidateItemsUseCase;
     private final PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
     private final PayoutCompletePayoutsMoreUseCase payoutCompletePayoutsMoreUseCase;
-    private final PayoutSupport payoutSupport;
+    private final PayoutHandleOrderPaidUseCase payoutHandleOrderPaidUseCase;
+    private final PayoutRefundUseCase payoutRefundUseCase;
+    private final PayoutHandlePayoutCompletedUseCase payoutHandlePayoutCompletedUseCase;
+    private final PayoutHandleOrderRefundedUseCase payoutHandleOrderRefundedUseCase;
 
     /**
      * [흐름 0] 판매자 정보를 Payout 컨텍스트와 동기화
@@ -74,9 +79,8 @@ public class PayoutFacade {
      * @param dto 정산 후보 생성을 위한 DTO (OrderItem 정보 + 계산된 거리/무게등급 포함)
      */
     @Transactional
-    public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) {
-        payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto);
-    }
+    public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) { payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto); }
+    public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) { payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto); }
 
     /**
      * [흐름 2] 정산 후보 아이템을 집계하여 실제 정산(Payout)에 포함될 PayoutItem으로 변환하는 배치를 실행
@@ -85,9 +89,7 @@ public class PayoutFacade {
      * @return 처리 결과 (성공/실패, 처리된 개수 등)
      */
     @Transactional(propagation = Propagation.MANDATORY)
-    public RsData<Integer> collectPayoutItemsMore(int limit) {
-        return payoutCollectPayoutItemsMoreUseCase.collectPayoutItemsMore(limit);
-    }
+    public RsData<Integer> collectPayoutItemsMore(int limit) { return payoutCollectPayoutItemsMoreUseCase.collectPayoutItemsMore(limit); }
     /**
      * [흐름 3] 생성된 정산(Payout)들을 실제로 실행하고 완료 처리하는 배치를 실행
      * 이 과정이 성공적으로 끝나면 PayoutCompletedEvent가 발행되어, 기부금 정산 등 후속 조치가 이어짐
@@ -96,7 +98,14 @@ public class PayoutFacade {
      * @return 처리 결과 (성공/실패, 처리된 개수 등)
      */
     @Transactional(propagation = Propagation.MANDATORY)
-    public RsData<Integer> completePayoutsMore(int limit) {
-        return payoutCompletePayoutsMoreUseCase.completePayoutsMore(limit);
-    }
+    public RsData<Integer> completePayoutsMore(int limit) { return payoutCompletePayoutsMoreUseCase.completePayoutsMore(limit); }
+
+    @Transactional
+    public void processRefund(Long OrderItemId, BigDecimal refundAmount) { payoutRefundUseCase.processRefund(OrderItemId, refundAmount); }
+
+    public void handleOrderPaid(OrderPaidEvent event) { payoutHandleOrderPaidUseCase.handle(event); }
+
+    public void handlePayoutCompleted(PayoutCompletedEvent event) { payoutHandlePayoutCompletedUseCase.handle(event); }
+
+    public void handleOrderRefunded(OrderRefundedEvent event) { payoutHandleOrderRefundedUseCase.handle(event); }
 }

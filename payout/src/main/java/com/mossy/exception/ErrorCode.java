@@ -49,6 +49,9 @@ public enum ErrorCode implements BaseCode {
     PAYMENT_DATE_IS_NULL(400, "결제 일시가 없습니다."),
     PAYOUT_IS_NULL(400, "정산 객체가 없습니다."),
     PAYOUT_EVENT_TYPE_IS_NULL(400, "정산 이벤트 타입이 없습니다."),
+    PAYOUT_CANDIDATE_NOT_FOUND(404, "정산 후보를 찾을 수 없습니다"),
+    REFUND_NOT_ALLOWED_AFTER_PAYOUT_COMPLETED(400, "이미 정산이 완료되어 환불할 수 없습니다"),
+    INVALID_PAYOUT_EVENT_TYPE(400, "유효하지 않은 정산 이벤트 타입입니다"),
 
     // ========================================
     // 401 Unauthorized (인증 실패)
