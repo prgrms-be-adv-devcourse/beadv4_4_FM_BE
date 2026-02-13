@@ -14,13 +14,7 @@ public class PaymentKafkaEventListener {
 
     private final PaymentFacade paymentFacade;
 
-    @KafkaListener(
-        topics = "${app.kafka.topics.order.cancel:order.cancel}",
-        groupId = "${spring.kafka.consumer.group-id}",
-        properties = {
-            "spring.json.value.default.type=com.mossy.shared.market.event.OrderCancelEvent"
-        }
-    )
+    @KafkaListener(topics = "${app.kafka.topics.order.cancel:order.cancel}")
     public void handleOrderCancelEvent(OrderCancelEvent event) {
         paymentFacade.orderCancelPayment(event);
     }

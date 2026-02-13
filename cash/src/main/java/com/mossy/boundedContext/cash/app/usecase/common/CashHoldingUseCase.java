@@ -76,7 +76,5 @@ public class CashHoldingUseCase {
                 request.orderId()
             );
         }
-
-        log.info("카프카 이벤트 잘 받았다!");
     }
 }

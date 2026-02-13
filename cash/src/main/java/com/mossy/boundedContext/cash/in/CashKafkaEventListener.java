@@ -16,13 +16,7 @@ public class CashKafkaEventListener {
     private final CashFacade cashFacade;
     private final CashMapper mapper;
 
-    @KafkaListener(
-        topics = "${app.kafka.topics.payment.refund:payment.refund}",
-        groupId = "${spring.kafka.consumer.group-id}",
-        properties = {
-            "spring.json.value.default.type=com.mossy.shared.cash.event.PaymentRefundEvent"
-        }
-    )
+    @KafkaListener(topics = "${app.kafka.topics.payment.refund:payment.refund}")
     public void handlePaymentRefundEvent(PaymentRefundEvent event) {
         cashFacade.processRefund(mapper.toCashRefundRequestDto(event));
     }

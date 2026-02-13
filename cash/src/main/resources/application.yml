@@ -31,17 +31,16 @@ spring:
   cache:
     type: redis
 
-  # Kafka 설정 (공통 설정은 kafka 모듈에서 상속)
+  # Kafka 설정
   kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: cash
 
-# 토픽
+# topic 설정
 app:
   kafka:
     topics:
-      order:
-        cancel: order.cancel
       payment:
         refund: payment.refund
 

@@ -3,7 +3,6 @@ package com.mossy.kafka.publisher;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.shared.cash.event.PaymentRefundEvent;
 import com.mossy.shared.market.event.OrderCancelEvent;
-import com.mossy.shared.member.event.UserJoinedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
