@@ -31,7 +31,7 @@ public class CatalogDocument {
     @Field(type = FieldType.Keyword)
     private String categoryName;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "nori")
     private String description; // 상품 설명
 
     @Field(type = FieldType.Keyword)
@@ -46,6 +46,12 @@ public class CatalogDocument {
 
     @Field(type = FieldType.Keyword)
     private String status;
+
+    @Field(type = FieldType.Long)
+    private Long salesCount;  // 누적 판매량
+
+    @Field(type = FieldType.Long)
+    private Long reviewCount; // 누적 리뷰 수
 
     /**
      * Entity -> Document 변환 정적 팩토리 메서드
@@ -64,6 +70,8 @@ public class CatalogDocument {
                 .minPrice(minPrice)
                 .sellerCount(sellerCount)
                 .status(catalog.getStatus().name())
+                .salesCount(catalog.getSalesCount() != null ? catalog.getSalesCount() : 0L)
+                .reviewCount(catalog.getReviewCount() != null ? catalog.getReviewCount() : 0L)
                 .build();
     }
 }

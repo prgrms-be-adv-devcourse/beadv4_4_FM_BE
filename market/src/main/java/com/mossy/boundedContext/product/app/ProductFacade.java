@@ -1,20 +1,24 @@
 package com.mossy.boundedContext.product.app;
 
+import com.mossy.boundedContext.product.domain.CatalogDocument;
 import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.domain.event.ProductRegisteredEvent;
 import com.mossy.boundedContext.product.in.dto.request.ProductCreateRequest;
 import com.mossy.boundedContext.product.in.dto.request.ProductStatusUpdateRequest;
 import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
 import com.mossy.boundedContext.product.in.dto.response.ProductDetailResponse;
+import com.mossy.global.eventPublisher.EventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductFacade {
-    //private final MarketGetProductListUseCase marketGetProductListUseCase;
     //private final MarketGetProductDetailUseCase marketGetProductDetailUseCase;
     private final MarketRegisterProductUseCase marketRegisterProductUseCase;
     private final ProductOptionConfigureUseCase productOptionConfigureUseCase;
@@ -22,12 +26,7 @@ public class ProductFacade {
     //private final MarketChangeProductStatusUseCase marketChangeProductStatusUseCase;
     //private final MarketDecreaseStockUseCase marketDecreaseStockUseCase;
     //private final MarketDeleteProductUseCase marketDeleteProductUseCase;
-
-    // 메인 화면 상품 리스트
-//    @Transactional(readOnly = true)
-//    public Page<Product> getProductList(Pageable pageable) {
-//        return marketGetProductListUseCase.getProductList(pageable);
-//    }
+    private final EventPublisher eventPublisher;
 
     // 상품 상세 정보 조회
 //    @Transactional(readOnly = true)
@@ -47,8 +46,13 @@ public class ProductFacade {
         // Step 2: 옵션/아이템 조립 (객체 그래프 완성)
         productOptionConfigureUseCase.configure(product, request.optionGroups(), request.productItems());
 
-        // Step 3: 최종 저장 (DB 반영)
-        return marketRegisterProductUseCase.save(product);
+        // Step 3: 최종 저장
+        Long productId = marketRegisterProductUseCase.save(product);
+
+        // 이벤트 발행
+        eventPublisher.publish(new ProductRegisteredEvent(product.getCatalogProductId()));
+
+        return productId;
     }
 
     // 상품 정보 수정

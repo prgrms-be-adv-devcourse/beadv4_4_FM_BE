@@ -43,6 +43,14 @@ public class CatalogProduct extends BaseIdAndTime {
     @Builder.Default
     private CatalogStatus status = CatalogStatus.ACTIVE;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Long salesCount = 0L;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Long reviewCount = 0L;
+
     // 카탈로그 정보 수정
     public void updateCatalog(Category category, String name, String brand,
                               String description, BigDecimal weight, String modelNumber) {

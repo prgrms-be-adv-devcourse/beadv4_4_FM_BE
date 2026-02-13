@@ -27,7 +27,7 @@ public class Product extends BaseIdAndTime {
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
-    @Column(name = "catalog_id", nullable = false)
+    @Column(name = "catalog_product_id", nullable = false)
     private Long catalogProductId;
 
     @Column(name = "base_price", nullable = false, precision = 18, scale = 2)

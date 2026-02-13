@@ -1,41 +1,37 @@
 package com.mossy.boundedContext.product.in;
 
-import com.mossy.boundedContext.product.app.ProductSearchUseCase;
+import com.mossy.boundedContext.product.app.ProductSearchFacade;
 import com.mossy.boundedContext.product.domain.CatalogDocument;
+import com.mossy.boundedContext.product.in.dto.command.ProductSearchCondition;
+import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Product Search", description = "Elasticsearch 기반 상품 검색 API")
-@RequestMapping("/api/v1/product/search")
+@RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
 @Slf4j
 public class ApiV1ProductSearchController {
-    private final ProductSearchUseCase productSearchUseCase;
+    private final ProductSearchFacade productSearchFacade;
 
-    @GetMapping
+    @GetMapping("/search")
     @Operation(
-            summary = "상품 검색",
-            description = "상품명을 기준으로 상품 목록을 페이징 조회합니다."
+            summary = "상품 통합 검색 및 목록 조회",
+            description = "키워드, 카테고리, 정렬 조건을 조합하여 상품 목록을 조회합니다."
     )
-    public Page<CatalogDocument> findByName(
-            @RequestParam("name") String name,
-            @RequestParam (defaultValue = "0") int page,
-            @RequestParam (defaultValue = "10") int size) {
-        log.info("name={}", name);
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<CatalogDocument> productsList = productSearchUseCase.findByName(name, pageable);
+    public RsData<Page<CatalogDocument>> search(
+            @ModelAttribute ProductSearchCondition condition,
+            @ParameterObject Pageable pageable) {
 
-        return productsList;
+        Page<CatalogDocument> responses = productSearchFacade.search(condition, pageable);
+        return new RsData<>("200", "", responses);
     }
 }

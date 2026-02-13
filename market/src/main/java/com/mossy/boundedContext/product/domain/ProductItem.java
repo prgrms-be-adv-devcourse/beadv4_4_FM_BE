@@ -1,8 +1,7 @@
 package com.mossy.boundedContext.product.domain;
 
 import com.mossy.global.jpa.entity.BaseIdAndTime;
-import jakarta.persistence.Entity;
-
+import com.mossy.shared.market.enums.ProductItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +32,10 @@ public class ProductItem extends BaseIdAndTime {
 
     @Column(name = "additional_price", nullable = false, precision = 18, scale = 2)
     private BigDecimal additionalPrice = BigDecimal.ZERO;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private ProductItemStatus status = ProductItemStatus.ON_SALE;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_items_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))

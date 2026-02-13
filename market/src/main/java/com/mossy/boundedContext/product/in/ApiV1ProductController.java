@@ -21,29 +21,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Product", description = "상품 조회 및 관리 API")
 @RestController
-@RequestMapping("/api/v1/product/products")
+@RequestMapping("/api/v1/product")
 @RequiredArgsConstructor
 public class ApiV1ProductController {
     private final ProductFacade productFacade;
-
-    // 메인 화면 상품 리스트
-//    @Operation(
-//            summary = "메인 화면 상품",
-//            description = "메인 화면 상품 리스트 조회합니다.")
-//    @GetMapping
-//    @Transactional(readOnly = true)
-//    public RsData<Page<ProductResponse>> getProductList(
-//            @RequestParam (defaultValue = "0") int page,
-//            @RequestParam (defaultValue = "10") int size,
-//            @RequestParam (defaultValue = "createdAt") String sort
-//    ) {
-//        System.out.println(("sort: " + sort));
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
-//        Page<ProductResponse> productsList = productFacade
-//                .getProductList(pageable)
-//                .map(ProductResponse::from);
-//        return new RsData<>("200", "", productsList);
-//    }
 
     // 상품 상세 정보
 //    @Operation(

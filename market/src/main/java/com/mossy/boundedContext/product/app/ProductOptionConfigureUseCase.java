@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +32,9 @@ public class ProductOptionConfigureUseCase {
 
 // 2. 단품(Item) 및 선택 값(Value) 구성
         items.forEach(itemDto -> {
+            String generatedSku = "SKU-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
             ProductItem item = ProductItem.builder()
-                    .skuCode(itemDto.skuCode())
+                    .skuCode(generatedSku)
                     .optionCombination(itemDto.optionCombination())
                     .additionalPrice(itemDto.additionalPrice())
                     .quantity(itemDto.quantity())
