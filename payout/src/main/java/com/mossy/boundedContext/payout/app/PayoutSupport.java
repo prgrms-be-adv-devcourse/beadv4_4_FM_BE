@@ -20,9 +20,7 @@ public class PayoutSupport {
     private final PayoutUserRepository payoutUserRepository;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
 
-    public Optional<PayoutSeller> findSystemSeller() {
-        return payoutSellerRepository.findByStoreName("system");
-    }
+    public Optional<PayoutSeller> findSystemSeller() { return payoutSellerRepository.findByStoreName("SYSTEM") ;}
 
     public Optional<PayoutSeller> findDonationSeller() {
         return payoutSellerRepository.findByStoreName("DONATION");
