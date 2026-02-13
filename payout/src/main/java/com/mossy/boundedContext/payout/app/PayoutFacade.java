@@ -80,6 +80,7 @@ public class PayoutFacade {
      */
     @Transactional
     public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) { payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto); }
+    public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) { payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto); }
 
     /**
      * [흐름 2] 정산 후보 아이템을 집계하여 실제 정산(Payout)에 포함될 PayoutItem으로 변환하는 배치를 실행
