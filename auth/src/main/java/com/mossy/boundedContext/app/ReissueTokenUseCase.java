@@ -19,11 +19,10 @@ public class ReissueTokenUseCase {
 
     private final JwtProvider jwtProvider;
     private final RefreshTokenUseCase refreshTokenUseCase;
-    private final IssueTokenUseCase issueTokenUseCase;
     private final MemberFeignClient memberFeignClient;
 
     @Transactional
-    public TokenResponse executes(String oldRefreshToken) {
+    public TokenResponse execute(String oldRefreshToken) {
         //1. old RT에서 userId 추출(서명/만료 검증 포함)
         final Long userId;
         try {
@@ -49,20 +48,17 @@ public class ReissueTokenUseCase {
             throw new DomainException(ErrorCode.ACCOUNT_DISABLED);
         }
 
-        //3. roles -> 토큰에 넣을 대표 role 선택
-        String role = pickPrimaryRole(authInfo.roles());
+        try {
+            String role = pickPrimaryRole(authInfo.roles());
+            String newAccessToken = jwtProvider.createAccessToken(userId, role, authInfo.sellerId());
+            String newRefreshToken = jwtProvider.createRefreshToken(userId);
 
-        //4. 새 토큰 발급
-        TokenResponse newTokens = issueTokenUseCase.execute(
-                userId,
-                role,
-                authInfo.sellerId()
-        );
+            refreshTokenUseCase.rotate(oldRefreshToken, newRefreshToken);
 
-        //5. RTR 원자 교체
-        refreshTokenUseCase.rotate(oldRefreshToken, newTokens.refreshToken());
-
-        return newTokens;
+            return new TokenResponse(newAccessToken, newRefreshToken);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     private String pickPrimaryRole(List<RoleCode> roles) {
