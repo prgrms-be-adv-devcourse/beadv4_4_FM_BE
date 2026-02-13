@@ -20,9 +20,7 @@ public class PayoutSupport {
     private final PayoutUserRepository payoutUserRepository;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
 
-    public Optional<PayoutSeller> findSystemSeller() {
-        return payoutSellerRepository.findByStoreName("system");
-    }
+    public Optional<PayoutSeller> findSystemSeller() { return payoutSellerRepository.findByStoreName("SYSTEM") ;}
 
     public Optional<PayoutSeller> findDonationSeller() {
         return payoutSellerRepository.findByStoreName("DONATION");
@@ -32,9 +30,11 @@ public class PayoutSupport {
         return payoutSellerRepository.findById(id);
     }
 
-    public Optional<PayoutUser> findUserById(Long id) {
-        return payoutUserRepository.findById(id);
-    }
+    public Optional<PayoutUser> findUserById(Long id) {return payoutUserRepository.findById(id);}
+
+    public boolean existsSeller(PayoutSeller payoutSeller) {return  payoutSellerRepository.existsById(payoutSeller.getId());}
+
+    public boolean existsUser(PayoutUser user) {return payoutUserRepository.existsById(user.getId());}
 
     public List<PayoutCandidateItem> findPayoutCandidateItems() {
         return payoutCandidateItemRepository.findAll();

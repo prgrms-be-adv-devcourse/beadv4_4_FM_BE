@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public record PayoutCandidateItemCreateDto(
         LocalDateTime paymentDate,
-        CreatePayoutCandidateDto orderItem,
+        PayoutCandidateCreateDto orderItem,
         PayoutEventType eventType,
         PayoutUser payer,
         PayoutSeller payee,

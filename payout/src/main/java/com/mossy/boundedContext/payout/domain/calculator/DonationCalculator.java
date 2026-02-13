@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.payout.domain.calculator;
 
-import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
+import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.shared.market.payload.OrderPayoutDto;
@@ -44,7 +44,7 @@ public class DonationCalculator {
      * @param dto 기부금 계산의 기준이 되는 정산 후보 DTO
      * @return 계산된 기부금 (원 단위로 반올림됨)
      */
-    public BigDecimal calculate(CreatePayoutCandidateDto dto) {
+    public BigDecimal calculate(PayoutCandidateCreateDto dto) {
         // 1. 탄소 배출량 기반으로 수수료를 계산
         BigDecimal payoutFee = feeCalculator.calculate(dto);
 
@@ -77,7 +77,7 @@ public class DonationCalculator {
      * @param dto 탄소 등급을 조회할 정산 후보 DTO
      * @return 계산된 탄소 등급
      */
-    public CarbonGrade getGrade(CreatePayoutCandidateDto dto) {
+    public CarbonGrade getGrade(PayoutCandidateCreateDto dto) {
         BigDecimal carbon = carbonCalculator.calculate(dto);
         return CarbonGrade.fromCarbon(carbon);
     }
@@ -88,7 +88,7 @@ public class DonationCalculator {
      * @param dto 탄소 배출량을 계산할 정산 후보 DTO
      * @return 계산된 탄소 배출량 (kg 단위)
      */
-    public BigDecimal getCarbon(CreatePayoutCandidateDto dto) {
+    public BigDecimal getCarbon(PayoutCandidateCreateDto dto) {
         return carbonCalculator.calculate(dto);
     }
 

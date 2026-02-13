@@ -11,7 +11,7 @@ import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateDto;
 import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
-import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
+import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 
 
 import com.mossy.shared.payout.enums.PayoutEventType;
@@ -41,7 +41,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
      * @param dto 정산 후보 생성을 위한 DTO (OrderItem 정보 + 계산된 거리/무게등급 포함)
      */
     @Transactional
-    public void addPayoutCandidateItem(CreatePayoutCandidateDto dto) {
+    public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) {
         if (dto == null) {
             throw new DomainException(ErrorCode.ORDERITEM_IS_NULL);
         }
@@ -58,7 +58,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
      * @param dto 정산 후보 생성을 위한 DTO (OrderItem 정보 + 계산된 거리/무게등급 포함)
      */
     private void makePayoutCandidateItems(
-            CreatePayoutCandidateDto dto
+            PayoutCandidateCreateDto dto
     ) {
         // --- 정산에 필요한 주요 주체(Actor)들을 조회 ---
         PayoutSeller system = payoutSupport.findSystemSeller()

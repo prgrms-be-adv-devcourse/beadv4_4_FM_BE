@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.payout.domain.calculator;
 
-import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
+import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 
@@ -31,7 +31,7 @@ public class FeeCalculator {
      * @param dto 수수료 계산의 기준이 되는 정산 후보 DTO
      * @return 계산된 수수료 (원 단위로 반올림됨)
      */
-    public BigDecimal calculate(CreatePayoutCandidateDto dto) {
+    public BigDecimal calculate(PayoutCandidateCreateDto dto) {
         validateOrderItem(dto);
 
         // 주문금액에 고정 수수료율(20%)을 적용하여 수수료 계산
@@ -47,7 +47,7 @@ public class FeeCalculator {
      * @param dto 탄소 등급을 조회할 정산 후보 DTO
      * @return 계산된 탄소 등급
      */
-    public CarbonGrade getGrade(CreatePayoutCandidateDto dto) {
+    public CarbonGrade getGrade(PayoutCandidateCreateDto dto) {
         BigDecimal carbon = carbonCalculator.calculate(dto);
         return CarbonGrade.fromCarbon(carbon);
     }
@@ -58,11 +58,11 @@ public class FeeCalculator {
      * @param dto 탄소 배출량을 계산할 정산 후보 DTO
      * @return 계산된 탄소 배출량 (kg 단위)
      */
-    public BigDecimal getCarbon(CreatePayoutCandidateDto dto) {
+    public BigDecimal getCarbon(PayoutCandidateCreateDto dto) {
         return carbonCalculator.calculate(dto);
     }
 
-    private void validateOrderItem(CreatePayoutCandidateDto dto) {
+    private void validateOrderItem(PayoutCandidateCreateDto dto) {
         if (dto == null) {
             throw new DomainException(ErrorCode.INVALID_DONATION_CALCULATION_INPUT);
         }

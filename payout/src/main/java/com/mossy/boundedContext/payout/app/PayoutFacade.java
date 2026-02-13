@@ -5,7 +5,7 @@ import com.mossy.boundedContext.payout.app.common.PayoutCollectPayoutItemsMoreUs
 import com.mossy.boundedContext.payout.app.common.PayoutCompletePayoutsMoreUseCase;
 import com.mossy.boundedContext.payout.app.common.PayoutCreatePayoutUseCase;
 import com.mossy.boundedContext.payout.app.seller.PayoutSyncSellerUseCase;
-import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
+import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.boundedContext.payout.app.user.PayoutSyncUserUseCase;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.global.rsData.RsData;
@@ -74,7 +74,7 @@ public class PayoutFacade {
      * @param dto 정산 후보 생성을 위한 DTO (OrderItem 정보 + 계산된 거리/무게등급 포함)
      */
     @Transactional
-    public void addPayoutCandidateItem(CreatePayoutCandidateDto dto) {
+    public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) {
         payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto);
     }
 
