@@ -1,0 +1,19 @@
+services:
+  product:
+    build:
+      context: ..
+      dockerfile: product/Dockerfile
+    container_name: product
+    restart: always
+    ports:
+      - "8090:8090"
+    env_file:
+      - .env.product
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - mossy-network
+
+networks:
+  mossy-network:
+    external: true

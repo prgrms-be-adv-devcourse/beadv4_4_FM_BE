@@ -1,11 +1,11 @@
 server:
-  port: 8081
+  port: 8090
 
 spring:
   application:
-    name: market
+    name: product
   config:
-    import: "optional:file:./market/.env.market[.properties]"
+    import: "optional:file:./product/.env.product[.properties]"
   profiles:
     active: dev
   output:
@@ -54,19 +54,19 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
+# S3
+cloud:
+  aws:
+    s3:
+      bucket: ${CLOUD_AWS_S3_BUCKET}
+    credentials:
+      access-key: ${CLOUD_AWS_ACCESS_KEY}
+      secret-key: ${CLOUD_AWS_SECRET_KEY}
+    region: ${CLOUD_AWS_REGION}
+
 logging:
   level:
     com.back: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
-
-market:
-  policy:
-    cart:
-      max_quantity: 100
-
-toss:
-  payments:
-    base-url: https://api.tosspayments.com
-    secret-key: ${TOSS_SECRET_KEY:test_sk_*******************}
