@@ -1,0 +1,19 @@
+services:
+  ai:
+    build:
+      context: ..
+      dockerfile: ai/Dockerfile
+    container_name: ai
+    restart: always
+    ports:
+      - "8083:8080"
+    env_file:
+      - .env.ai
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - mossy-network
+
+networks:
+  mossy-network:
+    external: true
