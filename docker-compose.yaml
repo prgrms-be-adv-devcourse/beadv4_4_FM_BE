@@ -1,9 +1,6 @@
 include:
   - compose-infra.yml
-  - compose-es.yml
-  - deployments/compose-app-main.yml
-  - deployments/compose-app-finance.yml
-  - deployments/compose-app-sub.yml
+  - compose-kafka.yml
 
 #모든 포함된 서비스들이 공유할 네트워크
 networks:

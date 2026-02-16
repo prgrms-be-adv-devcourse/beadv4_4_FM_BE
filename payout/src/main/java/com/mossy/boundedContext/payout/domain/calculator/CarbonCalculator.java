@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.payout.domain.calculator;
 
 
-import com.mossy.boundedContext.payout.in.dto.command.CreatePayoutCandidateDto;
+import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 
@@ -76,7 +76,7 @@ public class CarbonCalculator {
      * @param dto 탄소 배출량을 계산할 정산 후보 DTO
      * @return 계산된 탄소 배출량 (kg 단위)
      */
-    public BigDecimal calculate(CreatePayoutCandidateDto dto) {
+    public BigDecimal calculate(PayoutCandidateCreateDto dto) {
         if (dto == null) {
             throw new DomainException(ErrorCode.INVALID_CARBON_CALCULATION_INPUT);
         }

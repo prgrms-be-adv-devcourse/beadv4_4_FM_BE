@@ -22,11 +22,6 @@ services:
     networks:
       - mossy-network
 
-networks:
-  mossy-network:
-    name: mossy-network
-    driver: bridge
-
 volumes:
   redis-data:
     driver: local

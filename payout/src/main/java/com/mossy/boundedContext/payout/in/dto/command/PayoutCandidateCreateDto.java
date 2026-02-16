@@ -10,14 +10,12 @@ import java.time.LocalDateTime;
  * OrderPaidEvent로부터 받은 정보와 Payout 도메인에서 계산한 정보를 담아서 전달
  */
 @Builder
-public record CreatePayoutCandidateDto(
+public record PayoutCandidateCreateDto(
         // OrderItem 기본 정보
         Long orderItemId,
-        Long orderId,
         Long buyerId,
         String buyerName,
         Long sellerId,
-        Long productId,
         BigDecimal orderPrice,
         LocalDateTime orderItemCreatedAt,
         LocalDateTime orderItemUpdatedAt,
