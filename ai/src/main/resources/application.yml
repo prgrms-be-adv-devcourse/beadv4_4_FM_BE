@@ -1,0 +1,35 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: ai
+  config:
+    import: "optional:file:./ai/.env.ai[.properties]"
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  # 🟢 완전한 논블로킹 DB 설정 (driver-class-name 삭제됨)
+  r2dbc:
+    url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  # 🟢 AI 모델 설정 추가
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat.options.model: gpt-4o-mini
+      embedding.options.model: text-embedding-3-small
+
+  cache:
+    type: redis
+
+springdoc:
+  swagger-ui:
+    path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs
