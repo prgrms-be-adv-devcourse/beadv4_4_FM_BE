@@ -35,6 +35,9 @@ public class Payout extends BaseIdAndTime {
     @Column(name = "payout_date")
     private LocalDateTime payoutDate;
 
+    @Column(name = "credit_date")
+    private LocalDateTime creditDate;
+
     @Column(name = "amount", nullable = false)
     private BigDecimal amount = BigDecimal.ZERO;
 
@@ -90,7 +93,7 @@ public class Payout extends BaseIdAndTime {
     }
 
     /**
-     * 이 Payout을 '완료' 상태로 처리
+     * 이 Payout을 '정산 완료' 상태로 처리
      */
     public void completePayout() {
         if (isCompleted()) {
@@ -106,8 +109,28 @@ public class Payout extends BaseIdAndTime {
         );
     }
 
+    /**
+     * 이 Payout을 '지급 완료' 상태로 처리
+     * 정산이 완료된 후 실제 판매자 지갑에 입금할 때 호출
+     * 이벤트 발행은 UseCase에서 판매자별로 합산하여 처리
+     */
+    public void creditToWallet() {
+        if (!isCompleted()) {
+            throw new DomainException(ErrorCode.PAYOUT_NOT_COMPLETED);
+        }
+        if (isCredited()) {
+            throw new DomainException(ErrorCode.ALREADY_CREDITED_PAYOUT);
+        }
+
+        this.creditDate = LocalDateTime.now();
+    }
+
     public boolean isCompleted() {
         return this.payoutDate != null;
+    }
+
+    public boolean isCredited() {
+        return this.creditDate != null;
     }
 
     public PayoutEventDto toDto() {
