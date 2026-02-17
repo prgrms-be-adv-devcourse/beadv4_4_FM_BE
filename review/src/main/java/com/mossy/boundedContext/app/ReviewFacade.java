@@ -1,4 +1,4 @@
-package com.mossy.member.app;
+package com.mossy.boundedContext.app;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

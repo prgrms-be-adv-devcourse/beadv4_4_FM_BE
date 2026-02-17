@@ -1,5 +1,5 @@
 server:
-  port: 8080 # 외부에서 접근하는 포트
+  port: 8080
 
 spring:
   application:
@@ -12,45 +12,50 @@ spring:
     gateway:
       routes:
         - id: market
-          uri: http://market:8081 # Docker Compose 서비스 이름 또는 주소
+          uri: http://market:8081
           predicates:
-            - "Path=/api/v1/cart/**, /api/v1/orders/**, /api/v1/payments/**, /api/v1/product/**"
+            - Path=/api/v1/cart/**, /api/v1/orders/**, /api/v1/payments/**, /api/v1/product/**
           filters:
-            - JwtAuthenticationFilter
+            - name: JwtAuthenticationFilter
 
-        # 로그인 회원가입은 필터 X
-        - id: member
+        - id: member-public
           uri: http://member:8082
           predicates:
-            - "Path=/api/v1/admin/**, /api/v1/users/**"
+            - Path=/api/v1/users/signup
+
+        - id: member-private
+          uri: http://member:8082
+          predicates:
+            - Path=/api/v1/users/me
+          filters:
+            - name: JwtAuthenticationFilter
 
         - id: cash
           uri: http://cash:8083
           predicates:
-            - "Path=/api/v1/cash/**"
+            - Path=/api/v1/cash/**
           filters:
-            - JwtAuthenticationFilter
+            - name: JwtAuthenticationFilter
 
         - id: payout
           uri: http://payout:8084
           predicates:
-            - "Path=/api/payout/**"
+            - Path=/api/payout/**
           filters:
-            - JwtAuthenticationFilter
+            - name: JwtAuthenticationFilter
 
         - id: review
           uri: http://review:8085
           predicates:
-            - "Path=/api/v1/review/**"
+            - Path=/api/v1/review/**
           filters:
-            - JwtAuthenticationFilter
+            - name: JwtAuthenticationFilter
 
         - id: auth
           uri: http://localhost:8086
           predicates:
-            - "Path=/api/v1/auth/**"
+            - Path=/api/v1/auth/login
 
-# 유레카 클라이언트 비활성화 (나중에 활성화)
 eureka:
   client:
     enabled: false

@@ -24,17 +24,7 @@ public class GatewaySecurityConfig {
 
                 // 3. 경로별 권한 설정
                 .authorizeExchange(exchanges -> exchanges
-                        // 인증이 필요 없는 경로 (로그인, 회원가입, Swagger 등)
-                        .pathMatchers(
-                                "/api/v1/auth/**",
-                                "/api/v1/product/products/**",
-                                "/api/v1/product/search/**",
-                                "/mossy-docs/**",
-                                "/v3/api-docs/**"
-
-                        ).permitAll()
-                        // 그 외 모든 요청은 인증 필요
-                        .anyExchange().authenticated()
+                        .anyExchange().permitAll()
                 )
                 .build();
     }
