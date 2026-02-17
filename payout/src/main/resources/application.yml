@@ -24,6 +24,8 @@ spring:
 #      driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         default_batch_fetch_size: 100
@@ -50,3 +52,6 @@ app:
       payout:
         wallet:
           credit: payout.wallet.credit
+      order:
+        paid: order.paid
+        refunded: order.refunded
