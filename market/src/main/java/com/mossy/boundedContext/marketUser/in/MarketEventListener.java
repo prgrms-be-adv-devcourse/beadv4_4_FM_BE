@@ -21,7 +21,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
-import static org.springframework.transaction.event.TransactionPhase.BEFORE_COMMIT;
 
 @Component
 @RequiredArgsConstructor
