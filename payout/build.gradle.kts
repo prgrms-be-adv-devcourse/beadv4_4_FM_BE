@@ -26,6 +26,8 @@ repositories {
 dependencies {
     // common 모듈
     implementation(project(":common"))
+    // kafka 모듈
+    implementation(project(":kafka"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     runtimeOnly("org.postgresql:postgresql")
@@ -48,9 +50,6 @@ dependencies {
     annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
-
-    //Spring Kafaka
-    implementation ("org.springframework.kafka:spring-kafka")
 
     // 테스트
     testImplementation("org.springframework.boot:spring-boot-starter-test")
