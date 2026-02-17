@@ -22,6 +22,6 @@ public class UpdateCartItemQuantityUseCase {
         Cart cart = cartRepository.findByBuyerId(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.CART_NOT_FOUND));
 
-        cart.updateItemQuantity(request.productId(), request.quantity(), marketPolicy);
+        cart.updateItemQuantity(request.productItemId(), request.quantity(), marketPolicy);
     }
 }

@@ -19,14 +19,24 @@ configurations {
     }
 }
 
+val springCloudVersion = "2024.0.0"
+
 repositories {
     mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+    }
 }
 
 dependencies {
     // 공통
     implementation(project(":common"))
+    implementation(project(":kafka"))
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     //implementation("org.springframework.boot:spring-boot-starter-batch")
 
     // Market 서비스 전용 라이브러리

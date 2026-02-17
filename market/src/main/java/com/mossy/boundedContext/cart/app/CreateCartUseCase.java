@@ -17,9 +17,8 @@ public class CreateCartUseCase {
     private final CartRepository cartRepository;
 
     @Transactional
-    public void create(MarketUserDto buyer) {
-        MarketUser user = marketUserRepository.getReferenceById(buyer.id());
-        Cart cart = Cart.createCart(user);
-        cartRepository.save(cart);
+    public void create(Long userId) {
+        MarketUser user = marketUserRepository.getReferenceById(userId);
+        cartRepository.save(Cart.createCart(user));
     }
 }
