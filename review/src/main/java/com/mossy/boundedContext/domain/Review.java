@@ -1,4 +1,4 @@
-package com.mossy.member.domain;
+package com.mossy.boundedContext.domain;
 
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.AttributeOverride;

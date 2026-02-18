@@ -7,7 +7,7 @@ WORKDIR /app
 # 1. Gradle 래퍼 및 설정 파일 복사
 COPY gradlew .
 COPY gradle gradle
-COPY settings.gradle.kts .
+#COPY settings.gradle.kts .
 #COPY build.gradle.kts .
 
 # 2. 빌드 구조 동적 생성 (market common만 포함하여 빌드 속도 최적화)

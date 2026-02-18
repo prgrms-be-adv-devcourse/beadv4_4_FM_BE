@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.app;
 
+import com.mossy.boundedContext.global.jwt.JwtProvider;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.global.jwt.JwtProperties;
@@ -14,6 +15,7 @@ public class RefreshTokenUseCase {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtProperties jwtProperties;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public void save(Long userId, String refreshToken) {
@@ -24,27 +26,37 @@ public class RefreshTokenUseCase {
         );
     }
 
-    @Transactional(readOnly = true)
-    public String validateAndGetUserId(String refreshToken) {
-        String userIdStr = refreshTokenRepository.getUserIdByToken(refreshToken);
-        if (userIdStr == null) throw new DomainException(ErrorCode.INVALID_TOKEN);
-
-        if (!refreshTokenRepository.existsInUserSet(userIdStr, refreshToken)) {
+    @Transactional
+    public Long rotate(String oldRefreshToken, String newRefreshToken) {
+        //1. refreshtoken 서명/만료 검증 후 userId 추출
+        final Long userId;
+        try {
+            userId = jwtProvider.getUserId(oldRefreshToken);
+        } catch (Exception e) {
             throw new DomainException(ErrorCode.INVALID_TOKEN);
         }
-        return userIdStr;
-    }
 
-    @Transactional
-    public void delete(String userIdStr, String refreshToken) {
-        refreshTokenRepository.delete(userIdStr, refreshToken);
-    }
+        long result = refreshTokenRepository.rotate(
+                String.valueOf(userId),
+                oldRefreshToken,
+                newRefreshToken,
+                jwtProperties.refreshTokenExpireMs()
+        );
 
-    @Transactional
-    public void deleteIfExists(String refreshToken) {
-        String userId = refreshTokenRepository.getUserIdByToken(refreshToken);
-        if (userId != null) {
-            refreshTokenRepository.delete(userId, refreshToken);
+        if (result == 1L) {
+            return userId;
         }
+
+        if (result == 0L) {
+            throw new DomainException(ErrorCode.INVALID_TOKEN);
+        }
+
+        //result == -1 : 불일치
+        throw new DomainException(ErrorCode.INVALID_TOKEN);
+    }
+
+    @Transactional
+    public void delete(Long userId) {
+        refreshTokenRepository.delete(String.valueOf(userId));
     }
 }

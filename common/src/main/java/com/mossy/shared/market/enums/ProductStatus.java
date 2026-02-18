@@ -1,5 +1,7 @@
 package com.mossy.shared.market.enums;
 
+import lombok.Getter;
+
 public enum ProductStatus {
     FOR_SALE("판매 중"),
     OUT_OF_STOCK("품절"),
@@ -13,9 +15,5 @@ public enum ProductStatus {
 
     ProductStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }
