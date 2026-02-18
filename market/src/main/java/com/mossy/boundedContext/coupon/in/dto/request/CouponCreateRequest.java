@@ -31,9 +31,4 @@ public record CouponCreateRequest(
         @NotNull(message = "종료 일시는 필수입니다")
         LocalDateTime endAt
 ) {
-    public CouponCreateRequest {
-        if (startAt.isAfter(endAt)) {
-            throw new IllegalArgumentException("시작 일시는 종료 일시보다 이전이어야 합니다");
-        }
-    }
 }

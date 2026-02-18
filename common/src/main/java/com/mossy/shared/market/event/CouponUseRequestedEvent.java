@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.coupon.domain.event;
+package com.mossy.shared.market.event;
 
 import java.util.List;
 

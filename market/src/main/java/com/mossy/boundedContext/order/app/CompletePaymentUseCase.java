@@ -1,12 +1,13 @@
 package com.mossy.boundedContext.order.app;
 
-import com.mossy.boundedContext.coupon.domain.event.CouponUseRequestedEvent;
 import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.domain.OrderItem;
 import com.mossy.boundedContext.order.out.OrderRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.global.eventPublisher.EventPublisher;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
+import com.mossy.shared.market.event.CouponUseRequestedEvent;
 import com.mossy.shared.market.event.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,8 @@ import java.util.Objects;
 public class CompletePaymentUseCase {
 
     private final OrderRepository orderRepository;
-    private final EventPublisher eventPublisher;
+    //private final EventPublisher eventPublisher;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     @Transactional
     public void completePayment(Long orderId) {
@@ -35,9 +37,11 @@ public class CompletePaymentUseCase {
                 .toList();
 
         if (!userCouponIds.isEmpty()) {
-            eventPublisher.publish(new CouponUseRequestedEvent(userCouponIds));
+            //eventPublisher.publish(new CouponUseRequestedEvent(userCouponIds));
+            kafkaEventPublisher.publish(new CouponUseRequestedEvent(userCouponIds));
         }
 
-        eventPublisher.publish(new OrderPaidEvent(order.getBuyer().getId()));
+        //eventPublisher.publish(new OrderPaidEvent(order.getBuyer().getId()));
+        kafkaEventPublisher.publish(new OrderPaidEvent(order.getBuyer().getId()));
     }
 }

@@ -3,6 +3,8 @@ package com.mossy.boundedContext.order.in;
 import com.mossy.boundedContext.order.app.OrderFacade;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
+import com.mossy.exception.SuccessCode;
+import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,14 +27,14 @@ public class ApiV1SellerOrderController {
             description = "판매자가 판매한 상품의 판매 내역 목록을 페이징하여 조회합니다."
     )
     @GetMapping
-    public Page<OrderListSellerResponse> getSellerOrders(
+    public RsData<Page<OrderListSellerResponse>> getSellerOrders(
             @Parameter(hidden = true)
             @RequestParam(name="sellerId") Long sellerId,
 
             @Parameter(hidden = true)
             @PageableDefault(size = 5) Pageable pageable
     ) {
-        return orderFacade.getSellerOrderList(sellerId, pageable);
+        return RsData.success(SuccessCode.SELLER_ORDER_LIST, orderFacade.getSellerOrderList(sellerId, pageable));
     }
 
     @Operation(
@@ -40,10 +42,10 @@ public class ApiV1SellerOrderController {
             description = "판매자가 판매한 특정 상품의 판매 내역의 상세를 조회합니다."
     )
     @GetMapping("/{orderDetailId}")
-    public OrderDetailSellerResponse getSellerOrderDetail(
+    public RsData<OrderDetailSellerResponse> getSellerOrderDetail(
             @Parameter(description = "주문 상세 ID", required = true)
             @PathVariable Long orderDetailId
     ) {
-        return orderFacade.getSellerOrderDetail(orderDetailId);
+        return RsData.success(SuccessCode.SELLER_ORDER_DETAIL, orderFacade.getSellerOrderDetail(orderDetailId));
     }
 }

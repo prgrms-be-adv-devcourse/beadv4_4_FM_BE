@@ -5,6 +5,7 @@ import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest;
 import com.mossy.boundedContext.order.in.dto.response.OrderCreatedResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
+import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,12 +32,12 @@ public class ApiV1OrderController {
     )
     @PostMapping
     public RsData<OrderCreatedResponse> createOrder(
-            @RequestParam(name="userId") Long userId,
+            @RequestParam(name = "userId") Long userId,
 
             @Parameter(description = "주문 생성 요청 DTO", required = true)
             @RequestBody OrderCreatedRequest request
     ) {
-        return new RsData<>("200", "주문이 생성되었습니다.", orderFacade.createOrder(userId, request));
+        return RsData.success(SuccessCode.ORDER_CREATE, orderFacade.createOrder(userId, request));
     }
 
     @Operation(
@@ -45,7 +46,7 @@ public class ApiV1OrderController {
     )
     @GetMapping
     public Page<OrderListResponse> getMyOrders(
-            @RequestParam(name="userId") Long userId,
+            @RequestParam(name = "userId") Long userId,
 
             @Parameter(hidden = true)
             @PageableDefault(size = 5) Pageable pageable
@@ -65,17 +66,14 @@ public class ApiV1OrderController {
         return orderFacade.getOrderDetails(orderId);
     }
 
-    @Operation(
-            summary = "주문 삭제",
-            description = "특정 주문을 삭제 합니다."
-    )
+    @Operation(summary = "주문 삭제", description = "특정 주문을 삭제 합니다.")
     @DeleteMapping("/{orderId}")
     public RsData<Void> deleteOrder(
             @PathVariable Long orderId,
-            @RequestParam(name="userId") Long userId
+            @RequestParam(name = "userId") Long userId
     ) {
         orderFacade.deleteOrder(orderId, userId);
-        return new RsData<>("200", "주문 삭제를 성공했습니다.");
+        return RsData.success(SuccessCode.ORDER_DELETE);
     }
 
     @Operation(
@@ -86,11 +84,11 @@ public class ApiV1OrderController {
     public RsData<Void> cancelOrder(
             @Parameter(description = "주문 ID", required = true)
             @PathVariable Long orderId,
-            @RequestParam(name="userId") Long userId,
-            @Parameter(description = "취소 사유", required = true)
-            @RequestParam String cancelReason
+
+            @RequestParam(name = "userId") Long userId,
+            @Parameter(description = "취소 사유", required = true) @RequestParam String cancelReason
     ) {
         orderFacade.cancelOrder(orderId, userId, cancelReason);
-        return new RsData<>("200", "주문이 취소되었습니다.");
+        return RsData.success(SuccessCode.ORDER_CANCEL);
     }
 }
