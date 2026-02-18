@@ -3,6 +3,17 @@ spring:
     activate:
       on-profile: prod
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
   # 운영 환경 Redis 정보
   data:
     redis:
