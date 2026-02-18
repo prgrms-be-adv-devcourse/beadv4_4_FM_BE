@@ -30,13 +30,10 @@ public class RecommendFacade {
         return recommendSyncItemUseCase.syncItem(request);
     }
 
-<<<<<<< feature/159/ai-recommendation-update
     public Mono<Void> syncUpdate(ProductUpdatedEvent event) {
         return recommendSyncItemUseCase.syncUpdate(event);
     }
 
-=======
->>>>>>> dev-msa
     public Mono<List<MarketProductResponse>> searchRecommendations(Long productId) {
         return recommendSearchItemsUseCase.searchSimilarProductIds(productId)
             .flatMap(productIds ->
