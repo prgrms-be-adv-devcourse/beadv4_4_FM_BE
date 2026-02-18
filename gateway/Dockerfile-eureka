@@ -1,0 +1,29 @@
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+
+# 루트의 필수 실행 파일만 복사
+COPY gradlew .
+COPY gradle gradle
+# gateway 폴더 안에 있는 설정 파일을 루트용으로 복사
+COPY gateway/build.gradle.kts build.gradle.kts
+
+# [중요] 다른 모듈들을 무시하도록 Docker 전용 설정파일 생성
+RUN echo 'rootProject.name = "backend"' > settings.gradle.kts && \
+    echo 'include("common")' >> settings.gradle.kts && \
+    echo 'include("gateway")' >> settings.gradle.kts
+
+# 필요한 모듈들 복사
+COPY common common
+
+# 소스 코드만 복사
+COPY gateway/src src
+
+# 빌드 실행
+RUN chmod +x gradlew && ./gradlew bootJar --no-daemon -x test
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+
+EXPOSE 8761
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
