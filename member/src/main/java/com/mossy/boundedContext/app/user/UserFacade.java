@@ -7,6 +7,7 @@ import com.mossy.boundedContext.in.dto.UserInfoDto;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.in.dto.request.OAuth2UserDTO;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
+import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
 import com.mossy.exception.DomainException;
@@ -17,6 +18,7 @@ import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.shared.member.payload.UserPayload;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,7 +64,6 @@ public class UserFacade {
         );
     }
 
-
     public MemberVerifyExternResponse verifyMember(String email, String password) {
         return verfyMemberUseCase.execute(email, password);
     }
@@ -72,8 +73,7 @@ public class UserFacade {
     }
 
     //OAuth2 소셜 로그인 처리
-    public User processSocialLogin(OAuth2UserDTO userDTO) {
-        log.info("소셜 로그인 처리 시작: provider={}, email={}", userDTO.provider(), userDTO.email());
+    public SocialLonginResponse processSocialLogin(OAuth2UserDTO userDTO) {
         return processSocialLoginUseCase.execute(userDTO);
     }
 

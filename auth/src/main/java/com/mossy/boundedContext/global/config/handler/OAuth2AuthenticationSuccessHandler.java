@@ -44,7 +44,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         // OAuth2UserInfo 생성
         OAuth2UserInfo userInfo = new OAuth2UserInfoImpl(attributes, registrationId);
-        OAuth2UserDTO userDTO = OAuth2UserDTO.from(userInfo, attributes);
+        OAuth2UserDTO userDTO = OAuth2UserDTO.from(userInfo);
 
         log.debug("OAuth2 사용자 정보: provider={}, email={}, name={}",
                 userInfo.provider(), userInfo.email(), userInfo.name());

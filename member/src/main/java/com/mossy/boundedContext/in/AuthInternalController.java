@@ -4,6 +4,7 @@ import com.mossy.boundedContext.in.dto.request.OAuth2UserDTO;
 import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.app.user.UserFacade;
 import com.mossy.boundedContext.out.AuthFacade;
+import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
 import com.mossy.shared.member.domain.entity.BaseUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Internal-Auth", description = "시스템 내부 서비스 간 인증/권한 API")
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthInternalController {
 
@@ -28,7 +29,7 @@ public class AuthInternalController {
 
     @Operation(summary = "소셜 로그인 처리", description = "OAuth2 소셜 로그인 사용자 정보를 저장/업데이트합니다.")
     @PostMapping("/users/social-login")
-    public BaseUser processSocialLogin(@RequestBody OAuth2UserDTO userDTO) {
+    public SocialLonginResponse processSocialLogin(@RequestBody OAuth2UserDTO userDTO) {
         return userFacade.processSocialLogin(userDTO);
     }
 }

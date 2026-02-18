@@ -11,7 +11,7 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            scope: profile, email
+            scope: openid, profile, email
             redirect-uri: http://localhost:8086/login/oauth2/code/google
           kakao:
             client-id: ${KAKAO_CLIENT_ID}

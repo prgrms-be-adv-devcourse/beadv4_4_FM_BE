@@ -8,16 +8,14 @@ public record OAuth2UserDTO(
         String providerId,
         String provider,
         String email,
-        String name,
-        Map<String, Object> attributes
+        String name
 ) {
-    public static OAuth2UserDTO from(OAuth2UserInfo userInfo, Map<String, Object> attributes) {
+    public static OAuth2UserDTO from(OAuth2UserInfo userInfo) {
         return new OAuth2UserDTO(
                 userInfo.providerId(),
                 userInfo.provider(),
                 userInfo.email(),
-                userInfo.name(),
-                attributes
+                userInfo.name()
         );
     }
 }

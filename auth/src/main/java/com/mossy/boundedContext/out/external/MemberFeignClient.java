@@ -4,7 +4,7 @@ import com.mossy.boundedContext.out.dto.OAuth2UserDTO;
 import com.mossy.boundedContext.out.dto.request.MemberVerifyExternRequest;
 import com.mossy.boundedContext.out.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.dto.response.MemberVerifyResponse;
-import com.mossy.shared.member.domain.entity.BaseUser;
+import com.mossy.boundedContext.out.dto.response.SocialLonginResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +18,6 @@ public interface MemberFeignClient {
     MemberAuthInfoResponse getAuthInfo(@PathVariable("userId") Long userId);
 
     @PostMapping("/api/v1/auth/users/social-login")
-    BaseUser processSocialLogin(@RequestBody OAuth2UserDTO request);
+    SocialLonginResponse processSocialLogin(@RequestBody OAuth2UserDTO request);
 
 }

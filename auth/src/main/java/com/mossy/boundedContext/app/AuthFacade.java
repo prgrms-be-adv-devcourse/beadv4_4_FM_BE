@@ -5,6 +5,7 @@ import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.in.dto.response.TokenResponse;
 import com.mossy.boundedContext.out.dto.OAuth2UserInfo;
 import com.mossy.boundedContext.out.dto.OAuth2UserDTO;
+import com.mossy.boundedContext.out.dto.response.SocialLonginResponse;
 import com.mossy.boundedContext.out.external.MemberFeignClient;
 import com.mossy.shared.member.domain.entity.BaseUser;
 import lombok.RequiredArgsConstructor;
@@ -50,9 +51,9 @@ public class AuthFacade {
         return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
     }
 
-    //소셜로그인
+    //소셜로그인(유저 정보 동기화용)
     @SuppressWarnings("unused")
-    public BaseUser upsertUser(OAuth2UserInfo userInfo) {
+    public SocialLonginResponse upsertUser(OAuth2UserInfo userInfo) {
         //1. 유젓 서비스에 이멜로 기존 유저 확인
         //2. 있으면 해당 유저 정보 반환
         //3. 없으면 소셜 정보를 바탄으로 신규 회원가입 처리
@@ -61,8 +62,7 @@ public class AuthFacade {
                 userInfo.providerId(),
                 userInfo.provider(),
                 userInfo.email(),
-                userInfo.name(),
-                null
+                userInfo.name()
         );
 
         return memberFeignClient.processSocialLogin(userDTO);
@@ -74,14 +74,14 @@ public class AuthFacade {
 
         try {
             // Member 서비스에서 사용자 정보 저장/업데이트
-            BaseUser user = memberFeignClient.processSocialLogin(userDTO);
+            SocialLonginResponse user = memberFeignClient.processSocialLogin(userDTO);
 
-            log.info("사용자 정보 저장/업데이트 완료: userId={}", user.getId());
+            log.info("사용자 정보 저장/업데이트 완료: userId={}", user.id());
 
             // TODO: null자리에 sellerId 넣기(아직 sellerClient 안만들었음)
-            TokenResponse tokens = issueTokenUseCase.execute(user.getId(), "USER", null);
+            TokenResponse tokens = issueTokenUseCase.execute(user.id(), "USER", null);
 
-            log.info("토큰 발급 완료: userId={}", user.getId());
+            log.info("토큰 발급 완료: userId={}", user.id());
 
             return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
         } catch (Exception e) {

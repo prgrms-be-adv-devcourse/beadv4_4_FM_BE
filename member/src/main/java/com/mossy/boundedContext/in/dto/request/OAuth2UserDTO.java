@@ -8,8 +8,7 @@ public record OAuth2UserDTO(
         String providerId,
         String provider,
         String email,
-        String name,
-        Map<String, Object> attributes
+        String name
 ) {
 }
 

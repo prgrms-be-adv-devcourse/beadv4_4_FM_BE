@@ -2,6 +2,7 @@ package com.mossy.boundedContext.app.user;
 
 import com.mossy.boundedContext.in.dto.request.OAuth2UserDTO;
 import com.mossy.boundedContext.domain.user.User;
+import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
 import com.mossy.boundedContext.out.repository.user.RoleRepository;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
 import com.mossy.exception.DomainException;
@@ -27,12 +28,14 @@ public class ProcessSocialLoginUseCase {
     private final RoleRepository roleRepository;
 
     @Transactional
-    public User execute(OAuth2UserDTO userDTO) {
+    public SocialLonginResponse execute(OAuth2UserDTO userDTO) {
         log.info("소셜 로그인 처리: provider={}, email={}", userDTO.provider(), userDTO.email());
 
         // 이미 존재하는 사용자인 경우
-        return userRepository.findByEmail(userDTO.email())
+        User user = userRepository.findByEmail(userDTO.email())
                 .orElseGet(() -> createNewSocialUser(userDTO));
+
+        return SocialLonginResponse.from(user);
     }
 
 
