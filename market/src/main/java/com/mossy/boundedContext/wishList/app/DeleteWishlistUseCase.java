@@ -13,6 +13,6 @@ public class DeleteWishlistUseCase {
 
     @Transactional
     public void deleteWishlist(Long userId, Long productId) {
-        wishlistRepository.deleteByMarketUserIdAndProductItemId(userId, productId);
+        wishlistRepository.deleteByMarketUserIdAndProductId(userId, productId);
     }
 }

@@ -13,6 +13,6 @@ public class CheckWishlistUseCase {
 
     @Transactional(readOnly = true)
     public boolean checkWishlist(Long userId, Long productId) {
-        return wishlistRepository.existsByMarketUserIdAndProductItemId(userId, productId);
+        return wishlistRepository.existsByMarketUserIdAndProductId(userId, productId);
     }
 }
