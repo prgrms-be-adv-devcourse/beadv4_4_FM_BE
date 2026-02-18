@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.global.config.handler;
 
 import com.mossy.boundedContext.app.AuthFacade;
+import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.out.dto.OAuth2UserDTO;
 import com.mossy.boundedContext.out.dto.OAuth2UserInfo;
 import com.mossy.boundedContext.out.dto.OAuth2UserInfoImpl;
@@ -14,12 +15,10 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Component
@@ -51,13 +50,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         try {
             // AuthFacade를 통해 사용자 정보 저장/업데이트 및 토큰 발급
-            var loginResponse = authFacade.upsertUserAndIssueToken(userDTO);
+            LoginResponse loginResponse = authFacade.upsertUserAndIssueToken(userDTO);
 
             // 프론트엔드로 토큰 전달
-            String redirectUrl = String.format("%s/auth/callback?accessToken=%s&refreshToken=%s",
-                    frontendUrl,
-                    URLEncoder.encode(loginResponse.accessToken(), StandardCharsets.UTF_8),
-                    URLEncoder.encode(loginResponse.refreshToken(), StandardCharsets.UTF_8));
+            String redirectUrl = UriComponentsBuilder.fromUriString(frontendUrl)
+                    .path("/auth/callback")
+                    .queryParam("accessToken", loginResponse.accessToken())
+                    .queryParam("refreshToken", loginResponse.refreshToken())
+                    .queryParam("isNewUser", loginResponse.isNewUser())
+                    .build().toUriString();
 
             getRedirectStrategy().sendRedirect(request, response, redirectUrl);
         } catch (Exception e) {

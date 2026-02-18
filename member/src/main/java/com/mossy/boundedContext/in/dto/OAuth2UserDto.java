@@ -1,9 +1,8 @@
-package com.mossy.boundedContext.in.dto.request;
+package com.mossy.boundedContext.in.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Map;
 
-public record OAuth2UserDTO(
+public record OAuth2UserDto(
         @JsonProperty("provider_id")
         String providerId,
         String provider,

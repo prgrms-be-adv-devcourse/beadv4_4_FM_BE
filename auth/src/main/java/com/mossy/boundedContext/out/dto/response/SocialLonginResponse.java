@@ -6,7 +6,8 @@ public record SocialLonginResponse(
         Long id,
         String email,
         String name,
-        List<String> roles
+        List<String> roles,
+        boolean isNewUser
 ) {
 }
 

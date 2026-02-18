@@ -4,8 +4,9 @@ import com.mossy.boundedContext.app.VerfyMemberUseCase;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
+import com.mossy.boundedContext.in.dto.request.ProfileUpdateRequest;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
-import com.mossy.boundedContext.in.dto.request.OAuth2UserDTO;
+import com.mossy.boundedContext.in.dto.OAuth2UserDto;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
@@ -18,7 +19,6 @@ import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.shared.member.payload.UserPayload;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,6 +36,7 @@ public class UserFacade {
     private final GetUserInfoUseCase getUserInfoUseCase;
     private final UserRepository userRepository;
     private final ProcessSocialLoginUseCase processSocialLoginUseCase;
+    private final UpdateProfileUseCase updateProfileUseCase;
 
     public Long signup(SignupRequest req){
         User savedUser = signupUseCase.execute(req);
@@ -73,8 +74,11 @@ public class UserFacade {
     }
 
     //OAuth2 소셜 로그인 처리
-    public SocialLonginResponse processSocialLogin(OAuth2UserDTO userDTO) {
+    public SocialLonginResponse processSocialLogin(OAuth2UserDto userDTO) {
         return processSocialLoginUseCase.execute(userDTO);
     }
 
+    public void updateProfile(Long userId, ProfileUpdateRequest request) {
+        updateProfileUseCase.execute(userId, request);
+    }
 }

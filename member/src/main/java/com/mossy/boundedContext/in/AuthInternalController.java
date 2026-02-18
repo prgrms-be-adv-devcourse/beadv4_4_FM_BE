@@ -1,11 +1,10 @@
 package com.mossy.boundedContext.in;
 
-import com.mossy.boundedContext.in.dto.request.OAuth2UserDTO;
+import com.mossy.boundedContext.in.dto.OAuth2UserDto;
 import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.app.user.UserFacade;
 import com.mossy.boundedContext.out.AuthFacade;
 import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
-import com.mossy.shared.member.domain.entity.BaseUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public class AuthInternalController {
 
     @Operation(summary = "소셜 로그인 처리", description = "OAuth2 소셜 로그인 사용자 정보를 저장/업데이트합니다.")
     @PostMapping("/users/social-login")
-    public SocialLonginResponse processSocialLogin(@RequestBody OAuth2UserDTO userDTO) {
+    public SocialLonginResponse processSocialLogin(@RequestBody OAuth2UserDto userDTO) {
         return userFacade.processSocialLogin(userDTO);
     }
 }

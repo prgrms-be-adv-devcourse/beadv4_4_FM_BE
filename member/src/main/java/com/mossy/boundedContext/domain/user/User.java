@@ -59,4 +59,11 @@ public class User extends SourceUser {
                .max(Enum::compareTo)
                .orElse(RoleCode.USER);
     }
+
+    public void updateProfile(String s, String address, String encryptedRrn, String nickname) {
+       this.phoneNum = phoneNum;
+       this.address = address;
+       this.rrnEncrypted = encryptedRrn;
+       this.nickname = nickname;
+    }
 }

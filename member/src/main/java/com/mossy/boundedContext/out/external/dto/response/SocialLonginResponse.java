@@ -8,9 +8,10 @@ public record SocialLonginResponse(
         Long id,
         String email,
         String name,
-        List<String> roles
+        List<String> roles,
+        boolean isNewUser
 ) {
-    public static SocialLonginResponse from(User user) {
+    public static SocialLonginResponse from(User user, boolean isNewUser) {
         List<String> roleNames = user.getUserRoles().stream()
                 .map(ur -> ur.getRole().getCode().name())
                 .toList();
@@ -19,7 +20,8 @@ public record SocialLonginResponse(
                 user.getId(),
                 user.getEmail(),
                 user.getName(),
-                roleNames
+                roleNames,
+                isNewUser
         );
     }
 }

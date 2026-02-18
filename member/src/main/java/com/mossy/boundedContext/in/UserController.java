@@ -3,13 +3,14 @@ package com.mossy.boundedContext.in;
 
 import com.mossy.boundedContext.app.user.UserFacade;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
+import com.mossy.boundedContext.in.dto.request.ProfileUpdateRequest;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
-import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "User", description = "로그인 사용자 정보 조회 API")
@@ -36,5 +37,14 @@ public class UserController {
     public RsData<UserInfoDto> me(@RequestHeader("X-User-Id") Long userId) {
         UserInfoDto dto = userFacade.getUserInfo(userId);
         return RsData.success(SuccessCode.GET_MY_INFO_COMPLETE, dto);
+    }
+
+    @PatchMapping("/profile")
+    public ResponseEntity<Void> updateProfile(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestBody ProfileUpdateRequest request
+    ) {
+        userFacade.updateProfile(userId, request);
+        return ResponseEntity.ok().build();
     }
 }

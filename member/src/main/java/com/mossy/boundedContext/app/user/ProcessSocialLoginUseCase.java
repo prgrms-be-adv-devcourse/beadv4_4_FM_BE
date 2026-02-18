@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.app.user;
 
-import com.mossy.boundedContext.in.dto.request.OAuth2UserDTO;
+import com.mossy.boundedContext.in.dto.OAuth2UserDto;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
 import com.mossy.boundedContext.out.repository.user.RoleRepository;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -28,19 +29,20 @@ public class ProcessSocialLoginUseCase {
     private final RoleRepository roleRepository;
 
     @Transactional
-    public SocialLonginResponse execute(OAuth2UserDTO userDTO) {
-        log.info("소셜 로그인 처리: provider={}, email={}", userDTO.provider(), userDTO.email());
+    public SocialLonginResponse execute(OAuth2UserDto userDTO) {
+        Optional<User> existingUser = userRepository.findByEmail(userDTO.email());
 
-        // 이미 존재하는 사용자인 경우
-        User user = userRepository.findByEmail(userDTO.email())
-                .orElseGet(() -> createNewSocialUser(userDTO));
-
-        return SocialLonginResponse.from(user);
+        if (existingUser.isPresent()) {
+            return SocialLonginResponse.from(existingUser.get(), false);
+        } else {
+            User user = createNewSocialUser(userDTO);
+            return SocialLonginResponse.from(user, true);
+        }
     }
 
 
     //새로운 소셜 사용자 생성
-    private User createNewSocialUser(OAuth2UserDTO userDTO) {
+    private User createNewSocialUser(OAuth2UserDto userDTO) {
         log.info("새로운 소셜 사용자 생성: provider={}, email={}", userDTO.provider(), userDTO.email());
 
         // 닉네임 자동 생성 (provider + providerId의 일부)

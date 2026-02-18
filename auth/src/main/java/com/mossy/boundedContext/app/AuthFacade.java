@@ -7,7 +7,6 @@ import com.mossy.boundedContext.out.dto.OAuth2UserInfo;
 import com.mossy.boundedContext.out.dto.OAuth2UserDTO;
 import com.mossy.boundedContext.out.dto.response.SocialLonginResponse;
 import com.mossy.boundedContext.out.external.MemberFeignClient;
-import com.mossy.shared.member.domain.entity.BaseUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,14 +29,14 @@ public class AuthFacade {
 
         //TODO: null자리에 sellerId 넣기(아직 sellerClient 안만들었음)
         TokenResponse tokens = issueTokenUseCase.execute(ctx.userId(),ctx.role(), null);
-        return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
+        return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
 
     }
 
     //토큰 재발급
     public LoginResponse reissue(String oldRefreshToken) {
         TokenResponse tokens = reissueTokenUseCase.execute(oldRefreshToken);
-        return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
+        return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
     }
 
     //로그아웃
@@ -48,7 +47,7 @@ public class AuthFacade {
     //판매자 등록
     public LoginResponse issueForSellerApproved(Long userId, Long sellerId) {
         TokenResponse tokens = issueTokenUseCase.execute(userId, "SELLER", sellerId);
-        return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
+        return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
     }
 
     //소셜로그인(유저 정보 동기화용)
@@ -76,14 +75,10 @@ public class AuthFacade {
             // Member 서비스에서 사용자 정보 저장/업데이트
             SocialLonginResponse user = memberFeignClient.processSocialLogin(userDTO);
 
-            log.info("사용자 정보 저장/업데이트 완료: userId={}", user.id());
-
             // TODO: null자리에 sellerId 넣기(아직 sellerClient 안만들었음)
             TokenResponse tokens = issueTokenUseCase.execute(user.id(), "USER", null);
 
-            log.info("토큰 발급 완료: userId={}", user.id());
-
-            return new LoginResponse(tokens.accessToken(), tokens.refreshToken());
+            return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), user.isNewUser());
         } catch (Exception e) {
             log.error("OAuth2 로그인 처리 중 오류 발생", e);
             throw new RuntimeException("OAuth2 로그인 처리 실패", e);
