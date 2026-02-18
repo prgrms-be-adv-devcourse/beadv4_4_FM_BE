@@ -57,11 +57,15 @@ public class AuthFacade {
         //2. 있으면 해당 유저 정보 반환
         //3. 없으면 소셜 정보를 바탄으로 신규 회원가입 처리
 
-        return memberFeignClient.processSocialLogin(
+        OAuth2UserDTO userDTO = new OAuth2UserDTO(
+                userInfo.providerId(),
+                userInfo.provider(),
                 userInfo.email(),
                 userInfo.name(),
-                userInfo.provider()
+                null
         );
+
+        return memberFeignClient.processSocialLogin(userDTO);
     }
 
     //OAuth2 로그인 처리 및 토큰 발급
@@ -70,11 +74,7 @@ public class AuthFacade {
 
         try {
             // Member 서비스에서 사용자 정보 저장/업데이트
-            BaseUser user = memberFeignClient.processSocialLogin(
-                    userDTO.email(),
-                    userDTO.name(),
-                    userDTO.provider()
-            );
+            BaseUser user = memberFeignClient.processSocialLogin(userDTO);
 
             log.info("사용자 정보 저장/업데이트 완료: userId={}", user.getId());
 
