@@ -29,19 +29,12 @@ public class UserController {
     }
 
     @Operation(
-            summary = "내 정보 조회",
+            summary = "마이페이지",
             description = "현재 로그인된 사용자의 기본 식별 정보(userId)를 조회"
     )
     @GetMapping("/me")
-    public RsData<UserInfoDto> me(
-            @RequestHeader("X-User-Id") Long userId,
-            @RequestHeader("X-User-Nickname") String nickname,
-            @RequestHeader("X-User-Name") String name
-    ) {
-
-        UserInfoDto dto = userFacade.getUserInfo(userId, nickname, name);
-
+    public RsData<UserInfoDto> me(@RequestHeader("X-User-Id") Long userId) {
+        UserInfoDto dto = userFacade.getUserInfo(userId);
         return RsData.success(SuccessCode.GET_MY_INFO_COMPLETE, dto);
-
     }
 }

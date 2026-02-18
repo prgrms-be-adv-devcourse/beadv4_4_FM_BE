@@ -20,3 +20,7 @@ logging:
     root: INFO
     # 운영 환경에서는 Feign 로그를 좀 더 간결하게
     com.mossy.boundedContext.auth.out.MemberServiceClient: INFO
+
+security:
+  refresh-token:
+    pepper: ${AUTH_REFRESH_TOKEN_PEPPER}

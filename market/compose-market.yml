@@ -11,7 +11,7 @@ services:
     container_name: market
     restart: always
     ports:
-      - "8081:8080"
+      - "8081:8081"
     env_file:
       - .env.market
     environment:
@@ -28,5 +28,4 @@ services:
 
 networks:
   mossy-network:
-    name: mossy-network
-    driver: bridge
+    external: true
