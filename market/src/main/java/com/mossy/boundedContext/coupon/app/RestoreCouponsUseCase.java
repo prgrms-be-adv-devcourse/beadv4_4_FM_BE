@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.coupon.app;
 
+import com.mossy.boundedContext.coupon.domain.UserCoupon;
 import com.mossy.boundedContext.coupon.out.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,6 @@ public class RestoreCouponsUseCase {
             return;
         }
 
-        userCouponRepository.findAllById(userCouponIds)
-                .forEach(userCoupon -> userCoupon.restore());
+        userCouponRepository.findAllById(userCouponIds).forEach(UserCoupon::restore);
     }
 }

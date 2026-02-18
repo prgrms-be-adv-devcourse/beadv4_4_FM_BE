@@ -1,6 +1,5 @@
 package com.mossy.boundedContext.coupon.in.dto.response;
 
-import com.mossy.boundedContext.coupon.domain.Coupon;
 import com.mossy.boundedContext.coupon.domain.CouponType;
 
 import java.math.BigDecimal;

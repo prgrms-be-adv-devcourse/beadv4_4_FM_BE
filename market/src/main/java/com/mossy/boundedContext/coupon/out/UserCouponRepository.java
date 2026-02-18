@@ -14,8 +14,6 @@ public interface UserCouponRepository extends JpaRepository<UserCoupon, Long>, U
     @Query("SELECT uc FROM UserCoupon uc JOIN FETCH uc.coupon WHERE uc.id IN :ids")
     List<UserCoupon> findAllWithCouponByIdIn(@Param("ids") List<Long> ids);
 
-    List<UserCoupon> findAllByStatusAndExpireAtLessThanEqual(UserCouponStatus status, LocalDateTime now);
-
     boolean existsByCouponIdAndMarketUserId(Long couponId, Long marketUserId);
 
     List<UserCoupon> findAllByCouponIdInAndStatus(List<Long> couponIds, UserCouponStatus status);
