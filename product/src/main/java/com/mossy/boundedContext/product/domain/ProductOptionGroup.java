@@ -29,7 +29,4 @@ public class ProductOptionGroup extends BaseIdAndTime {
     @JoinColumn(name = "product_option_group_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private List<ProductOptionValue> optionValues = new ArrayList<>();
 
-
-    // 비즈니스 로직
-
 }

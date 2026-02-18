@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 @Component
 public class ProductOptionAssembler {
 
-    /**
-     * [방법 1] 상품 최초 생성 시 사용
-     */
+    // 상품 등록
     public void configureForCreate(Product product,
                                    CatalogProductInfo catalogInfo, // 카탈로그 정보 추가
                                    List<ProductCreateRequest.OptionGroupRequest> groupDtos,
@@ -51,9 +49,7 @@ public class ProductOptionAssembler {
         }
     }
 
-    /**
-     * [방법 2] 상품 수정(버전 관리) 시 사용
-     */
+    // 상품 수정
     public void configureForUpdate(Product product,
                                    List<ProductUpdateRequest.ItemUpdateRequest> itemDtos) {
 
@@ -79,7 +75,7 @@ public class ProductOptionAssembler {
         }
     }
 
-    // --- 내부 공통 도우미 메서드 ---
+    // --- 공통 메서드 ---
 
     private <T> String generateCombinationString(List<T> options, Function<T, String> valueExtractor) {
         if (options == null || options.isEmpty()) return "";
@@ -95,7 +91,7 @@ public class ProductOptionAssembler {
                 .additionalPrice(price)
                 .quantity(qty)
                 .weight(weight)
-                .optionCombination(combination) // 생성된 조합 문자열 주입
+                .optionCombination(combination)
                 .status(ProductItemStatus.ON_SALE)
                 .build();
     }
@@ -123,13 +119,13 @@ public class ProductOptionAssembler {
     private void addOptionValueToItem(ProductItem newItem, Long masterId, String value, Map<Long, ProductOptionGroup> groupMap) {
         ProductOptionGroup group = groupMap.get(masterId);
 
-        // 1. 여기서 value 객체를 만들 때
+        // value 객체 생성
         ProductOptionValue optionValue = ProductOptionValue.builder()
                 .value(value)
                 .optionGroup(group)
                 .build();
 
-        // 2. 그리고 이 메서드 안에서 연결을 시켜줘야 합니다.
+        // ProductItme 연결
         newItem.addOptionValue(optionValue, group);
     }
 

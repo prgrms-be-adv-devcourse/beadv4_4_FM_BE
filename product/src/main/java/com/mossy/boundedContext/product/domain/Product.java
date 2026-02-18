@@ -81,7 +81,7 @@ public class Product extends BaseIdAndTime {
                 .ifPresent(ProductItem::markAsStopped);
     }
 
-    // 기본 정보(가격 등) 수정을 위한 메서드
+    // 기본 정보 수정
     public void updateBaseInfo(BigDecimal basePrice) {
         this.basePrice = basePrice;
     }

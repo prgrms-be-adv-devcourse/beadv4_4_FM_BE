@@ -19,10 +19,4 @@ public class ProductOptionValue extends BaseIdAndTime {
 
     @Column(nullable = false)
     private String value;
-
-    // 비즈니스 로직
-    public void setOptionGroup(ProductOptionGroup group) {
-        this.optionGroup = group;
-    }
-
 }

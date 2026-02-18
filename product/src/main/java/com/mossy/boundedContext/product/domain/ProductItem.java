@@ -53,6 +53,10 @@ public class ProductItem extends BaseIdAndTime {
         optionValues.add(optionValue);
     }
 
+    public void markAsStopped() {
+        this.status = ProductItemStatus.STOPPED;
+    }
+
     // 재고 감소
     public void removeQuantity(int quantity) {
         if (quantity <= 0) {
@@ -69,7 +73,4 @@ public class ProductItem extends BaseIdAndTime {
         this.quantity += quantity;
     }
 
-    public void markAsStopped() {
-        this.status = ProductItemStatus.STOPPED;
-    }
 }
