@@ -32,10 +32,14 @@ public class OrderItem extends BaseIdAndTime {
     @Column(name = "user_coupon_id")
     private Long userCouponId;
 
+    @Column(nullable = false)
     private int quantity;
 
+    @Column(precision = 10, scale = 3, nullable = false)
+    private BigDecimal weight;
+
     @Column(name = "order_price", precision = 18, scale = 2, nullable = false)
-    private BigDecimal originalPrice;;
+    private BigDecimal originalPrice;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -47,19 +51,33 @@ public class OrderItem extends BaseIdAndTime {
     @Column(name = "discount_amount", precision = 18, scale = 2)
     private BigDecimal discountAmount;
 
+    @Column(name = "final_price", precision = 18, scale = 2, nullable = false)
+    private BigDecimal finalPrice;
+
     static OrderItem create(
             Order order,
             MarketSeller seller,
             Long productId,
             int quantity,
-            BigDecimal originalPrice
+            BigDecimal weight,
+            Long userCouponId,
+            BigDecimal originalPrice,
+            BigDecimal discountAmount
     ) {
+        BigDecimal finalPrice = discountAmount != null
+                ? originalPrice.subtract(discountAmount)
+                : originalPrice;
+
         return OrderItem.builder()
                 .order(order)
                 .seller(seller)
                 .productId(productId)
                 .quantity(quantity)
+                .weight(weight)
+                .userCouponId(userCouponId)
                 .originalPrice(originalPrice)
+                .discountAmount(discountAmount)
+                .finalPrice(finalPrice)
                 .state(OrderState.PENDING)
                 .build();
     }

@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.cart.in.dto.response;
 
 import com.mossy.boundedContext.cart.domain.Cart;
-import com.mossy.boundedContext.product.in.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.cart.out.external.dto.ProductInfoResponse;
 import lombok.Builder;
 
 import java.util.List;

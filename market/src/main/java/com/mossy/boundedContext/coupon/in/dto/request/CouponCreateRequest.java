@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public record CouponCreateRequest(
         @NotNull(message = "상품 ID는 필수입니다")
-        Long productId,
+        Long productItemId,
 
         @NotBlank(message = "쿠폰 이름은 필수입니다")
         String couponName,
@@ -22,7 +22,6 @@ public record CouponCreateRequest(
         @Positive(message = "할인 값은 0보다 커야 합니다")
         BigDecimal discountValue,
 
-        @NotNull(message = "최대 할인 금액은 필수입니다")
         @Positive(message = "최대 할인 금액은 0보다 커야 합니다")
         BigDecimal maxDiscountAmount,
 
@@ -32,9 +31,4 @@ public record CouponCreateRequest(
         @NotNull(message = "종료 일시는 필수입니다")
         LocalDateTime endAt
 ) {
-    public CouponCreateRequest {
-        if (startAt.isAfter(endAt)) {
-            throw new IllegalArgumentException("시작 일시는 종료 일시보다 이전이어야 합니다");
-        }
-    }
 }

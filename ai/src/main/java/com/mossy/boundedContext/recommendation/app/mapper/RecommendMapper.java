@@ -2,9 +2,12 @@ package com.mossy.boundedContext.recommendation.app.mapper;
 
 import com.mossy.boundedContext.recommendation.in.dto.request.ProductCreateRequestDto;
 import com.mossy.shared.market.event.ProductCreatedEvent;
+import com.mossy.shared.market.event.ProductUpdatedEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+
+import java.util.List;
 
 @Mapper(
     componentModel = "spring"
@@ -16,31 +19,38 @@ public interface RecommendMapper {
 
     @Named("createContent")
     default String createContent(ProductCreatedEvent event) {
+        return buildContent(event.name(), event.categoryName(), event.description(), event.optionGroups());
+    }
+
+    default String toContent(ProductUpdatedEvent event) {
+        return buildContent(event.name(), event.categoryName(), event.description(), event.optionGroups());
+    }
+
+    private String buildContent(String name, String categoryName, String description, List<String> optionGroups) {
         StringBuilder sb = new StringBuilder();
 
-        appendIfPresent(sb, "상품명", event.name());
-        appendIfPresent(sb, "카테고리", event.categoryName());
-        appendIfPresent(sb, "가격", event.price()); // 객체(BigDecimal)도 처리 가능
+        appendIfPresent(sb, "상품명", name);
+        appendIfPresent(sb, "카테고리", categoryName);
 
-        if (hasText(event.description())) {
-            appendIfPresent(sb, "설명", event.description().replaceAll("<[^>]*>", ""));
+        if (hasText(description)) {
+            appendIfPresent(sb, "설명", description.replaceAll("<[^>]*>", ""));
         }
 
-        if (event.optionGroups() != null && !event.optionGroups().isEmpty()) {
-            appendIfPresent(sb, "옵션", String.join("/", event.optionGroups()));
+        if (optionGroups != null && !optionGroups.isEmpty()) {
+            appendIfPresent(sb, "옵션", String.join("/", optionGroups));
         }
 
         return sb.toString();
     }
 
-    default void appendIfPresent(StringBuilder sb, String label, Object value) {
+    private void appendIfPresent(StringBuilder sb, String label, Object value) {
         if (value != null && hasText(value.toString())) {
-            if (sb.length() > 0) sb.append(", ");
+            if (!sb.isEmpty()) sb.append(", ");
             sb.append(label).append(": ").append(value);
         }
     }
 
-    default boolean hasText(String str) {
+    private boolean hasText(String str) {
         return str != null && !str.isBlank();
     }
 }

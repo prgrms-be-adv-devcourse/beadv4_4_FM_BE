@@ -72,6 +72,9 @@ public enum ErrorCode implements BaseCode {
     SELLER_NOT_FOUND(404, "존재하지 않는 판매자입니다."),
     SYSTEM_SELLER_NOT_FOUND(404, "시스템 판매자를 찾을 수 없습니다."),
 
+    COUPON_NOT_FOUND(404, "쿠폰이 존재하지 않습니다."),
+    USER_COUPON_NOT_FOUND(404, "보유한 쿠폰이 존재하지 않습니다."),
+
     CART_NOT_FOUND(404, "장바구니가 존재하지 않습니다."),
     CART_ITEM_NOT_FOUND(404, "장바구니에 해당 상품이 없습니다."),
     PRODUCT_NOT_FOUND(404, "해당 상품이 존재하지 않습니다."),
@@ -98,6 +101,9 @@ public enum ErrorCode implements BaseCode {
     // ========================================
     // 409 Conflict (충돌 / 상태 위반)
     // ========================================
+    COUPON_ALREADY_USED(409, "이미 사용된 쿠폰입니다."),
+    COUPON_EXPIRED(409, "만료된 쿠폰입니다."),
+
     ORDER_AMOUNT_MISMATCH(409, "주문 금액이 일치하지 않습니다."),
     INVALID_ORDER_STATE(409, "유효하지 않은 주문 상태입니다."),
     ORDER_ALREADY_PAID(409, "이미 결제가 완료된 주문입니다."),

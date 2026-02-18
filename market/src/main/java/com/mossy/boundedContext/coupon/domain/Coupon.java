@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.type.YesNoConverter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,11 +18,15 @@ import java.time.LocalDateTime;
 @Builder
 public class Coupon extends BaseIdAndTime {
 
-    @Column(name = "seller_id", nullable = false)
-    private Long sellerId;
+    @Column(name = "issuer_id", nullable = false)
+    private Long issuerId;
 
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "issuer_type", nullable = false)
+    private IssuerType issuerType;
+
+    @Column(name = "product_item_id", nullable = false)
+    private Long productItemId;
 
     @Column(name = "coupon_name", nullable = false)
     private String couponName;
@@ -33,7 +38,7 @@ public class Coupon extends BaseIdAndTime {
     @Column(name = "discount_value", nullable = false)
     private BigDecimal discountValue;
 
-    @Column(name = "max_discount_amount", nullable = false)
+    @Column(name = "max_discount_amount")
     private BigDecimal maxDiscountAmount;
 
     @Column(name = "start_at", nullable = false)
@@ -46,9 +51,26 @@ public class Coupon extends BaseIdAndTime {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = false;
 
+    // 정률 쿠폰은 maxDiscountAmount(최대 할인 한도)를 초과할 경우, 최대 할인 한도로 반환
+    public BigDecimal calculateDiscount(BigDecimal originalPrice) {
+        if (couponType == CouponType.FIXED) {
+            return discountValue;
+        }
+
+        BigDecimal discount = originalPrice.multiply(discountValue)
+                .divide(BigDecimal.valueOf(100), 0, RoundingMode.HALF_UP);
+
+        if (maxDiscountAmount == null || discount.compareTo(maxDiscountAmount) <= 0) {
+            return discount;
+        }
+
+        return maxDiscountAmount;
+    }
+
     public static Coupon create(
-            Long sellerId,
-            Long productId,
+            Long issuerId,
+            IssuerType issuerType,
+            Long productItemId,
             String couponName,
             CouponType couponType,
             BigDecimal discountValue,
@@ -57,8 +79,9 @@ public class Coupon extends BaseIdAndTime {
             LocalDateTime endAt
     ) {
         return Coupon.builder()
-            .sellerId(sellerId)
-            .productId(productId)
+            .issuerId(issuerId)
+            .issuerType(issuerType)
+            .productItemId(productItemId)
             .couponName(couponName)
             .couponType(couponType)
             .discountValue(discountValue)
@@ -67,5 +90,5 @@ public class Coupon extends BaseIdAndTime {
             .endAt(endAt)
             .isActive(false)
             .build();
-}
+    }
 }

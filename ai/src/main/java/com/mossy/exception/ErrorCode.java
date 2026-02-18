@@ -25,6 +25,7 @@ public enum ErrorCode implements BaseCode {
     // 502 Bad Gateway
     EMBEDDING_FAILED(502, "임베딩 생성 중 오류가 발생했습니다."),
     AI_GENERATION_FAILED(502, "AI 추천 사유 생성에 실패했습니다."),
+    FEIGN_CALL_FAILED(502, "상품 서비스 호출에 실패했습니다."),
     ;
 
     private final int status;

@@ -1,7 +1,6 @@
 include:
   - ../compose-infra.yml
   - ../compose-kafka.yml
-  - ../elasticsearch/compose-es.yml
 
 services:
   market:
@@ -17,8 +16,6 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     depends_on:
-      elasticsearch:
-        condition: service_healthy
       redis:
         condition: service_healthy
       redpanda:

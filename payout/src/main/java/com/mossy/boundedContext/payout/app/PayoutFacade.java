@@ -41,6 +41,7 @@ public class PayoutFacade {
     private final PayoutRefundUseCase payoutRefundUseCase;
     private final PayoutHandlePayoutCompletedUseCase payoutHandlePayoutCompletedUseCase;
     private final PayoutHandleOrderRefundedUseCase payoutHandleOrderRefundedUseCase;
+    private final PayoutDailyPayoutToWalletUseCase payoutDailyPayoutToWalletUseCase;
 
     /**
      * [흐름 0] 판매자 정보를 Payout 컨텍스트와 동기화
@@ -80,7 +81,6 @@ public class PayoutFacade {
      */
     @Transactional
     public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) { payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto); }
-    public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) { payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto); }
 
     /**
      * [흐름 2] 정산 후보 아이템을 집계하여 실제 정산(Payout)에 포함될 PayoutItem으로 변환하는 배치를 실행
@@ -108,4 +108,16 @@ public class PayoutFacade {
     public void handlePayoutCompleted(PayoutCompletedEvent event) { payoutHandlePayoutCompletedUseCase.handle(event); }
 
     public void handleOrderRefunded(OrderRefundedEvent event) { payoutHandleOrderRefundedUseCase.handle(event); }
+
+    /**
+     *
+     * [흐름 4][지급 배치] 정산 완료된 Payout을 판매자 지갑에 지급
+     * 각 Payout마다 지급 이벤트를 발행 (1:1 매핑)
+     * Spring Batch의 트랜잭션을 사용하므로 MANDATORY 전파 레벨 사용
+     *
+     * @param limit 한 번에 처리할 개수
+     * @return 처리 결과 (성공/실패, 처리된 개수 등)
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public RsData<Integer> processDailyPayoutToWallet(int limit) { return payoutDailyPayoutToWalletUseCase.processDailyPayoutToWallet(limit); }
 }

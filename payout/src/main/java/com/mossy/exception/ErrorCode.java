@@ -118,6 +118,8 @@ public enum ErrorCode implements BaseCode {
     INVALID_DEDUCT_QUANTITY(422, "차감할 수량은 0보다 커야 합니다."),
     ALREADY_SETTLED_DONATION(422, "이미 정산 완료된 기부 내역입니다."),
     ALREADY_COMPLETED_PAYOUT(422, "이미 완료된 정산건입니다."),
+    PAYOUT_NOT_COMPLETED(422, "정산이 완료되지 않은 건입니다."),
+    ALREADY_CREDITED_PAYOUT(422, "이미 지급 완료된 정산건입니다."),
 
     // ========================================
     // 502 Bad Gateway (외부 서비스 오류)

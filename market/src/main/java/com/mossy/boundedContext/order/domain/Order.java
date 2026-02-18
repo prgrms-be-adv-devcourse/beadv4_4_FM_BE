@@ -4,7 +4,7 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
-import com.mossy.boundedContext.product.in.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest.OrderItemRequest;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.market.enums.OrderState;
 import jakarta.persistence.*;
@@ -52,25 +52,47 @@ public class Order extends BaseIdAndTime {
             String address,
             String orderNo,
             Map<Long, MarketSeller> sellerMap,
-            List<ProductInfoResponse> items,
-            BigDecimal totalPrice
+            List<OrderItemRequest> items,
+            BigDecimal totalPrice,
+            Map<Long, BigDecimal> couponDiscountMap
     ) {
         Order order = Order.builder()
                 .buyer(buyer)
                 .orderNo(orderNo)
                 .address(address)
                 .state(OrderState.PENDING)
-                .totalPrice(totalPrice)
+                .totalPrice(BigDecimal.ZERO)
                 .build();
 
-        items.forEach(item -> order.addOrderItem(sellerMap.get(item.sellerId()), item));
+        items.forEach(item -> order.addOrderItem(sellerMap.get(item.sellerId()), item, couponDiscountMap));
+
+        BigDecimal calculatedTotal = order.orderItems.stream()
+                .map(OrderItem::getFinalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // 프론트에서 계산한 총 가격 검증
+        order.validateAmount(totalPrice, calculatedTotal);
+
+        order.totalPrice = calculatedTotal;
 
         return order;
     }
 
-    private void addOrderItem(MarketSeller seller, ProductInfoResponse item) {
+    private void addOrderItem(MarketSeller seller, OrderItemRequest item, Map<Long, BigDecimal> couponDiscountMap) {
         BigDecimal orderPrice = item.price().multiply(BigDecimal.valueOf(item.quantity()));
-        OrderItem orderItem = OrderItem.create(this, seller, item.productId(), item.quantity(), orderPrice);
+        BigDecimal discountAmount = item.userCouponId() != null
+                ? couponDiscountMap.get(item.userCouponId())
+                : null;
+        OrderItem orderItem = OrderItem.create(
+                this,
+                seller,
+                item.productItemId(),
+                item.quantity(),
+                item.weight(),
+                item.userCouponId(),
+                orderPrice,
+                discountAmount
+        );
         this.orderItems.add(orderItem);
     }
 
@@ -84,8 +106,8 @@ public class Order extends BaseIdAndTime {
         }
     }
 
-    public void validateAmount(BigDecimal requestAmount) {
-        if (this.totalPrice.compareTo(requestAmount) != 0) {
+    private void validateAmount(BigDecimal requestAmount, BigDecimal calculatedAmount) {
+        if (requestAmount.compareTo(calculatedAmount) != 0) {
             throw new DomainException(ErrorCode.ORDER_AMOUNT_MISMATCH);
         }
     }

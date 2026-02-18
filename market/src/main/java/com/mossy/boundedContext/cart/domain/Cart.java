@@ -30,8 +30,7 @@ public class Cart extends BaseIdAndTime {
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketUser buyer;
 
-    @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST,
-        CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
 
     public static Cart createCart(MarketUser buyer) {
@@ -40,8 +39,8 @@ public class Cart extends BaseIdAndTime {
         return cart;
     }
 
-    public void addItem(Long productId, int quantity, MarketPolicy policy) {
-        Optional<CartItem> foundItem = findItem(productId);
+    public void addItem(Long productItemId, int quantity, MarketPolicy policy) {
+        Optional<CartItem> foundItem = findItem(productItemId);
 
         int totalQuantity = foundItem
             .map(item -> item.getQuantity() + quantity)
@@ -51,13 +50,13 @@ public class Cart extends BaseIdAndTime {
 
         foundItem.ifPresentOrElse(
             item -> item.addItem(quantity),
-            () -> this.items.add(new CartItem(this, productId, quantity))
+            () -> this.items.add(new CartItem(this, productItemId, quantity))
         );
     }
 
-    public void updateItemQuantity(Long productId, int quantity, MarketPolicy policy) {
+    public void updateItemQuantity(Long productItemId, int quantity, MarketPolicy policy) {
         policy.validateCartItemQuantity(quantity);
-        CartItem item = getItem(productId);
+        CartItem item = getItem(productItemId);
         item.updateItemQuantity(quantity);
     }
 
@@ -66,18 +65,18 @@ public class Cart extends BaseIdAndTime {
         this.items.remove(item);
     }
 
-    public void removeItems(List<Long> productIds) {
-        this.items.removeIf(item -> productIds.contains(item.getProductId()));
+    public void removeItems(List<Long> productItemIds) {
+        this.items.removeIf(item -> productItemIds.contains(item.getProductItemId()));
     }
 
-    private Optional<CartItem> findItem(Long productId) {
+    private Optional<CartItem> findItem(Long productItemId) {
         return this.items.stream()
-            .filter(item -> item.getProductId().equals(productId))
+            .filter(item -> item.getProductItemId().equals(productItemId))
             .findFirst();
     }
 
-    private CartItem getItem(Long productId) {
-        return findItem(productId)
+    private CartItem getItem(Long productItemId) {
+        return findItem(productItemId)
             .orElseThrow(() -> new DomainException(ErrorCode.CART_ITEM_NOT_FOUND));
     }
 

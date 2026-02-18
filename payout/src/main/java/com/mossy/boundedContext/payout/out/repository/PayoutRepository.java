@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,4 +38,15 @@ public interface PayoutRepository extends JpaRepository<Payout, Long> {
      * @return 조회 조건에 맞는 Payout 리스트
      */
     List<Payout> findByPayoutDateIsNullAndAmountGreaterThanOrderByIdAsc(BigDecimal amount, Pageable pageable);
+
+    List<Payout> findByPayoutDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    /**
+     * 정산은 완료되었으나 아직 지급되지 않은 Payout들을 조회
+     * 지급 배치에서 사용
+     *
+     * @param pageable 페이징 정보
+     * @return 지급 대상 Payout 리스트
+     */
+    List<Payout> findByPayoutDateIsNotNullAndCreditDateIsNullOrderByIdAsc(Pageable pageable);
 }

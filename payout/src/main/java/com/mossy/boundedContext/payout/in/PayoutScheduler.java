@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Profile("prod")
 @Component
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 public class PayoutScheduler {
     private final JobLauncher jobLauncher;
     private final Job payoutCollectItemsAndCompletePayoutsJob;
+    private final Job payoutDailyWalletCreditJob;
 
     // 매일 01:00 (KST)
     @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
@@ -56,5 +58,19 @@ public class PayoutScheduler {
                 .toJobParameters();
 
         JobExecution execution = jobLauncher.run(payoutCollectItemsAndCompletePayoutsJob, jobParameters);
+    }
+
+    /**
+     * 일별 지급 배치 - 매일 23:59 실행
+     */
+    @Scheduled(cron = "0 59 23 * * *", zone = "Asia/Seoul")
+    public void runDailyWalletCredit() throws Exception {
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString(
+                        "runDateTime",
+                        LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                )
+                .toJobParameters();
+        JobExecution execution = jobLauncher.run(payoutDailyWalletCreditJob, jobParameters);
     }
 }

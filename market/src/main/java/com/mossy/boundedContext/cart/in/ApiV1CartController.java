@@ -1,102 +1,98 @@
-//package com.mossy.boundedContext.cart.in;
-//
-//import com.mossy.boundedContext.cart.app.CartFacade;
-//import com.mossy.boundedContext.cart.in.dto.request.CartItemAddRequest;
-//import com.mossy.boundedContext.cart.in.dto.request.CartItemDeleteRequest;
-//import com.mossy.boundedContext.cart.in.dto.request.CartItemUpdateRequest;
-//import com.mossy.boundedContext.cart.in.dto.response.CartResponse;
-//import com.mossy.global.rsData.RsData;
-//import io.swagger.v3.oas.annotations.Operation;
-//import io.swagger.v3.oas.annotations.Parameter;
-//import io.swagger.v3.oas.annotations.tags.Tag;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.web.bind.annotation.*;
-//
-//@RestController
-//@Tag(name = "Cart", description = "장바구니 관리 API")
-//@RequestMapping("/api/v1/cart")
-//@RequiredArgsConstructor
-//public class ApiV1CartController {
-//    private final CartFacade cartFacade;
-//
-//    @Operation(
-//            summary = "장바구니 조회",
-//            description = "사용자의 장바구니와 장바구니 상품 목록을 조회합니다."
-//    )
-//    @GetMapping
-//    public RsData<CartResponse> getCart(
-//            @RequestParam(name="userId") Long userId
-//    ) {
-//        return new RsData<>("200", "장바구니 조회를 성공했습니다.", cartFacade.getCart(userId));
-//    }
-//
-//    @Operation(
-//            summary = "장바구니 상품 추가",
-//            description = "장바구니에 상품을 추가합니다."
-//    )
-//    @PostMapping("/items")
-//    public RsData<Void> addCartItem(
-//            @Parameter(description = "사용자 ID")
-//            @RequestParam(name="userId") Long userId,
-//
-//            @Parameter(description = "장바구니 상품 추가 요청 DTO", required = true)
-//            @RequestBody CartItemAddRequest request
-//    ) {
-//        cartFacade.addCartItem(userId, request);
-//        return new RsData<>("200", "상품이 장바구니에 추가되었습니다.");
-//    }
-//
-//    @Operation(
-//            summary = "장바구니 상품 수량 수정",
-//            description = "장바구니에 담긴 상품의 수량을 수정합니다."
-//    )
-//    @PatchMapping("/items")
-//    public RsData<Void> updateCartItem(
-//            @Parameter(hidden = true)
-//            @RequestParam(name="userId") Long userId,
-//
-//            @Parameter(description = "장바구니 상품 수량 수정 요청 DTO", required = true)
-//            @RequestBody CartItemUpdateRequest request
-//    ) {
-//        cartFacade.updateCartItem(userId, request);
-//        return new RsData<>("200", "장바구니 상품 수량이 수정되었습니다.");
-//    }
-//
-//    @Operation(
-//            summary = "장바구니 상품 단일 삭제",
-//            description = "장바구니에 담긴 상품을 삭제합니다."
-//    )
-//    @DeleteMapping("/items/{productId}")
-//    public RsData<Void> removeCartItem(
-//            @RequestParam(name="userId") Long userId,
-//            @PathVariable Long productId
-//    ) {
-//        cartFacade.removeCartItem(userId, productId);
-//        return new RsData<>("200", "상품이 삭제되었습니다.");
-//    }
-//
-//    @Operation(
-//            summary = "장바구니 상품 선택 삭제",
-//            description = "장바구니에 담긴 선택한 상품들을 삭제합니다."
-//    )
-//    @DeleteMapping("/items")
-//    public RsData<Void> removeCartItems(
-//            @RequestParam(name="userId") Long userId,
-//            @RequestBody CartItemDeleteRequest request
-//    ) {
-//        cartFacade.removeCartItems(userId, request.productIds());
-//        return new RsData<>("200", "선택한 상품들이 삭제되었습니다.");
-//    }
-//
-//    @Operation(
-//            summary = "장바구니 비우기",
-//            description = "사용자의 장바구니를 전부 비웁니다."
-//    )
-//    @DeleteMapping
-//    public RsData<Void> clearCart(
-//            @RequestParam(name="userId") Long userId
-//    ) {
-//        cartFacade.clearCart(userId);
-//        return new RsData<>("200", "장바구니가 비워졌습니다.");
-//    }
-//}
+package com.mossy.boundedContext.cart.in;
+
+import com.mossy.boundedContext.cart.app.CartFacade;
+import com.mossy.boundedContext.cart.in.dto.request.CartItemAddRequest;
+import com.mossy.boundedContext.cart.in.dto.request.CartItemDeleteRequest;
+import com.mossy.boundedContext.cart.in.dto.request.CartItemUpdateRequest;
+import com.mossy.boundedContext.cart.in.dto.response.CartResponse;
+import com.mossy.exception.SuccessCode;
+import com.mossy.global.rsData.RsData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@Tag(name = "Cart", description = "장바구니 관리 API")
+@RequestMapping("/api/v1/cart")
+@RequiredArgsConstructor
+public class ApiV1CartController {
+    private final CartFacade cartFacade;
+
+    @Operation(
+            summary = "장바구니 조회",
+            description = "사용자의 장바구니와 장바구니 상품 목록을 조회합니다."
+    )
+    @GetMapping
+    public RsData<CartResponse> getCart(@RequestParam(name = "userId") Long userId) {
+        return RsData.success(SuccessCode.CART_GET, cartFacade.getCart(userId));
+    }
+
+    @Operation(
+            summary = "장바구니 상품 추가",
+            description = "장바구니에 상품을 추가합니다."
+    )
+    @PostMapping("/items")
+    public RsData<Void> addCartItem(
+            @Parameter(description = "사용자 ID")
+            @RequestParam(name = "userId") Long userId,
+
+            @Parameter(description = "장바구니 상품 추가 요청 DTO", required = true)
+            @RequestBody CartItemAddRequest request
+    ) {
+        cartFacade.addCartItem(userId, request);
+        return RsData.success(SuccessCode.CART_ITEM_ADD);
+    }
+
+    @Operation(
+            summary = "장바구니 상품 수량 수정",
+            description = "장바구니에 담긴 상품의 수량을 수정합니다."
+    )
+    @PatchMapping("/items")
+    public RsData<Void> updateCartItem(
+            @RequestParam(name = "userId") Long userId,
+
+            @Parameter(description = "장바구니 상품 수량 수정 요청 DTO", required = true)
+            @RequestBody CartItemUpdateRequest request
+    ) {
+        cartFacade.updateCartItem(userId, request);
+        return RsData.success(SuccessCode.CART_ITEM_UPDATE);
+    }
+
+    @Operation(
+            summary = "장바구니 상품 단일 삭제",
+            description = "장바구니에 담긴 상품을 삭제합니다."
+    )
+    @DeleteMapping("/items/{productId}")
+    public RsData<Void> removeCartItem(
+            @RequestParam(name = "userId") Long userId,
+            @PathVariable Long productId
+    ) {
+        cartFacade.removeCartItem(userId, productId);
+        return RsData.success(SuccessCode.CART_ITEM_REMOVE);
+    }
+
+    @Operation(
+            summary = "장바구니 상품 선택 삭제",
+            description = "장바구니에 담긴 선택한 상품들을 삭제합니다."
+    )
+    @DeleteMapping("/items")
+    public RsData<Void> removeCartItems(
+            @RequestParam(name = "userId") Long userId,
+            @RequestBody CartItemDeleteRequest request
+    ) {
+        cartFacade.removeCartItems(userId, request.productItemIds());
+        return RsData.success(SuccessCode.CART_ITEM_REMOVE);
+    }
+
+    @Operation(
+            summary = "장바구니 비우기",
+            description = "사용자의 장바구니를 전부 비웁니다."
+    )
+    @DeleteMapping
+    public RsData<Void> clearCart(@RequestParam(name = "userId") Long userId) {
+        cartFacade.clearCart(userId);
+        return RsData.success(SuccessCode.CART_CLEAR);
+    }
+}
