@@ -69,15 +69,21 @@ public class AuthController {
                 authFacade.issueForSellerApproved(userId, sellerId));
     }
 
-    /**
-     * OAuth2 인증 에러 핸들러
-     * OAuth2 인증 실패 시 이곳으로 리다이렉트됨
-     */
+    @Operation(
+            summary = "OAuth2 인증 에러 핸들러",
+            description = "OAuth2 인증 실패 시 에러 응답"
+    )
     @GetMapping("/error")
     public RsData<String> handleOAuth2Error(@RequestParam(required = false) String error,
                                             @RequestParam(required = false) String error_description) {
+        String errorMsg = "OAuth2 인증에 실패했습니다";
+        if (error_description != null) {
+            errorMsg += ": " + error_description;
+        } else if (error != null) {
+            errorMsg += ": " + error;
+        }
         log.warn("OAuth2 인증 에러: error={}, description={}", error, error_description);
-        return RsData.fail("AUTH-500", "OAuth2 인증에 실패했습니다: " + (error_description != null ? error_description : error));
+        return RsData.fail(com.mossy.exception.ErrorCode.INVALID_CREDENTIALS, errorMsg);
     }
 
 }
