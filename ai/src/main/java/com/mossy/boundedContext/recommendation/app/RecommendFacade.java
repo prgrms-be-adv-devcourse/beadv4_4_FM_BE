@@ -7,11 +7,9 @@ import com.mossy.boundedContext.recommendation.out.RecommendFeignClient;
 import com.mossy.boundedContext.recommendation.out.dto.response.MarketProductResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-<<<<<<< feature/159/ai-recommendation-update
-import com.mossy.shared.market.event.ProductUpdatedEvent;
-=======
->>>>>>> dev-msa
+import com.mossy.shared.market.event.ProductUpdatedEvent; 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
