@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Seller Order", description = "판매자 판매 내역 API")
 public class ApiV1SellerOrderController {
-    private final OrderFacade orderFacade;
 
+    private final OrderFacade orderFacade;
 
     @Operation(
             summary = "판매자 판매 내역 목록 조회",

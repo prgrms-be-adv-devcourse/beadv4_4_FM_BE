@@ -2,6 +2,9 @@ package com.mossy.boundedContext.coupon.in;
 
 import com.mossy.boundedContext.coupon.app.CouponFacade;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
+import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
+import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
+import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Coupon", description = "쿠폰 관리 API")
 @RestController
@@ -37,5 +42,62 @@ public class ApiV1CouponController {
             @RequestBody @Valid CouponCreateRequest request
     ) {
         return RsData.success(SuccessCode.COUPON_CREATE, couponFacade.createAdminCoupon(adminId, request));
+    }
+
+    @Operation(summary = "판매자 쿠폰 수정", description = "판매자가 자신의 쿠폰을 수정합니다.")
+    @PatchMapping("/seller/{couponId}")
+    public RsData<Void> updateSellerCoupon(
+            @RequestParam(name = "sellerId") Long sellerId,
+            @PathVariable Long couponId,
+            @RequestBody @Valid CouponUpdateRequest request
+    ) {
+        couponFacade.updateSellerCoupon(sellerId, couponId, request);
+        return RsData.success(SuccessCode.COUPON_UPDATE);
+    }
+
+    @Operation(summary = "판매자 쿠폰 삭제", description = "판매자가 자신의 쿠폰을 비활성화합니다.")
+    @DeleteMapping("/seller/{couponId}")
+    public RsData<Void> deactivateSellerCoupon(
+            @RequestParam(name = "sellerId") Long sellerId,
+            @PathVariable Long couponId
+    ) {
+        couponFacade.deactivateSellerCoupon(sellerId, couponId);
+        return RsData.success(SuccessCode.COUPON_DEACTIVATE);
+    }
+
+    @Operation(summary = "다운로드 가능한 쿠폰 목록 조회", description = "상품에 적용 가능한 다운로드 가능 쿠폰 목록을 조회합니다.")
+    @GetMapping
+    public RsData<List<CouponResponse>> getDownloadableCoupons(
+            @RequestParam(name = "productItemId") Long productItemId,
+            @RequestParam(name = "userId") Long userId
+    ) {
+        return RsData.success(SuccessCode.COUPON_LIST, couponFacade.getDownloadableCoupons(productItemId, userId));
+    }
+
+    @Operation(summary = "쿠폰 다운로드", description = "사용자가 쿠폰을 다운로드합니다.")
+    @PostMapping("/{couponId}/download")
+    public RsData<Void> downloadCoupon(
+            @PathVariable Long couponId,
+            @RequestParam(name = "userId") Long userId
+    ) {
+        couponFacade.downloadCoupon(couponId, userId);
+        return RsData.success(SuccessCode.COUPON_DOWNLOAD);
+    }
+
+    @Operation(summary = "내 쿠폰 목록 조회", description = "사용자가 보유한 쿠폰 목록을 조회합니다.")
+    @GetMapping("/me")
+    public RsData<List<UserCouponResponse>> getMyUserCoupons(
+            @RequestParam(name = "userId") Long userId
+    ) {
+        return RsData.success(SuccessCode.MY_COUPON_LIST, couponFacade.getMyUserCoupons(userId));
+    }
+
+    @Operation(summary = "주문 시 적용 가능한 쿠폰 조회", description = "주문 상품에 적용 가능한 보유 쿠폰 목록을 조회합니다.")
+    @GetMapping("/applicable")
+    public RsData<List<UserCouponResponse>> getApplicableCoupons(
+            @RequestParam(name = "productItemId") Long productItemId,
+            @RequestParam(name = "userId") Long userId
+    ) {
+        return RsData.success(SuccessCode.APPLICABLE_COUPON_LIST, couponFacade.getApplicableCoupons(productItemId, userId));
     }
 }

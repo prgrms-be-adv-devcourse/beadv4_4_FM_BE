@@ -17,9 +17,17 @@ public enum SuccessCode implements BaseCode {
 
     // Coupon
     COUPON_CREATE(200, "쿠폰이 생성되었습니다."),
+    COUPON_LIST(200, "다운로드 가능한 쿠폰 목록 조회를 성공했습니다."),
+    MY_COUPON_LIST(200, "내 쿠폰 목록 조회를 성공했습니다."),
+    APPLICABLE_COUPON_LIST(200, "적용 가능한 쿠폰 목록 조회를 성공했습니다."),
+    COUPON_DOWNLOAD(200, "쿠폰이 다운로드되었습니다."),
+    COUPON_UPDATE(200, "쿠폰이 수정되었습니다."),
+    COUPON_DEACTIVATE(200, "쿠폰이 비활성화되었습니다."),
 
     // Order
     ORDER_CREATE(200, "주문이 생성되었습니다."),
+    ORDER_LIST(200, "구매 내역 목록 조회를 성공했습니다."),
+    ORDER_DETAIL(200, "구매 내역 상세 조회를 성공했습니다."),
     ORDER_DELETE(200, "주문 삭제를 성공했습니다."),
     ORDER_CANCEL(200, "주문이 취소되었습니다."),
 
