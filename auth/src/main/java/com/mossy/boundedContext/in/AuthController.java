@@ -55,4 +55,16 @@ public class AuthController {
         return RsData.success(SuccessCode.OK, "pong");
     }
 
+    @Operation(
+            summary = "판매자 승인 후 토큰 발급",
+            description = "판매자 승인 후 SELLER 권한 토큰 발급"
+    )
+    @PostMapping("/seller-approved")
+    public RsData<LoginResponse> issueForSellerApproved(
+            @RequestParam Long userId,
+            @RequestParam Long sellerId) {
+        return RsData.success(SuccessCode.LOGIN_COMPLETE,
+                authFacade.issueForSellerApproved(userId, sellerId));
+    }
+
 }
