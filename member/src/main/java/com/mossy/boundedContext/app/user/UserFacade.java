@@ -5,6 +5,7 @@ import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
+import com.mossy.boundedContext.in.dto.request.OAuth2UserDTO;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
@@ -32,6 +33,7 @@ public class UserFacade {
     private final SellerRequestRepository sellerRequestRepository;
     private final GetUserInfoUseCase getUserInfoUseCase;
     private final UserRepository userRepository;
+    private final ProcessSocialLoginUseCase processSocialLoginUseCase;
 
     public Long signup(SignupRequest req){
         User savedUser = signupUseCase.execute(req);
@@ -69,5 +71,10 @@ public class UserFacade {
         return getUserInfoUseCase.tokenExecute(userId);
     }
 
+    //OAuth2 소셜 로그인 처리
+    public User processSocialLogin(OAuth2UserDTO userDTO) {
+        log.info("소셜 로그인 처리 시작: provider={}, email={}", userDTO.provider(), userDTO.email());
+        return processSocialLoginUseCase.execute(userDTO);
+    }
 
 }

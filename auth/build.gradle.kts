@@ -66,5 +66,5 @@ tasks.withType<Test> {
 }
 
 springBoot {
-    mainClass.set("com.mossy.auth.AuthApplication")
+    mainClass.set("com.mossy.AuthApplication")
 }

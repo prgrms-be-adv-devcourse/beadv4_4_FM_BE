@@ -8,8 +8,10 @@ import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Tag(name = "Auth", description = "임시 인증 API (개발용)")
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -65,6 +67,17 @@ public class AuthController {
             @RequestParam Long sellerId) {
         return RsData.success(SuccessCode.LOGIN_COMPLETE,
                 authFacade.issueForSellerApproved(userId, sellerId));
+    }
+
+    /**
+     * OAuth2 인증 에러 핸들러
+     * OAuth2 인증 실패 시 이곳으로 리다이렉트됨
+     */
+    @GetMapping("/error")
+    public RsData<String> handleOAuth2Error(@RequestParam(required = false) String error,
+                                            @RequestParam(required = false) String error_description) {
+        log.warn("OAuth2 인증 에러: error={}, description={}", error, error_description);
+        return RsData.fail("AUTH-500", "OAuth2 인증에 실패했습니다: " + (error_description != null ? error_description : error));
     }
 
 }
