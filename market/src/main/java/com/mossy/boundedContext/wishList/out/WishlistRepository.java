@@ -2,11 +2,14 @@ package com.mossy.boundedContext.wishList.out;
 
 import com.mossy.boundedContext.wishList.domain.Wishlist;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
 
-public interface WishlistRepository extends JpaRepository<Wishlist, Long>, WishlistRepositoryCustom {
+import java.util.List;
 
-    void deleteByMarketUserIdAndProductItemId(@Param("userId") Long userId, @Param("productItemId") Long productId);
+public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
 
-    boolean existsByMarketUserIdAndProductItemId(@Param("userId") Long userId, @Param("productItemId") Long productId);
+    List<Wishlist> findByMarketUserIdOrderByCreatedAtDesc(Long userId);
+
+    void deleteByMarketUserIdAndProductId(Long userId, Long productId);
+
+    boolean existsByMarketUserIdAndProductId(Long userId, Long productId);
 }

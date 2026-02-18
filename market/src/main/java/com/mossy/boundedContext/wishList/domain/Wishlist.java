@@ -27,13 +27,13 @@ public class Wishlist extends BaseIdAndTime {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketUser marketUser;
 
-    @Column(name = "product_item_id")
-    private Long productItemId;
+    @Column(name = "product_id")
+    private Long productId;
 
-    public static Wishlist create(MarketUser marketUser, Long productItemId) {
+    public static Wishlist create(MarketUser marketUser, Long productId) {
         return Wishlist.builder()
                 .marketUser(marketUser)
-                .productItemId(productItemId)
+                .productId(productId)
                 .build();
     }
 }
