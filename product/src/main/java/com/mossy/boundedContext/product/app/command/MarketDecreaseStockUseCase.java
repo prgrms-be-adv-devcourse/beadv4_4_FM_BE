@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.product.app;
+package com.mossy.boundedContext.product.app.command;
 
 //@Service
 //@RequiredArgsConstructor

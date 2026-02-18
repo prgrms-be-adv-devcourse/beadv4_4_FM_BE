@@ -19,9 +19,9 @@ public record ProductCreateRequest(
     ) {}
 
     public record ProductItemRequest(
-            @NotBlank String optionCombination,
             @NotNull @Min(0) BigDecimal additionalPrice,
             @NotNull @Min(0) Integer quantity,
+            @NotNull @Min(0) BigDecimal weight,
             @NotEmpty @Valid List<ItemOptionMappingRequest> itemOptions
     ) {}
 

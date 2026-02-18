@@ -1,49 +1,37 @@
 package com.mossy.boundedContext.product.app;
 
-import com.mossy.boundedContext.catalog.app.dto.CatalogDto;
-import com.mossy.boundedContext.product.app.command.ProductOptionConfigureUseCase;
+import com.mossy.boundedContext.product.app.command.RegisterProductUseCase;
+import com.mossy.boundedContext.product.app.command.UpdateProductUseCase;
+import com.mossy.boundedContext.product.app.dto.ProductDataForEvent;
 import com.mossy.boundedContext.product.app.query.GetProductDetailUseCase;
 import com.mossy.boundedContext.product.app.query.ProductSummaryQueryService;
-import com.mossy.boundedContext.product.app.command.RegisterProductUseCase;
-import com.mossy.boundedContext.product.app.dto.ProductDataForEvent;
-import com.mossy.boundedContext.catalog.app.query.CatalogQueryService;
-import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.domain.event.ProductRegisteredEvent;
 import com.mossy.boundedContext.product.in.dto.request.ProductCreateRequest;
+import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
 import com.mossy.boundedContext.product.in.dto.response.ProductDetailResponse;
 import com.mossy.global.eventPublisher.EventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ProductFacade {
 
-    private final RegisterProductUseCase marketRegisterProductUseCase;
-    private final ProductOptionConfigureUseCase productOptionConfigureUseCase;
+    private final RegisterProductUseCase registerProductUseCase;
     private final ProductSummaryQueryService productSummaryQueryService;
     private final GetProductDetailUseCase getProductDetailUseCase;
+    private final UpdateProductUseCase updateProductUseCase;
     private final EventPublisher eventPublisher;
 
     // 상품 등록
     @Transactional
     public Long registerProduct(ProductCreateRequest request) {
-        // 구조 생성
-        Product product = marketRegisterProductUseCase.create(
-                request.sellerId(), request.catalogProductId(), request.basePrice()
-        );
 
-        // 옵션/아이템 등록
-        productOptionConfigureUseCase.configure(product, request.optionGroups(), request.productItems());
-
-        // 저장
-        Long productId = marketRegisterProductUseCase.save(product);
+        Long productId = registerProductUseCase.register(request);
 
         ProductDataForEvent summary = productSummaryQueryService.getCatalogSummary(
-                product.getCatalogProductId(),
+                request.catalogProductId(),
                 productId
         );
 
@@ -64,10 +52,10 @@ public class ProductFacade {
     }
 
     // 상품 정보 수정
-//    @Transactional
-//    public void updateProduct(Long productId, Long currentSellerId, ProductUpdateRequest request) {
-//        marketUpdateProductUseCase.update(productId, currentSellerId, request);
-//    }
+    @Transactional
+    public void updateProduct(Long productId, Long currentSellerId, ProductUpdateRequest request) {
+        updateProductUseCase.updateProduct(productId, request);
+    }
 
 //    // 상품 상태 직접 변경 (판매자 조작)
 //    @Transactional

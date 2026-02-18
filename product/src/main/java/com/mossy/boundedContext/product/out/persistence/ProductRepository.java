@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
@@ -33,5 +34,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
             "WHERE p.status = 'FOR_SALE' " +
             "GROUP BY p.catalogProductId")
     List<CatalogSummaryDto> findAllCatalogSummaries();
+
+    @Query("select p from Product p where p.id = :id")
+    Optional<Product> findByIdWithAllDetails(@Param("id") Long id);
 }
 

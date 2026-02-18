@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.product.domain;
 
 import com.mossy.global.jpa.entity.BaseIdAndTime;
+import com.mossy.shared.market.enums.ProductItemStatus;
 import com.mossy.shared.market.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -52,6 +53,7 @@ public class Product extends BaseIdAndTime {
     @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private List<ProductOptionGroup> optionGroups = new ArrayList<>();
 
+
     // 비즈니스 로직
     public void delete() {
         this.status = ProductStatus.DELETED;
@@ -70,5 +72,17 @@ public class Product extends BaseIdAndTime {
             this.optionGroups = new ArrayList<>();
         }
         this.optionGroups.add(optionGroup);
+    }
+
+    public void discontinueItem(Long itemId) {
+        this.productItems.stream()
+                .filter(item -> item.getId().equals(itemId) && item.getStatus() == ProductItemStatus.ON_SALE)
+                .findFirst()
+                .ifPresent(ProductItem::markAsStopped);
+    }
+
+    // 기본 정보(가격 등) 수정을 위한 메서드
+    public void updateBaseInfo(BigDecimal basePrice) {
+        this.basePrice = basePrice;
     }
 }

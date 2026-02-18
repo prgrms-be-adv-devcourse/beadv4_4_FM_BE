@@ -48,7 +48,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         // 2. 카탈로그 정보 조회 (CatalogProduct + Category)
         Tuple catalogInfo = queryFactory
-                .select(catalogProduct, category.name)
+                .select(catalogProduct, category.id, category.name)
                 .from(catalogProduct)
                 .join(catalogProduct.category, category)
                 .where(catalogProduct.id.eq(catalogProductId))
@@ -61,6 +61,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 .fetch();
 
         CatalogProduct catalogEntity = catalogInfo.get(catalogProduct);
+        Long categoryId = catalogInfo.get(category.id);
         String categoryName = catalogInfo.get(category.name);
 
         // 3. 다른 판매자들 조회 (위에서 뽑힌 메인 상품 제외)
@@ -81,6 +82,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         return new ProductDetailResponse(
                 productMapper.toCatalogDto(
                         catalogEntity,
+                        categoryId,
                         categoryName,
                         images),
                 productMapper.toProductDto(mainProductEntity),

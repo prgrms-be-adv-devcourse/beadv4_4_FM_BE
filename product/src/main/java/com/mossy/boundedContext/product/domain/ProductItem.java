@@ -33,6 +33,9 @@ public class ProductItem extends BaseIdAndTime {
     @Column(name = "additional_price", nullable = false, precision = 18, scale = 2)
     private BigDecimal additionalPrice = BigDecimal.ZERO;
 
+    @Column(nullable = false, precision = 10, scale = 3)
+    private BigDecimal weight;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
@@ -40,11 +43,14 @@ public class ProductItem extends BaseIdAndTime {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_items_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @Builder.Default
     private List<ProductOptionValue> optionValues = new ArrayList<>();
 
-    public void addOptionValue(ProductOptionValue value) {
-        if (this.optionValues == null) this.optionValues = new ArrayList<>();
-        this.optionValues.add(value);
+
+
+    // 비즈니스 로직
+    public void addOptionValue(ProductOptionValue optionValue, ProductOptionGroup group) {
+        optionValues.add(optionValue);
     }
 
     // 재고 감소
@@ -61,5 +67,9 @@ public class ProductItem extends BaseIdAndTime {
     // 재고 추가
     public void addQuantity(int quantity) {
         this.quantity += quantity;
+    }
+
+    public void markAsStopped() {
+        this.status = ProductItemStatus.STOPPED;
     }
 }

@@ -14,6 +14,7 @@ public record ProductDetailResponse(
             String brand,
             String description,
             List<ImageDto> images,
+            Long categoryId,
             String categoryName
     ) {}
 
@@ -28,11 +29,24 @@ public record ProductDetailResponse(
             List<ProductItemDto> productItems
     ) {}
 
-    public record OptionGroupDto(Long groupId, String name, List<String> values) {}
-
-    public record ProductItemDto(
-            Long productItemsId, String optionCombination, BigDecimal additionalPrice, Integer quantity, String status
+    public record OptionGroupDto(
+            Long groupId,
+            String name,
+            List<String> values
     ) {}
 
-    public record OtherSellerDto(Long productId, Long sellerId, BigDecimal basePrice) {}
+    public record ProductItemDto(
+            Long productItemsId,
+            String optionCombination,
+            BigDecimal additionalPrice,
+            Integer quantity,
+            BigDecimal weight,
+            String status
+    ) {}
+
+    public record OtherSellerDto(
+            Long productId,
+            Long sellerId,
+            BigDecimal basePrice
+    ) {}
 }

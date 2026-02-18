@@ -30,13 +30,13 @@ public class ProductDataInit {
     @Bean
     public ApplicationRunner productDateInitRunner() {
         return args -> {
-            catalogProductRepository.deleteAll();
+            catalogSearchRepository.deleteAll();
             migrateAll();
         };
     }
 
     private void migrateAll() {
-        List<CatalogProduct> catalogs = catalogProductRepository.findAll();
+        List<CatalogProduct> catalogs = catalogProductRepository.findAllWithCategory();
 
         // 최저가 및 판매자 수 집계 데이터 가져오기
         Map<Long, CatalogSummaryDto> summaryMap = productRepository.findAllCatalogSummaries()

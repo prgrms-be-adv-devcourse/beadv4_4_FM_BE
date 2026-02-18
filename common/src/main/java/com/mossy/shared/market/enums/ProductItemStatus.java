@@ -2,12 +2,12 @@ package com.mossy.shared.market.enums;
 
 public enum ProductItemStatus {
     ON_SALE("판매 중"),
+    OUT_OF_STOCK("품절"),
     STOPPED("판매 중지"),
     HIDDEN("숨김"),
-    DELETED("삭제");
+    DELETED("삭제")
+    ;
 
     private final String description;
-    ProductItemStatus(String description) {
-        this.description = description;
-    }
+    ProductItemStatus(String description) { this.description = description; }
 }

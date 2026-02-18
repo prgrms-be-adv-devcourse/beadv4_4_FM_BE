@@ -2,6 +2,7 @@ package com.mossy.boundedContext.product.in;
 
 import com.mossy.boundedContext.product.app.ProductFacade;
 import com.mossy.boundedContext.product.in.dto.request.ProductCreateRequest;
+import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
 import com.mossy.boundedContext.product.in.dto.response.ProductDetailResponse;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,18 +42,18 @@ public class ApiV1ProductController {
     }
 
     // 상품 수정
-//    @Operation(
-//            summary = "상품 수정",
-//            description = "상품을 수정합니다")
-//    @PutMapping("/{productId}")
-//    public RsData<Long> updateProduct(
-//            @PathVariable Long productId,
-//            @RequestHeader("X-Seller-Id") Long currentSellerId,
-//            @ModelAttribute @Valid ProductUpdateRequest request) {
-//        productFacade.updateProduct(productId, currentSellerId, request);
-//
-//        return new RsData<>("200", "상품이 수정되었습니다.", productId);
-//    }
+    @Operation(
+            summary = "상품 수정",
+            description = "상품을 수정합니다")
+    @PutMapping("/{productId}")
+    public RsData<Long> updateProduct(
+            @PathVariable Long productId,
+            @RequestHeader("X-Seller-Id") Long currentSellerId,
+            @RequestBody @Valid ProductUpdateRequest request) {
+        productFacade.updateProduct(productId, currentSellerId, request);
+
+        return new RsData<>("200", "상품이 수정되었습니다.", productId);
+    }
 
     // 상품 상태 수정
 //    @Operation(

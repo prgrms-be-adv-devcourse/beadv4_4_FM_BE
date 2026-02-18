@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ProductSearchFacade {
+public class CatalogSearchFacade {
 
-    private final ProductSearchUseCase productSearchUseCase;
+    private final CatalogSearchUseCase catalogSearchUseCase;
 
     // 메인 화면 상품 리스트 (인기순)
     public Page<CatalogDocument> search(ProductSearchCondition condition, Pageable pageable) {
-        return productSearchUseCase.search(condition, pageable);
+        return catalogSearchUseCase.search(condition, pageable);
     }
 }

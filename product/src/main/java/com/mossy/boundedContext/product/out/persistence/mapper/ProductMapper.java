@@ -20,6 +20,7 @@ public interface ProductMapper {
     @Mapping(target = "categoryName", source = "categoryName")
     ProductDetailResponse.CatalogDto toCatalogDto(
             CatalogProduct catalog,
+            Long categoryId,
             String categoryName,
             List<CatalogImage> images);
 
@@ -40,7 +41,7 @@ public interface ProductMapper {
         return groups.stream().map(group -> {
             List<String> values = items.stream()
                     .flatMap(item -> item.getOptionValues().stream())
-                    .filter(val -> val.getOptionGroupId().equals(group.getId()))
+                    .filter(val -> val.getOptionGroup().getId().equals(group.getId()))
                     .map(ProductOptionValue::getValue)
                     .distinct()
                     .toList();

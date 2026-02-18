@@ -23,7 +23,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProductSearchUseCase {
+public class CatalogSearchUseCase {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
@@ -81,8 +81,8 @@ public class ProductSearchUseCase {
                 .functions(f -> f.scriptScore(ss -> ss
                         .script(s -> s.lang(ScriptLanguage.Painless)
                                 .source("""
-                                    (doc['salesCount'].size() == 0 ? 0 : doc['salesCount'].value) * 10 + 
-                                    (doc['reviewCount'].size() == 0 ? 0 : doc['reviewCount'].value)
+                                    (doc['salesCount'].empty ? 0 : doc['salesCount'].value) * 10 + 
+                                    (doc['reviewCount'].empty ? 0 : doc['reviewCount'].value)
                                     """)
                         ))
                 )

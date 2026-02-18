@@ -4,6 +4,9 @@ import com.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "PRODUCT_OPTION_GROUP")
 @Getter
@@ -21,4 +24,12 @@ public class ProductOptionGroup extends BaseIdAndTime {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_option_group_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private List<ProductOptionValue> optionValues = new ArrayList<>();
+
+
+    // 비즈니스 로직
+
 }
