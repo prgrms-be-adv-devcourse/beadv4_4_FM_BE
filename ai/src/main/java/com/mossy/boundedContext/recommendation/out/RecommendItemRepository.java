@@ -19,5 +19,7 @@ public interface RecommendItemRepository extends ReactiveCrudRepository<Recommen
         """)
     Flux<Long> findTopSimilarProductIds(Long productId, int limitCount);
 
+    Mono<RecommendItem> findByProductId(Long productId);
+
     Mono<Boolean> existsByProductId(Long productId);
 }
