@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.Map;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import org.springframework.core.env.Environment;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
@@ -26,6 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final AuthFacade authFacade;
+    private final Environment environment;
 
     @Value("${spring.security.oauth2.frontendUrl:http://localhost:5173}")
     private String frontendUrl;
@@ -52,11 +55,21 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             // AuthFacade를 통해 사용자 정보 저장/업데이트 및 토큰 발급
             LoginResponse loginResponse = authFacade.upsertUserAndIssueToken(userDTO);
 
-            // 프론트엔드로 토큰 전달
+            // RefreshToken을 HttpOnly 쿠키에 저장
+            Cookie refreshTokenCookie = new Cookie("refreshToken", loginResponse.refreshToken());
+            refreshTokenCookie.setHttpOnly(true);
+            // 운영 환경(prod)에서만 Secure 설정 (HTTPS만 허용)
+            boolean isProduction = environment.getActiveProfiles().length > 0 &&
+                                  environment.getActiveProfiles()[0].equals("prod");
+            refreshTokenCookie.setSecure(isProduction);
+            refreshTokenCookie.setPath("/");
+            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일
+            response.addCookie(refreshTokenCookie);
+
+            // AccessToken은 QueryParameter로 전달 (프론트엔드에서 메모리에 저장)
             String redirectUrl = UriComponentsBuilder.fromUriString(frontendUrl)
                     .path("/auth/callback")
                     .queryParam("accessToken", loginResponse.accessToken())
-                    .queryParam("refreshToken", loginResponse.refreshToken())
                     .queryParam("isNewUser", loginResponse.isNewUser())
                     .build().toUriString();
 
