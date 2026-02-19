@@ -3,6 +3,38 @@ spring:
     activate:
       on-profile: prod
 
+  # OAuth2 설정
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid, profile, email
+            redirect-uri: http://localhost:8086/login/oauth2/code/google
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-name: kakao
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            provider: kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8086/login/oauth2/code/kakao
+            scope: profile_nickname, account_email
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://www.googleapis.com/oauth2/v4/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+            user-name-attribute: sub
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+      frontendUrl: ${FRONTEND_URL:http://localhost:5173}
+
+
   # 운영 환경 Redis 정보
   data:
     redis:

@@ -12,40 +12,40 @@ spring:
     gateway:
       routes:
         - id: market
-          uri: http://market:8081
+          uri: http://localhost:8081
           predicates:
             - Path=/api/v1/cart/**, /api/v1/orders/**, /api/v1/payments/**, /api/v1/product/**
           filters:
             - name: JwtAuthenticationFilter
 
         - id: member-public
-          uri: http://member:8082
+          uri: http://localhost:8082
           predicates:
             - Path=/api/v1/users/signup
 
         - id: member-private
-          uri: http://member:8082
+          uri: http://localhost:8082
           predicates:
-            - Path=/api/v1/users/me
+            - Path=/api/v1/users/me, /api/v1/users/profile
           filters:
             - name: JwtAuthenticationFilter
 
         - id: cash
-          uri: http://cash:8083
+          uri: http://localhost:8083
           predicates:
             - Path=/api/v1/cash/**
           filters:
             - name: JwtAuthenticationFilter
 
         - id: payout
-          uri: http://payout:8084
+          uri: http://localhost:8084
           predicates:
             - Path=/api/payout/**
           filters:
             - name: JwtAuthenticationFilter
 
         - id: review
-          uri: http://review:8085
+          uri: http://localhost:8085
           predicates:
             - Path=/api/v1/review/**
           filters:
@@ -54,7 +54,7 @@ spring:
         - id: auth
           uri: http://localhost:8086
           predicates:
-            - Path=/api/v1/auth/login
+            - Path=/api/v1/auth/**
 
 eureka:
   client:

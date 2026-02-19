@@ -4,8 +4,11 @@ import com.mossy.boundedContext.app.VerfyMemberUseCase;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
+import com.mossy.boundedContext.in.dto.request.ProfileUpdateRequest;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
+import com.mossy.boundedContext.in.dto.OAuth2UserDto;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
+import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
 import com.mossy.exception.DomainException;
@@ -32,6 +35,8 @@ public class UserFacade {
     private final SellerRequestRepository sellerRequestRepository;
     private final GetUserInfoUseCase getUserInfoUseCase;
     private final UserRepository userRepository;
+    private final ProcessSocialLoginUseCase processSocialLoginUseCase;
+    private final UpdateProfileUseCase updateProfileUseCase;
 
     public Long signup(SignupRequest req){
         User savedUser = signupUseCase.execute(req);
@@ -60,7 +65,6 @@ public class UserFacade {
         );
     }
 
-
     public MemberVerifyExternResponse verifyMember(String email, String password) {
         return verfyMemberUseCase.execute(email, password);
     }
@@ -69,5 +73,12 @@ public class UserFacade {
         return getUserInfoUseCase.tokenExecute(userId);
     }
 
+    //OAuth2 소셜 로그인 처리
+    public SocialLonginResponse processSocialLogin(OAuth2UserDto userDTO) {
+        return processSocialLoginUseCase.execute(userDTO);
+    }
 
+    public void updateProfile(Long userId, ProfileUpdateRequest request) {
+        updateProfileUseCase.execute(userId, request);
+    }
 }

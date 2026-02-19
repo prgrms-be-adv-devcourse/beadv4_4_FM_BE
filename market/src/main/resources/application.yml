@@ -47,6 +47,12 @@ spring:
   cache:
     type: redis
 
+  # Kafka 설정
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: market
+
 # 모든 서비스에서 동일한 경로로 스웨거 사용
 springdoc:
   swagger-ui:

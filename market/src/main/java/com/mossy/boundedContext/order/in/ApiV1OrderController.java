@@ -45,13 +45,13 @@ public class ApiV1OrderController {
             description = "사용자의 구매 내역 목록을 페이징하여 조회합니다."
     )
     @GetMapping
-    public Page<OrderListResponse> getMyOrders(
+    public RsData<Page<OrderListResponse>> getMyOrders(
             @RequestParam(name = "userId") Long userId,
 
             @Parameter(hidden = true)
             @PageableDefault(size = 5) Pageable pageable
     ) {
-        return orderFacade.getOrderListByUserId(userId, pageable);
+        return RsData.success(SuccessCode.ORDER_LIST, orderFacade.getOrderListByUserId(userId, pageable));
     }
 
     @Operation(
@@ -59,11 +59,11 @@ public class ApiV1OrderController {
             description = "특정 구매 내역의 상세를 조회합니다."
     )
     @GetMapping("/{orderId}")
-    public List<OrderDetailResponse> getOrder(
+    public RsData<List<OrderDetailResponse>> getOrder(
             @Parameter(description = "주문 ID", required = true)
             @PathVariable Long orderId
     ) {
-        return orderFacade.getOrderDetails(orderId);
+        return RsData.success(SuccessCode.ORDER_DETAIL, orderFacade.getOrderDetails(orderId));
     }
 
     @Operation(summary = "주문 삭제", description = "특정 주문을 삭제 합니다.")
@@ -74,21 +74,5 @@ public class ApiV1OrderController {
     ) {
         orderFacade.deleteOrder(orderId, userId);
         return RsData.success(SuccessCode.ORDER_DELETE);
-    }
-
-    @Operation(
-            summary = "주문 취소",
-            description = "결제 완료된 주문을 취소하고 환불을 진행합니다."
-    )
-    @PostMapping("/{orderId}/cancel")
-    public RsData<Void> cancelOrder(
-            @Parameter(description = "주문 ID", required = true)
-            @PathVariable Long orderId,
-
-            @RequestParam(name = "userId") Long userId,
-            @Parameter(description = "취소 사유", required = true) @RequestParam String cancelReason
-    ) {
-        orderFacade.cancelOrder(orderId, userId, cancelReason);
-        return RsData.success(SuccessCode.ORDER_CANCEL);
     }
 }

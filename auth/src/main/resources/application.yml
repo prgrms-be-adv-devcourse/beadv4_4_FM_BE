@@ -22,7 +22,7 @@ spring:
 mossy:
   jwt:
     secret: ${JWT_SECRET}
-    access-token-expire-ms: 180    # 30분
+    access-token-expire-ms: 1800000    # 30분
     refresh-token-expire-ms: 1209600000    # 14일
 
 # OpenFeign 설정 (로깅 및 타임아웃)

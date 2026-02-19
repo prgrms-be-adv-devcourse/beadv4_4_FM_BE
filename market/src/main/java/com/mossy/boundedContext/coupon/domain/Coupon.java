@@ -1,5 +1,7 @@
 package com.mossy.boundedContext.coupon.domain;
 
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,7 +53,69 @@ public class Coupon extends BaseIdAndTime {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = false;
 
+    // 수동 비활성화 여부
+    // 이 컬럼이 없으면 스케쥴러에서 계속 isActive를 true로 만듦
+    @Convert(converter = YesNoConverter.class)
+    @Column(name = "deactivated", nullable = false)
+    private boolean deactivated = false;
+
+    public static Coupon create(
+            Long issuerId,
+            IssuerType issuerType,
+            Long productItemId,
+            String couponName,
+            CouponType couponType,
+            BigDecimal discountValue,
+            BigDecimal maxDiscountAmount,
+            LocalDateTime startAt,
+            LocalDateTime endAt
+    ) {
+        validateStartAtFuture(startAt);
+        validatePeriod(startAt, endAt);
+        return Coupon.builder()
+            .issuerId(issuerId)
+            .issuerType(issuerType)
+            .productItemId(productItemId)
+            .couponName(couponName)
+            .couponType(couponType)
+            .discountValue(discountValue)
+            .maxDiscountAmount(couponType == CouponType.FIXED ? null : maxDiscountAmount)
+            .startAt(startAt)
+            .endAt(endAt)
+            .isActive(false)
+            .build();
+    }
+
+    public void activate() {
+        if (this.deactivated) return;
+        this.isActive = true;
+    }
+
+    public void deactivate() {
+        this.isActive = false;
+        this.deactivated = true;
+    }
+
+    public void update(
+            String couponName,
+            BigDecimal discountValue,
+            BigDecimal maxDiscountAmount,
+            LocalDateTime endAt
+    ) {
+        LocalDateTime newEndAt = endAt != null ? endAt : this.endAt;
+        validatePeriod(this.startAt, newEndAt);
+
+        if (couponName != null) this.couponName = couponName;
+        if (discountValue != null) this.discountValue = discountValue;
+
+        if (this.couponType == CouponType.PERCENTAGE && maxDiscountAmount != null)
+            this.maxDiscountAmount = maxDiscountAmount;
+
+        this.endAt = newEndAt;
+    }
+
     // 정률 쿠폰은 maxDiscountAmount(최대 할인 한도)를 초과할 경우, 최대 할인 한도로 반환
+    // 정액 쿠폰은 maxDiscountAmount가 존재하지 않는다.
     public BigDecimal calculateDiscount(BigDecimal originalPrice) {
         if (couponType == CouponType.FIXED) {
             return discountValue;
@@ -67,28 +131,24 @@ public class Coupon extends BaseIdAndTime {
         return maxDiscountAmount;
     }
 
-    public static Coupon create(
-            Long issuerId,
-            IssuerType issuerType,
-            Long productItemId,
-            String couponName,
-            CouponType couponType,
-            BigDecimal discountValue,
-            BigDecimal maxDiscountAmount,
-            LocalDateTime startAt,
-            LocalDateTime endAt
-    ) {
-        return Coupon.builder()
-            .issuerId(issuerId)
-            .issuerType(issuerType)
-            .productItemId(productItemId)
-            .couponName(couponName)
-            .couponType(couponType)
-            .discountValue(discountValue)
-            .maxDiscountAmount(maxDiscountAmount)
-            .startAt(startAt)
-            .endAt(endAt)
-            .isActive(false)
-            .build();
+    // 쿠폰을 등록한 판매자 본인인지 검증
+    public void validateOwnerSeller(Long sellerId) {
+        if (!this.issuerId.equals(sellerId) || this.issuerType != IssuerType.SELLER) {
+            throw new DomainException(ErrorCode.COUPON_ACCESS_DENIED);
+        }
+    }
+
+    // 쿠폰 시작 시간보다 끝나는 시간이 미래일 때 검증
+    private static void validatePeriod(LocalDateTime startAt, LocalDateTime endAt) {
+        if (!startAt.isBefore(endAt)) {
+            throw new DomainException(ErrorCode.INVALID_COUPON_PERIOD);
+        }
+    }
+
+    // 현재 시간이 쿠폰 시작 시간보다 과거일 때 검증
+    private static void validateStartAtFuture(LocalDateTime startAt) {
+        if (!LocalDateTime.now().isBefore(startAt)) {
+            throw new DomainException(ErrorCode.INVALID_COUPON_START_AT);
+        }
     }
 }

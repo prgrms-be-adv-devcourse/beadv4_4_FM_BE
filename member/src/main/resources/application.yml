@@ -26,12 +26,6 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
-mossy:
-  jwt:
-    secret: ${JWT_SECRET}
-    access-token-expire-ms: 1800000
-    refresh-token-expire-ms: 1209600000
-
 # S3
 cloud:
   aws:
