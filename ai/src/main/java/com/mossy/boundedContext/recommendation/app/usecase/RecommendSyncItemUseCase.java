@@ -3,7 +3,7 @@ package com.mossy.boundedContext.recommendation.app.usecase;
 import com.mossy.boundedContext.recommendation.app.mapper.RecommendMapper;
 import com.mossy.boundedContext.recommendation.domain.RecommendItem;
 import com.mossy.boundedContext.recommendation.in.dto.request.ProductCreateRequestDto;
-import com.mossy.boundedContext.recommendation.out.RecommendItemRepository;
+import com.mossy.boundedContext.recommendation.out.repository.RecommendItemRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.shared.market.event.ProductUpdatedEvent;
