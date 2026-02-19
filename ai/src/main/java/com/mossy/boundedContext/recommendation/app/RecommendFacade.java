@@ -43,13 +43,11 @@ public class RecommendFacade {
     }
 
     public Mono<List<RecommendProductResponse>> chatRecommend(String query) {
-        // Step 1 (Embedding): 사용자 질문을 벡터로 변환
         return embedQuery(query)
             .flatMap(recommendSearchItemsUseCase::searchByVector)
             .flatMap(marketServiceAdapter::getProductDetails)
             .flatMap(products ->
                 recommendGenerateReasonUseCase.generateReasons(query, products)
-                    // Step 5 (Assembly): 상품 정보 + 추천 사유를 응답 DTO로 조립
                     .map(reasons -> assembleResponse(products, reasons))
             );
     }
