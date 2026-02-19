@@ -6,6 +6,7 @@ import com.mossy.boundedContext.in.dto.response.TokenResponse;
 import com.mossy.boundedContext.out.dto.OAuth2UserInfo;
 import com.mossy.boundedContext.out.dto.OAuth2UserDTO;
 import com.mossy.boundedContext.out.dto.response.SocialLonginResponse;
+import com.mossy.boundedContext.app.mapper.OAuth2UserMapper;
 import com.mossy.boundedContext.out.external.MemberFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class AuthFacade {
     private final IssueTokenUseCase issueTokenUseCase;
     private final ReissueTokenUseCase reissueTokenUseCase;
     private final MemberFeignClient memberFeignClient;
+    private final OAuth2UserMapper oAuth2UserMapper;
 
     //로그인
     public LoginResponse login(LoginRequest request) {
@@ -53,17 +55,7 @@ public class AuthFacade {
     //소셜로그인(유저 정보 동기화용)
     @SuppressWarnings("unused")
     public SocialLonginResponse upsertUser(OAuth2UserInfo userInfo) {
-        //1. 유젓 서비스에 이멜로 기존 유저 확인
-        //2. 있으면 해당 유저 정보 반환
-        //3. 없으면 소셜 정보를 바탄으로 신규 회원가입 처리
-
-        OAuth2UserDTO userDTO = new OAuth2UserDTO(
-                userInfo.providerId(),
-                userInfo.provider(),
-                userInfo.email(),
-                userInfo.name()
-        );
-
+        OAuth2UserDTO userDTO = oAuth2UserMapper.toDTO(userInfo);
         return memberFeignClient.processSocialLogin(userDTO);
     }
 

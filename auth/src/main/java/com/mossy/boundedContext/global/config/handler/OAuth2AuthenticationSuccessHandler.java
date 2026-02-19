@@ -5,6 +5,7 @@ import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.out.dto.OAuth2UserDTO;
 import com.mossy.boundedContext.out.dto.OAuth2UserInfo;
 import com.mossy.boundedContext.out.dto.OAuth2UserInfoImpl;
+import com.mossy.boundedContext.app.mapper.OAuth2UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final AuthFacade authFacade;
+    private final OAuth2UserMapper oAuth2UserMapper;
     private final Environment environment;
 
     @Value("${spring.security.oauth2.frontendUrl:http://localhost:5173}")
@@ -46,7 +48,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         // OAuth2UserInfo 생성
         OAuth2UserInfo userInfo = new OAuth2UserInfoImpl(attributes, registrationId);
-        OAuth2UserDTO userDTO = OAuth2UserDTO.from(userInfo);
+        OAuth2UserDTO userDTO = oAuth2UserMapper.toDTO(userInfo);
 
         log.debug("OAuth2 사용자 정보: provider={}, email={}, name={}",
                 userInfo.provider(), userInfo.email(), userInfo.name());

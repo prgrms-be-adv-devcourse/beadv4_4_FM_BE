@@ -8,11 +8,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+@Slf4j
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,6 +44,32 @@ public class User extends SourceUser {
        this.password = password;
        this.phoneNum = phoneNum;
        this.rrnEncrypted = rrnEncrypted;
+   }
+
+   public static User createFromOAuth2(String email, String name) {
+       log.info("OAuth2 소셜 사용자 생성: email={}", email);
+
+       // 닉네임 자동 생성 (UUID 사용)
+       String nickname = generateUniqueNickname();
+
+       return User.builder()
+               .email(email)
+               .name(name != null ? name : "사용자")
+               .nickname(nickname)
+               .password("") // 소셜 로그인 사용자는 비밀번호 없음
+               .phoneNum("") // 소셜 로그인으로부터 받지 않음
+               .address("") // 소셜 로그인으로부터 받지 않음
+               .rrnEncrypted("") // 소셜 로그인으로부터 받지 않음
+               .profileImage("default.png")
+               .status(UserStatus.ACTIVE)
+               .longitude(BigDecimal.ZERO)
+               .latitude(BigDecimal.ZERO)
+               .build();
+   }
+
+   // 중복되지 않는 고유한 닉네임을 생성합니다.
+   private static String generateUniqueNickname() {
+       return "user_" + UUID.randomUUID().toString().substring(0, 8);
    }
 
    public void addUserRole(UserRole userRole) {
