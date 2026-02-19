@@ -1,7 +1,8 @@
 package com.mossy.boundedContext.cash.in;
 
 import com.mossy.boundedContext.cash.app.CashFacade;
-import com.mossy.boundedContext.cash.in.dto.request.SellerBalanceRequestDto;
+import com.mossy.boundedContext.cash.app.mapper.CashMapper;
+import com.mossy.boundedContext.cash.in.dto.request.SellerBalanceRequest;
 import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiV1WalletController {
 
     private final CashFacade cashFacade;
+    private final CashMapper mapper;
 
     // --- [구매자(User) 관련 API] ---
 
@@ -91,42 +93,42 @@ public class ApiV1WalletController {
 
     @Operation(summary = "판매자 대금 입금", description = "판매 수익이나 정산 예정 금액을 판매자 지갑에 입금 처리합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "입금 성공")
+        @ApiResponse(responseCode = "200", description = "입금 성공")
     })
     @PostMapping("/seller/credit")
     public RsData<Void> creditSellerBalance(
-            @RequestHeader("X-User-Id") Long userId,
-            @RequestBody SellerBalanceRequestDto request) {
-        cashFacade.creditSellerBalance(request.withSellerId(userId));
+        @RequestHeader("X-Seller-Id") Long sellerId,
+        @RequestBody SellerBalanceRequest request) {
+        cashFacade.creditSellerBalance(mapper.toSellerBalanceRequestDto(sellerId, request));
         return RsData.success(SuccessCode.SELLER_CREDIT_SUCCESS);
     }
 
     @Operation(summary = "판매자 정산금 출금", description = "판매자의 정산 신청 시 지갑에서 해당 금액만큼 차감합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "출금 처리 성공"),
-            @ApiResponse(responseCode = "400", description = "정산 가능 금액 초과")
+        @ApiResponse(responseCode = "200", description = "출금 처리 성공"),
+        @ApiResponse(responseCode = "400", description = "정산 가능 금액 초과")
     })
     @PostMapping("/seller/deduct")
     public RsData<Void> deductSellerBalance(
-            @RequestHeader("X-User-Id") Long userId,
-            @RequestBody SellerBalanceRequestDto request) {
-        cashFacade.deductSellerBalance(request.withSellerId(userId));
+        @RequestHeader("X-Seller-Id") Long sellerId,
+        @RequestBody SellerBalanceRequest request) {
+        cashFacade.deductSellerBalance(mapper.toSellerBalanceRequestDto(sellerId, request));
         return RsData.success(SuccessCode.SELLER_DEDUCT_SUCCESS);
     }
 
     @Operation(summary = "판매자 정산 지갑 상세 조회", description = "판매자 지갑 정보와 정산에 필요한 레플리카 정보를 상세 조회합니다.")
     @GetMapping("/seller")
     public RsData<SellerWalletResponseDto> getSellerWallet(
-            @RequestHeader("X-User-Id") Long userId) {
-        SellerWalletResponseDto wallet = cashFacade.findSellerWallet(userId);
+            @RequestHeader("X-Seller-Id") Long sellerId) {
+        SellerWalletResponseDto wallet = cashFacade.findSellerWallet(sellerId);
         return RsData.success(SuccessCode.SELLER_WALLET_FOUND, wallet);
     }
 
     @Operation(summary = "판매자 정산 가능 잔액 조회", description = "판매자 지갑의 현재 출금 가능 잔액만을 조회합니다.")
     @GetMapping("/seller/balance")
     public RsData<BigDecimal> getSellerBalance(
-            @RequestHeader("X-User-Id") Long userId) {
-        BigDecimal balance = cashFacade.findSellerBalance(userId);
+            @RequestHeader("X-Seller-Id") Long sellerId) {
+        BigDecimal balance = cashFacade.findSellerBalance(sellerId);
         return RsData.success(SuccessCode.SELLER_BALANCE_FOUND, balance);
     }
 }
