@@ -18,25 +18,6 @@ spring:
       host: ${REDIS_HOST:localhost}
       port: 6379
 
-  # OAuth2 클라이언트 설정
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: http://localhost:8086/login/oauth2/code/google
-            scope: profile,email
-            client-name: Google
-        provider:
-          google:
-            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
-            token-uri: https://www.googleapis.com/oauth2/v4/token
-            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-            user-name-attribute: sub
-      frontendUrl: ${FRONTEND_URL:http://localhost:5173}
-
 # JWT 설정
 mossy:
   jwt:
