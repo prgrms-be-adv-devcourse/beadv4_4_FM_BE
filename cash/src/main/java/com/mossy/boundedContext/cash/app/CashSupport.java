@@ -49,6 +49,8 @@ public class CashSupport {
             .orElseThrow(() -> new DomainException(ErrorCode.SELLER_NOT_FOUND));
     }
 
+    // --- [조회 (읽기 전용)] ---
+
     public UserWallet findWalletByUserId(Long userId) {
         return userWalletRepository.findWalletByUserId(userId)
             .orElseThrow(() -> new DomainException(ErrorCode.USER_WALLET_NOT_FOUND));
@@ -59,23 +61,35 @@ public class CashSupport {
             .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
     }
 
+    // --- [조회 + 비관적 락 (잔액 변경 시 사용)] ---
+
+    public UserWallet findWalletByUserIdForUpdate(Long userId) {
+        return userWalletRepository.findWalletByUserIdForUpdate(userId)
+            .orElseThrow(() -> new DomainException(ErrorCode.USER_WALLET_NOT_FOUND));
+    }
+
+    public SellerWallet findWalletBySellerIdForUpdate(Long sellerId) {
+        return sellerWalletRepository.findWalletBySellerIdForUpdate(sellerId)
+            .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
+    }
+
     public SellerWallet findSystemWallet() {
-        return sellerWalletRepository.findBySellerId(CashPolicy.SYSTEM_MEMBER_ID)
+        return sellerWalletRepository.findBySellerIdForUpdate(CashPolicy.SYSTEM_MEMBER_ID)
             .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
     }
 
     public SellerWallet findHoldingWallet() {
-        return sellerWalletRepository.findBySellerId(CashPolicy.HOLDING_MEMBER_ID)
+        return sellerWalletRepository.findBySellerIdForUpdate(CashPolicy.HOLDING_MEMBER_ID)
             .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
     }
 
     public SellerWallet findDonationWallet() {
-        return sellerWalletRepository.findBySellerId(CashPolicy.DONATION_MEMBER_ID)
+        return sellerWalletRepository.findBySellerIdForUpdate(CashPolicy.DONATION_MEMBER_ID)
             .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
     }
 
     public SellerWallet findDeliveryWallet() {
-        return sellerWalletRepository.findBySellerId(CashPolicy.DELIVERY_MEMBER_ID)
+        return sellerWalletRepository.findBySellerIdForUpdate(CashPolicy.DELIVERY_MEMBER_ID)
             .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
     }
 
