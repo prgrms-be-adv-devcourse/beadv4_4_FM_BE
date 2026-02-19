@@ -1,6 +1,6 @@
-package com.mossy.boundedContext.recommendation.out.dto.response;
+package com.mossy.boundedContext.recommendation.out.external.dto.response;
 
-public record MarketProductResponse(
+public record ProductResponse(
     Long productId,
     String name,
     String categoryName,
