@@ -7,7 +7,7 @@ import com.mossy.boundedContext.cash.app.CashFacade;
 import com.mossy.boundedContext.cash.app.mapper.CashMapper;
 import com.mossy.boundedContext.cash.in.dto.event.CashSellerCreatedEvent;
 import com.mossy.boundedContext.cash.in.dto.event.CashUserCreatedEvent;
-import com.mossy.shared.cash.event.PaymentRefundEvent;
+import com.mossy.shared.cash.event.PaymentCashRefundEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
 import com.mossy.shared.member.event.UserUpdatedEvent;
@@ -62,7 +62,7 @@ public class CashEventListener {
     }
 
     @EventListener
-    public void paymentRefundEvent(PaymentRefundEvent event) {
+    public void paymentRefundEvent(PaymentCashRefundEvent event) {
         cashFacade.processRefund(mapper.toCashRefundRequestDto(event));
     }
 }

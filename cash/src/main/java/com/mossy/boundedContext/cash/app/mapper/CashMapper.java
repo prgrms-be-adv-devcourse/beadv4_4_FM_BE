@@ -11,7 +11,7 @@ import com.mossy.boundedContext.cash.in.dto.request.CashRefundRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
-import com.mossy.shared.cash.event.PaymentRefundEvent;
+import com.mossy.shared.cash.event.PaymentCashRefundEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.member.payload.UserPayload;
 import org.mapstruct.Mapper;
@@ -40,7 +40,7 @@ public interface CashMapper {
 
     // --- [이벤트 기반 DTO 변환] ---
 
-    CashRefundRequestDto toCashRefundRequestDto(PaymentRefundEvent event);
+    CashRefundRequestDto toCashRefundRequestDto(PaymentCashRefundEvent event);
 
     // --- [조회 응답 매핑] ---
 

@@ -6,7 +6,7 @@ import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelTossRequestD
 import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
-import com.mossy.shared.cash.event.PaymentRefundEvent;
+import com.mossy.shared.cash.event.PaymentCashRefundEvent;
 import com.mossy.shared.market.event.OrderCancelEvent;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class PaymentCancelTossUseCase {
 
         MarketOrderResponse order = paymentSupport.findOrderForCancel(payment.getOrderId());
 
-        eventPublisher.publish(new PaymentRefundEvent(
+        eventPublisher.publish(new PaymentCashRefundEvent(
             order.orderId(),
             order.buyerId(),
             cancelAmount,

@@ -2,7 +2,7 @@ package com.mossy.boundedContext.cash.in;
 
 import com.mossy.boundedContext.cash.app.CashFacade;
 import com.mossy.boundedContext.cash.app.mapper.CashMapper;
-import com.mossy.shared.cash.event.PaymentRefundEvent;
+import com.mossy.shared.cash.event.PaymentCashRefundEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,7 +17,7 @@ public class CashKafkaEventListener {
     private final CashMapper mapper;
 
     @KafkaListener(topics = "${app.kafka.topics.payment.refund}")
-    public void handlePaymentRefundEvent(PaymentRefundEvent event) {
+    public void handlePaymentRefundEvent(PaymentCashRefundEvent event) {
         cashFacade.processRefund(mapper.toCashRefundRequestDto(event));
     }
 }
