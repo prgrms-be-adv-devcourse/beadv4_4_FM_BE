@@ -33,6 +33,9 @@ public class ProductItem extends BaseIdAndTime {
     @Column(name = "additional_price", nullable = false, precision = 18, scale = 2)
     private BigDecimal additionalPrice = BigDecimal.ZERO;
 
+    @Column(name = "total_price", nullable = false)
+    private BigDecimal totalPrice;
+
     @Column(nullable = false, precision = 10, scale = 3)
     private BigDecimal weight;
 
@@ -45,8 +48,6 @@ public class ProductItem extends BaseIdAndTime {
     @JoinColumn(name = "product_items_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @Builder.Default
     private List<ProductOptionValue> optionValues = new ArrayList<>();
-
-
 
     // 비즈니스 로직
     public void addOptionValue(ProductOptionValue optionValue, ProductOptionGroup group) {

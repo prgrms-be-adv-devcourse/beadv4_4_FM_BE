@@ -36,8 +36,9 @@ public class ApiV1ProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RsData<Long> createProduct(
+            @RequestHeader("X-Seller-Id") Long currentSellerId,
             @RequestBody @Valid ProductCreateRequest request) {
-        Long productId = productFacade.registerProduct(request);
+        Long productId = productFacade.registerProduct(currentSellerId, request);
         return new RsData<>("201", "상품이 등록되었습니다", productId);
     }
 

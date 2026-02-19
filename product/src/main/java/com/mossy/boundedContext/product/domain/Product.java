@@ -1,5 +1,7 @@
 package com.mossy.boundedContext.product.domain;
 
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.market.enums.ProductItemStatus;
 import com.mossy.shared.market.enums.ProductStatus;
@@ -14,6 +16,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "PRODUCT")
@@ -32,7 +37,7 @@ public class Product extends BaseIdAndTime {
     private Long catalogProductId;
 
     @Column(name = "base_price", nullable = false, precision = 18, scale = 2)
-    private BigDecimal basePrice; // 해당 판매자의 기준 판매가
+    private BigDecimal basePrice;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -84,5 +89,20 @@ public class Product extends BaseIdAndTime {
     // 기본 정보 수정
     public void updateBaseInfo(BigDecimal basePrice) {
         this.basePrice = basePrice;
+    }
+
+    public void validateOwner(Long sellerId) {
+        if (!Objects.equals(this.sellerId, sellerId)) {
+            throw new DomainException(ErrorCode.PRODUCT_NOT_OWNER);
+        }
+    }
+
+    public Set<String> getValidOptionValues() {
+        return this.productItems.stream()
+                .filter(item -> item.getStatus() == ProductItemStatus.ON_SALE ||
+                        item.getStatus() == ProductItemStatus.OUT_OF_STOCK)
+                .flatMap(item -> item.getOptionValues().stream())
+                .map(ProductOptionValue::getValue)
+                .collect(Collectors.toSet());
     }
 }

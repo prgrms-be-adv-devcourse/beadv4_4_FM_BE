@@ -5,10 +5,12 @@ import com.mossy.boundedContext.product.app.command.UpdateProductUseCase;
 import com.mossy.boundedContext.product.app.dto.ProductDataForEvent;
 import com.mossy.boundedContext.product.app.query.GetProductDetailUseCase;
 import com.mossy.boundedContext.product.app.query.ProductSummaryQueryService;
-import com.mossy.boundedContext.product.domain.event.ProductRegisteredEvent;
+import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.domain.event.ProductPriceChangedEvent;
 import com.mossy.boundedContext.product.in.dto.request.ProductCreateRequest;
 import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
 import com.mossy.boundedContext.product.in.dto.response.ProductDetailResponse;
+import com.mossy.boundedContext.product.out.persistence.ProductRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,11 +24,12 @@ public class ProductFacade {
     private final ProductSummaryQueryService productSummaryQueryService;
     private final GetProductDetailUseCase getProductDetailUseCase;
     private final UpdateProductUseCase updateProductUseCase;
+    private final ProductRepository productRepository;
     private final EventPublisher eventPublisher;
 
     // 상품 등록
     @Transactional
-    public Long registerProduct(ProductCreateRequest request) {
+    public Long registerProduct(Long currentSellerId, ProductCreateRequest request) {
 
         Long productId = registerProductUseCase.register(request);
 
@@ -36,7 +39,7 @@ public class ProductFacade {
         );
 
         // 이벤트 발행
-        eventPublisher.publish(new ProductRegisteredEvent(
+        eventPublisher.publish(new ProductPriceChangedEvent(
                 summary.catalogId(),
                 summary.minPrice(),
                 summary.sellerCount()));
@@ -47,14 +50,26 @@ public class ProductFacade {
     // 상품 상세 정보 조회
     @Transactional(readOnly = true)
     public ProductDetailResponse getProductDetail(Long catalogProductId) {
-        ProductDetailResponse response = getProductDetailUseCase.execute(catalogProductId);
-        return response;
+        return getProductDetailUseCase.execute(catalogProductId);
     }
 
     // 상품 정보 수정
     @Transactional
     public void updateProduct(Long productId, Long currentSellerId, ProductUpdateRequest request) {
-        updateProductUseCase.updateProduct(productId, request);
+        Product product = updateProductUseCase.updateProduct(productId, currentSellerId, request);
+
+        productRepository.flush();
+
+        ProductDataForEvent summary = productSummaryQueryService.getCatalogSummary(
+                product.getCatalogProductId(),
+                productId
+        );
+
+        eventPublisher.publish(new ProductPriceChangedEvent(
+                summary.catalogId(),
+                summary.minPrice(),
+                summary.sellerCount()
+        ));
     }
 
 //    // 상품 상태 직접 변경 (판매자 조작)

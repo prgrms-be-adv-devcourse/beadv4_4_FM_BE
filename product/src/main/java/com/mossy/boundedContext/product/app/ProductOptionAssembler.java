@@ -23,7 +23,7 @@ public class ProductOptionAssembler {
 
     // 상품 등록
     public void configureForCreate(Product product,
-                                   CatalogProductInfo catalogInfo, // 카탈로그 정보 추가
+                                   CatalogProductInfo catalogInfo,
                                    List<ProductCreateRequest.OptionGroupRequest> groupDtos,
                                    List<ProductCreateRequest.ProductItemRequest> itemDtos) {
 
@@ -39,8 +39,13 @@ public class ProductOptionAssembler {
                     ProductCreateRequest.ItemOptionMappingRequest::value);
 
             // 공통 빌더 호출
-            ProductItem newItem = createBaseItem(itemDto.additionalPrice(), itemDto.quantity(),
-                    itemWeight, combination);
+            ProductItem newItem = createBaseItem(
+                    product.getBasePrice(),
+                    itemDto.additionalPrice(),
+                    itemDto.quantity(),
+                    itemWeight,
+                    combination
+            );
 
             for (var mappingDto : itemDto.itemOptions()) {
                 addOptionValueToItem(newItem, mappingDto.masterId(), mappingDto.value(), groupMap);
@@ -65,8 +70,13 @@ public class ProductOptionAssembler {
             String combination = generateCombinationString(itemDto.itemOptions(),
                     ProductUpdateRequest.ValueUpdateRequest::value);
 
-            ProductItem newItem = createBaseItem(itemDto.additionalPrice(), itemDto.quantity(),
-                    itemDto.weight(), combination);
+            ProductItem newItem = createBaseItem(
+                    product.getBasePrice(),
+                    itemDto.additionalPrice(),
+                    itemDto.quantity(),
+                    itemDto.weight(),
+                    combination
+            );
 
             for (var valCmd : itemDto.itemOptions()) {
                 addOptionValueToItem(newItem, valCmd.masterId(), valCmd.value(), groupMap);
@@ -85,10 +95,11 @@ public class ProductOptionAssembler {
                 .collect(Collectors.joining(" / "));
     }
 
-    private ProductItem createBaseItem(BigDecimal price, Integer qty, BigDecimal weight, String combination) {
+    private ProductItem createBaseItem(BigDecimal basePrice, BigDecimal additionalPrice, Integer qty, BigDecimal weight, String combination) {
         return ProductItem.builder()
                 .skuCode(generateSku())
-                .additionalPrice(price)
+                .additionalPrice(additionalPrice)
+                .totalPrice(basePrice.add(additionalPrice))
                 .quantity(qty)
                 .weight(weight)
                 .optionCombination(combination)
@@ -106,7 +117,7 @@ public class ProductOptionAssembler {
                     .name(groupDto.name())
                     .build();
 
-            // 애그리거트 루트(Product)에 그룹 추가
+            // Product에 옵션 그룹 추가
             product.addOptionGroup(group);
 
             // 이후 아이템 생성 시 매핑하기 위해 맵에 보관 (key: masterId)

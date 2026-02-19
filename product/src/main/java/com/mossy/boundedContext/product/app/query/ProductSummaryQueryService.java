@@ -16,7 +16,10 @@ public class ProductSummaryQueryService {
 
     public ProductDataForEvent getCatalogSummary(Long catalogId, Long productId) {
 
+        // 카탈로그에 속한 상품 중 최저가
         BigDecimal minPrice = productRepository.findMinPriceByCatalogId(catalogId);
+
+        // 카탈로그 상품 판매자 수
         Long sellerCount = productRepository.countSellersByCatalogId(catalogId);
 
         return new ProductDataForEvent(

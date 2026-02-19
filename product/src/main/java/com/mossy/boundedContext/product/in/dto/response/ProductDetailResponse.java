@@ -39,6 +39,7 @@ public record ProductDetailResponse(
             Long productItemsId,
             String optionCombination,
             BigDecimal additionalPrice,
+            BigDecimal totalPrice,
             Integer quantity,
             BigDecimal weight,
             String status

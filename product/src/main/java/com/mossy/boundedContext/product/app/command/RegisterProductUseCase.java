@@ -21,6 +21,7 @@ public class RegisterProductUseCase {
     @Transactional
     public Long register(ProductCreateRequest request) {
 
+        // 카탈로그 정보
         CatalogProductInfo catalogInfo = catalogProductQueryService.getProductInfo(request.catalogProductId());
 
         Product product = Product.builder()

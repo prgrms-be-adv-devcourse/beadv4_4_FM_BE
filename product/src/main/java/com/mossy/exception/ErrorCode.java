@@ -24,7 +24,7 @@ public enum ErrorCode implements BaseCode {
     PRODUCT_STATUS_INACTIVE(400, "현재 판매 중인 상태가 아닙니다."),
 
     // 3. 권한 및 상태 (403 Forbidden)
-    PRODUCT_NOT_OWNER(403, "해당 상품의 소유자가 아닙니다. 본인이 등록한 상품만 수정할 수 있습니다."),
+    PRODUCT_NOT_OWNER(403, "해당 상품의 판매자가 아닙니다. 본인이 등록한 상품만 수정할 수 있습니다."),
     UNAUTHORIZED_SELLER(403, "해당 상품에 대한 관리 권한이 없는 판매자입니다."),
 
     // 4. 서버 내부 오류 및 데이터 정합성 (500 Internal Server Error)

@@ -16,10 +16,9 @@ public class GetProductDetailUseCase {
     private final ProductRepository productRepository;
 
     public ProductDetailResponse execute(Long catalogProductId) {
-        // Step 1: 리포지토리의 Custom 메서드 호출
+
         ProductDetailResponse response = productRepository.findProductDetail(catalogProductId);
 
-        // Step 2: 예외 처리 (상품이 없는 경우 등)
         if (response == null) {
             throw new DomainException(ErrorCode.PRODUCT_NOT_FOUND);
         }
