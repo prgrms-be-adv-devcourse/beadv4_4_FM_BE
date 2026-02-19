@@ -1,0 +1,21 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  r2dbc:
+    url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+    # 🟢 R2DBC 전용 커넥션 풀(r2dbc-pool) 설정 사용
+    pool:
+      initial-size: 5     # 최소 유지 커넥션 수
+      max-size: 10        # 최대 커넥션 수
+      max-life-time: 30m  # 커넥션 최대 생존 시간
+
+  # Redis 설정
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
