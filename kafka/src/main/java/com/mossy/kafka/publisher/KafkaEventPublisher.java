@@ -4,7 +4,6 @@ import com.mossy.kafka.KafkaTopics;
 import com.mossy.shared.cash.event.PaymentRefundEvent;
 import com.mossy.shared.market.event.CouponUseRequestedEvent;
 import com.mossy.shared.market.event.OrderCancelEvent;
-import com.mossy.shared.market.event.OrderPaidEvent;
 import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -30,9 +29,8 @@ public class KafkaEventPublisher {
         return switch (event) {
             case PaymentRefundEvent e -> KafkaTopics.PAYMENT_REFUND;
             case OrderCancelEvent e -> KafkaTopics.ORDER_CANCEL;
-            case OrderPaidEvent e -> KafkaTopics.ORDER_PAID;
-            case CouponUseRequestedEvent e -> KafkaTopics.COUPON_USE_REQUESTED;
             case OrderPurchaseConfirmedEvent e -> KafkaTopics.ORDER_PURCHASE_CONFIRMED;
+            case CouponUseRequestedEvent e -> KafkaTopics.COUPON_USE_REQUESTED;
             default -> null;
         };
     }

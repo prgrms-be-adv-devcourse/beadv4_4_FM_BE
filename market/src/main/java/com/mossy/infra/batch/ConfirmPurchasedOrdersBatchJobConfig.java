@@ -4,7 +4,7 @@ import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.out.OrderRepository;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
-import com.mossy.shared.market.event.OrderPaidEvent;
+import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -89,8 +89,8 @@ public class ConfirmPurchasedOrdersBatchJobConfig {
 
             // 정산 이벤트를 아웃박스에 저장
             for (Order order : orders) {
-                List<OrderPaidEvent.OrderItemPayload> eventOrderItems = order.getOrderItems().stream()
-                    .map(orderItem -> new OrderPaidEvent.OrderItemPayload(
+                List<OrderPurchaseConfirmedEvent.OrderItemPayload> eventOrderItems = order.getOrderItems().stream()
+                    .map(orderItem -> new OrderPurchaseConfirmedEvent.OrderItemPayload(
                             orderItem.getId(),
                             orderItem.getSellerId(),
                             orderItem.getProductItemId(),
@@ -107,8 +107,8 @@ public class ConfirmPurchasedOrdersBatchJobConfig {
                     KafkaTopics.ORDER_PURCHASE_CONFIRMED,
                     "Order",
                     order.getId(),
-                    OrderPaidEvent.class.getSimpleName(),
-                    new OrderPaidEvent(
+                    OrderPurchaseConfirmedEvent.class.getSimpleName(),
+                    new OrderPurchaseConfirmedEvent(
                             order.getId(),
                             order.getBuyer().getId(),
                             eventOrderItems
