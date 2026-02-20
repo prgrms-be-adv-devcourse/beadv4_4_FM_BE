@@ -71,6 +71,8 @@ public interface PayoutMapper {
         @Mapping(target = "buyerName", source = "event.buyerName")
         @Mapping(target = "sellerId", source = "orderItem.sellerId")
         @Mapping(target = "orderPrice", source = "orderItem.orderPrice")
+        @Mapping(target = "originalPrice", source = "orderItem.originalPrice")
+        @Mapping(target = "platformDiscountAmount", source = "orderItem.platformDiscountAmount")
         @Mapping(target = "orderItemCreatedAt", source = "orderItem.createdAt")
         @Mapping(target = "orderItemUpdatedAt", source = "orderItem.updatedAt")
         @Mapping(target = "paymentDate", source = "event.createdAt")

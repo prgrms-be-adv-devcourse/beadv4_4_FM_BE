@@ -17,6 +17,8 @@ public record PayoutCandidateCreateDto(
         String buyerName,
         Long sellerId,
         BigDecimal orderPrice,
+        BigDecimal originalPrice,
+        BigDecimal platformDiscountAmount,
         LocalDateTime orderItemCreatedAt,
         LocalDateTime orderItemUpdatedAt,
         // Payout 도메인에서 계산/설정한 정보

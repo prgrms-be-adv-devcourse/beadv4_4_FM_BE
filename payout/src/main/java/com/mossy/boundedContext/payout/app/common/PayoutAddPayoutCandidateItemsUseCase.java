@@ -103,13 +103,20 @@ public class PayoutAddPayoutCandidateItemsUseCase {
 
         // --- 계산된 금액을 바탕으로 3가지 종류의 정산 후보 아이템을 생성 ---
         makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
-                dto, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee,BigDecimal.ZERO));
+                dto, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee, BigDecimal.ZERO));
 
         makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
                 dto, PayoutEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee, BigDecimal.ZERO));
 
         makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
                 dto, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount, carbonKg));
+
+        // 플랫폼 부담 할인이 있으면 판매자 보상 아이템 추가
+        BigDecimal platformDiscountAmount = dto.platformDiscountAmount();
+        if (platformDiscountAmount != null && platformDiscountAmount.compareTo(BigDecimal.ZERO) > 0) {
+            makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
+                    dto, PayoutEventType.정산__프로모션_플랫폼부담, null, seller, platformDiscountAmount, BigDecimal.ZERO));
+        }
 
     }
 
