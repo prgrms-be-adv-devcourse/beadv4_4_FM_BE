@@ -6,7 +6,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
         log.error("OAuth2 인증 실패: {}", exception.getMessage());
 
         String errorMessage = URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8);
-        String redirectUrl = String.format("%s/auth/error?message=%s", frontendUrl, errorMessage);
+        String redirectUrl = String.format("%s/login/?status=error", frontendUrl);
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
