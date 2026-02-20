@@ -16,7 +16,10 @@ public record OrderPaidEvent(
             Long sellerId,
             Long productId,
             BigDecimal weight,
-            BigDecimal orderPrice,
+            BigDecimal orderPrice, // 구매자 실제 결재액
+            BigDecimal originalPrice, // 할인 전 원가
+            BigDecimal sellerDiscountAmount, // 판매자 부담 할인 금액
+            BigDecimal platformDiscountAmount, // 플랫폼 부담 할인 금액
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {}
