@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.app.mapper;
 
 import com.mossy.boundedContext.domain.user.User;
+import com.mossy.boundedContext.domain.user.UserSocialAccount;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.external.dto.response.MemberVerifyExternResponse;
@@ -26,11 +27,15 @@ public interface UserMapper {
     // --- [조회 응답 매핑] ---
 
     default UserInfoDto toUserInfoDto(User user, SellerRequestStatus status) {
+        List<String> providers = user.getSocialAccounts().stream()
+                .map(UserSocialAccount::getProvider)
+                .toList();
         return new UserInfoDto(
                 user.getId(),
                 user.getNickname(),
                 user.getName(),
-                status
+                status,
+                providers
         );
     }
 
@@ -39,7 +44,7 @@ public interface UserMapper {
                 user.getId(),
                 roles,
                 sellerId,
-                true
+                !user.isPending()  // PENDING이면 active=false
         );
     }
 

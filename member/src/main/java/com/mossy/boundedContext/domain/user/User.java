@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 @Slf4j
 @Entity
 @Getter
@@ -43,49 +44,30 @@ public class User extends SourceUser {
                 BigDecimal longitude, BigDecimal latitude) {
         super(email, name, address, nickname, profileImage, status, longitude, latitude);
         this.password = password;
-        this.phoneNum = phoneNum;
-        this.rrnEncrypted = rrnEncrypted;
+        this.phoneNum = phoneNum != null ? phoneNum : "";
+        this.rrnEncrypted = rrnEncrypted != null ? rrnEncrypted : "";
     }
 
-    // OAuth2 소셜 로그인 신규 사용자 생성 (소셜 전용 — password/phone/rrn 없음)
+    //소셜 로그인 신규 사용자 생성 - 추가정보 입력 완료 전까지 PENDING 상태
     public static User createFromOAuth2(String email, String name) {
-        log.info("OAuth2 소셜 사용자 생성: email={}", email);
+        log.info("OAuth2 소셜 사용자 생성(PENDING): email={}", email);
         return User.builder()
                 .email(email)
                 .name(name != null ? name : "사용자")
-                .nickname(generateUniqueNickname())
+                .nickname("user_" + UUID.randomUUID().toString().substring(0, 8))
                 .password("")
                 .phoneNum("")
                 .address("")
                 .rrnEncrypted("")
                 .profileImage("default.png")
-                .status(UserStatus.ACTIVE)
+                .status(UserStatus.PENDING)
                 .longitude(BigDecimal.ZERO)
                 .latitude(BigDecimal.ZERO)
                 .build();
     }
 
-    // 소셜 계정이 하나라도 연동된 사용자인지 확인
-    public boolean isSocialUser() {
-        return socialAccounts != null && !socialAccounts.isEmpty();
-    }
-
-    // 특정 provider로 연동된 소셜 계정이 있는지 확인
-    public boolean hasProvider(String provider) {
-        return socialAccounts != null && socialAccounts.stream()
-                .anyMatch(sa -> sa.getProvider().equals(provider));
-    }
-
-    private static String generateUniqueNickname() {
-        return "user_" + UUID.randomUUID().toString().substring(0, 8);
-    }
-
     public void addUserRole(UserRole userRole) {
         this.userRoles.add(userRole);
-    }
-
-    public void addSocialAccount(UserSocialAccount socialAccount) {
-        this.socialAccounts.add(socialAccount);
     }
 
     public void changePassword(String encodedPassword) {

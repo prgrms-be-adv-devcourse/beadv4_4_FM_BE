@@ -34,7 +34,8 @@ public class GetUserInfoUseCase {
                 .map(SellerRequest::getStatus)
                 .orElse(null);
 
-        User user = userRepository.findById(userId)
+        // socialAccounts를 함께 fetch해야 provider 목록을 가져올 수 있음
+        User user = userRepository.findByIdWithSocialAccounts(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
         return mapper.toUserInfoDto(user, status);
@@ -44,6 +45,11 @@ public class GetUserInfoUseCase {
     public MemberAuthInfoResponse tokenExecute(Long userId) {
         User user = userRepository.findByIdWithRoles(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+
+        // PENDING 유저(추가정보 미입력): roles=빈 리스트, active=false 반환 → Gateway에서 차단
+        if (user.isPending()) {
+            return mapper.toMemberAuthInfoResponse(user, List.of(), null);
+        }
 
         List<RoleCode> roles = user.getUserRoles().stream()
                 .map(ur -> ur.getRole().getCode())

@@ -74,6 +74,11 @@ public class UserFacade {
         return processSocialLoginUseCase.execute(userDTO);
     }
 
+    // 소셜 로그인 후 토큰 발급 실패 시 보상 트랜잭션 - 생성된 유저 롤백
+    public void rollbackSocialLogin(Long userId) {
+        processSocialLoginUseCase.rollback(userId);
+    }
+
     //프로필 수정
     public void updateProfile(Long userId, ProfileUpdateRequest request) {
         updateProfileUseCase.execute(userId, request);

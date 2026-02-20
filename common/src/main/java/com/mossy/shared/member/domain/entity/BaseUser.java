@@ -87,7 +87,15 @@ public abstract class BaseUser extends BaseEntity {
         this.status = UserStatus.ACTIVE;
     }
 
+    public void pending() {
+        this.status = UserStatus.PENDING;
+    }
+
     public void deleteMember() {
         this.status = UserStatus.DELETED;
+    }
+
+    public boolean isPending() {
+        return this.status == UserStatus.PENDING;
     }
 }

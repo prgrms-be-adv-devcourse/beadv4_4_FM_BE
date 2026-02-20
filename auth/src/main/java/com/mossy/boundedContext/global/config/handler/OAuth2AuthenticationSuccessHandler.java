@@ -62,7 +62,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         } catch (Exception e) {
             log.error("OAuth2 로그인 처리 중 오류 발생: {}", e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "로그인 처리 실패");
+            String errorRedirectUrl = UriComponentsBuilder.fromUriString(frontendUrl)
+                    .path("/login")
+                    .queryParam("status", "error")
+                    .build()
+                    .toUriString();
+            getRedirectStrategy().sendRedirect(request, response, errorRedirectUrl);
         }
     }
 

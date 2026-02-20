@@ -61,16 +61,33 @@ public class AuthFacade {
 
     /**
      * OAuth2 로그인 처리 및 토큰 발급
+     * - member 저장 성공 후 토큰 발급 실패 시 → member 보상 삭제(rollback) 호출
      */
     public LoginResponse upsertUserAndIssueToken(OAuth2UserDTO userDTO) {
         log.info("OAuth2 사용자 처리 시작: provider={}, email={}", userDTO.provider(), userDTO.email());
 
+        // 1단계: member 서비스에 유저 저장
+        SocialLonginResponse user;
         try {
-            SocialLonginResponse user = memberFeignClient.processSocialLogin(userDTO);
+            user = memberFeignClient.processSocialLogin(userDTO);
+        } catch (Exception e) {
+            log.error("소셜 유저 저장 실패: {}", e.getMessage(), e);
+            throw new DomainException(ErrorCode.MEMBER_SERVICE_UNAVAILABLE);
+        }
+
+        // 2단계: 토큰 발급 - 실패 시 member 보상 트랜잭션 호출
+        try {
             TokenResponse tokens = issueTokenUseCase.execute(user.id(), "USER", null);
             return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), user.isNewUser());
         } catch (Exception e) {
-            log.error("OAuth2 로그인 처리 중 오류 발생: {}", e.getMessage(), e);
+            log.error("토큰 발급 실패, member 보상 트랜잭션 실행: userId={}, error={}", user.id(), e.getMessage(), e);
+            try {
+                memberFeignClient.rollbackSocialLogin(user.id());
+                log.info("member 보상 트랜잭션 완료: userId={}", user.id());
+            } catch (Exception rollbackEx) {
+                // 롤백 자체가 실패해도 로그만 남기고 원래 에러를 던짐
+                log.error("member 보상 트랜잭션 실패 (수동 정리 필요): userId={}, error={}", user.id(), rollbackEx.getMessage());
+            }
             throw new DomainException(ErrorCode.MEMBER_SERVICE_UNAVAILABLE);
         }
     }

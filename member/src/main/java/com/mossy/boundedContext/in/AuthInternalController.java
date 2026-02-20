@@ -31,4 +31,10 @@ public class AuthInternalController {
     public SocialLonginResponse processSocialLogin(@RequestBody OAuth2UserDto userDTO) {
         return userFacade.processSocialLogin(userDTO);
     }
+
+    @Operation(summary = "소셜 로그인 롤백", description = "토큰 발급 실패 시 저장된 소셜 유저 데이터를 보상 삭제합니다.")
+    @DeleteMapping("/users/social-login/{userId}/rollback")
+    public void rollbackSocialLogin(@PathVariable Long userId) {
+        userFacade.rollbackSocialLogin(userId);
+    }
 }
