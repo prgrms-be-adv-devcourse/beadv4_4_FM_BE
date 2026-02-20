@@ -1,7 +1,6 @@
 package com.mossy.boundedContext.wishList.domain;
 
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
-import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -28,14 +27,13 @@ public class Wishlist extends BaseIdAndTime {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MarketUser marketUser;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Product product;
+    @Column(name = "product_id")
+    private Long productId;
 
-    public static Wishlist create(MarketUser marketUser, Product product) {
+    public static Wishlist create(MarketUser marketUser, Long productId) {
         return Wishlist.builder()
                 .marketUser(marketUser)
-                .product(product)
+                .productId(productId)
                 .build();
     }
 }

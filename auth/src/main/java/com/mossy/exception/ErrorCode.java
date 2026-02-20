@@ -20,6 +20,7 @@ public enum ErrorCode implements BaseCode {
     TOKEN_SIGNATURE_ERROR(401, "토큰 서명이 일치하지 않습니다."),
     INVALID_CREDENTIALS(401, "이메일 또는 비밀번호가 일치하지 않습니다."),
     ACCOUNT_DISABLED(401, "탈퇴했거나 계정이 정지된 회원입니다."),
+    MISSING_REFRESH_TOKEN(401, "Refresh Token을 찾을 수 없습니다."),
 
     // 403 Forbidden (권한 부족)
     ACCESS_DENIED(403, "해당 리소스에 접근할 권한이 없습니다."),

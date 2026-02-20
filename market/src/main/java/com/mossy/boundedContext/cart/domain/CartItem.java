@@ -18,15 +18,15 @@ public class CartItem extends BaseIdAndTime {
     @JoinColumn(name = "cart_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Cart cart;
 
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @Column(name = "product_item_id", nullable = false)
+    private Long productItemId;
 
     @Column(nullable = false)
     private int quantity;
 
     public CartItem(Cart cart, Long productId, int quantity) {
         this.cart = cart;
-        this.productId = productId;
+        this.productItemId = productId;
         this.quantity = quantity;
     }
 

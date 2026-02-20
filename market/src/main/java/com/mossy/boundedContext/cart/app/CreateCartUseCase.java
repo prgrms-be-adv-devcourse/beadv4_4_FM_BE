@@ -4,7 +4,6 @@ import com.mossy.boundedContext.cart.domain.Cart;
 import com.mossy.boundedContext.cart.out.CartRepository;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
 import com.mossy.boundedContext.marketUser.out.MarketUserRepository;
-import com.mossy.boundedContext.marketUser.in.dto.command.MarketUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +16,8 @@ public class CreateCartUseCase {
     private final CartRepository cartRepository;
 
     @Transactional
-    public void create(MarketUserDto buyer) {
-        MarketUser user = marketUserRepository.getReferenceById(buyer.id());
-        Cart cart = Cart.createCart(user);
-        cartRepository.save(cart);
+    public void create(Long userId) {
+        MarketUser user = marketUserRepository.getReferenceById(userId);
+        cartRepository.save(Cart.createCart(user));
     }
 }

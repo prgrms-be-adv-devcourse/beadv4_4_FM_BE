@@ -17,18 +17,18 @@ public class RemoveCartItemUseCase {
     private final CartRepository cartRepository;
 
     @Transactional
-    public void removeItem(Long userId, Long productId) {
+    public void removeItem(Long userId, Long productItemId) {
         Cart cart = cartRepository.findByBuyerId(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.CART_NOT_FOUND));
 
-        cart.removeItem(productId);
+        cart.removeItem(productItemId);
     }
 
     @Transactional
-    public void removeItems(Long userId, List<Long> productIds) {
+    public void removeItems(Long userId, List<Long> productItemIds) {
         Cart cart = cartRepository.findByBuyerId(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.CART_NOT_FOUND));
 
-        cart.removeItems(productIds);
+        cart.removeItems(productItemIds);
     }
 }

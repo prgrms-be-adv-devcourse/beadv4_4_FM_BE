@@ -1,22 +1,28 @@
 services:
+  # 유레카 서버 추가
+  eureka-service:
+    build:
+      context: ..
+      dockerfile: gateway/Dockerfile-eureka
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - mossy-network
   gateway:
     build:
-      context: ../src/backend
-      dockerfile: gateway-service/Dockerfile
+      context: ..
+      dockerfile: gateway/Dockerfile-gateway
     container_name: gateway-service
     restart: always
     ports:
       - "8080:8080"
     env_file:
-      - ../envs/.env.gateway
+      - ./.env.gateway
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     depends_on:
-      - market-service
-      - member-service
-      - cash-service
-      - payout-service
-      - review-service
+      - eureka-service
     networks:
       - mossy-network
 
