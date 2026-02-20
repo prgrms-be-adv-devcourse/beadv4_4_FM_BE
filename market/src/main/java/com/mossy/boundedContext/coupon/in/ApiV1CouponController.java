@@ -4,6 +4,7 @@ import com.mossy.boundedContext.coupon.app.CouponFacade;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
+import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
@@ -22,6 +23,7 @@ import java.util.List;
 public class ApiV1CouponController {
 
     private final CouponFacade couponFacade;
+
 
     @Operation(
             summary = "판매자 쿠폰 생성",
@@ -44,6 +46,14 @@ public class ApiV1CouponController {
         return RsData.success(SuccessCode.COUPON_CREATE, couponFacade.createAdminCoupon(adminId, request));
     }
 
+    @Operation(summary = "판매자 쿠폰 목록 조회", description = "판매자가 자신이 생성한 쿠폰 목록을 조회합니다.")
+    @GetMapping("/seller/my")
+    public RsData<List<SellerCouponListResponse>> getSellerCoupons(
+            @RequestParam(name = "sellerId") Long sellerId
+    ) {
+        return RsData.success(SuccessCode.COUPON_LIST, couponFacade.getSellerCoupons(sellerId));
+    }
+
     @Operation(summary = "판매자 쿠폰 수정", description = "판매자가 자신의 쿠폰을 수정합니다.")
     @PatchMapping("/seller/{couponId}")
     public RsData<Void> updateSellerCoupon(
@@ -55,8 +65,8 @@ public class ApiV1CouponController {
         return RsData.success(SuccessCode.COUPON_UPDATE);
     }
 
-    @Operation(summary = "판매자 쿠폰 삭제", description = "판매자가 자신의 쿠폰을 비활성화합니다.")
-    @DeleteMapping("/seller/{couponId}")
+    @Operation(summary = "판매자 쿠폰 비활성화", description = "판매자가 자신의 쿠폰을 비활성화합니다.")
+    @PatchMapping("/seller/{couponId}/deactivate")
     public RsData<Void> deactivateSellerCoupon(
             @RequestParam(name = "sellerId") Long sellerId,
             @PathVariable Long couponId

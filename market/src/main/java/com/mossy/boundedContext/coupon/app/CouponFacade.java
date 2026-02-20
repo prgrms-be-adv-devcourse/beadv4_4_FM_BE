@@ -4,6 +4,7 @@ import com.mossy.boundedContext.coupon.dto.CouponDiscountInfo;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
+import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class CouponFacade {
     private final CalculateCouponDiscountsUseCase calculateCouponDiscountsUseCase;
     private final UseCouponsUseCase useCouponsUseCase;
     private final RestoreCouponsUseCase restoreCouponsUseCase;
+    private final GetSellerCouponsUseCase getSellerCouponsUseCase;
 
     public Long createSellerCoupon(Long sellerId, CouponCreateRequest request) {
         return createSellerCouponUseCase.create(sellerId, request);
@@ -70,5 +72,9 @@ public class CouponFacade {
 
     public void restoreCoupons(List<Long> userCouponIds) {
         restoreCouponsUseCase.restore(userCouponIds);
+    }
+
+    public List<SellerCouponListResponse> getSellerCoupons(Long sellerId) {
+        return getSellerCouponsUseCase.getSellerCoupons(sellerId);
     }
 }

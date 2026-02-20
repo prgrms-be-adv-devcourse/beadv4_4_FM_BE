@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.coupon.out;
 
 import com.mossy.boundedContext.coupon.domain.Coupon;
+import com.mossy.boundedContext.coupon.domain.IssuerType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +16,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long>, CouponRep
 
     @Query("SELECT c FROM Coupon c WHERE c.isActive = true AND c.endAt <= :now")
     List<Coupon> findExpiredCoupons(@Param("now") LocalDateTime now);
+
+    List<Coupon> findByIssuerIdAndIssuerTypeOrderByCreatedAtDesc(Long issuerId, IssuerType issuerType);
 }
