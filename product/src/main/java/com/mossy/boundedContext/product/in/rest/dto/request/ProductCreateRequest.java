@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.product.in.dto.request;
+package com.mossy.boundedContext.product.in.rest.dto.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;

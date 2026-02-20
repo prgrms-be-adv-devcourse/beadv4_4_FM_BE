@@ -3,10 +3,10 @@ package com.mossy.boundedContext.product.out.persistence;
 import com.mossy.boundedContext.catalog.domain.CatalogImage;
 import com.mossy.boundedContext.catalog.domain.CatalogProduct;
 import com.mossy.boundedContext.product.domain.Product;
-import com.mossy.boundedContext.product.in.dto.response.ProductDetailResponse;
+import com.mossy.boundedContext.product.in.rest.dto.response.ProductDetailResponse;
 import com.mossy.boundedContext.product.out.persistence.mapper.ProductMapper;
-import com.mossy.shared.market.enums.ProductItemStatus;
-import com.mossy.shared.market.enums.ProductStatus;
+import com.mossy.shared.product.enums.ProductItemStatus;
+import com.mossy.shared.product.enums.ProductStatus;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -31,23 +31,33 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     @Override
     public ProductDetailResponse findProductDetail(Long catalogProductId) {
 
-        // 최저가 상품 조회
-        Product mainProductEntity = queryFactory
-                .selectFrom(product)
-                .leftJoin(product.productItems, productItem).fetchJoin()
+        // 최저가 기준 product id만 추출
+        Long mainProductId = queryFactory
+                .select(product.id)
+                .from(product)
+                .join(product.productItems, productItem)
                 .where(
                         product.catalogProductId.eq(catalogProductId),
-                        product.status.eq(ProductStatus.FOR_SALE),
-                        productItem.status.eq(ProductItemStatus.ON_SALE)
+                        product.status.in(ProductStatus.FOR_SALE, ProductStatus.PRE_ORDER),
+                        productItem.status.in(ProductItemStatus.ON_SALE, ProductItemStatus.PRE_ORDER)
                 )
+                .groupBy(product.id)
                 .orderBy(
-                        productItem.totalPrice.asc(),   // 최저가
-                        product.salesCount.desc(),      // 판매수
-                        product.id.desc()               // 최신순
+                        productItem.totalPrice.min().asc(),
+                        product.salesCount.desc(),
+                        product.id.desc()
                 )
                 .fetchFirst();
 
-        if (mainProductEntity == null) return null;
+        if (mainProductId == null) return null;
+
+        //해당 product의 productItems 전체 fetchJoin
+        Product mainProductEntity = queryFactory
+                .selectFrom(product)
+                .leftJoin(product.productItems, productItem)
+                .fetchJoin()
+                .where(product.id.eq(mainProductId))
+                .fetchOne();
 
         // 카탈로그 정보 조회
         Tuple catalogInfo = queryFactory
@@ -72,13 +82,16 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 .select(Projections.constructor(ProductDetailResponse.OtherSellerDto.class,
                         product.id,
                         product.sellerId,
-                        product.basePrice))
+                        productItem.totalPrice.min()))  // 최저 totalPrice 추가
                 .from(product)
+                .join(product.productItems, productItem)
+                .on(productItem.status.in(ProductItemStatus.ON_SALE, ProductItemStatus.PRE_ORDER))
                 .where(
                         product.catalogProductId.eq(catalogProductId),
                         product.id.ne(mainProductEntity.getId()),
-                        product.status.eq(ProductStatus.FOR_SALE)
+                        product.status.in(ProductStatus.FOR_SALE, ProductStatus.PRE_ORDER)
                 )
+                .groupBy(product.id, product.sellerId, product.basePrice)
                 .fetch();
 
         // DTO

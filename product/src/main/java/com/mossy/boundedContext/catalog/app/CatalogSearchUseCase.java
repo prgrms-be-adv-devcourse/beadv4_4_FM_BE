@@ -55,6 +55,7 @@ public class CatalogSearchUseCase {
 
     private Query createFilterQuery(ProductSearchCondition cond) {
         return Query.of(q -> q.bool(b -> {
+            // 키워드 검색
             if (StringUtils.hasText(cond.keyword())) {
                 b.must(m -> m.multiMatch(mm -> mm
                         .query(cond.keyword())
@@ -64,6 +65,7 @@ public class CatalogSearchUseCase {
                 b.must(m -> m.matchAll(ma -> ma));
             }
 
+            // 카테고리 필터
             if (cond.categoryId() != null) {
                 b.filter(f -> f.term(t -> t
                         .field("categoryId")

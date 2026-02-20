@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.product.in;
+package com.mossy.boundedContext.product;
 
 import com.mossy.boundedContext.catalog.domain.CatalogImage;
 import com.mossy.boundedContext.catalog.out.CatalogImageRepository;
@@ -8,6 +8,7 @@ import com.mossy.boundedContext.catalog.out.CatalogProductRepository;
 import com.mossy.boundedContext.catalog.out.CatalogSearchRepository;
 import com.mossy.boundedContext.catalog.out.CatalogSummaryDto;
 import com.mossy.boundedContext.product.out.persistence.ProductRepository;
+import com.mossy.shared.product.enums.ProductItemStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
@@ -27,6 +28,12 @@ public class ProductDataInit {
     private final CatalogSearchRepository catalogSearchRepository;
     private final CatalogImageRepository catalogImageRepository;
 
+    private static final List<ProductItemStatus> ACTIVE_STATUSES = List.of(
+            ProductItemStatus.ON_SALE,
+            ProductItemStatus.PRE_ORDER,
+            ProductItemStatus.OUT_OF_STOCK
+    );
+
     @Bean
     public ApplicationRunner productDateInitRunner() {
         return args -> {
@@ -39,7 +46,7 @@ public class ProductDataInit {
         List<CatalogProduct> catalogs = catalogProductRepository.findAllWithCategory();
 
         // 최저가 및 판매자 수 집계 데이터 가져오기
-        Map<Long, CatalogSummaryDto> summaryMap = productRepository.findAllCatalogSummaries()
+        Map<Long, CatalogSummaryDto> summaryMap = productRepository.findAllCatalogSummaries(ACTIVE_STATUSES)
                 .stream()
                 .collect(Collectors.toMap(CatalogSummaryDto::getCatalogId, s -> s));
 
@@ -58,13 +65,16 @@ public class ProductDataInit {
                 .map(catalog -> {
                     CatalogSummaryDto summary = summaryMap.get(catalog.getId());
 
-                    // 집계 데이터가 없는 경우(판매 중인 상품이 없는 경우) 기본값 처리
+                    // 집계 데이터 처리
                     Double minPrice = (summary != null) ? summary.getMinPrice().doubleValue() : 0.0;
                     Long sellerCount = (summary != null) ? summary.getSellerCount() : 0L;
 
+                    // 최저가 상품의 ID를
+                    Long minPriceProductId = (summary != null) ? summary.getMinPriceProductId() : null;
+
                     String thumbnailUrl = thumbnailMap.getOrDefault(catalog.getId(), "default_image_url");
 
-                    return CatalogDocument.from(catalog, thumbnailUrl, minPrice, sellerCount);
+                    return CatalogDocument.from(catalog, thumbnailUrl, minPrice, sellerCount, minPriceProductId);
                 })
                 .toList();
 

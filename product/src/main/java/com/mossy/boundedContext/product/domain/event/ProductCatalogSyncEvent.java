@@ -1,9 +1,9 @@
-package com.mossy.boundedContext.product.app.dto;
+package com.mossy.boundedContext.product.domain.event;
 
 import java.math.BigDecimal;
 
-public record ProductDataForEvent(
-        Long catalogId,
+public record ProductCatalogSyncEvent(
+        Long catalogProductId,
         BigDecimal minPrice,
         Long sellerCount,
         Long minPriceProductItemId

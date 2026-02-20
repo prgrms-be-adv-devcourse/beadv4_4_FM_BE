@@ -4,10 +4,9 @@ import com.mossy.boundedContext.catalog.domain.CatalogImage;
 import com.mossy.boundedContext.catalog.domain.CatalogProduct;
 import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.domain.ProductItem;
-import com.mossy.boundedContext.product.domain.ProductOptionGroup;
 import com.mossy.boundedContext.product.domain.ProductOptionValue;
-import com.mossy.boundedContext.product.in.dto.response.ProductDetailResponse;
-import com.mossy.shared.market.enums.ProductItemStatus;
+import com.mossy.boundedContext.product.in.rest.dto.response.ProductDetailResponse;
+import com.mossy.shared.product.enums.ProductItemStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -15,7 +14,6 @@ import org.mapstruct.ReportingPolicy;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
@@ -39,7 +37,9 @@ public interface ProductMapper {
         if (items == null) return null;
         return items.stream()
                 .filter(item -> item.getStatus() == ProductItemStatus.ON_SALE ||
-                        item.getStatus() == ProductItemStatus.OUT_OF_STOCK)
+                        item.getStatus() == ProductItemStatus.PRE_ORDER ||
+                        item.getStatus() == ProductItemStatus.OUT_OF_STOCK
+                )
                 .map(this::toItemDto)
                 .toList();
     }

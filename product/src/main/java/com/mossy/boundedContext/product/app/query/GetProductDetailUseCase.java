@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.product.app.query;
 
-import com.mossy.boundedContext.product.in.dto.response.ProductDetailResponse;
+import com.mossy.boundedContext.product.in.rest.dto.response.ProductDetailResponse;
 import com.mossy.boundedContext.product.out.persistence.ProductRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;

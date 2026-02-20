@@ -1,4 +1,4 @@
-package com.mossy.shared.market.enums;
+package com.mossy.shared.product.enums;
 
 public enum CatalogStatus {
     DRAFT("초안"),               // 등록 중 (임시저장 상태, 노출되지 않음)

@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.product.in.dto.response;
+package com.mossy.boundedContext.product.in.rest.dto.response;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -48,6 +48,6 @@ public record ProductDetailResponse(
     public record OtherSellerDto(
             Long productId,
             Long sellerId,
-            BigDecimal basePrice
+            BigDecimal minTotalPrice
     ) {}
 }

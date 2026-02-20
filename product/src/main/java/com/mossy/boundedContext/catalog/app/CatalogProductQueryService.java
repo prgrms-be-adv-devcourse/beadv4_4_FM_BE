@@ -17,11 +17,7 @@ public class CatalogProductQueryService {
 
     public CatalogProductInfo getProductInfo(Long catalogProductId) {
         return catalogProductRepository.findById(catalogProductId)
-                .map(catalog -> new CatalogProductInfo(
-                        catalog.getId(),
-                        catalog.getName(),
-                        catalog.getWeight()
-                ))
+                .map(CatalogProductInfo::from)
                 .orElseThrow(() -> new DomainException(ErrorCode.CATALOG_PRODUCT_NOT_FOUND));
     }
 }

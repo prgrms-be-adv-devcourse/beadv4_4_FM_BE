@@ -2,15 +2,13 @@ package com.mossy.boundedContext.product.app.command;
 
 import com.mossy.boundedContext.product.app.ProductOptionAssembler;
 import com.mossy.boundedContext.product.domain.Product;
-import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
+import com.mossy.boundedContext.product.in.rest.dto.request.ProductUpdateRequest;
 import com.mossy.boundedContext.product.out.persistence.ProductRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 @Service
 @Transactional

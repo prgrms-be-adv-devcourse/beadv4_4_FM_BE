@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.product.in.dto.request;
+package com.mossy.boundedContext.product.in.rest.dto.request;
 
 import java.math.BigDecimal;
 import java.util.List;

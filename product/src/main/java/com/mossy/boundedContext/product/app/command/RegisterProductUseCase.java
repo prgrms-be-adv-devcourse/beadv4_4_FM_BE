@@ -2,11 +2,11 @@ package com.mossy.boundedContext.product.app.command;
 
 import com.mossy.boundedContext.catalog.app.CatalogProductQueryService;
 import com.mossy.boundedContext.catalog.app.dto.CatalogProductInfo;
-import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.app.ProductOptionAssembler;
-import com.mossy.boundedContext.product.in.dto.request.ProductCreateRequest;
+import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.boundedContext.product.in.rest.dto.request.ProductCreateRequest;
 import com.mossy.boundedContext.product.out.persistence.ProductRepository;
-import com.mossy.shared.market.enums.ProductStatus;
+import com.mossy.shared.product.enums.ProductStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

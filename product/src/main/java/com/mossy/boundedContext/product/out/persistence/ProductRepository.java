@@ -2,41 +2,62 @@ package com.mossy.boundedContext.product.out.persistence;
 
 import com.mossy.boundedContext.catalog.out.CatalogSummaryDto;
 import com.mossy.boundedContext.product.domain.Product;
+import com.mossy.shared.product.enums.ProductItemStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
-    // 카탈로그에 속한 모든 판매자의 모든 단품 중 최저가 계산
-    @Query("SELECT MIN(pi.totalPrice) " +
-            "FROM Product p " +
-            "JOIN p.productItems pi " +
-            "WHERE p.catalogProductId = :catalogId " +
-            "AND p.status = 'FOR_SALE'" +
-            "AND pi.status = 'ON_SALE'")
-    BigDecimal findMinPriceByCatalogId(@Param("catalogId") Long catalogId);
+    // 카탈로그 id 로 최저가 상품 찾기
+    @Query("""
+        SELECT
+            p.catalogProductId as catalogId,
+            MIN(pi.totalPrice) as minPrice,
+            COUNT(DISTINCT p.id) as sellerCount,
+            (
+                SELECT p2.id FROM ProductItem pi2
+                JOIN Product p2 ON pi2.productId = p2.id
+                WHERE p2.catalogProductId = :catalogId
+                    AND pi2.status IN :statuses
+                ORDER BY pi2.totalPrice ASC, pi2.id ASC
+                LIMIT 1
+            ) as minPriceProductId
+        FROM Product p
+        JOIN p.productItems pi
+        WHERE p.catalogProductId = :catalogId
+        AND pi.status IN :statuses
+        GROUP BY p.catalogProductId
+    """)
+    Optional<CatalogSummaryDto> findCatalogSummaryByCatalogId(
+            @Param("catalogId") Long catalogId,
+            @Param("statuses") List<ProductItemStatus> statuses
+    );
 
-    // 해당 카탈로그를 판매 중인 판매자 수
-    @Query("SELECT COUNT(DISTINCT p.sellerId) " +
-            "FROM Product p " +
-            "JOIN p.productItems pi " +
-            "WHERE p.catalogProductId = :catalogId " +
-            "AND p.status = 'FOR_SALE'" +
-            "AND pi.status = 'ON_SALE'")
-    Long countSellersByCatalogId(@Param("catalogId") Long catalogId);
-
-    @Query("SELECT p.catalogProductId as catalogId, " +
-            "MIN(p.basePrice) as minPrice, " +
-            "COUNT(p.id) as sellerCount " +
-            "FROM Product p " +
-            "WHERE p.status = 'FOR_SALE' " +
-            "GROUP BY p.catalogProductId")
-    List<CatalogSummaryDto> findAllCatalogSummaries();
+    // 데이터 초기화시
+    @Query("""
+        SELECT
+            p.catalogProductId as catalogId,
+            MIN(pi.totalPrice) as minPrice,
+            COUNT(DISTINCT p.id) as sellerCount,
+            (
+                SELECT p2.id FROM ProductItem pi2
+                JOIN Product p2 ON pi2.productId = p2.id
+                WHERE p2.catalogProductId = p.catalogProductId
+                    AND pi2.status IN :statuses
+                ORDER BY pi2.totalPrice ASC, pi2.id ASC
+                LIMIT 1
+            ) as minPriceProductId
+        FROM Product p
+        JOIN p.productItems pi
+        WHERE pi.status IN :statuses
+        GROUP BY p.catalogProductId
+    """)
+    List<CatalogSummaryDto> findAllCatalogSummaries(
+            @Param("statuses") List<ProductItemStatus> statuses);
 
     @Query("select p from Product p where p.id = :id")
     Optional<Product> findByIdWithAllDetails(@Param("id") Long id);

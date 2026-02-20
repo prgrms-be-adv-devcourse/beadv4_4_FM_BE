@@ -7,6 +7,8 @@ plugins {
 group = "com.mossy"
 version = "0.0.1-SNAPSHOT"
 
+val springCloudVersion = "2024.0.0"
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -23,16 +25,22 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
     // 공통
     implementation(project(":common"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     //implementation("org.springframework.boot:spring-boot-starter-batch")
 
-    // Market 서비스 전용 라이브러리
+    // ElasticSearch
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
+
+    // AWS S3
     implementation(platform("software.amazon.awssdk:bom:2.24.0"))
     implementation("software.amazon.awssdk:s3")
+
+    // OpenFeign
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     // QueryDSL (JPA 사용 시 공통으로 필요)
     implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
@@ -40,6 +48,7 @@ dependencies {
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
+    // MapStruct
     implementation ("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
     annotationProcessor ("org.projectlombok:lombok-mapstruct-binding:0.2.0")
@@ -51,6 +60,12 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+    }
 }
 
 tasks.withType<Test> {

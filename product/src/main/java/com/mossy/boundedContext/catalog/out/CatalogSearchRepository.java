@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CatalogSearchRepository extends ElasticsearchRepository<CatalogDocument, Long> {
 
-    Page<CatalogDocument> findByName(String name, Pageable pageable);
 }

@@ -10,6 +10,7 @@ public enum ErrorCode implements BaseCode {
 
     // 1. 존재하지 않음 (404 Not Found)
     PRODUCT_NOT_FOUND(404, "해당 상품을 찾을 수 없습니다."),
+    PRODUCT_ITEM_NOT_FOUND(404, "해당 상품 아이템을 찾을 수 없습니다."),
     CATALOG_PRODUCT_NOT_FOUND(404, "해당 카탈로그 상품이 존재하지 않습니다."),
     ITEM_NOT_FOUND(404, "해당 품목(Item) 정보를 찾을 수 없습니다."),
     OPTION_GROUP_NOT_FOUND(404, "해당 옵션 그룹이 존재하지 않습니다."),
@@ -22,6 +23,7 @@ public enum ErrorCode implements BaseCode {
     INVALID_OPTION_VALUE(400, "선택한 옵션 값이 올바르지 않습니다."),
     PRODUCT_ALREADY_APPROVED(400, "이미 승인 처리가 완료된 상품입니다."),
     PRODUCT_STATUS_INACTIVE(400, "현재 판매 중인 상태가 아닙니다."),
+    PRODUCT_ITEM_INVALID_STATUS(400, "요청한 상품 상태는 변경할 수 없는 상태입니다."),
 
     // 3. 권한 및 상태 (403 Forbidden)
     PRODUCT_NOT_OWNER(403, "해당 상품의 판매자가 아닙니다. 본인이 등록한 상품만 수정할 수 있습니다."),

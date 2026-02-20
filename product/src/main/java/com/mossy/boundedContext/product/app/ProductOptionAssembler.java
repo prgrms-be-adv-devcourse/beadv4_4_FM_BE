@@ -5,9 +5,9 @@ import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.domain.ProductItem;
 import com.mossy.boundedContext.product.domain.ProductOptionGroup;
 import com.mossy.boundedContext.product.domain.ProductOptionValue;
-import com.mossy.boundedContext.product.in.dto.request.ProductCreateRequest;
-import com.mossy.boundedContext.product.in.dto.request.ProductUpdateRequest;
-import com.mossy.shared.market.enums.ProductItemStatus;
+import com.mossy.boundedContext.product.in.rest.dto.request.ProductCreateRequest;
+import com.mossy.boundedContext.product.in.rest.dto.request.ProductUpdateRequest;
+import com.mossy.shared.product.enums.ProductItemStatus;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
