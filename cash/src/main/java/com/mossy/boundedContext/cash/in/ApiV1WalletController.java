@@ -15,8 +15,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.math.BigDecimal;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,9 +86,10 @@ public class ApiV1WalletController {
     @Operation(summary = "구매자 캐시 사용 내역 조회", description = "현재 로그인한 사용자의 모든 캐시 충전, 사용, 환불 이력(UserCashLog)을 리스트로 조회합니다.")
     @ApiResponse(responseCode = "200", description = "내역 조회 성공")
     @GetMapping("/user/wallet/logs")
-    public RsData<List<UserCashLogResponseDto>> getUserCashLogs(
-        @RequestHeader("X-User-Id") Long userId) {
-        List<UserCashLogResponseDto> logs = cashFacade.findAllUserCashLogs(userId);
+    public RsData<Page<UserCashLogResponseDto>> getUserCashLogs(
+        @RequestHeader("X-User-Id") Long userId,
+        @PageableDefault(size = 10) Pageable pageable) {
+        Page<UserCashLogResponseDto> logs = cashFacade.findAllUserCashLogs(userId, pageable);
         return RsData.success(SuccessCode.USER_CASH_LOGS_FOUND, logs);
     }
 
@@ -136,9 +139,10 @@ public class ApiV1WalletController {
     @Operation(summary = "판매자 캐시 사용 내역 조회", description = "판매자의 모든 입금, 출금, 수수료 등 캐시 변동 이력을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "내역 조회 성공")
     @GetMapping("/seller/wallet/logs")
-    public RsData<List<SellerCashLogResponseDto>> getSellerCashLogs(
-        @RequestHeader("X-Seller-Id") Long sellerId) {
-        List<SellerCashLogResponseDto> logs = cashFacade.findAllSellerCashLogs(sellerId);
+    public RsData<Page<SellerCashLogResponseDto>> getSellerCashLogs(
+        @RequestHeader("X-Seller-Id") Long sellerId,
+        @PageableDefault(size = 10) Pageable pageable) {
+        Page<SellerCashLogResponseDto> logs = cashFacade.findAllSellerCashLogs(sellerId, pageable);
         return RsData.success(SuccessCode.SELLER_CASH_LOGS_FOUND, logs);
     }
 }

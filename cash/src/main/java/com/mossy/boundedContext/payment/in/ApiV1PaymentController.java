@@ -17,7 +17,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 
 @Tag(name = "Payment", description = "결제 승인 및 취소 관련 API")
 @RestController
@@ -91,8 +93,10 @@ public class ApiV1PaymentController {
         }
     )
     @GetMapping("/orders/{orderNo}")
-    public RsData<List<PaymentResponse>> getPaymentsByOrder(@PathVariable String orderNo) {
-        List<PaymentResponse> responses = paymentFacade.findAllPayments(orderNo);
+    public RsData<Page<PaymentResponse>> getPaymentsByOrder(
+        @PathVariable String orderNo,
+        @PageableDefault(size = 10) Pageable pageable) {
+        Page<PaymentResponse> responses = paymentFacade.findAllPayments(orderNo, pageable);
         return RsData.success(SuccessCode.PAYMENT_HISTORY_FOUND, responses);
     }
 
