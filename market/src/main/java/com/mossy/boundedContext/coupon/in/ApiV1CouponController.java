@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Tag(name = "Coupon", description = "쿠폰 관리 API")
@@ -95,9 +96,9 @@ public class ApiV1CouponController {
     @Operation(summary = "주문 시 적용 가능한 쿠폰 조회", description = "주문 상품에 적용 가능한 보유 쿠폰 목록을 조회합니다.")
     @GetMapping("/applicable")
     public RsData<List<UserCouponResponse>> getApplicableCoupons(
-            @RequestParam(name = "productItemId") Long productItemId,
-            @RequestParam(name = "userId") Long userId
+            @RequestParam(name = "userId") Long userId,
+            @RequestParam(name = "productItemIds") List<Long> productItemIds
     ) {
-        return RsData.success(SuccessCode.APPLICABLE_COUPON_LIST, couponFacade.getApplicableCoupons(productItemId, userId));
+        return RsData.success(SuccessCode.APPLICABLE_COUPON_LIST, couponFacade.getApplicableCoupons(userId, productItemIds));
     }
 }

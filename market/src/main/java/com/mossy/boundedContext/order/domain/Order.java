@@ -2,7 +2,7 @@ package com.mossy.boundedContext.order.domain;
 
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.boundedContext.marketUser.domain.MarketSeller;
+import com.mossy.boundedContext.coupon.dto.CouponDiscountInfo;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
 import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest.OrderItemRequest;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
@@ -51,10 +51,9 @@ public class Order extends BaseIdAndTime {
             MarketUser buyer,
             String address,
             String orderNo,
-            Map<Long, MarketSeller> sellerMap,
             List<OrderItemRequest> items,
             BigDecimal totalPrice,
-            Map<Long, BigDecimal> couponDiscountMap
+            Map<Long, CouponDiscountInfo> couponInfoMap
     ) {
         Order order = Order.builder()
                 .buyer(buyer)
@@ -64,7 +63,7 @@ public class Order extends BaseIdAndTime {
                 .totalPrice(BigDecimal.ZERO)
                 .build();
 
-        items.forEach(item -> order.addOrderItem(sellerMap.get(item.sellerId()), item, couponDiscountMap));
+        items.forEach(item -> order.addOrderItem(item.sellerId(), item, couponInfoMap));
 
         BigDecimal calculatedTotal = order.orderItems.stream()
                 .map(OrderItem::getFinalPrice)
@@ -78,31 +77,49 @@ public class Order extends BaseIdAndTime {
         return order;
     }
 
-    private void addOrderItem(MarketSeller seller, OrderItemRequest item, Map<Long, BigDecimal> couponDiscountMap) {
+    private void addOrderItem(Long sellerId, OrderItemRequest item, Map<Long, CouponDiscountInfo> couponInfoMap) {
         BigDecimal orderPrice = item.price().multiply(BigDecimal.valueOf(item.quantity()));
-        BigDecimal discountAmount = item.userCouponId() != null
-                ? couponDiscountMap.get(item.userCouponId())
+        CouponDiscountInfo couponInfo = item.userCouponId() != null
+                ? couponInfoMap.get(item.userCouponId())
                 : null;
         OrderItem orderItem = OrderItem.create(
                 this,
-                seller,
+                sellerId,
                 item.productItemId(),
                 item.quantity(),
                 item.weight(),
                 item.userCouponId(),
+                couponInfo != null ? couponInfo.couponType() : null,
                 orderPrice,
-                discountAmount
+                couponInfo != null ? couponInfo.discountAmount() : null
         );
         this.orderItems.add(orderItem);
     }
 
     public void completePayment() {
         this.state = OrderState.PAID;
+        this.orderItems.forEach(item -> item.updateState(OrderState.PAID));
     }
 
     public void expire() {
         if (this.state == OrderState.PENDING) {
             this.state = OrderState.EXPIRED;
+            this.orderItems.forEach(item -> item.updateState(OrderState.EXPIRED));
+        }
+    }
+
+    public void confirm() {
+        this.state = OrderState.CONFIRMED;
+        this.orderItems.forEach(item -> item.updateState(OrderState.CONFIRMED));
+    }
+
+    public void cancel(String cancelReason) {
+        if (this.state == OrderState.PENDING || this.state == OrderState.PAID) {
+            this.state = OrderState.CANCELED;
+            this.orderItems.forEach(item -> {
+                item.updateState(OrderState.CANCELED);
+                item.updateCancelReason(cancelReason);
+            });
         }
     }
 

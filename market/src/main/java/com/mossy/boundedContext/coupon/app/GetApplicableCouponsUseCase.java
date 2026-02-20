@@ -15,7 +15,7 @@ public class GetApplicableCouponsUseCase {
     private final UserCouponRepository userCouponRepository;
 
     @Transactional(readOnly = true)
-    public List<UserCouponResponse> get(Long productItemId, Long userId) {
-        return userCouponRepository.findApplicableCoupons(productItemId, userId);
+    public List<UserCouponResponse> get(Long userId, List<Long> productItemIds) {
+        return userCouponRepository.findApplicableCoupons(userId, productItemIds);
     }
 }

@@ -39,6 +39,12 @@ dependencies {
     // 스프링 이벤트 재시도 라이브러리
     implementation("org.springframework.retry:spring-retry")
 
+    // Spring Batch
+    implementation("org.springframework.boot:spring-boot-starter-batch")
+
+    // Redisson (분산 락)
+    implementation("org.redisson:redisson-spring-boot-starter:3.27.2")
+
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 

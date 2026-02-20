@@ -1,23 +1,24 @@
 package com.mossy.shared.market.event;
 
+import com.mossy.shared.market.enums.CouponType;
+
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public record OrderPaidEvent(
         Long orderId,
         Long buyerId,
-        String buyerName,
-        LocalDateTime createdAt,
-        List<OrderItem> orderItems
+        List<OrderItemPayload> orderItems
 ) {
-    public record OrderItem(
+    public record OrderItemPayload(
             Long orderItemId,
             Long sellerId,
-            Long productId,
+            Long productItemId,
+            Long userCouponId,
+            CouponType couponType,
             BigDecimal weight,
-            BigDecimal orderPrice,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            BigDecimal finalPrice,
+            BigDecimal originalPrice,
+            BigDecimal discountAmount
     ) {}
 }

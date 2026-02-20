@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "product", url = "http://localhost:8090")
+@FeignClient(name = "order-product", url = "http://localhost:8090")
 public interface OrderFeignClient {
 
     // request가 복잡하여 Post 요청

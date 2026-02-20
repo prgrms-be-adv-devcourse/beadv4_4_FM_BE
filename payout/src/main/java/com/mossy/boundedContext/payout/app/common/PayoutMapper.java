@@ -76,7 +76,7 @@ public interface PayoutMapper {
         @Mapping(target = "paymentDate", source = "event.createdAt")
         PayoutCandidateCreateDto toCreatePayoutCandidateDto(
                 OrderPaidEvent event,
-                OrderPaidEvent.OrderItem orderItem,
+                OrderPaidEvent.OrderItemPayload orderItem,
                 BigDecimal deliveryDistance,
                 String weightGrade
         );

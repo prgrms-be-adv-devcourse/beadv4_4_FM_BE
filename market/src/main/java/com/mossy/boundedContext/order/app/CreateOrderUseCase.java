@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.order.app;
 
+import com.mossy.boundedContext.coupon.dto.CouponDiscountInfo;
 import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
-import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
 import com.mossy.boundedContext.marketUser.out.MarketUserRepository;
 import com.mossy.boundedContext.order.domain.Order;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mossy.boundedContext.order.out.external.dto.request.StockCheckRequest;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +31,7 @@ public class CreateOrderUseCase {
     public OrderCreatedResponse create(
             Long userId,
             OrderCreatedRequest request,
-            Map<Long, MarketSeller> sellerMap,
-            Map<Long, BigDecimal> couponDiscountMap
+            Map<Long, CouponDiscountInfo> couponInfoMap
     ) {
         MarketUser buyer = marketUserRepository.getReferenceById(userId);
 
@@ -50,10 +48,9 @@ public class CreateOrderUseCase {
                         buyer,
                         request.buyerAddress(),
                         orderNo,
-                        sellerMap,
                         request.items(),
                         request.totalPrice(),
-                        couponDiscountMap
+                        couponInfoMap
                 )
         );
 

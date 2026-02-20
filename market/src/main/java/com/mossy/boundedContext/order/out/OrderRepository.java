@@ -14,28 +14,10 @@ import java.util.Optional;
 
 public interface OrderRepository  extends JpaRepository<Order, Long>, OrderRepositoryCustom{
 
-    Optional<Order> findByBuyerIdAndState(Long buyerId, OrderState state);
-
-    Optional<Order> findByOrderNo(String orderNo);
-
-    @Query("SELECT o FROM Order o JOIN FETCH o.buyer WHERE o.id = :orderId")
-    Optional<Order> findByIdWithBuyer(@Param("orderId") Long orderId);
-
-    @Query("SELECT o FROM Order o JOIN FETCH o.buyer WHERE o.buyer.id = :userId")
-    List<Order> findByBuyerIdWithBuyer(@Param("userId") Long userId);
-
     @Modifying
-    @Query("""
-    delete from Order o
-    where o.state = 'EXPIRED'
-    and o.createdAt < :threshold
-    """)
+    @Query("delete from Order o where o.state = 'EXPIRED' and o.createdAt < :threshold")
     void deleteExpiredOrders(@Param("threshold") LocalDateTime threshold);
 
-    @Query("""
-    select o from Order o
-    where o.state = 'PENDING'
-    and o.createdAt < :threshold
-    """)
+    @Query("select o from Order o where o.state = 'PENDING' and o.createdAt < :threshold")
     List<Order> findPendingOrdersCreatedBefore(@Param("threshold") LocalDateTime threshold);
 }

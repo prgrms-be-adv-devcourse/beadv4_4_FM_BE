@@ -7,7 +7,6 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.market.event.CouponUseRequestedEvent;
-import com.mossy.shared.market.event.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +38,5 @@ public class CompletePaymentUseCase {
             //eventPublisher.publish(new CouponUseRequestedEvent(userCouponIds));
             kafkaEventPublisher.publish(new CouponUseRequestedEvent(userCouponIds));
         }
-
-        //eventPublisher.publish(new OrderPaidEvent(order.getBuyer().getId()));
-        kafkaEventPublisher.publish(new OrderPaidEvent(order.getBuyer().getId()));
     }
 }

@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.order.domain;
 
+import com.mossy.shared.market.enums.CouponType;
 import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.market.enums.OrderState;
@@ -22,15 +23,18 @@ public class OrderItem extends BaseIdAndTime {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "seller_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private MarketSeller seller;
+    @Column(name = "seller_id", nullable = false)
+    private Long sellerId;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @Column(name = "product_item_id")
+    private Long productItemId;
 
     @Column(name = "user_coupon_id")
     private Long userCouponId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "coupon_type", length = 20)
+    private CouponType couponType;
 
     @Column(nullable = false)
     private int quantity;
@@ -56,11 +60,12 @@ public class OrderItem extends BaseIdAndTime {
 
     static OrderItem create(
             Order order,
-            MarketSeller seller,
-            Long productId,
+            Long sellerId,
+            Long productItemId,
             int quantity,
             BigDecimal weight,
             Long userCouponId,
+            CouponType couponType,
             BigDecimal originalPrice,
             BigDecimal discountAmount
     ) {
@@ -70,15 +75,24 @@ public class OrderItem extends BaseIdAndTime {
 
         return OrderItem.builder()
                 .order(order)
-                .seller(seller)
-                .productId(productId)
+                .sellerId(sellerId)
+                .productItemId(productItemId)
                 .quantity(quantity)
                 .weight(weight)
                 .userCouponId(userCouponId)
+                .couponType(couponType)
                 .originalPrice(originalPrice)
                 .discountAmount(discountAmount)
                 .finalPrice(finalPrice)
                 .state(OrderState.PENDING)
                 .build();
+    }
+
+    public void updateState(OrderState newState) {
+        this.state = newState;
+    }
+
+    public void updateCancelReason(String reason) {
+        this.cancelReason = reason;
     }
 }

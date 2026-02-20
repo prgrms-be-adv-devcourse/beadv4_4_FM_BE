@@ -53,6 +53,13 @@ spring:
     consumer:
       group-id: market
 
+  # Spring Batch 설정
+  batch:
+    job:
+      enabled: false  # 앱 시작 시 자동 실행 방지 (스케줄러에서 직접 실행)
+    jdbc:
+      initialize-schema: always  # 배치 메타데이터 테이블 자동 생성
+
 # 모든 서비스에서 동일한 경로로 스웨거 사용
 springdoc:
   swagger-ui:
@@ -71,6 +78,19 @@ market:
   policy:
     cart:
       max_quantity: 100
+
+batch:
+  confirm-orders:
+    chunk-size: 50
+
+outbox:
+  poller:
+    enabled: true
+    batch-size: 100
+    max-retry: 5
+    interval-ms: 10000
+  cleanup:
+    cron: "0 0 3 * * *"
 
 toss:
   payments:

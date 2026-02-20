@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.coupon.app;
 
 import com.mossy.boundedContext.coupon.domain.UserCoupon;
+import com.mossy.boundedContext.coupon.dto.CouponDiscountInfo;
 import com.mossy.boundedContext.coupon.out.UserCouponRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
@@ -21,7 +22,7 @@ public class CalculateCouponDiscountsUseCase {
 
     // 쿠폰이 적용된 상품의 할인가를 계산하는 부분
     @Transactional(readOnly = true)
-    public Map<Long, BigDecimal> calculateDiscounts(Map<Long, BigDecimal> userCouponPriceMap) {
+    public Map<Long, CouponDiscountInfo> calculateDiscounts(Map<Long, BigDecimal> userCouponPriceMap) {
         if (userCouponPriceMap.isEmpty()) {
             return Map.of();
         }
@@ -38,7 +39,8 @@ public class CalculateCouponDiscountsUseCase {
                     if (userCoupon == null) {
                         throw new DomainException(ErrorCode.USER_COUPON_NOT_FOUND);
                     }
-                    return userCoupon.calculateDiscount(userCouponPriceMap.get(id));
+                    BigDecimal discountAmount = userCoupon.calculateDiscount(userCouponPriceMap.get(id));
+                    return new CouponDiscountInfo(discountAmount, userCoupon.getCoupon().getCouponType());
                 }
             ));
     }

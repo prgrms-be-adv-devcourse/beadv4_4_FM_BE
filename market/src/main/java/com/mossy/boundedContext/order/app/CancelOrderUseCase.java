@@ -11,12 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class CancelOrderUseCase {
 
     private final OrderRepository orderRepository;
-    private final EventPublisher eventPublisher;
 
     @Transactional
     public void cancelOrder(Long orderId, Long userId, String cancelReason) {
@@ -31,10 +32,14 @@ public class CancelOrderUseCase {
             throw new DomainException(ErrorCode.ORDER_CANNOT_CANCEL);
         }
 
-        eventPublisher.publish(new OrderCancelEvent(
-            order.getOrderNo(),
-            order.getBuyer().getId(),
-            cancelReason
-        ));
+        if (order.getUpdatedAt().isBefore(LocalDateTime.now().minusWeeks(1))) {
+            throw new DomainException(ErrorCode.ORDER_PURCHASE_CONFIRMED);
+        }
+
+        order.cancel(cancelReason);
+
+        orderRepository.save(order);
+
+        //TODO : 쿠폰 이벤트 발행
     }
 }

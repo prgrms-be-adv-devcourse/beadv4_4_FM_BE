@@ -5,6 +5,7 @@ import com.mossy.shared.cash.event.PaymentRefundEvent;
 import com.mossy.shared.market.event.CouponUseRequestedEvent;
 import com.mossy.shared.market.event.OrderCancelEvent;
 import com.mossy.shared.market.event.OrderPaidEvent;
+import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,7 @@ public class KafkaEventPublisher {
             case OrderCancelEvent e -> KafkaTopics.ORDER_CANCEL;
             case OrderPaidEvent e -> KafkaTopics.ORDER_PAID;
             case CouponUseRequestedEvent e -> KafkaTopics.COUPON_USE_REQUESTED;
+            case OrderPurchaseConfirmedEvent e -> KafkaTopics.ORDER_PURCHASE_CONFIRMED;
             default -> null;
         };
     }
