@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 @Slf4j
 @Entity
 @Getter
@@ -22,7 +21,7 @@ import java.util.UUID;
 @Table(name = "USERS")
 public class User extends SourceUser {
 
-    @Column(name = "rrn_encrypted", nullable = false, unique = true)
+    @Column(name = "rrn_encrypted", nullable = false)
     protected String rrnEncrypted;
 
     @Column(name = "phone_num", nullable = false)
@@ -31,31 +30,30 @@ public class User extends SourceUser {
     @Column(name = "password", nullable = false)
     protected String password;
 
-   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true ,fetch = FetchType.LAZY)
-   private List<UserRole> userRoles = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<UserRole> userRoles = new ArrayList<>();
 
-   @Builder
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<UserSocialAccount> socialAccounts = new ArrayList<>();
+
+    @Builder
     public User(String email, String name, String password, String nickname,
                 String address, String phoneNum, String rrnEncrypted,
                 String profileImage, UserStatus status,
-                BigDecimal longitude, BigDecimal latitude ) {
-       super(email, name, address, nickname, profileImage, status, longitude, latitude);
+                BigDecimal longitude, BigDecimal latitude) {
+        super(email, name, address, nickname, profileImage, status, longitude, latitude);
+        this.password = password;
+        this.phoneNum = phoneNum;
+        this.rrnEncrypted = rrnEncrypted;
+    }
 
-       this.password = password;
-       this.phoneNum = phoneNum;
-       this.rrnEncrypted = rrnEncrypted;
-   }
-
-    //OAuth2 소셜 로그인으로 새로운 사용자를 생성
+    // OAuth2 소셜 로그인 신규 사용자 생성 (소셜 전용 — password/phone/rrn 없음)
     public static User createFromOAuth2(String email, String name) {
         log.info("OAuth2 소셜 사용자 생성: email={}", email);
-
-        String nickname = generateUniqueNickname();
-
         return User.builder()
                 .email(email)
                 .name(name != null ? name : "사용자")
-                .nickname(nickname)
+                .nickname(generateUniqueNickname())
                 .password("")
                 .phoneNum("")
                 .address("")
@@ -67,34 +65,41 @@ public class User extends SourceUser {
                 .build();
     }
 
-    //고유한 닉네임 생성 (UUID 기반)
+    // 소셜 계정이 하나라도 연동된 사용자인지 확인
+    public boolean isSocialUser() {
+        return socialAccounts != null && !socialAccounts.isEmpty();
+    }
+
+    // 특정 provider로 연동된 소셜 계정이 있는지 확인
+    public boolean hasProvider(String provider) {
+        return socialAccounts != null && socialAccounts.stream()
+                .anyMatch(sa -> sa.getProvider().equals(provider));
+    }
+
     private static String generateUniqueNickname() {
         return "user_" + UUID.randomUUID().toString().substring(0, 8);
     }
 
-    //사용자 역할 추가
     public void addUserRole(UserRole userRole) {
         this.userRoles.add(userRole);
     }
 
-    //비밀번호 변경
+    public void addSocialAccount(UserSocialAccount socialAccount) {
+        this.socialAccounts.add(socialAccount);
+    }
+
     public void changePassword(String encodedPassword) {
         this.password = encodedPassword;
     }
 
-    //가장 높은 권한의 역할 반환
     public RoleCode getPrimaryRole() {
-        if (userRoles == null || userRoles.isEmpty()) {
-            return RoleCode.USER;
-        }
-
+        if (userRoles == null || userRoles.isEmpty()) return RoleCode.USER;
         return userRoles.stream()
                 .map(ur -> ur.getRole().getCode())
                 .max(Enum::compareTo)
                 .orElse(RoleCode.USER);
     }
 
-    //프로필 정보 수정
     public void updateProfile(String phoneNum, String address, String encryptedRrn, String nickname) {
         this.phoneNum = phoneNum;
         this.address = address;
