@@ -3,8 +3,9 @@ package com.mossy.boundedContext.cash.app.usecase.user;
 import com.mossy.boundedContext.cash.app.mapper.CashMapper;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.out.user.UserCashLogRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,8 @@ public class CashGetUserCashLogsUseCase {
     private final CashMapper mapper;
 
     @Transactional(readOnly = true)
-    public List<UserCashLogResponseDto> findUserCashLog(Long userId) {
-        return userCashLogRepository.findAllByUserIdOrderByCreatedAtDesc(userId)
-            .stream()
-            .map(mapper::toResponseDto)
-            .toList();
+    public Page<UserCashLogResponseDto> findUserCashLog(Long userId, Pageable pageable) {
+        return userCashLogRepository.findAllByUserIdOrderByCreatedAtDesc(userId, pageable)
+            .map(mapper::toResponseDto);
     }
 }
