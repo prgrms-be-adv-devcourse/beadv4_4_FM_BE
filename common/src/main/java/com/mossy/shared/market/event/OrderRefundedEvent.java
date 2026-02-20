@@ -12,6 +12,7 @@ public record OrderRefundedEvent(
     {
     public record RefundItem(
             Long orderItemId,
-            BigDecimal refundAmount
+            BigDecimal refundAmount, //구매재 환불액
+            BigDecimal buyerPaidAmount // 구매자가 원래 낸 금액( 부분 환불 비율 계산용)
     ){}
 }
