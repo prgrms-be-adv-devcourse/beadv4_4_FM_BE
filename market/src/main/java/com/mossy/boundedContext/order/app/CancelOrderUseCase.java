@@ -1,12 +1,10 @@
 package com.mossy.boundedContext.order.app;
 
-import com.mossy.exception.DomainException;
-import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.out.OrderRepository;
-import com.mossy.global.eventPublisher.EventPublisher;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.shared.market.enums.OrderState;
-import com.mossy.shared.market.event.OrderCancelEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

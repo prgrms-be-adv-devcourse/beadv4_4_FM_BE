@@ -3,7 +3,6 @@ package com.mossy.infra.outbox;
 import com.mossy.kafka.outbox.domain.OutboxEvent;
 import com.mossy.kafka.outbox.domain.OutboxStatus;
 import com.mossy.kafka.outbox.repository.OutboxEventRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

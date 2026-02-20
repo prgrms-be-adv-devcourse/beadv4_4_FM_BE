@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface OutboxEventRepository extends JpaRepository<OutboxEvent, Long> {
 
-    List<OutboxEvent> findByStatusOrderByCreatedAtAsc(OutboxStatus status);
-
     List<OutboxEvent> findByStatusOrderByCreatedAtAsc(OutboxStatus status, Pageable pageable);
 
     void deleteByStatusAndCreatedAtBefore(OutboxStatus status, LocalDateTime cutoff);

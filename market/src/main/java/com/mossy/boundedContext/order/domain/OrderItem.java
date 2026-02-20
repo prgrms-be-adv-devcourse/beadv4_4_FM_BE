@@ -1,8 +1,7 @@
 package com.mossy.boundedContext.order.domain;
 
-import com.mossy.shared.market.enums.CouponType;
-import com.mossy.boundedContext.marketUser.domain.MarketSeller;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
+import com.mossy.shared.market.enums.CouponType;
 import com.mossy.shared.market.enums.OrderState;
 import jakarta.persistence.*;
 import lombok.*;
