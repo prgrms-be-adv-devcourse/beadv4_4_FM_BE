@@ -15,13 +15,10 @@ import com.mossy.boundedContext.payment.in.dto.response.PaymentResponse;
 import com.mossy.boundedContext.payment.in.dto.response.TossPaymentResponse;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.market.event.OrderCancelEvent;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +70,7 @@ public class PaymentFacade {
     }
 
     // 주문별 결제 내역 조회
-    public List<PaymentResponse> findAllPayments(String orderNo) {
-        return paymentGetInfoUseCase.findAllPayment(orderNo);
+    public Page<PaymentResponse> findAllPayments(String orderNo, Pageable pageable) {
+        return paymentGetInfoUseCase.findAllPayment(orderNo, pageable);
     }
 }

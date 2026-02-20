@@ -26,8 +26,9 @@ import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
 import java.math.BigDecimal;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -112,12 +113,12 @@ public class CashFacade {
         return cashGetSellerBalanceUseCase.getSellerBalance(sellerId);
     }
 
-    public List<UserCashLogResponseDto> findAllUserCashLogs(Long userId) {
-        return cashGetUserCashLogsUseCase.findUserCashLog(userId);
+    public Page<UserCashLogResponseDto> findAllUserCashLogs(Long userId, Pageable pageable) {
+        return cashGetUserCashLogsUseCase.findUserCashLog(userId, pageable);
     }
 
-    public List<SellerCashLogResponseDto> findAllSellerCashLogs(Long sellerId) {
-        return cashGetSellerCashLogsUseCase.findSellerCashLog(sellerId);
+    public Page<SellerCashLogResponseDto> findAllSellerCashLogs(Long sellerId, Pageable pageable) {
+        return cashGetSellerCashLogsUseCase.findSellerCashLog(sellerId, pageable);
     }
 
 }
