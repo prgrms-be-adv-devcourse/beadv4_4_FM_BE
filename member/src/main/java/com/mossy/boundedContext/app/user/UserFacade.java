@@ -29,24 +29,24 @@ import org.springframework.stereotype.Service;
 public class UserFacade {
 
     private final SignupUseCase signupUseCase;
-    private final EventPublisher eventPublisher;
-    private final VerfyMemberUseCase verfyMemberUseCase;
-    private final UserMapper userMapper;
-    private final SellerRequestRepository sellerRequestRepository;
-    private final GetUserInfoUseCase getUserInfoUseCase;
-    private final UserRepository userRepository;
     private final ProcessSocialLoginUseCase processSocialLoginUseCase;
+    private final GetUserInfoUseCase getUserInfoUseCase;
     private final UpdateProfileUseCase updateProfileUseCase;
+    private final VerfyMemberUseCase verfyMemberUseCase;
+    private final UserMapper mapper;
+    private final EventPublisher eventPublisher;
+    private final UserRepository userRepository;
+    private final SellerRequestRepository sellerRequestRepository;
 
-    public Long signup(SignupRequest req){
+    //회원가입
+    public Long signup(SignupRequest req) {
         User savedUser = signupUseCase.execute(req);
-
-        UserPayload userPayload = userMapper.toPayload(savedUser);
-        eventPublisher.publish(new UserJoinedEvent (userPayload));
-
+        UserPayload userPayload = mapper.toPayload(savedUser);
+        eventPublisher.publish(new UserJoinedEvent(userPayload));
         return savedUser.getId();
     }
 
+    //사용자 정보 조회 (판매자 신청 상태 포함)
     public UserInfoDto getUserInfo(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
@@ -56,19 +56,15 @@ public class UserFacade {
                 .map(SellerRequest::getStatus)
                 .orElse(SellerRequestStatus.NONE);
 
-
-        return UserInfoDto.of(
-                user.getId(),
-                user.getNickname(),
-                user.getName(),
-                status
-        );
+        return mapper.toUserInfoDto(user, status);
     }
 
+    //회원 인증 (Auth 서비스용)
     public MemberVerifyExternResponse verifyMember(String email, String password) {
         return verfyMemberUseCase.execute(email, password);
     }
 
+    //인증 정보 조회 (Auth 서비스용)
     public MemberAuthInfoResponse getAuthInfo(Long userId) {
         return getUserInfoUseCase.tokenExecute(userId);
     }
@@ -78,6 +74,7 @@ public class UserFacade {
         return processSocialLoginUseCase.execute(userDTO);
     }
 
+    //프로필 수정
     public void updateProfile(Long userId, ProfileUpdateRequest request) {
         updateProfileUseCase.execute(userId, request);
     }

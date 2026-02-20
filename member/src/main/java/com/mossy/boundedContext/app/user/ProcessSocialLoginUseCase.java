@@ -2,6 +2,7 @@ package com.mossy.boundedContext.app.user;
 
 import com.mossy.boundedContext.in.dto.OAuth2UserDto;
 import com.mossy.boundedContext.domain.user.User;
+import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
 import com.mossy.boundedContext.out.repository.user.RoleRepository;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -24,27 +26,26 @@ public class ProcessSocialLoginUseCase {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserMapper mapper;
 
     @Transactional
     public SocialLonginResponse execute(OAuth2UserDto userDTO) {
         Optional<User> existingUser = userRepository.findByEmail(userDTO.email());
 
         if (existingUser.isPresent()) {
-            return SocialLonginResponse.from(existingUser.get(), false);
+            User user = existingUser.get();
+            return mapper.toSocialLoginResponse(user, extractRoleNames(user), false);
         } else {
             User user = createNewSocialUser(userDTO);
-            return SocialLonginResponse.from(user, true);
+            return mapper.toSocialLoginResponse(user, extractRoleNames(user), true);
         }
     }
 
-    //새로운 소셜 사용자 생성
     private User createNewSocialUser(OAuth2UserDto userDTO) {
         log.info("새로운 소셜 사용자 생성: provider={}, email={}", userDTO.provider(), userDTO.email());
 
-        // User 엔티티의 팩토리 메서드를 사용하여 새로운 사용자 생성
         User user = User.createFromOAuth2(userDTO.email(), userDTO.name());
 
-        // USER 역할 추가
         Role roleUser = roleRepository.findByCode(RoleCode.USER)
                 .orElseThrow(() -> new DomainException(ErrorCode.ROLE_NOT_FOUND));
 
@@ -54,6 +55,12 @@ public class ProcessSocialLoginUseCase {
         log.info("소셜 사용자 생성 완료: userId={}, email={}", savedUser.getId(), savedUser.getEmail());
 
         return savedUser;
+    }
+
+    private List<String> extractRoleNames(User user) {
+        return user.getUserRoles().stream()
+                .map(ur -> ur.getRole().getCode().name())
+                .toList();
     }
 }
 

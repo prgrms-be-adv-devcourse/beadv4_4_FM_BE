@@ -46,53 +46,59 @@ public class User extends SourceUser {
        this.rrnEncrypted = rrnEncrypted;
    }
 
-   public static User createFromOAuth2(String email, String name) {
-       log.info("OAuth2 소셜 사용자 생성: email={}", email);
+    //OAuth2 소셜 로그인으로 새로운 사용자를 생성
+    public static User createFromOAuth2(String email, String name) {
+        log.info("OAuth2 소셜 사용자 생성: email={}", email);
 
-       // 닉네임 자동 생성 (UUID 사용)
-       String nickname = generateUniqueNickname();
+        String nickname = generateUniqueNickname();
 
-       return User.builder()
-               .email(email)
-               .name(name != null ? name : "사용자")
-               .nickname(nickname)
-               .password("") // 소셜 로그인 사용자는 비밀번호 없음
-               .phoneNum("") // 소셜 로그인으로부터 받지 않음
-               .address("") // 소셜 로그인으로부터 받지 않음
-               .rrnEncrypted("") // 소셜 로그인으로부터 받지 않음
-               .profileImage("default.png")
-               .status(UserStatus.ACTIVE)
-               .longitude(BigDecimal.ZERO)
-               .latitude(BigDecimal.ZERO)
-               .build();
-   }
+        return User.builder()
+                .email(email)
+                .name(name != null ? name : "사용자")
+                .nickname(nickname)
+                .password("")
+                .phoneNum("")
+                .address("")
+                .rrnEncrypted("")
+                .profileImage("default.png")
+                .status(UserStatus.ACTIVE)
+                .longitude(BigDecimal.ZERO)
+                .latitude(BigDecimal.ZERO)
+                .build();
+    }
 
-   // 중복되지 않는 고유한 닉네임을 생성합니다.
-   private static String generateUniqueNickname() {
-       return "user_" + UUID.randomUUID().toString().substring(0, 8);
-   }
+    //고유한 닉네임 생성 (UUID 기반)
+    private static String generateUniqueNickname() {
+        return "user_" + UUID.randomUUID().toString().substring(0, 8);
+    }
 
-   public void addUserRole(UserRole userRole) {
-      this.getUserRoles().add(userRole);
-   }
+    //사용자 역할 추가
+    public void addUserRole(UserRole userRole) {
+        this.userRoles.add(userRole);
+    }
 
-   public void changePassword(String encodedPassword) {
+    //비밀번호 변경
+    public void changePassword(String encodedPassword) {
         this.password = encodedPassword;
     }
 
+    //가장 높은 권한의 역할 반환
     public RoleCode getPrimaryRole() {
-       if (userRoles == null ||  userRoles.isEmpty()) return RoleCode.USER;
+        if (userRoles == null || userRoles.isEmpty()) {
+            return RoleCode.USER;
+        }
 
-       return userRoles.stream()
-               .map(ur -> ur.getRole().getCode())
-               .max(Enum::compareTo)
-               .orElse(RoleCode.USER);
+        return userRoles.stream()
+                .map(ur -> ur.getRole().getCode())
+                .max(Enum::compareTo)
+                .orElse(RoleCode.USER);
     }
 
-    public void updateProfile(String s, String address, String encryptedRrn, String nickname) {
-       this.phoneNum = phoneNum;
-       this.address = address;
-       this.rrnEncrypted = encryptedRrn;
-       this.nickname = nickname;
+    //프로필 정보 수정
+    public void updateProfile(String phoneNum, String address, String encryptedRrn, String nickname) {
+        this.phoneNum = phoneNum;
+        this.address = address;
+        this.rrnEncrypted = encryptedRrn;
+        this.nickname = nickname;
     }
 }

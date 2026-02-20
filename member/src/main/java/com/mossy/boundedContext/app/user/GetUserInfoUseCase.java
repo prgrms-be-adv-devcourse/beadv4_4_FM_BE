@@ -4,6 +4,7 @@ import com.mossy.boundedContext.domain.seller.Seller;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
+import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.repository.seller.SellerRepository;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
@@ -25,14 +26,18 @@ public class GetUserInfoUseCase {
     private final SellerRequestRepository sellerRequestRepository;
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
+    private final UserMapper mapper;
 
     @Transactional(readOnly = true)
-    public UserInfoDto infoExecute(Long userId, String nickname, String name) {
+    public UserInfoDto infoExecute(Long userId) {
         SellerRequestStatus status = sellerRequestRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
                 .map(SellerRequest::getStatus)
                 .orElse(null);
 
-        return UserInfoDto.of(userId, nickname, name, status);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+
+        return mapper.toUserInfoDto(user, status);
     }
 
     @Transactional(readOnly = true)
@@ -48,12 +53,7 @@ public class GetUserInfoUseCase {
                 .map(Seller::getId)
                 .orElse(null);
 
-        return new MemberAuthInfoResponse(
-                user.getId(),
-                roles,
-                sellerId,
-                true
-        );
+        return mapper.toMemberAuthInfoResponse(user, roles, sellerId);
     }
 
 }

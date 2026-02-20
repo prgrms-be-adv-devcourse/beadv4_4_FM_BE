@@ -7,10 +7,5 @@ public record UserInfoDto(
         String nickname,
         String username,
         SellerRequestStatus status
-)
-
-{
-    public static UserInfoDto of(Long userId, String nickname, String username,SellerRequestStatus status) {
-        return new UserInfoDto(userId, nickname, username, status);
-    }
+) {
 }
