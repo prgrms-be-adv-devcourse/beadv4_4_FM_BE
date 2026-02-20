@@ -5,9 +5,7 @@ import com.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import com.mossy.boundedContext.cash.domain.user.UserWallet;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.boundedContext.cash.out.seller.CashSellerRepository;
 import com.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
-import com.mossy.boundedContext.cash.out.user.CashUserRepository;
 import com.mossy.boundedContext.cash.out.user.UserWalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,8 +16,6 @@ public class CashSupport {
 
     private final UserWalletRepository userWalletRepository;
     private final SellerWalletRepository sellerWalletRepository;
-    private final CashUserRepository cashUserRepository;
-    private final CashSellerRepository cashSellerRepository;
 
      // --- [검증 관련] ---
 
