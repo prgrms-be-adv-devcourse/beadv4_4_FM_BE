@@ -138,9 +138,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
         if (payee == null) {
             throw new DomainException(ErrorCode.PAYEE_IS_NULL); // status: 400
         }
-        if (amount != null && amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new DomainException(ErrorCode.INVALID_AMOUNT); // status: 400
-        }
+
         this.eventType = eventType;
         this.relTypeCode = relTypeCode;
         this.relId = relId;

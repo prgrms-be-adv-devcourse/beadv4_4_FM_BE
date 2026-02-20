@@ -101,7 +101,7 @@ public class PayoutFacade {
     public RsData<Integer> completePayoutsMore(int limit) { return payoutCompletePayoutsMoreUseCase.completePayoutsMore(limit); }
 
     @Transactional
-    public void processRefund(Long OrderItemId, BigDecimal refundAmount) { payoutRefundUseCase.processRefund(OrderItemId, refundAmount); }
+    public void processRefund(Long OrderItemId, BigDecimal refundAmount, BigDecimal buyerPaidAmount) { payoutRefundUseCase.processRefund(OrderItemId, refundAmount, buyerPaidAmount); }
 
     public void handleOrderPaid(OrderPaidEvent event) { payoutHandleOrderPaidUseCase.handle(event); }
 
