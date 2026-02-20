@@ -5,6 +5,7 @@ import com.mossy.boundedContext.cash.app.mapper.CashMapper;
 import com.mossy.boundedContext.cash.in.dto.request.SellerBalanceRequest;
 import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
+import com.mossy.boundedContext.cash.in.dto.response.SellerCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
 import com.mossy.exception.SuccessCode;
@@ -36,38 +37,38 @@ public class ApiV1WalletController {
 
     @Operation(summary = "구매자 예치금 충전", description = "구매자의 지갑에 특정 금액을 충전하고 로그를 기록합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "충전 성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
+        @ApiResponse(responseCode = "200", description = "충전 성공"),
+        @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자")
     })
     @PostMapping("/user/credit")
     public RsData<Void> creditUserBalance(
-            @RequestHeader("X-User-Id") Long userId,
-            @RequestBody UserBalanceRequestDto request) {
+        @RequestHeader("X-User-Id") Long userId,
+        @RequestBody UserBalanceRequestDto request) {
         cashFacade.creditUserBalance(request.withUserId(userId));
         return RsData.success(SuccessCode.CASH_CREDIT_SUCCESS);
     }
 
     @Operation(summary = "구매자 예치금 차감", description = "주문 결제 등의 사유로 구매자의 예치금을 차감합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "차감 성공"),
-            @ApiResponse(responseCode = "400", description = "잔액 부족"),
-            @ApiResponse(responseCode = "404", description = "지갑을 찾을 수 없음")
+        @ApiResponse(responseCode = "200", description = "차감 성공"),
+        @ApiResponse(responseCode = "400", description = "잔액 부족"),
+        @ApiResponse(responseCode = "404", description = "지갑을 찾을 수 없음")
     })
     @PostMapping("/user/deduct")
     public RsData<Void> deductUserBalance(
-            @RequestHeader("X-User-Id") Long userId,
-            @RequestBody UserBalanceRequestDto request) {
+        @RequestHeader("X-User-Id") Long userId,
+        @RequestBody UserBalanceRequestDto request) {
         cashFacade.deductUserBalance(request.withUserId(userId));
         return RsData.success(SuccessCode.CASH_DEDUCT_SUCCESS);
     }
 
     @Operation(summary = "구매자 지갑 상세 조회", description = "지갑 ID, 현재 잔액, 사용자 정보를 포함한 상세 내역을 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공")
+        @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping("/user")
     public RsData<UserWalletResponseDto> getUserWallet(
-            @RequestHeader("X-User-Id") Long userId) {
+        @RequestHeader("X-User-Id") Long userId) {
         UserWalletResponseDto wallet = cashFacade.findUserWallet(userId);
         return RsData.success(SuccessCode.USER_WALLET_FOUND, wallet);
     }
@@ -75,7 +76,7 @@ public class ApiV1WalletController {
     @Operation(summary = "구매자 잔액 단건 조회", description = "결제 가능 여부 확인을 위해 현재 잔액(BigDecimal)만 신속하게 조회합니다.")
     @GetMapping("/user/balance")
     public RsData<BigDecimal> getUserBalance(
-            @RequestHeader("X-User-Id") Long userId) {
+        @RequestHeader("X-User-Id") Long userId) {
         BigDecimal balance = cashFacade.findUserBalance(userId);
         return RsData.success(SuccessCode.USER_BALANCE_FOUND, balance);
     }
@@ -84,8 +85,8 @@ public class ApiV1WalletController {
     @ApiResponse(responseCode = "200", description = "내역 조회 성공")
     @GetMapping("/user/wallet/logs")
     public RsData<List<UserCashLogResponseDto>> getUserCashLogs(
-            @RequestHeader("X-User-Id") Long userId) {
-        List<UserCashLogResponseDto> logs = cashFacade.findAllCashLogs(userId);
+        @RequestHeader("X-User-Id") Long userId) {
+        List<UserCashLogResponseDto> logs = cashFacade.findAllUserCashLogs(userId);
         return RsData.success(SuccessCode.USER_CASH_LOGS_FOUND, logs);
     }
 
@@ -119,7 +120,7 @@ public class ApiV1WalletController {
     @Operation(summary = "판매자 정산 지갑 상세 조회", description = "판매자 지갑 정보와 정산에 필요한 레플리카 정보를 상세 조회합니다.")
     @GetMapping("/seller")
     public RsData<SellerWalletResponseDto> getSellerWallet(
-            @RequestHeader("X-Seller-Id") Long sellerId) {
+        @RequestHeader("X-Seller-Id") Long sellerId) {
         SellerWalletResponseDto wallet = cashFacade.findSellerWallet(sellerId);
         return RsData.success(SuccessCode.SELLER_WALLET_FOUND, wallet);
     }
@@ -127,8 +128,17 @@ public class ApiV1WalletController {
     @Operation(summary = "판매자 정산 가능 잔액 조회", description = "판매자 지갑의 현재 출금 가능 잔액만을 조회합니다.")
     @GetMapping("/seller/balance")
     public RsData<BigDecimal> getSellerBalance(
-            @RequestHeader("X-Seller-Id") Long sellerId) {
+        @RequestHeader("X-Seller-Id") Long sellerId) {
         BigDecimal balance = cashFacade.findSellerBalance(sellerId);
         return RsData.success(SuccessCode.SELLER_BALANCE_FOUND, balance);
+    }
+
+    @Operation(summary = "판매자 캐시 사용 내역 조회", description = "판매자의 모든 입금, 출금, 수수료 등 캐시 변동 이력을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "내역 조회 성공")
+    @GetMapping("/seller/wallet/logs")
+    public RsData<List<SellerCashLogResponseDto>> getSellerCashLogs(
+        @RequestHeader("X-Seller-Id") Long sellerId) {
+        List<SellerCashLogResponseDto> logs = cashFacade.findAllSellerCashLogs(sellerId);
+        return RsData.success(SuccessCode.SELLER_CASH_LOGS_FOUND, logs);
     }
 }
