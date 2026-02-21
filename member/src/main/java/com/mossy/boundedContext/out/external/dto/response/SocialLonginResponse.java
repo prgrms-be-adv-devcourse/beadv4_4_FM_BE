@@ -1,10 +1,12 @@
 package com.mossy.boundedContext.out.external.dto.response;
 
+import java.util.List;
+
 public record SocialLonginResponse(
         Long id,
         String email,
         String name,
-        java.util.List<String> roles,
+        List<String> roles,
         boolean isNewUser
 ) {
 }
