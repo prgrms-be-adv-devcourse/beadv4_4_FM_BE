@@ -50,15 +50,17 @@ public class PayoutEventListener {
     @Transactional(propagation = REQUIRES_NEW)
     public void payoutSellerCreatedEvent(PayoutSellerCreatedEvent event) { payoutFacade.createPayout(event.seller().sellerId()); }
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void orderPaidEvent(OrderPaidEvent event) { payoutFacade.handleOrderPaid(event);}
+    // Kafka로 대체 (PayoutKafkaEventListener 참고)
+//    @TransactionalEventListener(phase = AFTER_COMMIT)
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
+//    public void orderPaidEvent(OrderPaidEvent event) { payoutFacade.handleOrderPaid(event);}
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void payoutCompletedEvent(PayoutCompletedEvent event) { payoutFacade.handlePayoutCompleted(event); }
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void orderRefundedEvent(OrderRefundedEvent event) { payoutFacade.handleOrderRefunded(event); }
+    // Kafka로 대체 (PayoutKafkaEventListener 참고)
+//    @TransactionalEventListener(phase = AFTER_COMMIT)
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
+//    public void orderRefundedEvent(OrderRefundedEvent event) { payoutFacade.handleOrderRefunded(event); }
 }

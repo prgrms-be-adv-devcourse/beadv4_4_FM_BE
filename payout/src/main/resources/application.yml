@@ -24,6 +24,8 @@ spring:
 #      driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         default_batch_fetch_size: 100
@@ -32,6 +34,10 @@ spring:
       enabled: false
   cache:
     type: redis
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: payout
 
 # 모든 서비스에서 동일한 경로로 스웨거 사용
 springdoc:
@@ -39,3 +45,13 @@ springdoc:
     path: /mossy-docs
   api-docs:
     path: /v3/api-docs
+
+app:
+  kafka:
+    topics:
+      payout:
+        wallet:
+          credit: payout.wallet.credit
+      order:
+        paid: order.paid
+        refunded: order.refunded

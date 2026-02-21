@@ -26,6 +26,8 @@ repositories {
 dependencies {
     // common 모듈
     implementation(project(":common"))
+    // kafka 모듈
+    implementation(project(":kafka"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     runtimeOnly("org.postgresql:postgresql")
@@ -53,6 +55,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.batch:spring-batch-test")
+    testImplementation ("org.springframework.kafka:spring-kafka-test")
 }
 
 tasks.withType<Test> {

@@ -27,6 +27,8 @@ spring:
   elasticsearch:
     uris:
       - http://elasticsearch:9200
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
 
 cloud:
   aws:
