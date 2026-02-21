@@ -69,12 +69,10 @@ public interface PayoutMapper {
         @Mapping(target = "orderItemId", source = "orderItem.orderItemId")
         @Mapping(target = "buyerId", source = "event.buyerId")
         @Mapping(target = "sellerId", source = "orderItem.sellerId")
-        @Mapping(target = "orderPrice", source = "orderItem.orderPrice")
+        @Mapping(target = "orderPrice", source = "orderItem.finalPrice")
         @Mapping(target = "originalPrice", source = "orderItem.originalPrice")
         @Mapping(target = "platformDiscountAmount", source = "orderItem.platformDiscountAmount")
-        @Mapping(target = "orderItemCreatedAt", source = "orderItem.createdAt")
-        @Mapping(target = "orderItemUpdatedAt", source = "orderItem.updatedAt")
-        @Mapping(target = "paymentDate", source = "event.createdAt")
+        @Mapping(target = "paymentDate", source = "event.paidAt")
         PayoutCandidateCreateDto toCreatePayoutCandidateDto(
                 OrderPurchaseConfirmedEvent event,
                 OrderPurchaseConfirmedEvent.OrderItemPayload orderItem,
