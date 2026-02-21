@@ -15,7 +15,7 @@ public class CashCreditUserBalanceUseCase {
 
     @Transactional
     public void credit(UserBalanceRequestDto request) {
-        UserWallet userWallet = cashSupport.findWalletByUserId(request.userId());
+        UserWallet userWallet = cashSupport.findWalletByUserIdForUpdate(request.userId());
 
         userWallet.credit(request.amount(), request.eventType(), request.relTypeCode(), request.relId());
     }

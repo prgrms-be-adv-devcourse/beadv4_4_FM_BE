@@ -12,6 +12,7 @@ import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
 import com.mossy.shared.member.event.UserUpdatedEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;
+import com.mossy.shared.payout.event.PayoutSellerWalletCreditEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -64,5 +65,11 @@ public class CashEventListener {
     @EventListener
     public void paymentRefundEvent(PaymentCashRefundEvent event) {
         cashFacade.processRefund(mapper.toCashRefundRequestDto(event));
+    }
+
+    @TransactionalEventListener(phase = AFTER_COMMIT)
+    @Transactional(propagation = REQUIRES_NEW)
+    public void payoutSellerWalletCreditEvent(PayoutSellerWalletCreditEvent event) {
+        cashFacade.creditSellerBalance(mapper.toSellerBalanceRequestDto(event));
     }
 }

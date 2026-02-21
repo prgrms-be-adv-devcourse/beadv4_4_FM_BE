@@ -15,16 +15,6 @@ public record SellerBalanceRequestDto(
     String relTypeCode,
     Long relId
 ) {
-    public SellerBalanceRequestDto withSellerId(Long sellerId) {
-        return SellerBalanceRequestDto.builder()
-            .sellerId(sellerId)
-            .amount(amount)
-            .eventType(eventType)
-            .relTypeCode(relTypeCode)
-            .relId(relId)
-            .build();
-    }
-
     public SellerBalanceRequestDto {
         if (sellerId == null) throw new DomainException(ErrorCode.SELLER_ID_REQUIRED);
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {

@@ -14,7 +14,7 @@ public class CashCreditSellerBalanceUseCase {
 
     @Transactional
     public void credit(SellerBalanceRequestDto request) {
-        SellerWallet sellerWallet = cashSupport.findWalletBySellerId(request.sellerId());
+        SellerWallet sellerWallet = cashSupport.findWalletBySellerIdForUpdate(request.sellerId());
 
         sellerWallet.credit(request.amount(), request.eventType(), request.relTypeCode(), request.relId());
     }

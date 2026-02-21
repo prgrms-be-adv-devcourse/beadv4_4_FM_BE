@@ -27,7 +27,7 @@ public class SellerCashLog extends BaseIdAndTime {
     private Long relId;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private CashSeller user;
+    private CashSeller seller;
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "seller_wallet_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private SellerWallet wallet;
@@ -38,13 +38,13 @@ public class SellerCashLog extends BaseIdAndTime {
 
     @Builder
     public SellerCashLog(BigDecimal amount, BigDecimal balance, SellerEventType eventType, Long relId,
-                         String relTypeCode, CashSeller user, SellerWallet wallet) {
+                         String relTypeCode, CashSeller seller, SellerWallet wallet) {
         this.amount = amount;
         this.balance = balance;
         this.eventType = eventType;
         this.relId = relId;
         this.relTypeCode = relTypeCode;
-        this.user = user;
+        this.seller = seller;
         this.wallet = wallet;
     }
 }

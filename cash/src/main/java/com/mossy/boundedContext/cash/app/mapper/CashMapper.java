@@ -3,15 +3,20 @@ package com.mossy.boundedContext.cash.app.mapper;
 import com.mossy.boundedContext.cash.domain.seller.CashSeller;
 import com.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import com.mossy.boundedContext.cash.domain.user.CashUser;
+import com.mossy.boundedContext.cash.domain.seller.SellerCashLog;
 import com.mossy.boundedContext.cash.domain.user.UserCashLog;
 import com.mossy.boundedContext.cash.domain.user.UserWallet;
 import com.mossy.boundedContext.cash.in.dto.command.CashSellerDto;
 import com.mossy.boundedContext.cash.in.dto.command.CashUserDto;
 import com.mossy.boundedContext.cash.in.dto.request.CashRefundRequestDto;
+import com.mossy.boundedContext.cash.in.dto.request.SellerBalanceRequest;
+import com.mossy.boundedContext.cash.in.dto.request.SellerBalanceRequestDto;
+import com.mossy.boundedContext.cash.in.dto.response.SellerCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
 import com.mossy.shared.cash.event.PaymentCashRefundEvent;
+import com.mossy.shared.payout.event.PayoutSellerWalletCreditEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.member.payload.UserPayload;
 import org.mapstruct.Mapper;
@@ -42,6 +47,12 @@ public interface CashMapper {
 
     CashRefundRequestDto toCashRefundRequestDto(PaymentCashRefundEvent event);
 
+    @Mapping(target = "relTypeCode", constant = "PAYOUT")
+    @Mapping(target = "relId", source = "sellerId")
+    SellerBalanceRequestDto toSellerBalanceRequestDto(PayoutSellerWalletCreditEvent event);
+
+    SellerBalanceRequestDto toSellerBalanceRequestDto(Long sellerId, SellerBalanceRequest request);
+
     // --- [조회 응답 매핑] ---
 
     @Mapping(target = "walletId", source = "id")
@@ -51,4 +62,6 @@ public interface CashMapper {
     SellerWalletResponseDto toResponseDto(SellerWallet wallet);
 
     UserCashLogResponseDto toResponseDto(UserCashLog log);
+
+    SellerCashLogResponseDto toResponseDto(SellerCashLog log);
 }
