@@ -44,7 +44,6 @@ public class OutboxPollerScheduler {
     }
 
     // 매일 새벽 3시 - 7일 이상 지난 PUBLISHED 이벤트 정리
-    // 공통으로 빼야 한다.
     @Transactional
     @Scheduled(cron = "${outbox.cleanup.cron}")
     public void cleanupOldEvents() {
