@@ -4,7 +4,7 @@ import com.mossy.boundedContext.payout.app.common.*;
 import com.mossy.boundedContext.payout.app.seller.PayoutSyncSellerUseCase;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.boundedContext.payout.app.user.PayoutSyncUserUseCase;
-import com.mossy.shared.market.event.OrderPaidEvent;
+import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import com.mossy.shared.market.event.OrderRefundedEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.global.rsData.RsData;
@@ -37,7 +37,7 @@ public class PayoutFacade {
     private final PayoutAddPayoutCandidateItemsUseCase payoutAddPayoutCandidateItemsUseCase;
     private final PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
     private final PayoutCompletePayoutsMoreUseCase payoutCompletePayoutsMoreUseCase;
-    private final PayoutHandleOrderPaidUseCase payoutHandleOrderPaidUseCase;
+    private final PayoutHandleOrderPurchaseConfirmedUseCase payoutHandleOrderPurchaseConfirmedUseCase;
     private final PayoutRefundUseCase payoutRefundUseCase;
     private final PayoutHandlePayoutCompletedUseCase payoutHandlePayoutCompletedUseCase;
     private final PayoutHandleOrderRefundedUseCase payoutHandleOrderRefundedUseCase;
@@ -103,7 +103,7 @@ public class PayoutFacade {
     @Transactional
     public void processRefund(Long OrderItemId, BigDecimal refundAmount, BigDecimal buyerPaidAmount) { payoutRefundUseCase.processRefund(OrderItemId, refundAmount, buyerPaidAmount); }
 
-    public void handleOrderPaid(OrderPaidEvent event) { payoutHandleOrderPaidUseCase.handle(event); }
+    public void handleOrderPurchaseConfirmed(OrderPurchaseConfirmedEvent event) { payoutHandleOrderPurchaseConfirmedUseCase.handle(event); }
 
     public void handlePayoutCompleted(PayoutCompletedEvent event) { payoutHandlePayoutCompletedUseCase.handle(event); }
 
