@@ -78,7 +78,7 @@ public class PayoutDailyPayoutToWalletUseCase {
                         .creditDate(today)
                         .build();
 
-                outboxPublisher.saveEvent(KafkaTopics.PAYOUT_WALLET_CREDIT, sellerId.toString(), event);
+                outboxPublisher.saveEvent(KafkaTopics.PAYOUT_WALLET_CREDIT, "PayoutSeller", sellerId, sellerId.toString(), event);
                 log.info("[지급 배치] 판매자 {} - 금액: {}", sellerId, totalAmount);
             }
         });
