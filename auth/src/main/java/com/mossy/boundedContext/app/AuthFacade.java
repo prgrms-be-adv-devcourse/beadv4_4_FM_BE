@@ -27,42 +27,31 @@ public class AuthFacade {
     private final ReissueTokenUseCase reissueTokenUseCase;
     private final MemberFeignClient memberFeignClient;
 
-    /**
-     * 일반 로그인 (이메일/비밀번호)
-     */
+    //일반 로그인 (이메일/비밀번호)
     public LoginResponse login(LoginRequest request) {
         var ctx = loginUseCase.execute(request.email(), request.password());
         TokenResponse tokens = issueTokenUseCase.execute(ctx.userId(), ctx.role(), null);
         return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
     }
 
-    /**
-     * 토큰 재발급
-     */
+    //토큰 재발급
     public LoginResponse reissue(String oldRefreshToken) {
         TokenResponse tokens = reissueTokenUseCase.execute(oldRefreshToken);
         return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
     }
 
-    /**
-     * 로그아웃
-     */
+    //로그아웃
     public void logout(String refreshToken) {
         logoutUseCase.execute(refreshToken);
     }
 
-    /**
-     * 판매자 승인 후 토큰 재발급
-     */
+    //판매자 승인 후 토큰 재발급
     public LoginResponse issueForSellerApproved(Long userId, Long sellerId) {
         TokenResponse tokens = issueTokenUseCase.execute(userId, "SELLER", sellerId);
         return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
     }
 
-    /**
-     * OAuth2 로그인 처리 및 토큰 발급
-     * - member 저장 성공 후 토큰 발급 실패 시 → member 보상 삭제(rollback) 호출
-     */
+    //OAuth2 로그인 처리 및 토큰 발급
     public LoginResponse upsertUserAndIssueToken(OAuth2UserDTO userDTO) {
         log.info("OAuth2 사용자 처리 시작: provider={}, email={}", userDTO.provider(), userDTO.email());
 

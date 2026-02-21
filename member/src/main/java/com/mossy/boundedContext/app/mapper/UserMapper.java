@@ -20,11 +20,7 @@ import java.util.List;
 )
 public interface UserMapper {
 
-    // --- [Entity → Payload (이벤트 발행용)] ---
-
     UserPayload toPayload(User user);
-
-    // --- [조회 응답 매핑] ---
 
     default UserInfoDto toUserInfoDto(User user, SellerRequestStatus status) {
         List<String> providers = user.getSocialAccounts().stream()
