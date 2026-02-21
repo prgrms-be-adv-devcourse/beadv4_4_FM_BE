@@ -23,9 +23,11 @@ public interface UserMapper {
     UserPayload toPayload(User user);
 
     default UserInfoDto toUserInfoDto(User user, SellerRequestStatus status) {
-        List<String> providers = user.getSocialAccounts().stream()
-                .map(UserSocialAccount::getProvider)
-                .toList();
+        List<String> providers = user.getSocialAccounts() != null
+                ? user.getSocialAccounts().stream()
+                    .map(UserSocialAccount::getProvider)
+                    .toList()
+                : List.of();
         return new UserInfoDto(
                 user.getId(),
                 user.getNickname(),

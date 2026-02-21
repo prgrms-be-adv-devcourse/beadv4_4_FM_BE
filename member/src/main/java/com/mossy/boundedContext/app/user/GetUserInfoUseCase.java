@@ -38,6 +38,7 @@ public class GetUserInfoUseCase {
         User user = userRepository.findByIdWithSocialAccounts(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
+        // 트랜잭션 내에서 mapper 호출 (lazy loading 방지)
         return mapper.toUserInfoDto(user, status);
     }
 

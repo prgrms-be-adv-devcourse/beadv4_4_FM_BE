@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -65,6 +66,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new RsData<>("F-400", message, null));
+    }
+
+    // 인증 실패 예외 (JWT 만료, 검증 실패 포함)
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<RsData<Void>> handleAuthenticationException(AuthenticationException e) {
+        log.warn("Authentication Failed: {}", e.getMessage());
+        String message = "인증에 실패했습니다.";
+        if (e.getMessage() != null && e.getMessage().contains("expired")) {
+            message = "토큰이 만료되었습니다. 다시 로그인해주세요.";
+        } else if (e.getMessage() != null && e.getMessage().contains("JWT")) {
+            message = "유효하지 않은 토큰입니다. 다시 로그인해주세요.";
+        }
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new RsData<>("F-401", message, null));
     }
 
     @ExceptionHandler(Exception.class)
