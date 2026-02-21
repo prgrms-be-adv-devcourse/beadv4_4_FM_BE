@@ -2,7 +2,7 @@ package com.mossy.boundedContext.catalog.domain;
 
 import com.mossy.boundedContext.category.domain.Category;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
-import com.mossy.shared.market.enums.CatalogStatus;
+import com.mossy.shared.product.enums.CatalogStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

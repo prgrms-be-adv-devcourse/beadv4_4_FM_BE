@@ -13,9 +13,14 @@ spring:
       fail-on-empty-beans: false
   jpa:
     open-in-view: false
+    defer-datasource-initialization: true
     properties:
       hibernate:
         default_batch_fetch_size: 100
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
   cache:
     type: redis
 

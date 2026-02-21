@@ -27,8 +27,8 @@ public class CashHoldingUseCase {
 
     @Transactional
     public void holdPaymentAmount(CashHoldingRequestDto request) {
-        UserWallet buyerWallet = cashSupport.findWalletByUserId(request.buyerId());
-        SellerWallet holdingWallet = cashSupport.findHoldingWallet(); // 정책상 2번은 홀딩 지갑
+        UserWallet buyerWallet = cashSupport.findWalletByUserIdForUpdate(request.buyerId());
+        SellerWallet holdingWallet = cashSupport.findHoldingWallet();
 
         BigDecimal orderAmount = request.amount();
 
@@ -68,7 +68,7 @@ public class CashHoldingUseCase {
 
         // 예치금 결제인 경우에만 구매자 지갑으로 환불 (Toss 결제는 PG사가 환불 처리)
         if (request.payMethod() == PayMethod.CASH) {
-            UserWallet buyerWallet = cashSupport.findWalletByUserId(request.buyerId());
+            UserWallet buyerWallet = cashSupport.findWalletByUserIdForUpdate(request.buyerId());
             buyerWallet.credit(
                 refundAmount,
                 UserEventType.환불__결제취소,

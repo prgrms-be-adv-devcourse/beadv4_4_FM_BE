@@ -15,7 +15,7 @@ public class CashDeductUserBalanceUseCase {
 
     @Transactional
     public void deduct(UserBalanceRequestDto request) {
-        UserWallet wallet = cashSupport.findWalletByUserId(request.userId());
+        UserWallet wallet = cashSupport.findWalletByUserIdForUpdate(request.userId());
 
         wallet.debit(request.amount(), request.eventType(), request.relTypeCode(), request.relId());
     }

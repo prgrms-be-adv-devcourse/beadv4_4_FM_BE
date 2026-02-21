@@ -10,15 +10,29 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "OUTBOX_EVENT", indexes = {
-        @Index(name = "idx_outbox_status_created", columnList = "status, createdAt")
-})
+@Table(
+    name = "OUTBOX_EVENT",
+    indexes = {
+        // 폴링 성능용 인덱스
+        @Index(name = "idx_outbox_status_created", columnList = "status, createdAt"),
+        // 중복 방지 + 도메인 별 조회용 인덱스
+        @Index(name = "uk_outbox_aggregate", columnList = "aggregateType, aggregateId, eventType", unique = true)
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OutboxEvent extends BaseIdAndTime {
 
     @Column(nullable = false, length = 200)
     private String topic;
+
+    // ex) Order, Cash
+    @Column(nullable = false, length = 50)
+    private String aggregateType;
+
+    // 중복 방지용 id
+    @Column(nullable = false)
+    private Long aggregateId;
 
     // 이벤트 클래스
     @Column(nullable = false, length = 50)
@@ -44,12 +58,18 @@ public class OutboxEvent extends BaseIdAndTime {
     private String errorMessage;
 
     @Builder
-    public OutboxEvent(String topic, String eventKey, String payload) {
+    public OutboxEvent(String topic, String aggregateType, Long aggregateId, String eventKey, String payload) {
         this.topic = topic;
+        this.aggregateType = aggregateType;
+        this.aggregateId = aggregateId;
         this.eventType = eventKey;
         this.payload = payload;
         this.status = OutboxStatus.PENDING;
         this.retryCount = 0;
+    }
+
+    public void markAsProcessing() {
+        this.status = OutboxStatus.PROCESSING;
     }
 
     public void markAsPublished() {
@@ -57,9 +77,19 @@ public class OutboxEvent extends BaseIdAndTime {
         this.publishedAt = LocalDateTime.now();
     }
 
+    public void markAsRetry(String errorMessage) {
+        this.status = OutboxStatus.PENDING;
+        this.errorMessage = errorMessage;
+        this.retryCount++;
+    }
+
     public void markAsFailed(String errorMessage) {
         this.status = OutboxStatus.FAILED;
         this.errorMessage = errorMessage;
         this.retryCount++;
+    }
+
+    public boolean isMaxRetryExceeded(int maxRetry) {
+        return this.retryCount >= maxRetry;
     }
 }

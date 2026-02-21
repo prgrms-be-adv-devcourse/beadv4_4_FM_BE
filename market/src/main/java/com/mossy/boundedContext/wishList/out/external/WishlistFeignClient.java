@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "product", url = "http://localhost:8090")
+@FeignClient(name = "wishlist-product", url = "http://localhost:8090")
 public interface WishlistFeignClient {
 
     @GetMapping("/api/v1/wishlists/products")

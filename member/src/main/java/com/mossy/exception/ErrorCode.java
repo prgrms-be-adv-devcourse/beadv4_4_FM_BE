@@ -20,6 +20,7 @@ public enum ErrorCode implements BaseCode {
     DUPLICATE_SELLER_REQUEST(400, "이미 판매자 신청이 진행중입니다."),
     SELLER_REQUEST_NOT_PENDING(400, "판매자 신청이 '대기 중' 상태가 아닙니다."),
     USER_ID_REQUIRED(400, "사용자 식별자(ID)는 필수입니다."),
+    SOCIAL_ACCOUNT_EXISTS(400, "해당 이메일로 가입된 소셜 계정이 있습니다. 소셜 로그인을 이용해 주세요."),
 
     // ========================================
     // 401 Unauthorized (인증 관련)

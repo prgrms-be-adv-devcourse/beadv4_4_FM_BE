@@ -1,11 +1,13 @@
 package com.mossy.boundedContext.product.domain;
 
 import com.mossy.global.jpa.entity.BaseIdAndTime;
-import com.mossy.shared.market.enums.ProductItemStatus;
+import com.mossy.shared.product.enums.ProductItemStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("status != 'DELETED'")
 @AttributeOverride(name = "id", column = @Column(name = "product_items_id"))
 public class ProductItem extends BaseIdAndTime {
 
@@ -33,18 +36,37 @@ public class ProductItem extends BaseIdAndTime {
     @Column(name = "additional_price", nullable = false, precision = 18, scale = 2)
     private BigDecimal additionalPrice = BigDecimal.ZERO;
 
+    @Column(name = "total_price", nullable = false)
+    private BigDecimal totalPrice;
+
+    @Column(nullable = false, precision = 10, scale = 3)
+    private BigDecimal weight;
+
+    @Column(name = "reject_reason", length = 1000)
+    private String rejectReason; // 상품 옵션 반려 사유
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     @Builder.Default
     private ProductItemStatus status = ProductItemStatus.ON_SALE;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_items_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @Builder.Default
     private List<ProductOptionValue> optionValues = new ArrayList<>();
 
-    public void addOptionValue(ProductOptionValue value) {
-        if (this.optionValues == null) this.optionValues = new ArrayList<>();
-        this.optionValues.add(value);
+
+    // 비즈니스 로직
+    public void addOptionValue(ProductOptionValue optionValue, ProductOptionGroup group) {
+        optionValues.add(optionValue);
+    }
+
+    // 상품 아이템 정지
+    public void markAsStopped() {
+        this.status = ProductItemStatus.STOPPED;
     }
 
     // 재고 감소
@@ -61,5 +83,16 @@ public class ProductItem extends BaseIdAndTime {
     // 재고 추가
     public void addQuantity(int quantity) {
         this.quantity += quantity;
+    }
+
+    // 상품 아이템 상태 번경
+    public void updateStatus(ProductItemStatus status) {
+        this.status = status;
+    }
+
+    // 삭제
+    public void delete() {
+        this.status = ProductItemStatus.DELETED;
+        this.deletedAt = LocalDateTime.now();
     }
 }

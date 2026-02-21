@@ -28,5 +28,10 @@ public class UpdateProfileUseCase {
                 encryptedRrn,
                 request.nickname()
         );
+
+        // 소셜 로그인 후 추가정보 입력 완료 → PENDING → ACTIVE로 변경
+        if (user.isPending()) {
+            user.activate();
+        }
     }
 }

@@ -5,8 +5,8 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 import com.mossy.boundedContext.recommendation.app.RecommendFacade;
 import com.mossy.boundedContext.recommendation.app.mapper.RecommendMapper;
 import com.mossy.exception.DomainException;
-import com.mossy.shared.market.event.ProductCreatedEvent;
-import com.mossy.shared.market.event.ProductUpdatedEvent;
+import com.mossy.shared.product.event.ProductCreatedEvent;
+import com.mossy.shared.product.event.ProductUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

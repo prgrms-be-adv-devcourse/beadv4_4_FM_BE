@@ -1,8 +1,8 @@
 package com.mossy.boundedContext.recommendation.app.mapper;
 
 import com.mossy.boundedContext.recommendation.in.dto.request.ProductCreateRequestDto;
-import com.mossy.shared.market.event.ProductCreatedEvent;
-import com.mossy.shared.market.event.ProductUpdatedEvent;
+import com.mossy.shared.product.event.ProductCreatedEvent;
+import com.mossy.shared.product.event.ProductUpdatedEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

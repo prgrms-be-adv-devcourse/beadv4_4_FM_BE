@@ -6,10 +6,16 @@ build/
 out/
 target/
 bin/
+
+# JAR/WAR는 제외하되, 필요한 것만 살림
 *.jar
-# Gradle Wrapper는 예외
-!gradle/wrapper/gradle-wrapper.jar
 *.war
+
+# Gradle Wrapper 관련 파일은 반드시 포함 (느낌표 '!'는 제외 대상을 의미)
+!gradlew
+!gradlew.bat
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
 
 # ==========================================
 # IDE 설정

@@ -4,6 +4,7 @@ import com.mossy.boundedContext.domain.seller.Seller;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
+import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.repository.seller.SellerRepository;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
@@ -25,20 +26,30 @@ public class GetUserInfoUseCase {
     private final SellerRequestRepository sellerRequestRepository;
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
+    private final UserMapper mapper;
 
     @Transactional(readOnly = true)
-    public UserInfoDto infoExecute(Long userId, String nickname, String name) {
+    public UserInfoDto infoExecute(Long userId) {
         SellerRequestStatus status = sellerRequestRepository.findTopByUserIdOrderByCreatedAtDesc(userId)
                 .map(SellerRequest::getStatus)
                 .orElse(null);
 
-        return UserInfoDto.of(userId, nickname, name, status);
+        // socialAccounts를 함께 fetch해야 provider 목록을 가져올 수 있음
+        User user = userRepository.findByIdWithSocialAccounts(userId)
+                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+
+        return mapper.toUserInfoDto(user, status);
     }
 
     @Transactional(readOnly = true)
     public MemberAuthInfoResponse tokenExecute(Long userId) {
         User user = userRepository.findByIdWithRoles(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+
+        // PENDING 유저(추가정보 미입력): roles=빈 리스트, active=false 반환 → Gateway에서 차단
+        if (user.isPending()) {
+            return mapper.toMemberAuthInfoResponse(user, List.of(), null);
+        }
 
         List<RoleCode> roles = user.getUserRoles().stream()
                 .map(ur -> ur.getRole().getCode())
@@ -48,12 +59,7 @@ public class GetUserInfoUseCase {
                 .map(Seller::getId)
                 .orElse(null);
 
-        return new MemberAuthInfoResponse(
-                user.getId(),
-                roles,
-                sellerId,
-                true
-        );
+        return mapper.toMemberAuthInfoResponse(user, roles, sellerId);
     }
 
 }

@@ -5,13 +5,14 @@ import com.mossy.boundedContext.cash.app.usecase.seller.CashCreateSellerWalletUs
 import com.mossy.boundedContext.cash.app.usecase.seller.CashCreditSellerBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashDeductSellerBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerBalanceUseCase;
+import com.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerCashLogsUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashGetSellerWalletInfoUseCase;
 import com.mossy.boundedContext.cash.app.usecase.seller.CashSyncSellerUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashCreateUserWalletUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashCreditUserBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashDeductUserBalanceUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashGetBalanceUseCase;
-import com.mossy.boundedContext.cash.app.usecase.user.CashGetLogsUseCase;
+import com.mossy.boundedContext.cash.app.usecase.user.CashGetUserCashLogsUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashGetWalletInfoUseCase;
 import com.mossy.boundedContext.cash.app.usecase.user.CashSyncUserUseCase;
 import com.mossy.boundedContext.cash.in.dto.command.CashSellerDto;
@@ -20,12 +21,14 @@ import com.mossy.boundedContext.cash.in.dto.request.CashHoldingRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.CashRefundRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.SellerBalanceRequestDto;
 import com.mossy.boundedContext.cash.in.dto.request.UserBalanceRequestDto;
+import com.mossy.boundedContext.cash.in.dto.response.SellerCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.SellerWalletResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserCashLogResponseDto;
 import com.mossy.boundedContext.cash.in.dto.response.UserWalletResponseDto;
 import java.math.BigDecimal;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,7 +48,8 @@ public class CashFacade {
     private final CashDeductUserBalanceUseCase cashDeductUserBalanceUseCase;
     private final CashDeductSellerBalanceUseCase cashDeductSellerBalanceUseCase;
     private final CashHoldingUseCase cashHoldingUseCase;
-    private final CashGetLogsUseCase cashGetLogsUseCase;
+    private final CashGetUserCashLogsUseCase cashGetUserCashLogsUseCase;
+    private final CashGetSellerCashLogsUseCase cashGetSellerCashLogsUseCase;
 
     // === [동기화 영역] ===
 
@@ -109,7 +113,12 @@ public class CashFacade {
         return cashGetSellerBalanceUseCase.getSellerBalance(sellerId);
     }
 
-    public List<UserCashLogResponseDto> findAllCashLogs(Long userId) {
-        return cashGetLogsUseCase.findCashLog(userId);
+    public Page<UserCashLogResponseDto> findAllUserCashLogs(Long userId, Pageable pageable) {
+        return cashGetUserCashLogsUseCase.findUserCashLog(userId, pageable);
     }
+
+    public Page<SellerCashLogResponseDto> findAllSellerCashLogs(Long sellerId, Pageable pageable) {
+        return cashGetSellerCashLogsUseCase.findSellerCashLog(sellerId, pageable);
+    }
+
 }

@@ -3,8 +3,9 @@ package com.mossy.boundedContext.payout.app.common;
 import com.mossy.boundedContext.payout.domain.payout.Payout;
 import com.mossy.boundedContext.payout.out.repository.PayoutRepository;
 import com.mossy.exception.SuccessCode;
-import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.global.rsData.RsData;
+import com.mossy.kafka.KafkaTopics;
+import com.mossy.kafka.outbox.service.OutboxPublisher;
 import com.mossy.shared.payout.event.PayoutSellerWalletCreditEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PayoutDailyPayoutToWalletUseCase {
     private final PayoutRepository payoutRepository;
-    private final EventPublisher eventPublisher;
+    private final OutboxPublisher outboxPublisher;
 
     /**
      * 정산 완료되었으나 아직 지급되지 않은 Payout들을 조회하여 지급 처리
@@ -77,7 +78,7 @@ public class PayoutDailyPayoutToWalletUseCase {
                         .creditDate(today)
                         .build();
 
-                eventPublisher.publish(event);
+                outboxPublisher.saveEvent(KafkaTopics.PAYOUT_WALLET_CREDIT, sellerId.toString(), event);
                 log.info("[지급 배치] 판매자 {} - 금액: {}", sellerId, totalAmount);
             }
         });

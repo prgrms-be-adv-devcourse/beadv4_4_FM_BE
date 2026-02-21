@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.payment.app;
 
+import com.mossy.boundedContext.payment.app.mapper.PaymentMapper;
 import com.mossy.boundedContext.payment.domain.Payment;
-import com.mossy.boundedContext.payment.in.dto.event.PaymentCanceledEvent;
 import com.mossy.boundedContext.payment.in.dto.request.TossConfirmRequest;
 import com.mossy.boundedContext.payment.in.dto.response.TossCancelResponse;
 import com.mossy.boundedContext.payment.in.dto.response.TossConfirmResponse;
@@ -12,7 +12,8 @@ import com.mossy.exception.ErrorCode;
 import com.mossy.exception.DomainException;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.enums.PaymentStatus;
-import com.mossy.boundedContext.payment.in.dto.event.PaymentCancelFailedEvent;
+import com.mossy.shared.cash.event.PaymentTossRefundEvent;
+import com.mossy.shared.cash.payload.TossCancelPayload;
 import com.mossy.shared.market.enums.OrderState;
 
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ public class PaymentSupport {
     private final TossPaymentsService tossPaymentsService;
     private final ApplicationEventPublisher eventPublisher;
     private final MarketFeignClient marketFeignClient;
+    private final PaymentMapper mapper;
 
     // ── 결제 조회 ──
 
@@ -74,9 +76,10 @@ public class PaymentSupport {
     public void requestTossCancel(String paymentKey, String cancelReason) {
         try {
             TossCancelResponse response = tossPaymentsService.cancel(paymentKey, cancelReason);
-            eventPublisher.publishEvent(new PaymentCanceledEvent(response));
+            TossCancelPayload payload = mapper.toTossCancelPayload(response);
+            eventPublisher.publishEvent(new PaymentTossRefundEvent(payload));
         } catch (Exception e) {
-            eventPublisher.publishEvent(new PaymentCancelFailedEvent(paymentKey, cancelReason));
+            throw new DomainException(ErrorCode.TOSS_PAYMENT_CANCEL_FAILED);
         }
     }
 

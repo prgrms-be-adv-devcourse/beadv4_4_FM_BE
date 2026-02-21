@@ -6,6 +6,7 @@ WORKDIR /app
 
 # 1. Gradle 래퍼 및 설정 파일 복사
 COPY gradlew .
+RUN apk add --no-cache dos2unix && dos2unix gradlew
 COPY gradle gradle
 # 루트에 build.gradle.kts가 있다면 복사 (없다면 아래 줄을 주석 처리하세요)
 #COPY build.gradle.kts .

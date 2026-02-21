@@ -4,6 +4,8 @@ import com.mossy.boundedContext.cash.in.dto.request.CashHoldingRequestDto;
 import com.mossy.boundedContext.payment.domain.Payment;
 import com.mossy.boundedContext.payment.in.dto.command.PaymentCompletedDto;
 import com.mossy.boundedContext.payment.in.dto.response.PaymentResponse;
+import com.mossy.boundedContext.payment.in.dto.response.TossCancelResponse;
+import com.mossy.shared.cash.payload.TossCancelPayload;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -18,4 +20,6 @@ public interface PaymentMapper {
     PaymentResponse toPaymentResponse(Payment payment);
 
     CashHoldingRequestDto toCashHoldingRequestDto(PaymentCompletedDto dto);
+
+    TossCancelPayload toTossCancelPayload(TossCancelResponse response);
 }

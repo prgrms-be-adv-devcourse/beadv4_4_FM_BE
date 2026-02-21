@@ -61,7 +61,7 @@ public class SellerWallet extends BaseManualIdAndTime {
     private void addSellerCashLog(BigDecimal amount, SellerEventType eventType, String relTypeCode, Long relId) {
         SellerCashLog cashLog = SellerCashLog.builder()
             .wallet(this)
-            .user(this.seller)
+            .seller(this.seller)
             .amount(amount)
             .balance(this.balance) // 변동 후 최종 잔액 기록
             .eventType(eventType)
