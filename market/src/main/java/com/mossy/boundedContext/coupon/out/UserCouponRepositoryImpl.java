@@ -37,7 +37,7 @@ public class UserCouponRepositoryImpl implements UserCouponRepositoryCustom {
     }
 
     @Override
-    public List<UserCouponResponse> findApplicableCoupons(Long productItemId, Long userId) {
+    public List<UserCouponResponse> findApplicableCoupons(Long userId, List<Long> productItemIds) {
         return queryFactory
                 .select(Projections.constructor(UserCouponResponse.class,
                         userCoupon.id,
@@ -52,9 +52,13 @@ public class UserCouponRepositoryImpl implements UserCouponRepositoryCustom {
                 .join(userCoupon.coupon, coupon)
                 .where(
                         userCoupon.marketUser.id.eq(userId),
-                        coupon.productItemId.eq(productItemId),
+                        coupon.productItemId.in(productItemIds),
                         userCoupon.status.eq(UserCouponStatus.UNUSED),
                         userCoupon.expireAt.gt(LocalDateTime.now())
+                )
+                .orderBy(
+                        coupon.discountValue.desc(),
+                        userCoupon.expireAt.asc()
                 )
                 .fetch();
     }

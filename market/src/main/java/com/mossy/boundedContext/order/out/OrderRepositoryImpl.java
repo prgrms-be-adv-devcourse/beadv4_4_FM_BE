@@ -1,11 +1,11 @@
 package com.mossy.boundedContext.order.out;
 
+import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
 import com.mossy.shared.market.enums.OrderState;
-import com.mossy.shared.market.payload.OrderPayoutDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -26,29 +27,6 @@ import static com.mossy.boundedContext.order.domain.QOrderItem.orderItem;
 public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-
-    @Override
-    public List<OrderPayoutDto> findPayoutOrderByOrderId(Long orderId) {
-        return queryFactory
-                .select(Projections.constructor(OrderPayoutDto.class,
-                        orderItem.id,
-                        order.id,
-                        marketUser.id,
-                        marketUser.name,
-                        orderItem.seller.id,
-                        orderItem.productId,
-                        orderItem.originalPrice,
-                        orderItem.createdAt,
-                        orderItem.updatedAt
-                ))
-                .from(order)
-                    .join(order.orderItems, orderItem)
-                    .join(order.buyer, marketUser)
-                .where(
-                    order.id.eq(orderId),
-                    order.state.eq(OrderState.PAID))
-                .fetch();
-    }
 
     @Override
     public Page<OrderListResponse> findOrderListByUserId(Long userId, Pageable pageable) {
@@ -85,26 +63,26 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     public List<OrderDetailResponse> findOrderDetailsByOrderId(Long orderId) {
         return queryFactory
                 .select(Projections.constructor(OrderDetailResponse.class,
-                        orderItem.productId,
+                        orderItem.productItemId,
                         orderItem.quantity,
                         orderItem.originalPrice,
                         marketSeller.storeName
                 ))
                 .from(order)
                     .join(order.orderItems, orderItem)
-                    .join(orderItem.seller, marketSeller)
+                    .join(marketSeller).on(orderItem.sellerId.eq(marketSeller.id))
                 .where(order.id.eq(orderId))
                 .fetch();
     }
 
     @Override
     public Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, Pageable pageable) {
-        BooleanExpression condition = orderItem.seller.id.eq(sellerId);
+        BooleanExpression condition = orderItem.sellerId.eq(sellerId);
 
         List<OrderListSellerResponse> content = queryFactory
                 .select(Projections.constructor(OrderListSellerResponse.class,
                         orderItem.id,
-                        orderItem.productId,
+                        orderItem.productItemId,
                         orderItem.quantity,
                         orderItem.originalPrice,
                         order.state,
@@ -138,6 +116,28 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                     .join(order.buyer, marketUser)
                 .where(orderItem.id.eq(orderItemId))
                 .fetchOne();
+    }
+
+    @Override
+    public Page<Order> findPaidOrdersUpdatedBefore(LocalDateTime threshold, Pageable pageable) {
+        BooleanExpression condition = order.state.eq(OrderState.PAID)
+                .and(order.updatedAt.lt(threshold));
+
+        List<Order> content = queryFactory
+                .selectFrom(order)
+                .join(order.buyer, marketUser).fetchJoin()
+                .leftJoin(order.orderItems, orderItem).fetchJoin()
+                .where(condition)
+                .orderBy(order.id.asc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return createPage(content, pageable, () -> queryFactory
+                .select(order.count())
+                .from(order)
+                .where(condition)
+                .fetchOne());
     }
 
     private <T> Page<T> createPage(List<T> content, Pageable pageable, Supplier<Long> countSupplier) {

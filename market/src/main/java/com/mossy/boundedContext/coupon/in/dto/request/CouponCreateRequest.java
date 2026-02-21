@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.coupon.in.dto.request;
 
-import com.mossy.boundedContext.coupon.domain.CouponType;
+import com.mossy.shared.market.enums.CouponType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

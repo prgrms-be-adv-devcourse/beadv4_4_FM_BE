@@ -17,12 +17,14 @@ public class OutboxPublisher {
     private final ObjectMapper objectMapper;
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public void saveEvent(String topic, String key, Object event) {
+    public void saveEvent(String topic, String aggregateType, Long aggregateId, String eventKey, Object event) {
         try {
             String payload = objectMapper.writeValueAsString(event);
             OutboxEvent outboxEvent = OutboxEvent.builder()
                     .topic(topic)
-                    .eventKey(key)
+                    .aggregateType(aggregateType)
+                    .aggregateId(aggregateId)
+                    .eventKey(eventKey)
                     .payload(payload)
                     .build();
 

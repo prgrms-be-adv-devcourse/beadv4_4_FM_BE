@@ -8,5 +8,5 @@ public interface UserCouponRepositoryCustom {
 
     List<UserCouponResponse> findMyUserCoupons(Long userId);
 
-    List<UserCouponResponse> findApplicableCoupons(Long productItemId, Long userId);
+    List<UserCouponResponse> findApplicableCoupons(Long userId, List<Long> productItemIds);
 }

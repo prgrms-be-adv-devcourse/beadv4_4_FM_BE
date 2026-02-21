@@ -1,8 +1,10 @@
 package com.mossy.boundedContext.coupon.app;
 
+import com.mossy.boundedContext.coupon.dto.CouponDiscountInfo;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
+import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class CouponFacade {
     private final CalculateCouponDiscountsUseCase calculateCouponDiscountsUseCase;
     private final UseCouponsUseCase useCouponsUseCase;
     private final RestoreCouponsUseCase restoreCouponsUseCase;
+    private final GetSellerCouponsUseCase getSellerCouponsUseCase;
 
     public Long createSellerCoupon(Long sellerId, CouponCreateRequest request) {
         return createSellerCouponUseCase.create(sellerId, request);
@@ -55,11 +58,11 @@ public class CouponFacade {
         return getMyUserCouponsUseCase.get(userId);
     }
 
-    public List<UserCouponResponse> getApplicableCoupons(Long productItemId, Long userId) {
-        return getApplicableCouponsUseCase.get(productItemId, userId);
+    public List<UserCouponResponse> getApplicableCoupons(Long userId, List<Long> productItemIds) {
+        return getApplicableCouponsUseCase.get(userId, productItemIds);
     }
 
-    public Map<Long, BigDecimal> calculateDiscounts(Map<Long, BigDecimal> userCouponPriceMap) {
+    public Map<Long, CouponDiscountInfo> calculateDiscounts(Map<Long, BigDecimal> userCouponPriceMap) {
         return calculateCouponDiscountsUseCase.calculateDiscounts(userCouponPriceMap);
     }
 
@@ -69,5 +72,9 @@ public class CouponFacade {
 
     public void restoreCoupons(List<Long> userCouponIds) {
         restoreCouponsUseCase.restore(userCouponIds);
+    }
+
+    public List<SellerCouponListResponse> getSellerCoupons(Long sellerId) {
+        return getSellerCouponsUseCase.getSellerCoupons(sellerId);
     }
 }

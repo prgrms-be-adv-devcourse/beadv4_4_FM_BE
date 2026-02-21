@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.coupon.in.dto.response;
 
-import com.mossy.boundedContext.coupon.domain.CouponType;
+import com.mossy.shared.market.enums.CouponType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
