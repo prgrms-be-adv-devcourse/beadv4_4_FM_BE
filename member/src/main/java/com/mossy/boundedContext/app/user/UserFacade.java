@@ -1,7 +1,6 @@
 package com.mossy.boundedContext.app.user;
 
 import com.mossy.boundedContext.app.VerfyMemberUseCase;
-import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
 import com.mossy.boundedContext.in.dto.request.ProfileUpdateRequest;
@@ -9,13 +8,8 @@ import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.in.dto.OAuth2UserDto;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
-import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
-import com.mossy.boundedContext.out.repository.user.UserRepository;
-import com.mossy.exception.DomainException;
-import com.mossy.exception.ErrorCode;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.boundedContext.out.external.dto.response.MemberVerifyExternResponse;
-import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.shared.member.payload.UserPayload;
@@ -35,8 +29,6 @@ public class UserFacade {
     private final VerfyMemberUseCase verfyMemberUseCase;
     private final UserMapper mapper;
     private final EventPublisher eventPublisher;
-    private final UserRepository userRepository;
-    private final SellerRequestRepository sellerRequestRepository;
 
     //회원가입
     public Long signup(SignupRequest req) {
@@ -48,15 +40,7 @@ public class UserFacade {
 
     //사용자 정보 조회 (판매자 신청 상태 포함)
     public UserInfoDto getUserInfo(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
-
-        SellerRequestStatus status = sellerRequestRepository
-                .findTopByUserIdOrderByCreatedAtDesc(userId)
-                .map(SellerRequest::getStatus)
-                .orElse(SellerRequestStatus.NONE);
-
-        return mapper.toUserInfoDto(user, status);
+        return getUserInfoUseCase.infoExecute(userId);
     }
 
     //회원 인증 (Auth 서비스용)

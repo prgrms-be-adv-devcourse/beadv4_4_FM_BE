@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.in;
 
-import com.mossy.boundedContext.out.AuthFacade;
+import com.mossy.boundedContext.out.AuthApiClient;
 import com.mossy.boundedContext.app.seller.SellerRequestAdminFacade;
 import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.in.dto.response.SellerApproveResponse;
@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminSellerRequestController {
 
     private final SellerRequestAdminFacade sellerRequestAdminFacade;
-    private final AuthFacade authFacade;
+    private final AuthApiClient authApiClient;
 
     @Operation(summary = "판매자 신청 승인")
     @PatchMapping("/{id}/approve")
     public RsData<SellerApproveResponse> approve(@PathVariable Long id) {
         SellerRequestAdminFacade.SellerAppoveResult result = sellerRequestAdminFacade.approve(id);
 
-        LoginResponse tokens = authFacade.issueForSellerApproved(result.userId(), result.sellerId());
+        LoginResponse tokens = authApiClient.issueForSellerApproved(result.userId(), result.sellerId());
 
         return RsData.success(SuccessCode.SELLER_APPROVE_COMPLETE,
                 new SellerApproveResponse(result.sellerId(), tokens.accessToken(), tokens.refreshToken())
