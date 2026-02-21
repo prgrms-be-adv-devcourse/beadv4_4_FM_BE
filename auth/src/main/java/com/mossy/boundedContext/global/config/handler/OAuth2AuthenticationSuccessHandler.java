@@ -1,11 +1,11 @@
 package com.mossy.boundedContext.global.config.handler;
 
 import com.mossy.boundedContext.app.AuthFacade;
+import com.mossy.boundedContext.app.mapper.AuthMapper;
 import com.mossy.boundedContext.in.dto.response.LoginResponse;
 import com.mossy.boundedContext.out.dto.OAuth2UserDTO;
 import com.mossy.boundedContext.out.dto.OAuth2UserInfo;
 import com.mossy.boundedContext.out.dto.OAuth2UserInfoImpl;
-import com.mossy.boundedContext.app.mapper.OAuth2UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.Arrays;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Cookie;
@@ -28,8 +28,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    private static final int REFRESH_TOKEN_COOKIE_MAX_AGE = 7 * 24 * 60 * 60; // 7일
+
     private final AuthFacade authFacade;
-    private final OAuth2UserMapper oAuth2UserMapper;
+    private final AuthMapper mapper;
     private final Environment environment;
 
     @Value("${spring.security.oauth2.frontendUrl:http://localhost:5173}")
@@ -44,44 +46,55 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         OAuth2User oAuth2User = authToken.getPrincipal();
         String registrationId = authToken.getAuthorizedClientRegistrationId();
 
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-
-        // OAuth2UserInfo 생성
-        OAuth2UserInfo userInfo = new OAuth2UserInfoImpl(attributes, registrationId);
-        OAuth2UserDTO userDTO = oAuth2UserMapper.toDTO(userInfo);
+        OAuth2UserInfo userInfo = new OAuth2UserInfoImpl(oAuth2User.getAttributes(), registrationId);
+        OAuth2UserDTO userDTO = mapper.toOAuth2UserDTO(userInfo);
 
         log.debug("OAuth2 사용자 정보: provider={}, email={}, name={}",
                 userInfo.provider(), userInfo.email(), userInfo.name());
 
         try {
-            // AuthFacade를 통해 사용자 정보 저장/업데이트 및 토큰 발급
             LoginResponse loginResponse = authFacade.upsertUserAndIssueToken(userDTO);
 
-            // RefreshToken을 HttpOnly 쿠키에 저장
-            Cookie refreshTokenCookie = new Cookie("refreshToken", loginResponse.refreshToken());
-            refreshTokenCookie.setHttpOnly(true);
-            // 운영 환경(prod)에서만 Secure 설정 (HTTPS만 허용)
-            boolean isProduction = environment.getActiveProfiles().length > 0 &&
-                                  environment.getActiveProfiles()[0].equals("prod");
-            refreshTokenCookie.setSecure(isProduction);
-            refreshTokenCookie.setPath("/");
-            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일
-            response.addCookie(refreshTokenCookie);
+            addRefreshTokenCookie(response, loginResponse.refreshToken());
 
-            // AccessToken은 QueryParameter로 전달 (프론트엔드에서 메모리에 저장)
-            String redirectUrl = UriComponentsBuilder.fromUriString(frontendUrl)
-                    .path("/auth/callback")
-                    .queryParam("accessToken", loginResponse.accessToken())
-                    .queryParam("isNewUser", loginResponse.isNewUser())
-                    .build().toUriString();
-
+            String redirectUrl = buildRedirectUrl(loginResponse);
             getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+
         } catch (Exception e) {
-            log.error("OAuth2 로그인 처리 중 오류 발생", e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "로그인 처리 실패");
+            log.error("OAuth2 로그인 처리 중 오류 발생: {}", e.getMessage(), e);
+            String errorRedirectUrl = UriComponentsBuilder.fromUriString(frontendUrl)
+                    .path("/login")
+                    .queryParam("status", "error")
+                    .build()
+                    .toUriString();
+            getRedirectStrategy().sendRedirect(request, response, errorRedirectUrl);
         }
     }
+
+    //RefreshToken을 HttpOnly 쿠키로 추가
+    private void addRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(isProductionEnvironment());
+        cookie.setPath("/");
+        cookie.setMaxAge(REFRESH_TOKEN_COOKIE_MAX_AGE);
+        response.addCookie(cookie);
+    }
+
+    //프론트엔드 리다이렉트 URL 생성
+    private String buildRedirectUrl(LoginResponse loginResponse) {
+        return UriComponentsBuilder.fromUriString(frontendUrl)
+                .path("/auth/callback")
+                .queryParam("accessToken", loginResponse.accessToken())
+                .queryParam("isNewUser", loginResponse.isNewUser())
+                .build()
+                .toUriString();
+    }
+
+    /**
+     * 운영 환경 여부 확인
+     */
+    private boolean isProductionEnvironment() {
+        return Arrays.asList(environment.getActiveProfiles()).contains("prod");
+    }
 }
-
-
-

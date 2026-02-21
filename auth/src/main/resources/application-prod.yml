@@ -15,7 +15,7 @@ spring:
             redirect-uri: http://localhost:8086/login/oauth2/code/google
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
-            client-name: kakao
+            client-name: Kakao
             client-secret: ${KAKAO_CLIENT_SECRET}
             provider: kakao
             authorization-grant-type: authorization_code
@@ -34,7 +34,6 @@ spring:
             user-name-attribute: id
       frontendUrl: ${FRONTEND_URL:http://localhost:5173}
 
-
   # 운영 환경 Redis 정보
   data:
     redis:
@@ -42,17 +41,16 @@ spring:
       port: 6379
 
   datasource:
-     url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
-     username: ${DB_USERNAME}
-     password: ${DB_PASSWORD}
-     driver-class-name: org.postgresql.Driver
-
-logging:
-  level:
-    root: INFO
-    # 운영 환경에서는 Feign 로그를 좀 더 간결하게
-    com.mossy.boundedContext.auth.out.MemberServiceClient: INFO
+    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
 security:
   refresh-token:
     pepper: ${AUTH_REFRESH_TOKEN_PEPPER}
+
+logging:
+  level:
+    root: INFO
+    com.mossy.boundedContext.auth.out.MemberServiceClient: INFO

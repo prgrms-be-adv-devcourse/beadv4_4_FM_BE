@@ -28,9 +28,14 @@ public class SignupUseCase {
     @Transactional
     public User execute(SignupRequest req) {
 
-        if (userRepository.existsByEmail(req.email())) {
+        userRepository.findByEmail(req.email()).ifPresent(existing -> {
+            // 소셜 계정이 연동된 이메일이면 소셜 로그인 유도
+            if (existing.getSocialAccounts() != null && !existing.getSocialAccounts().isEmpty()) {
+                throw new DomainException(ErrorCode.SOCIAL_ACCOUNT_EXISTS);
+            }
             throw new DomainException(ErrorCode.DUPLICATE_EMAIL);
-        }
+        });
+
         if (userRepository.existsByNickname(req.nickname())) {
             throw new DomainException(ErrorCode.DUPLICATE_NICKNAME);
         }

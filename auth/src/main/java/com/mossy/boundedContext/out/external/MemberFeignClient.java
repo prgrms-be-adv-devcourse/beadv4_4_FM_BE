@@ -20,4 +20,6 @@ public interface MemberFeignClient {
     @PostMapping("/api/v1/auth/users/social-login")
     SocialLonginResponse processSocialLogin(@RequestBody OAuth2UserDTO request);
 
+    @DeleteMapping("/api/v1/auth/users/social-login/{userId}/rollback")
+    void rollbackSocialLogin(@PathVariable("userId") Long userId);
 }
