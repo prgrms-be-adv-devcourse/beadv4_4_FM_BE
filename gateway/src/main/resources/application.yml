@@ -30,6 +30,20 @@ spring:
           filters:
             - name: JwtAuthenticationFilter
 
+        - id: seller-request
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/users/seller-request
+          filters:
+            - name: JwtAuthenticationFilter
+
+        - id: admin-seller
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/admin/seller-requests/**
+          filters:
+            - name: JwtAuthenticationFilter
+
         - id: cash
           uri: http://localhost:8083
           predicates:

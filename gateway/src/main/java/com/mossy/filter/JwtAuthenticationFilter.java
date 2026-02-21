@@ -55,14 +55,27 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             String jwt = authHeader.substring(7);
 
             try {
-                // 3. 핵심: parseClaims(jwt)가 실행될 때 만료/변조된 토큰은 예외(Exception)를 던집니다.
-                // jwtProvider.verifyToken을 따로 부를 필요 없이 try-catch로 잡는 게 정확합니다.
-                Long userId = jwtProvider.getUserId(jwt);
+                // 3. parseClaims(jwt)가 실행될 때 만료/변조된 토큰은 예외를 던집니다.
+                var claims = jwtProvider.parseClaims(jwt);
+                Long userId = Long.valueOf(claims.getSubject());
 
                 // 4. 안전하게 변조된 헤더 주입 (기존 X-User-Id는 삭제/덮어쓰기)
-                ServerHttpRequest mutatedRequest = request.mutate()
-                        .header("X-User-Id", userId.toString())
-                        .build();
+                var requestBuilder = request.mutate()
+                        .header("X-User-Id", userId.toString());
+
+                // 5. sellerId가 토큰에 포함되어 있으면 X-Seller-Id 헤더도 추가
+                Long sellerId = jwtProvider.getSellerId(claims);
+                if (sellerId != null) {
+                    requestBuilder.header("X-Seller-Id", sellerId.toString());
+                }
+
+                // 6. role이 토큰에 포함되어 있으면 X-User-Role 헤더도 추가
+                String role = claims.get("role", String.class);
+                if (role != null) {
+                    requestBuilder.header("X-User-Role", role);
+                }
+
+                ServerHttpRequest mutatedRequest = requestBuilder.build();
 
                 return chain.filter(exchange.mutate().request(mutatedRequest).build());
 
