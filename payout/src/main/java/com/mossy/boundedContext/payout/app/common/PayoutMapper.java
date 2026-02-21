@@ -7,7 +7,7 @@ import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateDto;
 import com.mossy.boundedContext.payout.in.dto.event.PayoutSellerDto;
 import com.mossy.boundedContext.payout.in.dto.event.PayoutUserDto;
-import com.mossy.shared.market.event.OrderPaidEvent;
+import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.member.payload.UserPayload;
 import com.mossy.shared.payout.enums.PayoutEventType;
@@ -68,7 +68,6 @@ public interface PayoutMapper {
         // --- [이벤트 기반 DTO 변환] ---
         @Mapping(target = "orderItemId", source = "orderItem.orderItemId")
         @Mapping(target = "buyerId", source = "event.buyerId")
-        @Mapping(target = "buyerName", source = "event.buyerName")
         @Mapping(target = "sellerId", source = "orderItem.sellerId")
         @Mapping(target = "orderPrice", source = "orderItem.orderPrice")
         @Mapping(target = "originalPrice", source = "orderItem.originalPrice")
@@ -77,8 +76,8 @@ public interface PayoutMapper {
         @Mapping(target = "orderItemUpdatedAt", source = "orderItem.updatedAt")
         @Mapping(target = "paymentDate", source = "event.createdAt")
         PayoutCandidateCreateDto toCreatePayoutCandidateDto(
-                OrderPaidEvent event,
-                OrderPaidEvent.OrderItemPayload orderItem,
+                OrderPurchaseConfirmedEvent event,
+                OrderPurchaseConfirmedEvent.OrderItemPayload orderItem,
                 BigDecimal deliveryDistance,
                 String weightGrade
         );
