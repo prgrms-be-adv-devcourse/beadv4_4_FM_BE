@@ -1,15 +1,15 @@
 package com.mossy.boundedContext.out.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import java.util.Map;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class OAuth2UserInfoImpl implements OAuth2UserInfo {
-    private final Map<String, Object> attributes;
-    private final String provider;
-
-    public OAuth2UserInfoImpl(Map<String, Object> attributes, String provider) {
-        this.attributes = attributes;
-        this.provider = provider;
-    }
+    private Map<String, Object> attributes;
+    private String provider;
 
     @Override
     public String providerId() {
