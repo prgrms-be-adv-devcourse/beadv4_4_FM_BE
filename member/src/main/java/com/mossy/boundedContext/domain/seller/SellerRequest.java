@@ -35,7 +35,7 @@ public class SellerRequest extends BaseIdAndTime {
     @Column(name = "store_name", nullable = false, length = 255)
     private String storeName;
 
-    @Column(name = "business_num", nullable = false, length = 20)
+    @Column(name = "business_num", length = 20)
     private String businessNum;
 
     @Column(name = "representative_name", nullable = false, length = 100)

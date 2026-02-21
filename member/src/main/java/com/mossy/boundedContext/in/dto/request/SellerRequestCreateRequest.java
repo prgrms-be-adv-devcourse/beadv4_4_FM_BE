@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public record SellerRequestCreateRequest(
         @NotNull SellerType sellerType,
         @NotBlank String storeName,
-        @NotBlank String businessNum,
+        String businessNum, // INDIVIDUAL(개인사업자)는 null 가능, BUSINESS(법인사업자)는 필수
         @NotBlank String representativeName,
         String contactEmail,
         String contactPhone,

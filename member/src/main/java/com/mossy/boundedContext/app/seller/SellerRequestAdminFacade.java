@@ -47,7 +47,8 @@ public class SellerRequestAdminFacade {
             throw new DomainException(ErrorCode.DUPLICATE_SELLER);
         }
 
-        if (sellerRepository.existsByBusinessNum(req.getBusinessNum())) {
+        // businessNum이 있는 경우에만 중복 체크 (개인사업자는 null 가능)
+        if (req.getBusinessNum() != null && sellerRepository.existsByBusinessNum(req.getBusinessNum())) {
             throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 

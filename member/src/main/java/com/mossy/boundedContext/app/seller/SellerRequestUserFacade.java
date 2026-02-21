@@ -1,12 +1,11 @@
 package com.mossy.boundedContext.app.seller;
 
 import com.mossy.boundedContext.domain.seller.SellerRequest;
-import com.mossy.boundedContext.domain.user.User;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
-import com.mossy.boundedContext.out.repository.user.UserRepository;
+import com.mossy.shared.member.domain.enums.SellerType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,22 +15,26 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SellerRequestUserFacade {
 
-    private final UserRepository userRepository;
     private final SellerRequestRepository sellerRequestRepository;
 
     @Transactional
     public Long request(Long userId, SellerRequestCreateRequest req) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
-
+        // 판매자 신청 중복 체크
         if (sellerRequestRepository.existsByActiveUserId(userId)) {
             throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 
+        // BUSINESS(법인사업자)는 사업자번호 필수
+        if (req.sellerType() == SellerType.BUSINESS
+                && (req.businessNum() == null || req.businessNum().isBlank())) {
+            throw new DomainException(ErrorCode.MISSING_BUSINESS_NUMBER);
+        }
+
         String normalizedBiz = normalizeBusinessNum(req.businessNum());
 
-        if (sellerRequestRepository.existsByBusinessNum(normalizedBiz)) {
+        // businessNum이 있는 경우에만 중복 체크
+        if (normalizedBiz != null && sellerRequestRepository.existsByBusinessNum(normalizedBiz)) {
             throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 
