@@ -6,15 +6,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @JsonPropertyOrder({"resultCode", "msg", "data"})
 public class RsData<T> implements ResultType {
-    private final String resultCode;
-    private final String msg;
-    private final T data;
+    private String resultCode;
+    private String msg;
+    private T data;
 
     // 데이터 없는 응답 생성자(원래있던거)
     public RsData(String resultCode, String msg) {

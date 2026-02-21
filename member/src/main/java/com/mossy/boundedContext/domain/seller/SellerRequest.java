@@ -109,6 +109,14 @@ public class SellerRequest extends BaseIdAndTime {
         this.status = SellerRequestStatus.CANCELED;
     }
 
+    // 승인 실패 시 상태를 다시 PENDING으로 복원 (롤백)
+    public void restoreToPending() {
+        if (this.status != SellerRequestStatus.APPROVED) {
+            throw new IllegalStateException("APPROVED 상태가 아닙니다.");
+        }
+        this.status = SellerRequestStatus.PENDING;
+    }
+
     private void validatePending() {
         if (this.status != SellerRequestStatus.PENDING) {
             //TODO: Errorcode로 바꿀예정

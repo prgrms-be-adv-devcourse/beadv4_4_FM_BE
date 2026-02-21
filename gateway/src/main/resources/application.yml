@@ -40,7 +40,7 @@ spring:
         - id: admin-seller
           uri: http://localhost:8082
           predicates:
-            - Path=/api/v1/admin/seller-requests/**
+            - Path=/api/v1/admin/seller-requests/**, /api/v1/admin/seller-requests
           filters:
             - name: JwtAuthenticationFilter
 
