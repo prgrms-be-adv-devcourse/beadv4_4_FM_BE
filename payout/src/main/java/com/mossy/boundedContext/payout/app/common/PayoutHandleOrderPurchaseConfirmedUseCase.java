@@ -8,7 +8,7 @@ import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.shared.market.event.OrderPaidEvent;
+import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
-public class PayoutHandleOrderPaidUseCase {
+public class PayoutHandleOrderPurchaseConfirmedUseCase {
 
     private final PayoutSupport payoutSupport;
     private final DistanceCalculator distanceCalculator;
@@ -24,7 +24,7 @@ public class PayoutHandleOrderPaidUseCase {
     private final PayoutMapper payoutMapper;
     private final PayoutAddPayoutCandidateItemsUseCase payoutAddPayoutCandidateItemsUseCase;
 
-    public void handle(OrderPaidEvent event) {
+    public void handle(OrderPurchaseConfirmedEvent event) {
         PayoutUser buyer = payoutSupport.findUserById(event.buyerId())
                 .orElseThrow(() -> new DomainException(ErrorCode.BUYER_NOT_FOUND));
 
