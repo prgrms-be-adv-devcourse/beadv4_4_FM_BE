@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.recommendation.out;
+package com.mossy.boundedContext.recommendation.out.repository;
 
 import com.mossy.boundedContext.recommendation.domain.RecommendItem;
 import org.springframework.data.r2dbc.repository.Query;
@@ -18,6 +18,14 @@ public interface RecommendItemRepository extends ReactiveCrudRepository<Recommen
         LIMIT :limitCount
         """)
     Flux<Long> findTopSimilarProductIds(Long productId, int limitCount);
+
+    @Query("""
+        SELECT ri.product_id
+        FROM recommend_item ri
+        ORDER BY ri.vector_data <=> cast(:vector as vector)
+        LIMIT :limitCount
+        """)
+    Flux<Long> findTopSimilarProductIdsByVector(String vector, int limitCount);
 
     Mono<RecommendItem> findByProductId(Long productId);
 

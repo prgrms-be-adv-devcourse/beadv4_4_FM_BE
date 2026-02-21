@@ -6,7 +6,7 @@ import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelCashRequestD
 import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
-import com.mossy.shared.cash.event.PaymentRefundEvent;
+import com.mossy.shared.cash.event.PaymentCashRefundEvent;
 import com.mossy.shared.market.event.OrderCancelEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class PaymentCancelCashUseCase {
         // ));
 
         // Kafka
-        PaymentRefundEvent refundEvent = new PaymentRefundEvent(
+        PaymentCashRefundEvent refundEvent = new PaymentCashRefundEvent(
             order.orderId(),
             order.buyerId(),
             cancelAmount,

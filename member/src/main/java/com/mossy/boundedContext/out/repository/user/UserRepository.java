@@ -28,6 +28,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 """)
     Optional<User> findByIdWithRoles(@Param("id") Long id);
 
+    @Query("""
+        select u from User u
+            left join fetch u.socialAccounts sa
+        where u.id = :id
+""")
+    Optional<User> findByIdWithSocialAccounts(@Param("id") Long id);
+
 
     boolean existsByEmail(String email);
     boolean existsByNickname(String nickname);

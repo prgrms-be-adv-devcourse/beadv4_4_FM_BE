@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.recommendation.app.usecase;
 
 import com.mossy.boundedContext.recommendation.domain.RecommendPolicy;
-import com.mossy.boundedContext.recommendation.out.RecommendItemRepository;
+import com.mossy.boundedContext.recommendation.out.repository.RecommendItemRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +25,10 @@ public class RecommendSearchItemsUseCase {
                 return itemRepository.findTopSimilarProductIds(productId, RecommendPolicy.SIMILAR_ITEMS_TOP_N)
                     .collectList();
             });
+    }
+
+    public Mono<List<Long>> searchByVector(String vectorStr) {
+        return itemRepository.findTopSimilarProductIdsByVector(vectorStr, RecommendPolicy.CHAT_RECOMMEND_TOP_N)
+            .collectList();
     }
 }
