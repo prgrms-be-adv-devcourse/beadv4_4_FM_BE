@@ -15,10 +15,13 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class CatalogDocument {
 
     @Id
-    private Long id; // CatalogProduct ID
+    private Long id;
 
     @Field(type = FieldType.Text, analyzer = "nori")
     private String name; // 상품명
+
+    @Field(type = FieldType.Long)
+    private Long minPriceProductId;
 
     @Field(type = FieldType.Keyword)
     private String brand; // 브랜드명
@@ -58,7 +61,13 @@ public class CatalogDocument {
      * Entity -> Document 변환 정적 팩토리 메서드
      * minPrice와 sellerCount는 별도의 집계 쿼리 결과를 주입받는 구조를 권장합니다.
      */
-    public static CatalogDocument from(CatalogProduct catalog, String thumbnail, Double minPrice, Long sellerCount) {
+    public static CatalogDocument from(
+            CatalogProduct catalog,
+            String thumbnail,
+            Double minPrice,
+            Long sellerCount,
+            Long minPriceProductId
+    ) {
         return CatalogDocument.builder()
                 .id(catalog.getId())
                 .name(catalog.getName())
@@ -70,6 +79,7 @@ public class CatalogDocument {
                 .thumbnail(thumbnail)
                 .minPrice(minPrice)
                 .sellerCount(sellerCount)
+                .minPriceProductId(minPriceProductId)
                 .status(catalog.getStatus().name())
                 .salesCount(catalog.getSalesCount() != null ? catalog.getSalesCount() : 0L)
                 .reviewCount(catalog.getReviewCount() != null ? catalog.getReviewCount() : 0L)

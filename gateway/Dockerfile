@@ -6,27 +6,28 @@ WORKDIR /app
 
 # 1. Gradle 래퍼 및 설정 파일 복사
 COPY gradlew .
+RUN apk add --no-cache dos2unix && dos2unix gradlew
 COPY gradle gradle
 # 루트에 build.gradle.kts가 있다면 복사 (없다면 아래 줄을 주석 처리하세요)
-COPY build.gradle.kts .
+#COPY build.gradle.kts .
 
-# 2. 빌드 구조 동적 생성 (gateway-service와 common만 포함하여 빌드 속도 최적화)
-RUN printf 'rootProject.name = "backend"\ninclude("common")\ninclude("gateway-service")\n' > settings.gradle.kts
+# 2. 빌드 구조 동적 생성 (gateway common만 포함하여 빌드 속도 최적화)
+RUN printf 'rootProject.name = "backend"\ninclude("common")\ninclude("gateway")\n' > settings.gradle.kts
 
 # 3. 의존성 캐싱을 위한 build 파일 선복사
-RUN mkdir -p common gateway-service
+RUN mkdir -p common gateway
 COPY common/build.gradle.kts common/
-COPY gateway-service/build.gradle.kts gateway-service/
+COPY gateway/build.gradle.kts gateway/
 
 # 의존성 먼저 다운로드 (라이브러리 캐싱 레이어)
 RUN chmod +x gradlew && ./gradlew dependencies --no-daemon || true
 
 # 4. 실제 소스 코드 복사
 COPY common/src common/src
-COPY gateway-service/src gateway-service/src
+COPY gateway/src gateway/src
 
 # 5. JAR 빌드 (테스트 스킵)
-RUN ./gradlew :gateway-service:bootJar --no-daemon -x test
+RUN ./gradlew :gateway:bootJar --no-daemon -x test
 
 # ============================================
 # 2단계: 실행 스테이지 (JRE 21 사용 - 경량화 및 보안)
@@ -44,7 +45,7 @@ RUN apk add --no-cache tzdata && \
     adduser -u 1001 -S appuser -G appgroup
 
 # 빌드 결과물만 복사
-COPY --from=build /app/gateway-service/build/libs/*.jar app.jar
+COPY --from=build /app/gateway/build/libs/*.jar app.jar
 
 # 권한 부여 및 사용자 전환
 RUN chown appuser:appgroup app.jar

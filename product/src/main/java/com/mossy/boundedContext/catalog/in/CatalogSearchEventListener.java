@@ -6,7 +6,7 @@ import com.mossy.boundedContext.catalog.query.CatalogDocument;
 import com.mossy.boundedContext.catalog.domain.CatalogProduct;
 import com.mossy.boundedContext.catalog.out.CatalogProductRepository;
 import com.mossy.boundedContext.catalog.out.CatalogSearchRepository;
-import com.mossy.boundedContext.product.domain.event.ProductRegisteredEvent;
+import com.mossy.boundedContext.product.domain.event.ProductCatalogSyncEvent;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class CatalogSearchEventListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
-    public void onProductRegistered(ProductRegisteredEvent event) {
+    public void syncCatalogSearch(ProductCatalogSyncEvent event) {
         Long catalogId = event.catalogProductId();
 
         // 카탈로그 정보 조회
@@ -45,8 +45,9 @@ public class CatalogSearchEventListener {
         CatalogDocument document = CatalogDocument.from(
                 catalog,
                 thumbnailUrl,
-                event.minPrice(),
-                event.sellerCount()
+                event.minPrice().doubleValue(),
+                event.sellerCount(),
+                event.minPriceProductItemId()
         );
 
         catalogSearchRepository.save(document);

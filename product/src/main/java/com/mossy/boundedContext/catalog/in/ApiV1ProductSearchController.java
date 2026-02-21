@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.catalog.in;
 
 import com.mossy.boundedContext.catalog.query.CatalogDocument;
-import com.mossy.boundedContext.catalog.app.ProductSearchFacade;
+import com.mossy.boundedContext.catalog.app.CatalogSearchFacade;
 import com.mossy.boundedContext.catalog.in.dto.command.ProductSearchCondition;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class ApiV1ProductSearchController {
-    private final ProductSearchFacade productSearchFacade;
+    private final CatalogSearchFacade catalogSearchFacade;
 
     @GetMapping("/search")
     @Operation(
@@ -33,7 +33,7 @@ public class ApiV1ProductSearchController {
             @ModelAttribute ProductSearchCondition condition,
             @ParameterObject Pageable pageable) {
 
-        Page<CatalogDocument> responses = productSearchFacade.search(condition, pageable);
+        Page<CatalogDocument> responses = catalogSearchFacade.search(condition, pageable);
         return new RsData<>("200", "", responses);
     }
 }

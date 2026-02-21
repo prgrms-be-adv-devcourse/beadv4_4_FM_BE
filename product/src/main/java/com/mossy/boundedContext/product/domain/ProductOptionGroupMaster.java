@@ -1,10 +1,11 @@
 package com.mossy.boundedContext.product.domain;
 
 import com.mossy.global.jpa.entity.BaseIdAndTime;
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "PRODUCT_OPTION_GROUP_MASTER")

@@ -6,4 +6,5 @@ public interface CatalogSummaryDto {
     Long getCatalogId();
     BigDecimal getMinPrice();
     Long getSellerCount();
+    Long getMinPriceProductId();
 }

@@ -1,8 +1,10 @@
 package com.mossy.boundedContext.product.app.dto;
 
+import java.math.BigDecimal;
+
 public record ProductDataForEvent(
-        Long productId,
         Long catalogId,
-        Double minPrice,
-        Long sellerCount
+        BigDecimal minPrice,
+        Long sellerCount,
+        Long minPriceProductItemId
 ) {}
