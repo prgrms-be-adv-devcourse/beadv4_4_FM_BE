@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface SellerRequestRepository extends JpaRepository<SellerRequest, Long> {
 
-    boolean existsByActiveUserId(Long activeUserId);
+    boolean existsByUserId(Long userId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select sr from SellerRequest sr where sr.id = :id")

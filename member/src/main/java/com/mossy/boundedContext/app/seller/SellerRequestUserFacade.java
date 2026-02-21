@@ -21,7 +21,7 @@ public class SellerRequestUserFacade {
     public Long request(Long userId, SellerRequestCreateRequest req) {
 
         // 판매자 신청 중복 체크
-        if (sellerRequestRepository.existsByActiveUserId(userId)) {
+        if (sellerRequestRepository.existsByUserId(userId)) {
             throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 

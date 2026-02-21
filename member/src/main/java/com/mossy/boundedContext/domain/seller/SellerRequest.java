@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @Table(
         name = "SELLER_REQUEST",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uq_seller_request_active_user", columnNames = "active_user_id"),
+                @UniqueConstraint(name = "uq_seller_request_user_id", columnNames = "user_id"),
                 @UniqueConstraint(name = "uq_seller_request_business_num", columnNames = "business_num")
         }
 )
@@ -25,8 +25,6 @@ public class SellerRequest extends BaseIdAndTime {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "active_user_id")
-    private Long activeUserId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "seller_type", nullable = false, length = 20)
@@ -77,7 +75,7 @@ public class SellerRequest extends BaseIdAndTime {
             BigDecimal longitude
     ) {
         SellerRequest r = new SellerRequest();
-        r.activeUserId = userId;
+        r.userId = userId;
 
         r.sellerType = sellerType;
         r.storeName = storeName;
@@ -99,19 +97,16 @@ public class SellerRequest extends BaseIdAndTime {
     public void approve() {
         validatePending();
         this.status = SellerRequestStatus.APPROVED;
-        this.activeUserId = null;
     }
 
     public void reject() {
         validatePending();
         this.status = SellerRequestStatus.REJECTED;
-        this.activeUserId = null;
     }
 
     public void cancel() {
         validatePending();
         this.status = SellerRequestStatus.CANCELED;
-        this.activeUserId = null;
     }
 
     private void validatePending() {
