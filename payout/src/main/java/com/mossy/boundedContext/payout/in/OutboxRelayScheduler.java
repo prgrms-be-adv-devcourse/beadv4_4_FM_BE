@@ -4,7 +4,7 @@ import com.mossy.kafka.outbox.domain.OutboxEvent;
 import com.mossy.kafka.outbox.domain.OutboxStatus;
 import com.mossy.kafka.outbox.repository.OutboxEventRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,7 +32,7 @@ public class OutboxRelayScheduler {
     @Transactional
     public void relay() {
         List<OutboxEvent> pendingEvents =
-                outboxEventRepository.findByStatusOrderByCreatedAtAsc(OutboxStatus.PENDING, Pageable.unpaged());
+                outboxEventRepository.findByStatusOrderByCreatedAtAsc(OutboxStatus.PENDING, PageRequest.of(0, 100));
 
         if (pendingEvents.isEmpty()) {
             return;
