@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
     indexes = {
         // 폴링 성능용 인덱스
         @Index(name = "idx_outbox_status_created", columnList = "status, createdAt"),
-        // 중복 방지 + 도메인 별 조회용 인덱스
-        @Index(name = "uk_outbox_aggregate", columnList = "aggregateType, aggregateId, eventType", unique = true)
+        // 도메인 별 조회용 인덱스
+        @Index(name = "uk_outbox_aggregate", columnList = "aggregateType, aggregateId, eventType")
     }
 )
 @Getter

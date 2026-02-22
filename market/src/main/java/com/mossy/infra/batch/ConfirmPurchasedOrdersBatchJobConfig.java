@@ -96,6 +96,7 @@ public class ConfirmPurchasedOrdersBatchJobConfig {
                             orderItem.getProductItemId(),
                             orderItem.getUserCouponId(),
                             orderItem.getCouponType(),
+                            orderItem.getIssuerType(),
                             orderItem.getWeight(),
                             orderItem.getFinalPrice(),
                             orderItem.getOriginalPrice(),

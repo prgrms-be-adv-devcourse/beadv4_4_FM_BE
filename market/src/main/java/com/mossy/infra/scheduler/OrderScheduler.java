@@ -2,6 +2,9 @@ package com.mossy.infra.scheduler;
 
 import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.out.OrderRepository;
+import com.mossy.kafka.KafkaTopics;
+import com.mossy.kafka.outbox.service.OutboxPublisher;
+import com.mossy.shared.market.event.OrderStockReturnEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -22,25 +25,48 @@ public class OrderScheduler {
     private final OrderRepository orderRepository;
     private final JobLauncher jobLauncher;
     private final Job confirmPurchasedOrdersJob;
+    private final OutboxPublisher outboxPublisher;
 
     public OrderScheduler(
         OrderRepository orderRepository,
         JobLauncher jobLauncher,
-        @Qualifier("confirmPurchasedOrdersJob") Job confirmPurchasedOrdersJob
+        @Qualifier("confirmPurchasedOrdersJob") Job confirmPurchasedOrdersJob,
+        OutboxPublisher outboxPublisher
     ) {
         this.orderRepository = orderRepository;
         this.jobLauncher = jobLauncher;
         this.confirmPurchasedOrdersJob = confirmPurchasedOrdersJob;
+        this.outboxPublisher = outboxPublisher;
     }
 
     // 10분마다 실행
     // 주문 생성 후 30분이 지나도 PENDING인 주문은 EXPIRED로 업데이트
+    // 재고 복구를 위한 이벤트를 아웃박스에 저장
     @Transactional
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */15 * * * *")
     public void updateExpiredOrders() {
         LocalDateTime threshold = LocalDateTime.now().minusMinutes(30);
         List<Order> expiredOrders = orderRepository.findPendingOrdersCreatedBefore(threshold);
-        expiredOrders.forEach(Order::expire);
+
+        for (Order order : expiredOrders) {
+            order.expire();
+            List<OrderStockReturnEvent.OrderItemStock> orderItemStocks = order.getOrderItems().stream()
+                    .map(orderItem -> new OrderStockReturnEvent.OrderItemStock(
+                            orderItem.getProductItemId(),
+                            orderItem.getQuantity()
+                    ))
+                    .toList();
+
+            outboxPublisher.saveEvent(
+                    KafkaTopics.ORDER_STOCK_RETURN,
+                    "Order",
+                    order.getId(),
+                    OrderStockReturnEvent.class.getSimpleName(),
+                    new OrderStockReturnEvent(orderItemStocks)
+            );
+
+            log.info("주문 만료 처리 완료 - orderId: {}, 재고 복구 이벤트 저장", order.getId());
+        }
     }
 
     // 매일 자정에 실행

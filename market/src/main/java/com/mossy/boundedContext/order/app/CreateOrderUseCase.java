@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.order.app;
 
-import com.mossy.boundedContext.coupon.dto.CouponDiscountInfo;
+import com.mossy.boundedContext.coupon.domain.UserCoupon;
 import com.mossy.boundedContext.marketUser.domain.MarketPolicy;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
 import com.mossy.boundedContext.marketUser.out.MarketUserRepository;
@@ -31,7 +31,7 @@ public class CreateOrderUseCase {
     public OrderCreatedResponse create(
             Long userId,
             OrderCreatedRequest request,
-            Map<Long, CouponDiscountInfo> couponInfoMap
+            Map<Long, UserCoupon> userCouponMap
     ) {
         MarketUser buyer = marketUserRepository.getReferenceById(userId);
 
@@ -50,7 +50,7 @@ public class CreateOrderUseCase {
                         orderNo,
                         request.items(),
                         request.totalPrice(),
-                        couponInfoMap
+                        userCouponMap
                 )
         );
 

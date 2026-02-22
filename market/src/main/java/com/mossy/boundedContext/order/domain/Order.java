@@ -1,8 +1,8 @@
 package com.mossy.boundedContext.order.domain;
 
+import com.mossy.boundedContext.coupon.domain.UserCoupon;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.boundedContext.coupon.dto.CouponDiscountInfo;
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
 import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest.OrderItemRequest;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
@@ -57,7 +57,7 @@ public class Order extends BaseIdAndTime {
             String orderNo,
             List<OrderItemRequest> items,
             BigDecimal totalPrice,
-            Map<Long, CouponDiscountInfo> couponInfoMap
+            Map<Long, UserCoupon> userCouponMap
     ) {
         Order order = Order.builder()
                 .buyer(buyer)
@@ -67,7 +67,7 @@ public class Order extends BaseIdAndTime {
                 .totalPrice(BigDecimal.ZERO)
                 .build();
 
-        items.forEach(item -> order.addOrderItem(item.sellerId(), item, couponInfoMap));
+        items.forEach(item -> order.addOrderItem(item.sellerId(), item, userCouponMap));
 
         BigDecimal calculatedTotal = order.orderItems.stream()
                 .map(OrderItem::getFinalPrice)
@@ -81,21 +81,24 @@ public class Order extends BaseIdAndTime {
         return order;
     }
 
-    private void addOrderItem(Long sellerId, OrderItemRequest item, Map<Long, CouponDiscountInfo> couponInfoMap) {
+    private void addOrderItem(Long sellerId, OrderItemRequest item, Map<Long, UserCoupon> userCouponMap) {
         BigDecimal orderPrice = item.price().multiply(BigDecimal.valueOf(item.quantity()));
-        CouponDiscountInfo couponInfo = item.userCouponId() != null
-                ? couponInfoMap.get(item.userCouponId())
+        UserCoupon userCoupon = item.userCouponId() != null
+                ? userCouponMap.get(item.userCouponId())
                 : null;
+        BigDecimal discountAmount = userCoupon != null
+                ? userCoupon.calculateDiscount(orderPrice)
+                : null;
+
         OrderItem orderItem = OrderItem.create(
                 this,
                 sellerId,
                 item.productItemId(),
                 item.quantity(),
                 item.weight(),
-                item.userCouponId(),
-                couponInfo != null ? couponInfo.couponType() : null,
+                userCoupon,
                 orderPrice,
-                couponInfo != null ? couponInfo.discountAmount() : null
+                discountAmount
         );
         this.orderItems.add(orderItem);
     }
@@ -131,18 +134,6 @@ public class Order extends BaseIdAndTime {
     private void validateAmount(BigDecimal requestAmount, BigDecimal calculatedAmount) {
         if (requestAmount.compareTo(calculatedAmount) != 0) {
             throw new DomainException(ErrorCode.ORDER_AMOUNT_MISMATCH);
-        }
-    }
-
-    public void validatePendingState() {
-        if (this.state != OrderState.PENDING) {
-            throw new DomainException(ErrorCode.INVALID_ORDER_STATE);
-        }
-    }
-
-    private void validateNotPaid() {
-        if (this.state == OrderState.PAID) {
-            throw new DomainException(ErrorCode.ORDER_ALREADY_PAID);
         }
     }
 }

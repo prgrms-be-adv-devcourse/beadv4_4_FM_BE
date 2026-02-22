@@ -21,6 +21,7 @@ public interface OrderRepository  extends JpaRepository<Order, Long>, OrderRepos
     @Query("delete from Order o where o.state = 'EXPIRED' and o.createdAt < :threshold")
     void deleteExpiredOrders(@Param("threshold") LocalDateTime threshold);
 
+    @EntityGraph(attributePaths = {"orderItems"})
     @Query("select o from Order o where o.state = 'PENDING' and o.createdAt < :threshold")
     List<Order> findPendingOrdersCreatedBefore(@Param("threshold") LocalDateTime threshold);
 }
