@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.app.seller;
 
 
+import com.mossy.boundedContext.app.mapper.SellerMapper;
 import com.mossy.boundedContext.app.mapper.SellerRequestMapper;
 import com.mossy.boundedContext.domain.role.UserRole;
 import com.mossy.boundedContext.domain.seller.Seller;
@@ -17,8 +18,6 @@ import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
-import com.mossy.shared.member.event.SellerJoinedEvent;
-import com.mossy.shared.member.payload.SellerPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +28,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SellerRequestAdminFacade {
 
-    private final LockUseCase  lockUseCase;
+    private final LockUseCase lockUseCase;
     private final SellerRepository sellerRepository;
     private final SellerRequestRepository sellerRequestRepository;
+    private final SellerMapper sellerMapper;
     private final SellerRequestMapper sellerRequestMapper;
     private final RoleRepository roleRepository;
     private final EventPublisher eventPublisher;
@@ -73,8 +73,8 @@ public class SellerRequestAdminFacade {
             user.addUserRole(new UserRole(user, sellerRole));
         }
 
-        // DB 작업은 여기까지만 수행
-        // 외부 서비스 호출은 Controller에서 수행하여 실패 시 롤백 가능하게 함
+        // SellerJoinedEvent 발행 → SellerKafkaEventPublisher가 AFTER_COMMIT 시 Kafka로 전달
+        eventPublisher.publish(sellerMapper.toSellerJoinedEvent(seller));
 
         return new SellerAppoveResult(seller.getId(), userId);
     }
