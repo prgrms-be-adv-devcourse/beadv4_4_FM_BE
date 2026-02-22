@@ -3,6 +3,7 @@ package com.mossy.boundedContext.in;
 import com.mossy.boundedContext.app.ReviewFacade;
 import com.mossy.boundedContext.in.dto.request.WriteReviewRequest;
 import com.mossy.boundedContext.in.dto.response.ReviewResponse;
+import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +29,6 @@ public class ApiV1ReviewController {
     ) {
         ReviewResponse response = reviewFacade.writeReview(orderItemId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(RsData.success("S-201", "리뷰가 작성되었습니다.", response));
+                .body(RsData.success(SuccessCode.REVIEW_CREATED, response));
     }
 }
