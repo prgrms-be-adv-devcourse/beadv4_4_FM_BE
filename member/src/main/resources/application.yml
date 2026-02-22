@@ -21,12 +21,14 @@ spring:
     init:
       mode: always
       continue-on-error: true
-  cache:
-    type: redis
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: member
+    producer:
+      retries: 0  # 재시도 없이 바로 실패 처리 (로그만 찍고 진행)
+    template:
+      default-topic: member
 springdoc:
   swagger-ui:
     path: /mossy-docs

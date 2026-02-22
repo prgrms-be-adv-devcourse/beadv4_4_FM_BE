@@ -8,9 +8,11 @@ import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class KafkaEventPublisher {
@@ -21,10 +23,16 @@ public class KafkaEventPublisher {
         String topic = resolveTopicName(event);
 
         if (topic == null) {
+            log.warn("Kafka 토픽 매핑 없음: eventType={}", event.getClass().getSimpleName());
             return;
         }
 
-        kafkaTemplate.send(topic, event);
+        try {
+            kafkaTemplate.send(topic, event);
+            log.info("Kafka 이벤트 발행 성공: topic={}, eventType={}", topic, event.getClass().getSimpleName());
+        } catch (Exception e) {
+            log.error("Kafka 이벤트 발행 실패: topic={}, eventType={}, error={}", topic, event.getClass().getSimpleName(), e.getMessage());
+        }
     }
 
     private String resolveTopicName(Object event) {
