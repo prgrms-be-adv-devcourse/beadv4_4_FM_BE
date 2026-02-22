@@ -26,10 +26,13 @@ repositories {
 dependencies {
     // common 모듈
     implementation(project(":common"))
+    // kafka 모듈
+    implementation(project(":kafka"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.kafka:spring-kafka")
     runtimeOnly("org.postgresql:postgresql")
-
     // Swagger UI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
 
