@@ -7,8 +7,10 @@ import java.util.List;
 public record UserInfoDto(
         Long userId,
         String nickname,
+        String email,
         String username,
         SellerRequestStatus status,
-        List<String> providers
+        List<String> providers,
+        boolean hasPassword
 ) {
 }

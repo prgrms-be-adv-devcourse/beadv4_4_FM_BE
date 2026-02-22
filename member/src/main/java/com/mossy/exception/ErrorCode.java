@@ -28,6 +28,9 @@ public enum ErrorCode implements BaseCode {
     // ========================================
     INVALID_CREDENTIALS(401, "이메일 또는 비밀번호가 일치하지 않습니다."),
     ACCOUNT_DISABLED(401, "탈퇴했거나 계정이 정지된 회원입니다."),
+    INVALID_PASSWORD(401, "현재 비밀번호가 일치하지 않습니다."),
+    SOCIAL_ONLY_ACCOUNT(400, "소셜 로그인 전용 계정입니다. 비밀번호를 먼저 설정해주세요."),
+    PASSWORD_ALREADY_EXISTS(400, "이미 비밀번호가 설정된 계정입니다."),
 
     // ========================================
     // 404 Not Found (리소스 없음)

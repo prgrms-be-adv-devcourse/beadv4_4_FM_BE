@@ -28,12 +28,17 @@ public interface UserMapper {
                     .map(UserSocialAccount::getProvider)
                     .toList()
                 : List.of();
+                
+        boolean hasPassword = !user.isSocialOnly();
+                
         return new UserInfoDto(
                 user.getId(),
                 user.getNickname(),
+                user.getEmail(),
                 user.getName(),
                 status,
-                providers
+                providers,
+                hasPassword
         );
     }
 

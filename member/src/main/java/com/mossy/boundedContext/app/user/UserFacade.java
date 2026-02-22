@@ -3,7 +3,11 @@ package com.mossy.boundedContext.app.user;
 import com.mossy.boundedContext.app.VerfyMemberUseCase;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
+import com.mossy.boundedContext.in.dto.request.ChangeAddressRequest;
+import com.mossy.boundedContext.in.dto.request.ChangePasswordRequest;
+import com.mossy.boundedContext.in.dto.request.ChangePhoneNumRequest;
 import com.mossy.boundedContext.in.dto.request.ProfileUpdateRequest;
+import com.mossy.boundedContext.in.dto.request.SetPasswordRequest;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.in.dto.OAuth2UserDto;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
@@ -26,6 +30,10 @@ public class UserFacade {
     private final ProcessSocialLoginUseCase processSocialLoginUseCase;
     private final GetUserInfoUseCase getUserInfoUseCase;
     private final UpdateProfileUseCase updateProfileUseCase;
+    private final ChangePasswordUseCase changePasswordUseCase;
+    private final ChangeAddressUseCase changeAddressUseCase;
+    private final ChangePhoneNumUseCase changePhoneNumUseCase;
+    private final SetPasswordUseCase setPasswordUseCase;
     private final VerfyMemberUseCase verfyMemberUseCase;
     private final UserMapper mapper;
     private final EventPublisher eventPublisher;
@@ -66,5 +74,25 @@ public class UserFacade {
     //프로필 수정
     public void updateProfile(Long userId, ProfileUpdateRequest request) {
         updateProfileUseCase.execute(userId, request);
+    }
+
+    // 비밀번호 변경 (현재 비밀번호 확인 후 변경)
+    public void changePassword(Long userId, ChangePasswordRequest request) {
+        changePasswordUseCase.execute(userId, request);
+    }
+
+    // 주소 변경 (현재 비밀번호 확인 후 변경)
+    public void changeAddress(Long userId, ChangeAddressRequest request) {
+        changeAddressUseCase.execute(userId, request);
+    }
+
+    // 전화번호 변경 (현재 비밀번호 확인 후 변경)
+    public void changePhoneNum(Long userId, ChangePhoneNumRequest request) {
+        changePhoneNumUseCase.execute(userId, request);
+    }
+
+    // 소셜 로그인 전용 계정 → 최초 비밀번호 설정
+    public void setPassword(Long userId, SetPasswordRequest request) {
+        setPasswordUseCase.execute(userId, request);
     }
 }
