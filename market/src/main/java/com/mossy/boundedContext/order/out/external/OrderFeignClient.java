@@ -12,4 +12,7 @@ public interface OrderFeignClient {
 
     @PostMapping("/internal/v1/orders/products/decrease")
     void decreaseStock(@RequestBody List<StockCheckRequest> items);
+
+    @PostMapping("/internal/v1/orders/products/increase")
+    void increaseStock(@RequestBody List<StockCheckRequest> items);
 }
