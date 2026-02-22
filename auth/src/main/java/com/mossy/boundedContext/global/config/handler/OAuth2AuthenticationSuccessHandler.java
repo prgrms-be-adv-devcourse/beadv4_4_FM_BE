@@ -91,9 +91,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .toUriString();
     }
 
-    /**
-     * 운영 환경 여부 확인
-     */
+    //운영 환경 여부 확인
     private boolean isProductionEnvironment() {
         return Arrays.asList(environment.getActiveProfiles()).contains("prod");
     }

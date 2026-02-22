@@ -9,10 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-/**
- * 한 User 계정에 여러 소셜 로그인(google, kakao 등)을 연동하기 위한 엔티티
- * - user_id + provider 조합으로 unique 보장
- */
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

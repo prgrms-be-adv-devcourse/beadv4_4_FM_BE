@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
+    implementation(project(":kafka"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     runtimeOnly("org.postgresql:postgresql")
 
