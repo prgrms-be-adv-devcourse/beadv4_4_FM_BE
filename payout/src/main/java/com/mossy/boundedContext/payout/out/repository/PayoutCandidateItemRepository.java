@@ -3,8 +3,12 @@ package com.mossy.boundedContext.payout.out.repository;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.domain.payout.PayoutItem;
 import com.mossy.shared.payout.enums.PayoutEventType;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +31,25 @@ public interface PayoutCandidateItemRepository extends JpaRepository<PayoutCandi
     List<PayoutCandidateItem> findByPayoutItemIsNullAndPaymentDateBeforeOrderByPayeeAscIdAsc(LocalDateTime paymentDate, Pageable pageable);
 
     /**
+     * 정산 배치 중복 실행 시 동일 CandidateItem을 두 배치가 동시에 처리하는 것을 방지하기 위해
+     * 비관적 쓰기 락(PESSIMISTIC_WRITE)으로 정산 준비 후보를 조회
+     *
+     * @param before   결제 발생일 기준 (안전 대기 기간 경과된 항목만 조회)
+     * @param pageable 페이징 정보
+     * @return 락이 걸린 정산 준비 후보 리스트
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+            SELECT c FROM PayoutCandidateItem c
+            WHERE c.payoutItem IS NULL AND c.paymentDate < :before
+            ORDER BY c.payee ASC, c.id ASC
+            """)
+    List<PayoutCandidateItem> findPayoutReadyWithLock(
+            @Param("before") LocalDateTime before,
+            Pageable pageable
+    );
+
+    /**
      * 특정 Payout에 포함된 PayoutItem 중 특정 이벤트 타입의 PayoutCandidateItem들을 조회
      * 정산 완료 시 기부금 관련 항목들을 찾아 기부 로그를 생성하기 위해 사용
      *
@@ -37,4 +60,36 @@ public interface PayoutCandidateItemRepository extends JpaRepository<PayoutCandi
     List<PayoutCandidateItem> findByPayoutItem_Payout_IdAndEventType(Long payoutId, PayoutEventType eventType);
 
     List<PayoutCandidateItem> findByRelIdAndRelTypeCode(Long relId, String relTypeCode);
+
+    /**
+     * Kafka at-least-once 재처리 시 동일 OrderItem에 대한 중복 생성 여부를 확인
+     * 대표 이벤트 타입(정산__상품판매_대금)으로 존재 여부를 확인하여 이미 처리된 경우 skip
+     *
+     * @param relTypeCode 관련 엔티티 타입 코드 (예: "OrderItem")
+     * @param relId       관련 엔티티 ID (예: OrderItem ID)
+     * @param eventType   이벤트 타입 (대표값으로 정산__상품판매_대금 사용)
+     * @return 이미 처리된 경우 true
+     */
+    boolean existsByRelTypeCodeAndRelIdAndEventType(
+            String relTypeCode, Long relId, PayoutEventType eventType
+    );
+
+    /**
+     * 환불 처리 시 동일 orderItem에 대한 중복 환불을 방지하기 위해
+     * 비관적 쓰기 락(PESSIMISTIC_WRITE)으로 정산 후보를 조회
+     * 락 보유 중 다른 트랜잭션은 해당 row를 읽거나 수정할 수 없음
+     *
+     * @param relId        관련 엔티티 ID (예: OrderItem ID)
+     * @param relTypeCode  관련 엔티티 타입 코드 (예: "OrderItem")
+     * @return 락이 걸린 정산 후보 리스트
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+            SELECT c FROM PayoutCandidateItem c
+            WHERE c.relId = :relId AND c.relTypeCode = :relTypeCode
+            """)
+    List<PayoutCandidateItem> findByRelIdAndRelTypeCodeWithLock(
+            @Param("relId") Long relId,
+            @Param("relTypeCode") String relTypeCode
+    );
 }

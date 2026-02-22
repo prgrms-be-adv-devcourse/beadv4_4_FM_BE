@@ -34,9 +34,10 @@ public class PayoutRefundUseCase {
     @Transactional
     public void processRefund(Long orderItemId, BigDecimal refundAmount, BigDecimal buyerPaidAmount) {
 
-        // 1. orderItemId로 정산 후보 조회
+        // 1. orderItemId로 정산 후보 조회 (PESSIMISTIC_WRITE 락)
+        // 동시 환불 요청 시 이중 환불 방지
         List<PayoutCandidateItem> candidates =
-                payoutCandidateItemRepository.findByRelIdAndRelTypeCode(
+                payoutCandidateItemRepository.findByRelIdAndRelTypeCodeWithLock(
                         orderItemId, "OrderItem"
                 );
 
