@@ -5,8 +5,14 @@ import com.mossy.boundedContext.payout.app.common.PayoutCompletePayoutsMoreUseCa
 import com.mossy.boundedContext.payout.app.common.PayoutCreatePayoutUseCase;
 import com.mossy.boundedContext.payout.domain.payout.Payout;
 import com.mossy.boundedContext.payout.domain.seller.PayoutSeller;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -29,6 +35,20 @@ public interface PayoutRepository extends JpaRepository<Payout, Long> {
     Optional<Payout> findByPayeeAndPayoutDateIsNull(PayoutSeller payee);
 
     /**
+     * 정산 배치 중복 실행 시 동일 Payout에 동시에 addItem()이 호출되는 것을 방지하기 위해
+     * 비관적 쓰기 락(PESSIMISTIC_WRITE)으로 활성화된 Payout을 조회
+     *
+     * @param payee 정산 대상 수취인
+     * @return 락이 걸린 활성화된 Payout (Optional)
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+            SELECT p FROM Payout p
+            WHERE p.payee = :payee AND p.payoutDate IS NULL
+            """)
+    Optional<Payout> findByPayeeAndPayoutDateIsNullWithLock(@Param("payee") PayoutSeller payee);
+
+    /**
      * 아직 정산일(payoutDate)이 지정되지 않았고(NULL), 총 금액(amount)이 0보다 큰 Payout들을 조회
      * 조회 결과는 ID 기준으로 오름차순 정렬
      * 이 메서드는 주로 {@link PayoutCompletePayoutsMoreUseCase}에서 정산 완료 처리가 필요한 Payout 목록을 가져오는 데 사용
@@ -49,4 +69,21 @@ public interface PayoutRepository extends JpaRepository<Payout, Long> {
      * @return 지급 대상 Payout 리스트
      */
     List<Payout> findByPayoutDateIsNotNullAndCreditDateIsNullOrderByIdAsc(Pageable pageable);
+
+    /**
+     * 지급 대상 Payout을 비관적 쓰기 락(PESSIMISTIC_WRITE)으로 조회
+     * 배치 중복 실행 시 동일 Payout에 대한 중복 지갑 입금을 방지
+     * lock timeout 3초 설정으로 다른 배치가 락 보유 중일 때 무한 대기 방지
+     *
+     * @param pageable 페이징 정보
+     * @return 지급 대상 Payout 리스트 (락 획득)
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints(@QueryHint(name = "jakarta.persistence.lock.timeout", value = "3000"))
+    @Query("""
+            SELECT p FROM Payout p
+            WHERE p.payoutDate IS NOT NULL AND p.creditDate IS NULL
+            ORDER BY p.id ASC
+            """)
+    List<Payout> findCreditTargetsWithLock(Pageable pageable);
 }

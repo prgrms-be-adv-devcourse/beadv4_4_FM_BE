@@ -42,9 +42,10 @@ public class PayoutDailyPayoutToWalletUseCase {
      */
     @Transactional(propagation = Propagation.MANDATORY)
     public RsData<Integer> processDailyPayoutToWallet(int limit) {
-        // 1. 정산 완료되었으나 지급되지 않은 Payout 조회
+        // 1. 정산 완료되었으나 지급되지 않은 Payout 조회 (PESSIMISTIC_WRITE 락)
+        // 배치 중복 실행 시 동일 Payout에 대한 중복 지갑 입금 방지
         List<Payout> payoutsToCredit = payoutRepository
-                .findByPayoutDateIsNotNullAndCreditDateIsNullOrderByIdAsc(PageRequest.of(0, limit));
+                .findCreditTargetsWithLock(PageRequest.of(0, limit));
 
         if (payoutsToCredit.isEmpty()) {
             log.info("[지급 배치] 지급할 정산이 없습니다.");
