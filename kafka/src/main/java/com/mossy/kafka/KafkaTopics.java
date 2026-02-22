@@ -9,5 +9,6 @@ public class KafkaTopics {
     public static final String SELLER_JOINED = "seller.joined";
     public static final String SELLER_UPDATED = "seller.updated";
     public static final String ORDER_PURCHASE_CONFIRMED = "order.purchase.confirmed";
+    public static final String ORDER_REFUNDED = "order.refunded";
     public static final String PAYOUT_WALLET_CREDIT = "payout.wallet.credit";
 }

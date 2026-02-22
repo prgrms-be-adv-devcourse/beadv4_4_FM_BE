@@ -45,13 +45,3 @@ springdoc:
     path: /mossy-docs
   api-docs:
     path: /v3/api-docs
-
-app:
-  kafka:
-    topics:
-      payout:
-        wallet:
-          credit: payout.wallet.credit
-      order:
-        paid: order.paid
-        refunded: order.refunded
