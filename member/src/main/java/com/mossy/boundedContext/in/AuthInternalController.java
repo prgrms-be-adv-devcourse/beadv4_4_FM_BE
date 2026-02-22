@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Internal-Auth", description = "시스템 내부 서비스 간 인증/권한 API")
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/internal/v1")
 @RequiredArgsConstructor
 public class AuthInternalController {
 

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -66,6 +67,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new RsData<>("F-400", message, null));
+    }
+
+    // 필수 헤더 누락 (X-User-Id 등) - 게이트웨이를 거치지 않은 직접 요청
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<RsData<Void>> handleMissingRequestHeader(MissingRequestHeaderException e) {
+        log.warn("MissingRequestHeaderException: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new RsData<>("F-401", "인증 정보가 없습니다. 게이트웨이를 통해 요청해주세요.", null));
     }
 
     // 인증 실패 예외 (JWT 만료, 검증 실패 포함)

@@ -11,65 +11,81 @@ spring:
   cloud:
     gateway:
       routes:
+        # ── Market ──
         - id: market
-          uri: http://localhost:8081
+          uri: http://127.0.0.1:8081
           predicates:
             - Path=/api/v1/cart/**, /api/v1/orders/**, /api/v1/payments/**, /api/v1/product/**
           filters:
             - name: JwtAuthenticationFilter
 
+        # ── Member (공개) ──
         - id: member-public
-          uri: http://localhost:8082
+          uri: http://127.0.0.1:8082
           predicates:
             - Path=/api/v1/users/signup
 
+        # ── Member (인증 필요) ──
         - id: member-private
-          uri: http://localhost:8082
+          uri: http://127.0.0.1:8082
           predicates:
             - Path=/api/v1/users/me, /api/v1/users/profile, /api/v1/users/password, /api/v1/users/address, /api/v1/users/phone, /api/v1/users/set-password, /api/v1/users/nickname
           filters:
             - name: JwtAuthenticationFilter
 
+        # ── Seller 신청 (인증 필요) ──
         - id: seller-request
-          uri: http://localhost:8082
+          uri: http://127.0.0.1:8082
           predicates:
             - Path=/api/v1/users/seller-request
           filters:
             - name: JwtAuthenticationFilter
 
+        # ── Admin 판매자 관리 (인증 필요) ──
         - id: admin-seller
-          uri: http://localhost:8082
+          uri: http://127.0.0.1:8082
           predicates:
-            - Path=/api/v1/admin/seller-requests/**, /api/v1/admin/seller-requests
+            - Path=/api/v1/admin/seller-requests/**
           filters:
             - name: JwtAuthenticationFilter
 
+        # ── Cash ──
         - id: cash
-          uri: http://localhost:8083
+          uri: http://127.0.0.1:8083
           predicates:
             - Path=/api/v1/cash/**
           filters:
             - name: JwtAuthenticationFilter
 
+        # ── Payout ──
         - id: payout
-          uri: http://localhost:8084
+          uri: http://127.0.0.1:8084
           predicates:
             - Path=/api/payout/**
           filters:
             - name: JwtAuthenticationFilter
 
+        # ── Review ──
         - id: review
-          uri: http://localhost:8085
+          uri: http://127.0.0.1:8085
           predicates:
             - Path=/api/v1/review/**
           filters:
             - name: JwtAuthenticationFilter
 
+        # ── Auth (공개 - 로그인/토큰/OAuth2) ──
         - id: auth
-          uri: http://localhost:8086
+          uri: http://127.0.0.1:8086
           predicates:
             - Path=/api/v1/auth/**
 
+        # ── Auth OAuth2 ──
+        - id: auth-oauth2
+          uri: http://127.0.0.1:8086
+          predicates:
+            - Path=/oauth2/**, /login/oauth2/**
+
+        # ── Product ──
         - id: product
           uri: http://product:8090
           predicates:

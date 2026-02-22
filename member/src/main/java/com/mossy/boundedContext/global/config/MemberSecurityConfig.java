@@ -28,7 +28,8 @@ public class MemberSecurityConfig {
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/users/**", "/api/v1/seller/auth/**",
-                                "/api/v1/auth/**", "/api/v1/admin/**" //로그인, 어드민 기능 (게이트웨이에서 인증/권한 확인)
+                                "/api/v1/auth/**", "/api/v1/admin/**", //로그인, 어드민 기능 (게이트웨이에서 인증/권한 확인)
+                                "/internal/**" // 내부 서비스 간 통신
                                          ).permitAll()
                         .requestMatchers("/mossy-docs/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()

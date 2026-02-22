@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Internal-Member", description = "시스템 내부 서비스 간 회원 통신 API")
 @RestController
-@RequestMapping("api/v1/auth/users")
+@RequestMapping("/internal/v1/users")
 @RequiredArgsConstructor
 public class MemberInternalController {
 

@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "member", url = "http://localhost:8082")
 public interface MemberFeignClient {
 
-    @PostMapping("api/v1/auth/users/verify")
+    @PostMapping("/internal/v1/users/verify")
     MemberVerifyResponse verify(@RequestBody MemberVerifyExternRequest request);
 
-    @GetMapping("api/v1/auth/users/{userId}")
+    @GetMapping("/internal/v1/users/{userId}")
     MemberAuthInfoResponse getAuthInfo(@PathVariable("userId") Long userId);
 
-    @PostMapping("/api/v1/auth/users/social-login")
+    @PostMapping("/internal/v1/users/social-login")
     SocialLonginResponse processSocialLogin(@RequestBody OAuth2UserDTO request);
 
-    @DeleteMapping("/api/v1/auth/users/social-login/{userId}/rollback")
+    @DeleteMapping("/internal/v1/users/social-login/{userId}/rollback")
     void rollbackSocialLogin(@PathVariable("userId") Long userId);
 }
