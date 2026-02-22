@@ -20,22 +20,28 @@ import java.util.List;
 )
 public interface UserMapper {
 
-    // --- [Entity → Payload (이벤트 발행용)] ---
-
     UserPayload toPayload(User user);
 
-    // --- [조회 응답 매핑] ---
-
     default UserInfoDto toUserInfoDto(User user, SellerRequestStatus status) {
-        List<String> providers = user.getSocialAccounts().stream()
-                .map(UserSocialAccount::getProvider)
-                .toList();
+        List<String> providers = user.getSocialAccounts() != null
+                ? user.getSocialAccounts().stream()
+                    .map(UserSocialAccount::getProvider)
+                    .toList()
+                : List.of();
+                
+        boolean hasPassword = !user.isSocialOnly();
+
         return new UserInfoDto(
                 user.getId(),
                 user.getNickname(),
+                user.getEmail(),
                 user.getName(),
+                user.getRrnEncrypted(),
+                user.getPhoneNum(),
+                user.getAddress(),
                 status,
-                providers
+                providers,
+                hasPassword
         );
     }
 

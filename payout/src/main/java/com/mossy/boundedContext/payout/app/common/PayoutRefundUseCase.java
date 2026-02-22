@@ -32,7 +32,7 @@ public class PayoutRefundUseCase {
      * @throws DomainException 정산 후보를 찾을 수 없거나 이미 정산 완료된 경우
      */
     @Transactional
-    public void processRefund(Long orderItemId, BigDecimal refundAmount) {
+    public void processRefund(Long orderItemId, BigDecimal refundAmount, BigDecimal buyerPaidAmount) {
 
         // 1. orderItemId로 정산 후보 조회
         List<PayoutCandidateItem> candidates =
@@ -57,8 +57,25 @@ public class PayoutRefundUseCase {
             );
         }
 
-        // 4. 환불 처리
-        refundCandidates(candidates, refundAmount);
+        // 4. 환불 처리 — BUYER/PLATFORM 그룹 분리
+        List<PayoutCandidateItem> buyerItems = candidates.stream()
+                .filter(c -> c.getEventType() != PayoutEventType.정산__프로모션_플랫폼부담)
+                .toList();
+
+        List<PayoutCandidateItem> platformItems = candidates.stream()
+                .filter(c -> c.getEventType() == PayoutEventType.정산__프로모션_플랫폼부담)
+                .toList();
+
+        refundCandidates(buyerItems, refundAmount);
+
+        if (!platformItems.isEmpty()) {
+            BigDecimal platformTotal = platformItems.stream()
+                    .map(PayoutCandidateItem::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal ratio = refundAmount.divide(buyerPaidAmount, 12, RoundingMode.HALF_UP);
+            BigDecimal platformRefundAmount = platformTotal.multiply(ratio).setScale(0, RoundingMode.DOWN);
+            refundCandidates(platformItems, platformRefundAmount);
+        }
     }
 
     /**
@@ -129,6 +146,7 @@ public class PayoutRefundUseCase {
             case 정산__상품판매_대금 -> PayoutEventType.정산__상품환불_대금;
             case 정산__상품판매_수수료 -> PayoutEventType.정산__상품환불_수수료;
             case 정산__상품판매_기부금 -> PayoutEventType.정산__상품환불_기부금;
+            case 정산__프로모션_플랫폼부담 -> PayoutEventType.정산__상품환불_플랫폼부담;
             default -> throw new DomainException(
                     ErrorCode.INVALID_PAYOUT_EVENT_TYPE
             );

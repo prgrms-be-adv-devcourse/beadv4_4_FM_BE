@@ -21,6 +21,7 @@ public record OrderPurchaseConfirmedEvent(
             BigDecimal weight,
             BigDecimal finalPrice,
             BigDecimal originalPrice,
-            BigDecimal discountAmount
+            BigDecimal discountAmount,
+            BigDecimal platformDiscountAmount
     ) {}
 }

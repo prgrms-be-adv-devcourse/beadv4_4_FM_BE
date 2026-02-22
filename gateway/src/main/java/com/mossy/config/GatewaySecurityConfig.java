@@ -24,6 +24,7 @@ public class GatewaySecurityConfig {
 
                 // 3. 경로별 권한 설정
                 .authorizeExchange(exchanges -> exchanges
+                        .pathMatchers("/internal/**").denyAll() // 내부 서비스 간 통신은 게이트웨이에서 차단
                         .anyExchange().permitAll()
                 )
                 .build();

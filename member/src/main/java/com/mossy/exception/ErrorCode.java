@@ -20,6 +20,7 @@ public enum ErrorCode implements BaseCode {
     DUPLICATE_SELLER_REQUEST(400, "이미 판매자 신청이 진행중입니다."),
     SELLER_REQUEST_NOT_PENDING(400, "판매자 신청이 '대기 중' 상태가 아닙니다."),
     USER_ID_REQUIRED(400, "사용자 식별자(ID)는 필수입니다."),
+    MISSING_BUSINESS_NUMBER(400, "법인사업자는 사업자번호가 필수입니다."),
     SOCIAL_ACCOUNT_EXISTS(400, "해당 이메일로 가입된 소셜 계정이 있습니다. 소셜 로그인을 이용해 주세요."),
 
     // ========================================
@@ -27,6 +28,9 @@ public enum ErrorCode implements BaseCode {
     // ========================================
     INVALID_CREDENTIALS(401, "이메일 또는 비밀번호가 일치하지 않습니다."),
     ACCOUNT_DISABLED(401, "탈퇴했거나 계정이 정지된 회원입니다."),
+    INVALID_PASSWORD(401, "현재 비밀번호가 일치하지 않습니다."),
+    SOCIAL_ONLY_ACCOUNT(400, "소셜 로그인 전용 계정입니다. 비밀번호를 먼저 설정해주세요."),
+    PASSWORD_ALREADY_EXISTS(400, "이미 비밀번호가 설정된 계정입니다."),
 
     // ========================================
     // 404 Not Found (리소스 없음)

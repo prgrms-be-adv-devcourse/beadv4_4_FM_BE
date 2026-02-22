@@ -20,7 +20,7 @@ public class UserSellerRequestController {
     private final SellerRequestUserFacade sellerRequestUserFacade;
 
     @Operation(summary = "판매자 신청", description = "판매자 신청서를 생성하고 상태를 PENDING으로 저장")
-    @PostMapping("/seller/request")
+    @PostMapping("/seller-request")
     public RsData<Long> requestSeller(
             @RequestHeader("X-User-Id") Long userId,
             @RequestBody @Valid SellerRequestCreateRequest req

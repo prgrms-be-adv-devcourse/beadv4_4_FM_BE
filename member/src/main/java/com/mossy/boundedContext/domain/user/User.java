@@ -88,4 +88,21 @@ public class User extends SourceUser {
         this.rrnEncrypted = encryptedRrn;
         this.nickname = nickname;
     }
+
+    public void changeAddress(String encryptedAddress) {
+        this.address = encryptedAddress;
+    }
+
+    public void changePhoneNum(String encryptedPhoneNum) {
+        this.phoneNum = encryptedPhoneNum;
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    // 소셜 로그인 전용 계정 여부 (비밀번호가 비어있으면 소셜 전용)
+    public boolean isSocialOnly() {
+        return this.password == null || this.password.isBlank();
+    }
 }
