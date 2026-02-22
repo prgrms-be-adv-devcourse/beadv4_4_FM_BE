@@ -30,7 +30,7 @@ public interface UserMapper {
                 : List.of();
                 
         boolean hasPassword = !user.isSocialOnly();
-                
+
         return new UserInfoDto(
                 user.getId(),
                 user.getNickname(),
