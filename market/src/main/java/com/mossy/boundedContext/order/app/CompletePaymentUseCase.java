@@ -24,7 +24,7 @@ public class CompletePaymentUseCase {
 
     @Transactional
     public void completePayment(Long orderId, LocalDateTime paidAt) {
-        Order order = orderRepository.findWithItemsById(orderId)
+        Order order = orderRepository.findWithItemsAndCouponsById(orderId)
                 .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
 
         order.completePayment(paidAt);

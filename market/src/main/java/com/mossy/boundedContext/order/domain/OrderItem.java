@@ -24,15 +24,15 @@ public class OrderItem extends BaseIdAndTime {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_coupon_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private UserCoupon userCoupon;
+
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
     @Column(name = "product_item_id")
     private Long productItemId;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_coupon_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private UserCoupon userCoupon;
 
     @Column(nullable = false)
     private int quantity;

@@ -29,7 +29,7 @@ public class CancelOrderUseCase {
 
     @Transactional
     public void cancelOrder(Long orderId, Long userId, String cancelReason) {
-        Order order = orderRepository.findWithItemsById(orderId)
+        Order order = orderRepository.findWithItemsAndCouponsById(orderId)
             .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
 
         if (!order.getBuyer().getId().equals(userId)) {
@@ -45,8 +45,6 @@ public class CancelOrderUseCase {
         }
 
         order.cancel(cancelReason);
-
-        orderRepository.save(order);
 
         List<Long> userCouponIds = order.getOrderItems().stream()
                 .map(OrderItem::getUserCouponId)
