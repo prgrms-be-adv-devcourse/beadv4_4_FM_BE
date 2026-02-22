@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.payout.app.common;
 
+import com.mossy.boundedContext.payout.app.PayoutSupport;
 import com.mossy.boundedContext.payout.domain.*;
 import com.mossy.boundedContext.payout.domain.payout.Payout;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
@@ -10,6 +11,7 @@ import com.mossy.boundedContext.payout.out.repository.PayoutRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.global.rsData.RsData;
+import com.mossy.shared.payout.enums.PayoutEventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class PayoutCollectPayoutItemsMoreUseCase {
     private final PayoutRepository payoutRepository;
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
+    private final PayoutSupport payoutSupport;
 
     public RsData<Integer> collectPayoutItemsMore(int limit) {
         // 1. 정산할 준비가 된 '정산 후보' 목록을 조회합니다.
@@ -56,6 +59,23 @@ public class PayoutCollectPayoutItemsMoreUseCase {
 
                         // 5. 후보 항목에 실제 정산 항목을 연결하여, 이 후보가 처리되었음을 표시합니다.
                         item.setPayoutItem(payoutItem);
+
+                        // 6. 플랫폼 부담 할인 아이템인 경우 SYSTEM Payout에서 동일 금액 차감
+                        if (item.getEventType() == PayoutEventType.정산__프로모션_플랫폼부담) {
+                            PayoutSeller system = payoutSupport.findSystemSeller()
+                                    .orElseThrow(() -> new DomainException(ErrorCode.SYSTEM_SELLER_NOT_FOUND));
+                            Payout systemPayout = findActiveByPayee(system)
+                                    .orElseThrow(() -> new DomainException(ErrorCode.PAYOUT_NOT_FOUND));
+                            systemPayout.addItem(
+                                    PayoutEventType.정산__프로모션_플랫폼부담,
+                                    item.getRelTypeCode(),
+                                    item.getRelId(),
+                                    item.getPaymentDate(),
+                                    null,
+                                    system,
+                                    item.getAmount().negate()
+                            );
+                        }
                     });
                 });
 

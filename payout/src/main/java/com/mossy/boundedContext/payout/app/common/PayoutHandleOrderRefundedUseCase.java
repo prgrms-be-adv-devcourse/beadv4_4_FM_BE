@@ -14,7 +14,8 @@ public class PayoutHandleOrderRefundedUseCase {
         event.refundItems().forEach(refundItem ->
                 payoutRefundUseCase.processRefund(
                         refundItem.orderItemId(),
-                        refundItem.refundAmount()
+                        refundItem.refundAmount(),
+                        refundItem.buyerPaidAmount()
                 )
         );
     }

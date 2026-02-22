@@ -14,11 +14,10 @@ public record PayoutCandidateCreateDto(
         // OrderItem 기본 정보
         Long orderItemId,
         Long buyerId,
-        String buyerName,
         Long sellerId,
         BigDecimal orderPrice,
-        LocalDateTime orderItemCreatedAt,
-        LocalDateTime orderItemUpdatedAt,
+        BigDecimal originalPrice,
+        BigDecimal platformDiscountAmount,
         // Payout 도메인에서 계산/설정한 정보
         String weightGrade,           // 무게 등급 (payout에서 설정)
         BigDecimal deliveryDistance,  // 배송 거리 (payout에서 계산)

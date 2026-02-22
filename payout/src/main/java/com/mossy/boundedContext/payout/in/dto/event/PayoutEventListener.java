@@ -1,8 +1,6 @@
 package com.mossy.boundedContext.payout.in.dto.event;
 
 import com.mossy.boundedContext.payout.app.PayoutFacade;
-import com.mossy.shared.market.event.OrderPaidEvent;
-import com.mossy.shared.market.event.OrderRefundedEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.SellerUpdatedEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;
