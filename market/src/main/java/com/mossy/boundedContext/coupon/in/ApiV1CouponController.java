@@ -86,12 +86,11 @@ public class ApiV1CouponController {
 
     @Operation(summary = "쿠폰 다운로드", description = "사용자가 쿠폰을 다운로드합니다.")
     @PostMapping("/{couponId}/download")
-    public RsData<Void> downloadCoupon(
+    public RsData<Long> downloadCoupon(
             @PathVariable Long couponId,
             @RequestParam(name = "userId") Long userId
     ) {
-        couponFacade.downloadCoupon(couponId, userId);
-        return RsData.success(SuccessCode.COUPON_DOWNLOAD);
+        return RsData.success(SuccessCode.COUPON_DOWNLOAD, couponFacade.downloadCoupon(couponId, userId));
     }
 
     @Operation(summary = "내 쿠폰 목록 조회", description = "사용자가 보유한 쿠폰 목록을 조회합니다.")

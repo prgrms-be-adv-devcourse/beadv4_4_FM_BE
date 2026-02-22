@@ -35,6 +35,8 @@ public enum ErrorCode implements BaseCode {
     // ========================================
     COUPON_ALREADY_USED(409, "이미 사용된 쿠폰입니다."),
     COUPON_ALREADY_DOWNLOADED(409, "이미 다운로드한 쿠폰입니다."),
+    COUPON_DOWNLOAD_LOCKED(409, "쿠폰 다운로드가 진행 중입니다. 잠시 후 다시 시도해주세요."),
+    COUPON_DOWNLOAD_FAILED(500, "쿠폰 다운로드 중 오류가 발생했습니다."),
     COUPON_EXPIRED(409, "만료된 쿠폰입니다."),
     ORDER_AMOUNT_MISMATCH(409, "주문 금액이 일치하지 않습니다."),
     INVALID_ORDER_STATE(409, "유효하지 않은 주문 상태입니다."),

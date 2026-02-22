@@ -3,7 +3,6 @@ package com.mossy.kafka;
 public class KafkaTopics {
     public static final String PAYMENT_REFUND = "payment.refund";
     public static final String ORDER_CANCEL = "order.cancel";
-    public static final String COUPON_USE_REQUESTED = "coupon.use.requested";
     public static final String PAYMENT_COMPLETED = "payment.completed";
     public static final String USER_JOINED = "user.joined";
     public static final String USER_UPDATED = "user.updated";

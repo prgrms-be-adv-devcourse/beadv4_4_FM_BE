@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "coupon-product", url = "http://localhost:8090")
 public interface CouponFeignClient {
 
-    @GetMapping("/api/v1/coupons/products/validate-owner")
+    @GetMapping("/internal/v1/coupons/products/validate-owner")
     void validateProductOwner(
             @RequestParam("productItemId") Long productItemId,
             @RequestParam("sellerId") Long sellerId

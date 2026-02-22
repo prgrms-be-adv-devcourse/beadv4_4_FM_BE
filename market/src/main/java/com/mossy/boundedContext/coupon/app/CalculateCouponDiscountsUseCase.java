@@ -29,7 +29,7 @@ public class CalculateCouponDiscountsUseCase {
 
         List<Long> userCouponIds = List.copyOf(userCouponPriceMap.keySet());
 
-        Map<Long, UserCoupon> userCouponMap = userCouponRepository.findAllWithCouponByIdIn(userCouponIds).stream()
+        Map<Long, UserCoupon> userCouponMap = userCouponRepository.findByIdIn(userCouponIds).stream()
                 .collect(Collectors.toMap(UserCoupon::getId, userCoupon -> userCoupon));
 
         return userCouponIds.stream()

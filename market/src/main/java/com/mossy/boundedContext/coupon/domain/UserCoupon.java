@@ -49,6 +49,10 @@ public class UserCoupon extends BaseIdAndTime {
     }
 
     public void restore() {
+        if (this.status == UserCouponStatus.EXPIRED) {
+            return;
+        }
+
         this.status = UserCouponStatus.UNUSED;
         this.usedAt = null;
     }

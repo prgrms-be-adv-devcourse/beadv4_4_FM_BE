@@ -39,8 +39,8 @@ public class OrderFacade {
         RLock lock = redissonClient.getLock(lockKey);
 
         try {
-            // 1초 대기, 10초 후 자동 해제
-            boolean isLocked = lock.tryLock(1, 10, TimeUnit.SECONDS);
+            // 2초 대기, 5초 후 자동 해제
+            boolean isLocked = lock.tryLock(2, 5, TimeUnit.SECONDS);
 
             if (!isLocked) {
                 throw new DomainException(ErrorCode.DUPLICATE_ORDER_REQUEST);
@@ -68,7 +68,7 @@ public class OrderFacade {
     }
 
     public void completePayment(PaymentCompletedEvent event) {
-        completePaymentUseCase.completePayment(event.orderId());
+        completePaymentUseCase.completePayment(event.orderId(), event.paymentDate());
     }
 
     public Page<OrderListResponse> getOrderListByUserId(Long userId, Pageable pageable) {

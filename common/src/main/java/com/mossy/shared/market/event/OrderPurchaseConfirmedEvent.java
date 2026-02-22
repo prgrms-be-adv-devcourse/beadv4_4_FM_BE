@@ -3,11 +3,13 @@ package com.mossy.shared.market.event;
 import com.mossy.shared.market.enums.CouponType;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record OrderPurchaseConfirmedEvent(
         Long orderId,
         Long buyerId,
+        LocalDateTime paidAt,
         List<OrderItemPayload> orderItems
 ) {
     public record OrderItemPayload(

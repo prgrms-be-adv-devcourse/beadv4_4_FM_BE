@@ -6,17 +6,23 @@ import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class CouponFacade {
 
+    private final RedissonClient redissonClient;
     private final CreateSellerCouponUseCase createSellerCouponUseCase;
     private final CreateAdminCouponUseCase createAdminCouponUseCase;
     private final UpdateSellerCouponUseCase updateSellerCouponUseCase;
@@ -50,8 +56,27 @@ public class CouponFacade {
         return getDownloadableCouponsUseCase.get(productItemId, userId);
     }
 
-    public void downloadCoupon(Long couponId, Long userId) {
-        downloadCouponUseCase.download(couponId, userId);
+    public Long downloadCoupon(Long couponId, Long userId) {
+        String lockKey = "coupon:download:" + userId + ":" + couponId;
+        RLock lock = redissonClient.getLock(lockKey);
+
+        try {
+            boolean isLocked = lock.tryLock(2, 5, TimeUnit.SECONDS);
+
+            if (!isLocked) {
+                throw new DomainException(ErrorCode.COUPON_DOWNLOAD_LOCKED);
+            }
+
+            return downloadCouponUseCase.download(couponId, userId);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new DomainException(ErrorCode.COUPON_DOWNLOAD_FAILED);
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 
     public List<UserCouponResponse> getMyUserCoupons(Long userId) {

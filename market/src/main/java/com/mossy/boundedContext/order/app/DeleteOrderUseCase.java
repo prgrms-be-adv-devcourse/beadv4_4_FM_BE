@@ -17,7 +17,7 @@ public class DeleteOrderUseCase {
 
     @Transactional
     public void deleteOrder(Long orderId, Long userId) {
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findWithItemsById(orderId)
                 .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
 
         if (!order.getBuyer().getId().equals(userId)) {

@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.coupon.domain;
+package com.mossy.shared.market.enums;
 
 public enum IssuerType {
     SELLER,

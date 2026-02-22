@@ -39,7 +39,7 @@ public class CreateOrderUseCase {
                 .map(item -> new StockCheckRequest(item.productItemId(), item.quantity()))
                 .toList();
 
-        orderFeignClient.validateStock(stockCheckRequests);
+        orderFeignClient.decreaseStock(stockCheckRequests);
 
         String orderNo = marketPolicy.generateOrderNo();
 

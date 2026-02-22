@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.coupon.app;
 
 import com.mossy.boundedContext.coupon.domain.Coupon;
-import com.mossy.boundedContext.coupon.domain.IssuerType;
+import com.mossy.shared.market.enums.IssuerType;
 import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
 import com.mossy.boundedContext.coupon.out.CouponRepository;
 import lombok.RequiredArgsConstructor;

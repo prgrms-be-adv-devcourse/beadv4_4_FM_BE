@@ -10,6 +10,6 @@ import java.util.List;
 @FeignClient(name = "wishlist-product", url = "http://localhost:8090")
 public interface WishlistFeignClient {
 
-    @GetMapping("/api/v1/wishlists/products")
+    @GetMapping("/internal/v1/wishlists/products")
     List<WishlistProductResponse> findByIds(@RequestParam("productItemIds") List<Long> productItemIds);
 }

@@ -69,7 +69,7 @@ public class ConfirmPurchasedOrdersBatchJobConfig {
                 .repository(orderRepository)
                 .methodName("findPaidOrdersUpdatedBefore")
                 .arguments(List.of(threshold))
-                .sorts(Map.of("id", Sort.Direction.ASC))
+                .sorts(Map.of("updatedAt", Sort.Direction.ASC))
                 .pageSize(chunkSize)
                 .build();
     }
@@ -111,6 +111,7 @@ public class ConfirmPurchasedOrdersBatchJobConfig {
                     new OrderPurchaseConfirmedEvent(
                             order.getId(),
                             order.getBuyer().getId(),
+                            order.getPaidAt(),
                             eventOrderItems
                     )
                 );

@@ -4,6 +4,7 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.market.enums.CouponType;
+import com.mossy.shared.market.enums.IssuerType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.type.YesNoConverter;

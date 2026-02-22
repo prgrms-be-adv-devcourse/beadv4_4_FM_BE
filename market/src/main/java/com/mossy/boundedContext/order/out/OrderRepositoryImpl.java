@@ -128,7 +128,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .join(order.buyer, marketUser).fetchJoin()
                 .leftJoin(order.orderItems, orderItem).fetchJoin()
                 .where(condition)
-                .orderBy(order.id.asc())
+                .orderBy(order.updatedAt.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

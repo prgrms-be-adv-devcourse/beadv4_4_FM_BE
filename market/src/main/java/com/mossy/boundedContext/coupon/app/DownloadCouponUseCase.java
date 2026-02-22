@@ -10,6 +10,7 @@ import com.mossy.boundedContext.marketUser.out.MarketUserRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,15 +23,15 @@ public class DownloadCouponUseCase {
     private final MarketUserRepository marketUserRepository;
 
     @Transactional
-    public void download(Long couponId, Long userId) {
+    public Long download(Long couponId, Long userId) {
+        if (userCouponRepository.existsByCouponIdAndMarketUserId(couponId, userId)) {
+            throw new DomainException(ErrorCode.COUPON_ALREADY_DOWNLOADED);
+        }
+
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new DomainException(ErrorCode.COUPON_NOT_FOUND));
 
         MarketUser marketUser = marketUserRepository.getReferenceById(userId);
-
-        if (userCouponRepository.existsByCouponIdAndMarketUserId(couponId, userId)) {
-            throw new DomainException(ErrorCode.COUPON_ALREADY_DOWNLOADED);
-        }
 
         UserCoupon userCoupon = UserCoupon.builder()
                 .marketUser(marketUser)
@@ -39,6 +40,11 @@ public class DownloadCouponUseCase {
                 .expireAt(coupon.getEndAt())
                 .build();
 
-        userCouponRepository.save(userCoupon);
+        try {
+            UserCoupon savedUserCoupon = userCouponRepository.save(userCoupon);
+            return savedUserCoupon.getId();
+        } catch (DataIntegrityViolationException e) {
+            throw new DomainException(ErrorCode.COUPON_ALREADY_DOWNLOADED);
+        }
     }
 }

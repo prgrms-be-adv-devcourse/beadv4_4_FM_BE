@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,9 @@ public class Order extends BaseIdAndTime {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderState state;
+
+    @Column(name = "paid_at")
+    private LocalDateTime paidAt;
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
@@ -96,8 +100,9 @@ public class Order extends BaseIdAndTime {
         this.orderItems.add(orderItem);
     }
 
-    public void completePayment() {
+    public void completePayment(LocalDateTime paidAt) {
         this.state = OrderState.PAID;
+        this.paidAt = paidAt;
         this.orderItems.forEach(item -> item.updateState(OrderState.PAID));
     }
 
