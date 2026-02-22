@@ -41,23 +41,29 @@ public class CreateOrderUseCase {
 
         orderFeignClient.decreaseStock(stockCheckRequests);
 
-        String orderNo = marketPolicy.generateOrderNo();
+        try {
+            String orderNo = marketPolicy.generateOrderNo();
 
-        Order savedOrder = orderRepository.save(
-                Order.create(
-                        buyer,
-                        request.buyerAddress(),
-                        orderNo,
-                        request.items(),
-                        request.totalPrice(),
-                        userCouponMap
-                )
-        );
+            Order savedOrder = orderRepository.save(
+                    Order.create(
+                            buyer,
+                            request.buyerAddress(),
+                            orderNo,
+                            request.items(),
+                            request.totalPrice(),
+                            userCouponMap
+                    )
+            );
 
-        return OrderCreatedResponse.builder()
-                .orderId(savedOrder.getId())
-                .orderNo(savedOrder.getOrderNo())
-                .totalPrice(savedOrder.getTotalPrice())
-                .build();
+            return OrderCreatedResponse.builder()
+                    .orderId(savedOrder.getId())
+                    .orderNo(savedOrder.getOrderNo())
+                    .totalPrice(savedOrder.getTotalPrice())
+                    .build();
+
+        } catch (Exception e) {
+            orderFeignClient.increaseStock(stockCheckRequests);
+            throw e;
+        }
     }
 }
