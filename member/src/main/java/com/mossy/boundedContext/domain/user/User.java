@@ -97,6 +97,10 @@ public class User extends SourceUser {
         this.phoneNum = encryptedPhoneNum;
     }
 
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     // 소셜 로그인 전용 계정 여부 (비밀번호가 비어있으면 소셜 전용)
     public boolean isSocialOnly() {
         return this.password == null || this.password.isBlank();

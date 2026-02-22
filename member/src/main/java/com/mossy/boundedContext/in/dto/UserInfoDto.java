@@ -9,6 +9,9 @@ public record UserInfoDto(
         String nickname,
         String email,
         String username,
+        String rrn,
+        String phoneNum,
+        String address,
         SellerRequestStatus status,
         List<String> providers,
         boolean hasPassword

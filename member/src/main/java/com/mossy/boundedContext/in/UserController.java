@@ -3,6 +3,7 @@ package com.mossy.boundedContext.in;
 import com.mossy.boundedContext.app.user.UserFacade;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
 import com.mossy.boundedContext.in.dto.request.ChangeAddressRequest;
+import com.mossy.boundedContext.in.dto.request.ChangeNicknameRequest;
 import com.mossy.boundedContext.in.dto.request.ChangePasswordRequest;
 import com.mossy.boundedContext.in.dto.request.ChangePhoneNumRequest;
 import com.mossy.boundedContext.in.dto.request.ProfileUpdateRequest;
@@ -98,6 +99,16 @@ public class UserController {
     ) {
         userFacade.setPassword(userId, request);
         return RsData.success(SuccessCode.SET_PASSWORD_COMPLETE, null);
+    }
+
+    @Operation(summary = "닉네임 변경", description = "닉네임을 변경합니다.")
+    @PatchMapping("/nickname")
+    public RsData<Void> changeNickname(
+            @RequestHeader("X-User-Id") Long userId,
+            @Valid @RequestBody ChangeNicknameRequest request
+    ) {
+        userFacade.changeNickname(userId, request);
+        return RsData.success(SuccessCode.CHANGE_NICKNAME_COMPLETE, null);
     }
 }
 

@@ -4,6 +4,7 @@ import com.mossy.boundedContext.app.VerfyMemberUseCase;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
 import com.mossy.boundedContext.in.dto.request.ChangeAddressRequest;
+import com.mossy.boundedContext.in.dto.request.ChangeNicknameRequest;
 import com.mossy.boundedContext.in.dto.request.ChangePasswordRequest;
 import com.mossy.boundedContext.in.dto.request.ChangePhoneNumRequest;
 import com.mossy.boundedContext.in.dto.request.ProfileUpdateRequest;
@@ -33,6 +34,7 @@ public class UserFacade {
     private final ChangePasswordUseCase changePasswordUseCase;
     private final ChangeAddressUseCase changeAddressUseCase;
     private final ChangePhoneNumUseCase changePhoneNumUseCase;
+    private final ChangeNicknameUseCase changeNicknameUseCase;
     private final SetPasswordUseCase setPasswordUseCase;
     private final VerfyMemberUseCase verfyMemberUseCase;
     private final UserMapper mapper;
@@ -89,6 +91,11 @@ public class UserFacade {
     // 전화번호 변경 (현재 비밀번호 확인 후 변경)
     public void changePhoneNum(Long userId, ChangePhoneNumRequest request) {
         changePhoneNumUseCase.execute(userId, request);
+    }
+
+    // 닉네임 변경
+    public void changeNickname(Long userId, ChangeNicknameRequest request) {
+        changeNicknameUseCase.execute(userId, request);
     }
 
     // 소셜 로그인 전용 계정 → 최초 비밀번호 설정
