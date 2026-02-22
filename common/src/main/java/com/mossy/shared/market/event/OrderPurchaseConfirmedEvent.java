@@ -1,6 +1,7 @@
 package com.mossy.shared.market.event;
 
 import com.mossy.shared.market.enums.CouponType;
+import com.mossy.shared.market.enums.IssuerType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,10 +19,10 @@ public record OrderPurchaseConfirmedEvent(
             Long productItemId,
             Long userCouponId,
             CouponType couponType,
+            IssuerType issuerType,
             BigDecimal weight,
             BigDecimal finalPrice,
             BigDecimal originalPrice,
-            BigDecimal discountAmount,
-            BigDecimal platformDiscountAmount
+            BigDecimal discountAmount
     ) {}
 }
