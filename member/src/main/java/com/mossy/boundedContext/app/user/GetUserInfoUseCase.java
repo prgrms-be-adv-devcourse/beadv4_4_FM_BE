@@ -4,7 +4,6 @@ import com.mossy.boundedContext.domain.seller.Seller;
 import com.mossy.boundedContext.domain.seller.SellerRequest;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.in.dto.UserInfoDto;
-import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.repository.seller.SellerRepository;
 import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
@@ -13,6 +12,7 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import com.mossy.shared.member.domain.role.RoleCode;
+import com.mossy.boundedContext.app.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +27,7 @@ public class GetUserInfoUseCase {
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
     private final UserMapper mapper;
+    private final UserInfoDecryptor userInfoDecryptor;
 
     @Transactional(readOnly = true)
     public UserInfoDto infoExecute(Long userId) {
@@ -39,7 +40,8 @@ public class GetUserInfoUseCase {
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
         // 트랜잭션 내에서 mapper 호출 (lazy loading 방지)
-        return mapper.toUserInfoDto(user, status);
+        // 민감정보 복호화
+        return userInfoDecryptor.decryptUserInfo(user, status);
     }
 
     @Transactional(readOnly = true)
