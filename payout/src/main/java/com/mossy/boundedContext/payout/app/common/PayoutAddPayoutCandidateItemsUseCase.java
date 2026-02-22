@@ -16,6 +16,8 @@ import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 
 import com.mossy.shared.payout.enums.PayoutEventType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,7 @@ import java.math.BigDecimal;
  * PayoutFacade의 '1단계: 정산 후보 아이템 생성' 흐름에서 호출
  * 결제가 완료되었을 때, 해당 주문 아이템 정보를 바탕으로 미래에 정산될 항목들을 미리 생성
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PayoutAddPayoutCandidateItemsUseCase {
@@ -38,6 +41,8 @@ public class PayoutAddPayoutCandidateItemsUseCase {
 
     /**
      * 단일 주문 아이템(OrderItem)에 대해 정산 후보 항목을 생성
+     * Kafka at-least-once 특성으로 인한 중복 이벤트를 멱등성 체크로 방어
+     *
      * @param dto 정산 후보 생성을 위한 DTO (OrderItem 정보 + 계산된 거리/무게등급 포함)
      */
     @Transactional
@@ -48,7 +53,22 @@ public class PayoutAddPayoutCandidateItemsUseCase {
         if (dto.paymentDate() == null) {
             throw new DomainException(ErrorCode.PAYMENT_DATE_IS_NULL);
         }
-        makePayoutCandidateItems(dto);
+
+        // [레이어 2] 멱등성 체크: 이미 처리된 이벤트인지 확인
+        // 정산__상품판매_대금은 모든 OrderItem 처리 시 반드시 생성되므로 대표 체크값으로 사용
+        if (payoutCandidateItemRepository.existsByRelTypeCodeAndRelIdAndEventType(
+                "OrderItem", dto.orderItemId(), PayoutEventType.정산__상품판매_대금)) {
+            log.warn("[멱등성] 이미 처리된 이벤트 skip. orderItemId={}", dto.orderItemId());
+            return;
+        }
+
+        try {
+            makePayoutCandidateItems(dto);
+        } catch (DataIntegrityViolationException e) {
+            // [레이어 1] Unique Constraint 위반: 멱등성 체크 직후 동시 요청이 먼저 저장한 경우
+            // 중복이므로 정상 종료 처리 (Kafka offset commit 됨 → 재소비 루프 방지)
+            log.warn("[멱등성] Unique Constraint 위반으로 skip. orderItemId={}", dto.orderItemId());
+        }
     }
 
     /**

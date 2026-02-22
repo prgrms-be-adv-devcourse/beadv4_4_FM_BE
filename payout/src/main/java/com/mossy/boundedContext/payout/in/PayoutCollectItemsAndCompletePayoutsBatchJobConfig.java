@@ -13,6 +13,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Slf4j
@@ -111,6 +112,12 @@ public class PayoutCollectItemsAndCompletePayoutsBatchJobConfig {
                         }
 
                         // 한 번만 실행하고 종료 (스케줄러가 주기적으로 다시 호출)
+                        return RepeatStatus.FINISHED;
+
+                    } catch (ObjectOptimisticLockingFailureException e) {
+                        // 낙관적 락 충돌: 다른 배치 인스턴스가 동일 Payout을 이미 완료 처리함
+                        // 중복 처리가 아니므로 정상 종료 처리 (Step 실패로 이어지지 않도록)
+                        log.warn("[정산 완료 처리] 낙관적 락 충돌 감지 - 다른 배치가 이미 처리했습니다. 정상 종료합니다.");
                         return RepeatStatus.FINISHED;
 
                     } catch (Exception e) {

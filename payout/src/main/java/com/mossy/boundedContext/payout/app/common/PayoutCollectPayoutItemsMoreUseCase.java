@@ -89,13 +89,15 @@ public class PayoutCollectPayoutItemsMoreUseCase {
 
     /**
      * 아직 정산되지 않은(payoutDate가 null인) 특정 판매자(payee)의 Payout 객체를 찾습니다.
+     * PESSIMISTIC_WRITE 락으로 조회하여 배치 중복 실행 시 동시 addItem() 호출을 방지합니다.
      */
     private Optional<Payout> findActiveByPayee(PayoutSeller payee) {
-        return payoutRepository.findByPayeeAndPayoutDateIsNull(payee);
+        return payoutRepository.findByPayeeAndPayoutDateIsNullWithLock(payee);
     }
 
     /**
      * 정산할 준비가 된 후보들을 조회합니다.
+     * PESSIMISTIC_WRITE 락으로 조회하여 배치 중복 실행 시 동일 후보를 두 배치가 동시에 처리하는 것을 방지합니다.
      *
      * @param limit 한 번에 조회할 최대 개수
      * @return 정산 후보 리스트
@@ -111,7 +113,7 @@ public class PayoutCollectPayoutItemsMoreUseCase {
 
         // 아직 PayoutItem으로 변환되지 않았고(payoutItem == null),
         // 결제일이 안전 대기 기간보다 오래된 후보들을 조회합니다.
-        return payoutCandidateItemRepository.findByPayoutItemIsNullAndPaymentDateBeforeOrderByPayeeAscIdAsc(
+        return payoutCandidateItemRepository.findPayoutReadyWithLock(
                 daysAgo,
                 PageRequest.of(0, limit)
         );

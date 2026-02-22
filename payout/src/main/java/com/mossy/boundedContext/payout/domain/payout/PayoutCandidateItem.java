@@ -22,7 +22,13 @@ import static jakarta.persistence.FetchType.LAZY;
  */
 @Entity
 @Getter
-@Table(name = "PAYOUT_CANDIDATE") // 정산 후보 아이템을 저장하는 테이블
+@Table(
+        name = "PAYOUT_CANDIDATE",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_payout_candidate_identity",
+                columnNames = {"rel_type_code", "rel_id", "event_type"}
+        )
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PayoutCandidateItem extends BaseIdAndTime {
 

@@ -28,6 +28,10 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 public class Payout extends BaseIdAndTime {
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "payee_id")
     private PayoutSeller payee;
