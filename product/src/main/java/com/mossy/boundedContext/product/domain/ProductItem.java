@@ -1,7 +1,10 @@
 package com.mossy.boundedContext.product.domain;
 
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.product.enums.ProductItemStatus;
+import com.mossy.shared.product.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
@@ -24,7 +27,7 @@ public class ProductItem extends BaseIdAndTime {
     @Column(name = "product_id", nullable = false, insertable = false, updatable = false)
     private Long productId;
 
-    @Column(name = "sku_code", unique = true, length = 100)
+    @Column(name = "sku_code", length = 100)
     private String skuCode;
 
     @Column(name = "option_combination", length = 255)
@@ -64,25 +67,16 @@ public class ProductItem extends BaseIdAndTime {
         optionValues.add(optionValue);
     }
 
-    // 상품 아이템 정지
+    // 아이템 판매 중지
     public void markAsStopped() {
+        if (this.status != ProductItemStatus.DELETED && this.status != ProductItemStatus.SUSPENDED)
         this.status = ProductItemStatus.STOPPED;
     }
 
-    // 재고 감소
-    public void removeQuantity(int quantity) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("차감 수량은 0보다 커야 합니다.");
-        }
-        if (this.quantity < quantity) {
-            throw new IllegalArgumentException("재고가 부족합니다. (현재 재고: " + this.quantity + ")");
-        }
-        this.quantity -= quantity;
-    }
-
-    // 재고 추가
-    public void addQuantity(int quantity) {
-        this.quantity += quantity;
+    // 아이템 판매 정지
+    public void markAsSuspended() {
+        if (this.status != ProductItemStatus.DELETED)
+        this.status = ProductItemStatus.SUSPENDED;
     }
 
     // 상품 아이템 상태 번경
@@ -94,5 +88,37 @@ public class ProductItem extends BaseIdAndTime {
     public void delete() {
         this.status = ProductItemStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
+    }
+
+    // 재고 차감
+    protected void decreaseStock(int amount) {
+        // 차감 요청 수량 자체가 유효하지 않은 경우
+        if (amount <= 0) {
+            throw new DomainException(ErrorCode.INVALID_QUANTITY_REQUEST);
+        }
+
+        if (this.quantity < amount) {
+            throw new DomainException(ErrorCode.INSUFFICIENT_STOCK);
+        }
+
+        this.quantity -= amount;
+
+        if (this.quantity == 0) {
+            this.status = ProductItemStatus.OUT_OF_STOCK;
+        }
+    }
+
+    // 재고 복구
+    protected void increaseStock(int amount) {
+        // 수량이 0 이하로 들어온 경우 예외 발생
+        if (amount <= 0) {
+            throw new DomainException(ErrorCode.INVALID_QUANTITY_REQUEST);
+        }
+
+        this.quantity += amount;
+
+        if (this.status == ProductItemStatus.OUT_OF_STOCK && this.quantity > 0) {
+            this.status = ProductItemStatus.ON_SALE;
+        }
     }
 }

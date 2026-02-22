@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class DeleteProductItemUseCase {
 
     private final ProductRepository productRepository;
 
+    @Transactional
     public Product execute(Long sellerId, Long productId, Long itemId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new DomainException(ErrorCode.PRODUCT_NOT_FOUND));

@@ -26,5 +26,5 @@ public record ProductUpdateRequest(
             Long id,
             Long masterId,
             String value
-    ) {}
+    ) implements OptionValueRequest {}
 }

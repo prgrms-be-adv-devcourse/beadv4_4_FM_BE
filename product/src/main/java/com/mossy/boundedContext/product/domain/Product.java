@@ -11,10 +11,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -26,6 +23,24 @@ import java.util.stream.Collectors;
 @SQLRestriction("status != 'DELETED'")
 @AttributeOverride(name = "id", column = @Column(name = "product_id"))
 public class Product extends BaseIdAndTime {
+
+    /* --- 비즈니스 정책 상수 --- */
+    // 판매자가 변경 가능한 상품 상태
+    private static final Set<ProductStatus> SELLER_ALLOWED_PRODUCT_STATUSES = EnumSet.of(
+            ProductStatus.FOR_SALE,
+            ProductStatus.PRE_ORDER,
+            ProductStatus.OUT_OF_STOCK,
+            ProductStatus.DISCONTINUED,
+            ProductStatus.HIDDEN
+    );
+
+    // 판매자가 변경 가능한 아이템 상태
+    private static final Set<ProductItemStatus> SELLER_ALLOWED_ITEM_STATUSES = EnumSet.of(
+            ProductItemStatus.PRE_ORDER,
+            ProductItemStatus.ON_SALE,
+            ProductItemStatus.OUT_OF_STOCK,
+            ProductItemStatus.STOPPED
+    );
 
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
@@ -59,10 +74,17 @@ public class Product extends BaseIdAndTime {
     private List<ProductOptionGroup> optionGroups = new ArrayList<>();
 
 
-    // 비즈니스 로직
+    /* --- 비즈니스 로직 --- */
+
+    // 상품 삭제
     public void delete() {
         this.status = ProductStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
+
+        // 2. 하위 아이템들도 일괄 삭제 처리 (상태 전파)
+        if (this.productItems != null) {
+            this.productItems.forEach(ProductItem::delete);
+        }
     }
 
     public void addProductItem(ProductItem item) {
@@ -79,11 +101,11 @@ public class Product extends BaseIdAndTime {
         this.optionGroups.add(optionGroup);
     }
 
-    public void discontinueItem(Long itemId) {
-        this.productItems.stream()
-                .filter(item -> item.getId().equals(itemId) && item.getStatus() == ProductItemStatus.ON_SALE)
+    public ProductItem findItem(Long itemId) {
+        return this.productItems.stream()
+                .filter(item -> item.getId().equals(itemId))
                 .findFirst()
-                .ifPresent(ProductItem::markAsStopped);
+                .orElseThrow(() -> new DomainException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     // 기본 정보 수정
@@ -109,22 +131,21 @@ public class Product extends BaseIdAndTime {
 
     // 상품 아이템 상태 수정
     public void changeItemStatus(Long itemId, ProductItemStatus newStatus) {
-        Set<ProductItemStatus> sellerAllowedStatus = Set.of(
-                ProductItemStatus.PRE_ORDER,
-                ProductItemStatus.ON_SALE,
-                ProductItemStatus.OUT_OF_STOCK,
-                ProductItemStatus.STOPPED
-        );
 
-        if (!sellerAllowedStatus.contains(newStatus)) {
-            throw new DomainException(ErrorCode.PRODUCT_ITEM_INVALID_STATUS);
-        }
+        validateItemStatusAssignableBySeller(newStatus);
 
         this.productItems.stream()
                 .filter(item -> item.getId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new DomainException(ErrorCode.PRODUCT_ITEM_NOT_FOUND))
                 .updateStatus(newStatus);
+    }
+
+    // 아이템 상태 검증
+    private void validateItemStatusAssignableBySeller(ProductItemStatus newStatus) {
+        if (!SELLER_ALLOWED_ITEM_STATUSES.contains(newStatus)) {
+            throw new DomainException(ErrorCode.PRODUCT_ITEM_INVALID_STATUS);
+        }
     }
 
     // 상품 아이템 삭제
@@ -134,5 +155,67 @@ public class Product extends BaseIdAndTime {
                 .findFirst()
                 .orElseThrow(() -> new DomainException(ErrorCode.PRODUCT_ITEM_NOT_FOUND))
                 .delete();
+    }
+
+    // 판매자 상품 상태 변경
+    public void updateStatusBySeller(ProductStatus newStatus) {
+        validateSellerAssignableStatus(newStatus);
+        // 관리자 조치 상태 확인
+        if (this.status == ProductStatus.SUSPENDED || this.status == ProductStatus.REJECTED) {
+            throw new DomainException(ErrorCode.CANNOT_CHANGE_SUSPENDED_PRODUCT);
+        }
+
+        this.status = newStatus;
+
+        // 판매 중단 시킬 때
+        if (newStatus == ProductStatus.DISCONTINUED) {
+            syncItemsToStoppedStatus();
+        }
+    }
+
+    // 상품 상태 검증
+    private void validateSellerAssignableStatus(ProductStatus status) {
+        if (!SELLER_ALLOWED_PRODUCT_STATUSES.contains(status)) {
+            throw new DomainException(ErrorCode.INVALID_STATUS_CHANGE_REQUEST);
+        }
+    }
+
+    private void syncItemsToStoppedStatus() {
+        if (this.productItems == null || this.productItems.isEmpty()) {
+            return;
+        }
+
+        this.productItems.forEach(ProductItem::markAsStopped);
+    }
+
+    // 아이템 재고 감소
+    public void decreaseItemStock(Long productItemId, int quantity) {
+        ProductItem targetItem = this.productItems.stream()
+                .filter(item -> item.getId().equals(productItemId))
+                .findFirst()
+                .orElseThrow(() -> new DomainException(ErrorCode.PRODUCT_ITEM_NOT_FOUND));
+
+        targetItem.decreaseStock(quantity);
+    }
+
+    // 아이템 재고 복구
+    public void increaseItemStock(Long productItemId, int quantity) {
+        ProductItem targetItem = this.productItems.stream()
+                .filter(item -> item.getId().equals(productItemId))
+                .findFirst()
+                .orElseThrow(() -> new DomainException(ErrorCode.PRODUCT_ITEM_NOT_FOUND));
+
+        targetItem.increaseStock(quantity);
+
+        if (this.status == ProductStatus.OUT_OF_STOCK) {
+            this.status = ProductStatus.FOR_SALE;
+        }
+    }
+
+    public boolean hasItem(Long productItemId) {
+        if (productItemId == null) return false;
+
+        return this.productItems.stream()
+                .anyMatch(item -> item.getId().equals(productItemId));
     }
 }

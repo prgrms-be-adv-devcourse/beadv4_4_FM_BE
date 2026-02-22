@@ -3,6 +3,7 @@ package com.mossy.boundedContext.catalog.in;
 import com.mossy.boundedContext.catalog.query.CatalogDocument;
 import com.mossy.boundedContext.catalog.app.CatalogSearchFacade;
 import com.mossy.boundedContext.catalog.in.dto.command.ProductSearchCondition;
+import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Product Search", description = "Elasticsearch 기반 상품 검색 API")
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 @Slf4j
 public class ApiV1ProductSearchController {
@@ -34,6 +35,6 @@ public class ApiV1ProductSearchController {
             @ParameterObject Pageable pageable) {
 
         Page<CatalogDocument> responses = catalogSearchFacade.search(condition, pageable);
-        return new RsData<>("200", "", responses);
+        return RsData.success(SuccessCode.GET_CATALOG_SUCCESS, responses);
     }
 }

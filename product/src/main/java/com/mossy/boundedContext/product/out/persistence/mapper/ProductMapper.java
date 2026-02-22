@@ -19,11 +19,10 @@ import java.util.Set;
 public interface ProductMapper {
 
     // CatalogDto 매핑
-    @Mapping(target = "categoryName", source = "categoryName")
+    @Mapping(target = "categoryId", source = "catalog.category.id")
+    @Mapping(target = "categoryName", source = "catalog.category.name")
     ProductDetailResponse.CatalogDto toCatalogDto(
             CatalogProduct catalog,
-            Long categoryId,
-            String categoryName,
             List<CatalogImage> images);
 
     // ProductDto 매핑

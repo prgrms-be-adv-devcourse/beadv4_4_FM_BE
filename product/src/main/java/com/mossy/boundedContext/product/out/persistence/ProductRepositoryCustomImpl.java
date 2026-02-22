@@ -54,18 +54,17 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         //해당 product의 productItems 전체 fetchJoin
         Product mainProductEntity = queryFactory
                 .selectFrom(product)
-                .leftJoin(product.productItems, productItem)
-                .fetchJoin()
+                .leftJoin(product.productItems, productItem).fetchJoin()
                 .where(product.id.eq(mainProductId))
                 .fetchOne();
 
         // 카탈로그 정보 조회
-        Tuple catalogInfo = queryFactory
-                .select(catalogProduct, category.id, category.name)
-                .from(catalogProduct)
-                .join(catalogProduct.category, category)
+        CatalogProduct catalogEntity = queryFactory
+                .selectFrom(catalogProduct)
+                .join(catalogProduct.category, category).fetchJoin()
                 .where(catalogProduct.id.eq(catalogProductId))
                 .fetchOne();
+
         // 카탈로그 상품 이미지 리스트
         List<CatalogImage> images = queryFactory
                 .selectFrom(catalogImage)
@@ -73,34 +72,26 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 .limit(5)
                 .fetch();
 
-        CatalogProduct catalogEntity = catalogInfo.get(catalogProduct);
-        Long categoryId = catalogInfo.get(category.id);
-        String categoryName = catalogInfo.get(category.name);
-
         // 다른 판매자들 조회 (위에서 뽑힌 메인 상품 제외)
         List<ProductDetailResponse.OtherSellerDto> otherSellers = queryFactory
                 .select(Projections.constructor(ProductDetailResponse.OtherSellerDto.class,
                         product.id,
                         product.sellerId,
-                        productItem.totalPrice.min()))  // 최저 totalPrice 추가
+                        productItem.totalPrice.min()))
                 .from(product)
                 .join(product.productItems, productItem)
                 .on(productItem.status.in(ProductItemStatus.ON_SALE, ProductItemStatus.PRE_ORDER))
                 .where(
                         product.catalogProductId.eq(catalogProductId),
-                        product.id.ne(mainProductEntity.getId()),
+                        product.id.ne(mainProductId),
                         product.status.in(ProductStatus.FOR_SALE, ProductStatus.PRE_ORDER)
                 )
-                .groupBy(product.id, product.sellerId, product.basePrice)
+                .groupBy(product.id, product.sellerId)
                 .fetch();
 
         // DTO
         return new ProductDetailResponse(
-                productMapper.toCatalogDto(
-                        catalogEntity,
-                        categoryId,
-                        categoryName,
-                        images),
+                productMapper.toCatalogDto(catalogEntity, images),
                 productMapper.toProductDto(mainProductEntity),
                 otherSellers
         );

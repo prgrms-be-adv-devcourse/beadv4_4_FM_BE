@@ -28,5 +28,5 @@ public record ProductCreateRequest(
     public record ItemOptionMappingRequest(
             @NotNull Long masterId,
             @NotBlank String value
-    ) {}
+    ) implements OptionValueRequest {}
 }

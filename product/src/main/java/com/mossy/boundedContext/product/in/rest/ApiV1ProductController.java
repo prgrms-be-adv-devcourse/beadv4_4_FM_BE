@@ -13,11 +13,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Product", description = "상품 조회 및 관리 API")
 @RestController
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ApiV1ProductController {
     private final ProductFacade productFacade;
@@ -51,12 +52,36 @@ public class ApiV1ProductController {
             description = "상품을 수정합니다")
     @PutMapping("/{productId}")
     public RsData<Long> updateProduct(
-            @PathVariable Long productId,
             @RequestHeader("X-Seller-Id") Long currentSellerId,
+            @PathVariable Long productId,
             @RequestBody @Valid ProductUpdateRequest request) {
         productFacade.updateProduct(productId, currentSellerId, request);
 
         return RsData.success(SuccessCode.UPDATE_PRODUCT_SUCCESS, productId);
+    }
+
+    // 상품 상태 수정
+    @PatchMapping("/{productId}/status")
+    public RsData<Long> changeStatus(
+            @RequestHeader("X-Seller-Id") Long currentSellerId,
+            @PathVariable Long productId,
+            @RequestBody @Valid ProductStatusUpdateRequest request
+    ) {
+        productFacade.changeProductStatus(productId, currentSellerId, request.status());
+        return RsData.success(SuccessCode.UPDATE_PRODUCT_SUCCESS, productId);
+    }
+
+    @Operation(
+            summary = "상품 삭제",
+            description = "상품 삭제합니다.")
+    @DeleteMapping("/{productId}")
+    public RsData<Long> deleteProduct(
+            @RequestHeader("X-Seller-Id") Long currentSellerId,
+            @PathVariable Long productId
+    ) {
+        productFacade.deleteProduct(currentSellerId, productId);
+
+        return RsData.success(SuccessCode.DELETE_PRODUCT_ITEM_SUCCESS, productId);
     }
 
     // 상품 아이템 상태 수정

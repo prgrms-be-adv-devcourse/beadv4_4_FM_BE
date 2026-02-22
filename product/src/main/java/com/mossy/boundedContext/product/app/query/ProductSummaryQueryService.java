@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductSummaryQueryService {
     private final ProductRepository productRepository;
 
