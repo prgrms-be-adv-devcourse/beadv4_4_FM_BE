@@ -17,7 +17,7 @@ public class ReviewFacade {
         createReviewableItemUseCase.create(event);
     }
 
-    public ReviewResponse writeReview(Long orderItemId, WriteReviewRequest request) {
-        return writeReviewUseCase.write(orderItemId, request);
+    public ReviewResponse writeReview(Long userId, Long orderItemId, WriteReviewRequest request) {
+        return writeReviewUseCase.write(userId, orderItemId, request);
     }
 }

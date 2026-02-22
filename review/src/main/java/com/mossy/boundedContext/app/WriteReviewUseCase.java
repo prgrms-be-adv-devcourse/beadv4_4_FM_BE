@@ -21,9 +21,13 @@ public class WriteReviewUseCase {
     private final ReviewRepository reviewRepository;
 
     @Transactional
-    public ReviewResponse write(Long orderItemId, WriteReviewRequest request) {
+    public ReviewResponse write(Long userId, Long orderItemId, WriteReviewRequest request) {
         ReviewableItem reviewableItem = reviewableItemRepository.findByOrderItemId(orderItemId)
                 .orElseThrow(() -> new DomainException(ErrorCode.REVIEWABLE_ITEM_NOT_FOUND));
+
+        if (!reviewableItem.getBuyerId().equals(userId)) {
+            throw new DomainException(ErrorCode.REVIEW_UNAUTHORIZED);
+        }
 
         if (reviewableItem.isReviewed()) {
             throw new DomainException(ErrorCode.ALREADY_REVIEWED);

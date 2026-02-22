@@ -24,10 +24,11 @@ public class ApiV1ReviewController {
     @Operation(summary = "리뷰 작성", description = "주문 아이템에 대한 리뷰를 작성합니다.")
     @PostMapping("/{orderItemId}")
     public ResponseEntity<RsData<ReviewResponse>> writeReview(
+            @RequestHeader("X-User-Id") Long userId,
             @PathVariable Long orderItemId,
             @RequestBody @Valid WriteReviewRequest request
     ) {
-        ReviewResponse response = reviewFacade.writeReview(orderItemId, request);
+        ReviewResponse response = reviewFacade.writeReview(userId, orderItemId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(RsData.success(SuccessCode.REVIEW_CREATED, response));
     }
