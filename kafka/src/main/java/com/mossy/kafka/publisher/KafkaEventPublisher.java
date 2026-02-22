@@ -39,7 +39,6 @@ public class KafkaEventPublisher {
             case PaymentCashRefundEvent e -> KafkaTopics.PAYMENT_REFUND;
             case OrderCancelEvent e -> KafkaTopics.ORDER_CANCEL;
             case OrderPurchaseConfirmedEvent e -> KafkaTopics.ORDER_PURCHASE_CONFIRMED;
-            case CouponUseRequestedEvent e -> KafkaTopics.COUPON_USE_REQUESTED;
             case UserJoinedEvent e -> KafkaTopics.USER_JOINED;
             case SellerJoinedEvent e -> KafkaTopics.SELLER_JOINED;
             default -> null;
