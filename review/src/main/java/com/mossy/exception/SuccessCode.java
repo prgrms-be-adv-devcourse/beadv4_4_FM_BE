@@ -1,9 +1,10 @@
 package com.mossy.exception;
 
+import com.mossy.global.exception.BaseCode;
 import lombok.Getter;
 
 @Getter
-public enum SuccessCode {
+public enum SuccessCode implements BaseCode {
     REVIEW_CREATED(201, "리뷰가 작성되었습니다.");
 
     private final int status;
