@@ -7,6 +7,8 @@ import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateDto;
 import com.mossy.boundedContext.payout.in.dto.event.PayoutSellerDto;
 import com.mossy.boundedContext.payout.in.dto.event.PayoutUserDto;
+import com.mossy.shared.market.enums.CouponType;
+import com.mossy.shared.market.enums.IssuerType;
 import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.member.payload.UserPayload;
@@ -16,6 +18,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Mapper(
         componentModel = "spring",
