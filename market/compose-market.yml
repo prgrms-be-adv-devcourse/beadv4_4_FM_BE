@@ -3,20 +3,20 @@ include:
   - ../compose-kafka.yml
 
 services:
-  market:1"
-  env_file:
-    - .env.market
-  environment:
-    - SPRING_PROFILES_ACTIVE=prod
-  depends_on:
-    redis:
+  market:
     build:
       context: ..
       dockerfile: market/Dockerfile
     container_name: market
     restart: always
     ports:
-      - "8081:808
+      - "8081:8081"
+    env_file:
+      - .env.market
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      redis:
         condition: service_healthy
       redpanda:
         condition: service_healthy
