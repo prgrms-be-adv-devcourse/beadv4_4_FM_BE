@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.recommendation.domain;
 
 import com.mossy.global.jpa.entity.BaseManualIdAndTime;
+import com.mossy.shared.product.enums.ProductStatus;
 import lombok.*;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;

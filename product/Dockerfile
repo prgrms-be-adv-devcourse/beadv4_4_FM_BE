@@ -11,12 +11,15 @@ COPY gradle gradle
 # 루트에 build.gradle.kts가 있다면 복사 (없다면 아래 줄을 주석 처리하세요)
 #COPY build.gradle.kts .
 
-# 2. 빌드 구조 동적 생성 (product-service와 common만 포함하여 빌드 속도 최적화)
-RUN printf 'rootProject.name = "backend"\ninclude("common")\ninclude("product")\n' > settings.gradle.kts
+# 2. 빌드 구조 동적 생성 (product common만 포함하여 빌드 속도 최적화)
+RUN printf 'rootProject.name = "backend"\ninclude("common") \
+    \ninclude("kafka") \
+    \ninclude("product")\n' > settings.gradle.kts
 
 # 3. 의존성 캐싱을 위한 build 파일 선복사
 RUN mkdir -p common product
 COPY common/build.gradle.kts common/
+COPY kafka/build.gradle.kts kafka/
 COPY product/build.gradle.kts product/
 
 # 의존성 먼저 다운로드 (라이브러리 캐싱 레이어)
@@ -24,6 +27,7 @@ RUN chmod +x gradlew && ./gradlew dependencies --no-daemon || true
 
 # 4. 실제 소스 코드 복사
 COPY common/src common/src
+COPY kafka/src kafka/src
 COPY product/src product/src
 
 # 5. JAR 빌드 (테스트 스킵)

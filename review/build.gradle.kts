@@ -33,8 +33,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.kafka:spring-kafka")
     runtimeOnly("org.postgresql:postgresql")
+
     // Swagger UI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
+
+    // AWS S3
+    implementation(platform("software.amazon.awssdk:bom:2.24.0"))
+    implementation("software.amazon.awssdk:s3")
 
     // 컴파일 및 런타임 도구
     compileOnly("org.projectlombok:lombok")

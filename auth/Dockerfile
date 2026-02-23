@@ -6,16 +6,20 @@ WORKDIR /app
 
 # 1. Gradle 래퍼 및 설정 파일 복사
 COPY gradlew .
+RUN apk add --no-cache dos2unix && dos2unix gradlew
 COPY gradle gradle
-COPY settings.gradle.kts .
+# 루트에 build.gradle.kts가 있다면 복사 (없다면 아래 줄을 주석 처리하세요)
 #COPY build.gradle.kts .
 
 # 2. 빌드 구조 동적 생성 (auth common만 포함하여 빌드 속도 최적화)
-RUN printf 'rootProject.name = "backend"\ninclude("common")\ninclude("auth")\n' > settings.gradle.kts
+RUN printf 'rootProject.name = "backend"\ninclude("common") \
+    \ninclude("kafka") \
+    \ninclude("auth")\n' > settings.gradle.kts
 
 # 3. 의존성 캐싱을 위한 build 파일 선복사
 RUN mkdir -p common auth
 COPY common/build.gradle.kts common/
+COPY kafka/build.gradle.kts kafka/
 COPY auth/build.gradle.kts auth/
 
 # 의존성 먼저 다운로드 (라이브러리 캐싱 레이어)
@@ -23,6 +27,7 @@ RUN chmod +x gradlew && ./gradlew dependencies --no-daemon || true
 
 # 4. 실제 소스 코드 복사
 COPY common/src common/src
+COPY kafka/src kafka/src
 COPY auth/src auth/src
 
 # 5. JAR 빌드 (테스트 스킵)

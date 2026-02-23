@@ -6,27 +6,32 @@ WORKDIR /app
 
 # 1. Gradle 래퍼 및 설정 파일 복사
 COPY gradlew .
+RUN apk add --no-cache dos2unix && dos2unix gradlew
 COPY gradle gradle
 # 루트에 build.gradle.kts가 있다면 복사 (없다면 아래 줄을 주석 처리하세요)
-COPY build.gradle.kts . 
+#COPY build.gradle.kts .
 
-# 2. 빌드 구조 동적 생성 (member-service와 common만 포함하여 빌드 속도 최적화)
-RUN printf 'rootProject.name = "backend"\ninclude("common")\ninclude("member-service")\n' > settings.gradle.kts
+# 2. 빌드 구조 동적 생성 (member common만 포함하여 빌드 속도 최적화)
+RUN printf 'rootProject.name = "backend"\ninclude("common") \
+    \ninclude("kafka") \
+    \ninclude("member")\n' > settings.gradle.kts
 
 # 3. 의존성 캐싱을 위한 build 파일 선복사
-RUN mkdir -p common member-service
+RUN mkdir -p common member
 COPY common/build.gradle.kts common/
-COPY member-service/build.gradle.kts member-service/
+COPY kafka/build.gradle.kts kafka/
+COPY member/build.gradle.kts member/
 
 # 의존성 먼저 다운로드 (라이브러리 캐싱 레이어)
 RUN chmod +x gradlew && ./gradlew dependencies --no-daemon || true
 
 # 4. 실제 소스 코드 복사
 COPY common/src common/src
-COPY member-service/src member-service/src
+COPY kafka/src kafka/src
+COPY member/src member/src
 
 # 5. JAR 빌드 (테스트 스킵)
-RUN ./gradlew :member-service:bootJar --no-daemon -x test
+RUN ./gradlew :member:bootJar --no-daemon -x test
 
 # ============================================
 # 2단계: 실행 스테이지 (JRE 21 사용 - 경량화 및 보안)
@@ -44,7 +49,7 @@ RUN apk add --no-cache tzdata && \
     adduser -u 1001 -S appuser -G appgroup
 
 # 빌드 결과물만 복사
-COPY --from=build /app/member-service/build/libs/*.jar app.jar
+COPY --from=build /app/member/build/libs/*.jar app.jar
 
 # 권한 부여 및 사용자 전환
 RUN chown appuser:appgroup app.jar

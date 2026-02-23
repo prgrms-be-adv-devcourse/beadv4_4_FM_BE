@@ -7,13 +7,15 @@ spring:
 
   config:
     import: "optional:file:./gateway/.env.gateway[.properties]"
+    activate:
+      on-profile: prod
 
   cloud:
     gateway:
       routes:
         # ── Market ──
         - id: market
-          uri: http://127.0.0.1:8081
+          uri: http://market:8081
           predicates:
             - Path=/api/v1/carts/**, /api/v1/orders/**, /api/v1/payments/**
           filters:
@@ -21,13 +23,13 @@ spring:
 
         # ── Member (공개) ──
         - id: member-public
-          uri: http://127.0.0.1:8082
+          uri: http://member:8082
           predicates:
             - Path=/api/v1/users/signup
 
         # ── Member (인증 필요) ──
         - id: member-private
-          uri: http://127.0.0.1:8082
+          uri: http://member:8082
           predicates:
             - Path=/api/v1/users/me, /api/v1/users/profile, /api/v1/users/password, /api/v1/users/address, /api/v1/users/phone, /api/v1/users/set-password, /api/v1/users/nickname
           filters:
@@ -35,7 +37,7 @@ spring:
 
         # ── Seller 신청 (인증 필요) ──
         - id: seller-request
-          uri: http://127.0.0.1:8082
+          uri: http://member:8082
           predicates:
             - Path=/api/v1/users/seller-request
           filters:
@@ -43,7 +45,7 @@ spring:
 
         # ── Admin 판매자 관리 (인증 필요) ──
         - id: admin-seller
-          uri: http://127.0.0.1:8082
+          uri: http://member:8082
           predicates:
             - Path=/api/v1/admin/seller-requests/**
           filters:
@@ -51,7 +53,7 @@ spring:
 
         # ── Cash ──
         - id: cash
-          uri: http://127.0.0.1:8083
+          uri: http://cash:8083
           predicates:
             - Path=/api/v1/cash/**
           filters:
@@ -59,7 +61,7 @@ spring:
 
         # ── Payout ──
         - id: payout
-          uri: http://127.0.0.1:8084
+          uri: http://payout:8084
           predicates:
             - Path=/api/payout/**
           filters:
@@ -67,7 +69,7 @@ spring:
 
         # ── Review ──
         - id: review
-          uri: http://127.0.0.1:8085
+          uri: http://review:8085
           predicates:
             - Path=/api/v1/reviews/**
           filters:
@@ -75,29 +77,33 @@ spring:
 
         # ── Auth (공개 - 로그인/토큰/OAuth2) ──
         - id: auth
-          uri: http://127.0.0.1:8086
+          uri: http://auth:8086
           predicates:
             - Path=/api/v1/auth/**
 
         # ── Auth OAuth2 ──
         - id: auth-oauth2
-          uri: http://127.0.0.1:8086
+          uri: http://auth:8086
           predicates:
             - Path=/oauth2/**, /login/oauth2/**
 
         # ── Product ──
         - id: product-public
-          uri: http://127.0.0.1:8090
+          uri: http://product:8090
           predicates:
             - Path=/api/v1/products/search/**, /api/v1/products/{catalogProductId}
             - Method=GET
 
         - id: product-private
-          uri: http://127.0.0.1:8090
+          uri: http://product:8090
           predicates:
             - Path=/api/v1/products/**
           filters:
             - name: JwtAuthenticationFilter
+
+eureka:
+  client:
+    enabled: false
 
 jwt:
   secret: ${JWT_SECRET}
