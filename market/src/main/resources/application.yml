@@ -40,13 +40,6 @@ spring:
       host: localhost
       port: 6379
 
-  elasticsearch:
-    uris:
-      - http://localhost:9200
-
-  cache:
-    type: redis
-
   # Kafka 설정
   kafka:
     bootstrap-servers: localhost:9092
