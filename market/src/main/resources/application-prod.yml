@@ -28,7 +28,14 @@ spring:
   elasticsearch:
     uris:
       - http://${ELASTICSEARCH_HOST}:9200
+      -
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: market
 
 logging:
   level:
     root: INFO
+    org.hibernate.orm.jdbc.bind: INFO  # 파라미터 바인딩 로그 숨기기
+    org.springframework.transaction: INFO # 트랜잭션 시작/종료 로그 숨기기
