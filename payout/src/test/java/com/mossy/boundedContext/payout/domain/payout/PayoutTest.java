@@ -5,7 +5,7 @@ import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.exception.DomainException;
 import com.mossy.global.config.GlobalConfig;
 import com.mossy.global.eventPublisher.EventPublisher;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,9 +71,9 @@ class PayoutTest {
     @DisplayName("addItem 정상 호출 시 amount 누적")
     void addItem_accumulates_amount() {
         Payout payout = new Payout(payee);
-        payout.addItem(PayoutEventType.정산__상품판매_대금, "ORDER_ITEM", 1L,
+        payout.addItem(SellerEventType.정산__상품판매_대금, "ORDER_ITEM", 1L,
                 LocalDateTime.now(), payer, payee, new BigDecimal("1000"));
-        payout.addItem(PayoutEventType.정산__상품판매_대금, "ORDER_ITEM", 2L,
+        payout.addItem(SellerEventType.정산__상품판매_대금, "ORDER_ITEM", 2L,
                 LocalDateTime.now(), payer, payee, new BigDecimal("2000"));
 
         assertThat(payout.getAmount()).isEqualByComparingTo(new BigDecimal("3000"));
@@ -83,7 +83,7 @@ class PayoutTest {
     @DisplayName("addItem 후 items 리스트 크기 증가")
     void addItem_increases_items_size() {
         Payout payout = new Payout(payee);
-        payout.addItem(PayoutEventType.정산__상품판매_대금, "ORDER_ITEM", 1L,
+        payout.addItem(SellerEventType.정산__상품판매_대금, "ORDER_ITEM", 1L,
                 LocalDateTime.now(), payer, payee, new BigDecimal("1000"));
 
         assertThat(payout.getItems()).hasSize(1);
@@ -97,7 +97,7 @@ class PayoutTest {
         payout.completePayout();
 
         assertThatThrownBy(() ->
-                payout.addItem(PayoutEventType.정산__상품판매_대금, "ORDER_ITEM", 1L,
+                payout.addItem(SellerEventType.정산__상품판매_대금, "ORDER_ITEM", 1L,
                         LocalDateTime.now(), payer, payee, new BigDecimal("1000")))
                 .isInstanceOf(DomainException.class);
     }

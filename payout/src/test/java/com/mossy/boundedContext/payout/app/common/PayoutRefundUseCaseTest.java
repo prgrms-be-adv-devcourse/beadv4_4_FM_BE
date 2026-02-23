@@ -5,7 +5,7 @@ import com.mossy.boundedContext.payout.domain.payout.PayoutItem;
 import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +52,7 @@ class PayoutRefundUseCaseTest {
     @DisplayName("정산이 이미 완료된 후보가 있으면 REFUND_NOT_ALLOWED_AFTER_PAYOUT_COMPLETED")
     void processRefund_already_settled_candidate_throws_exception() {
         PayoutCandidateItem settledCandidate = mockCandidate(
-                PayoutEventType.정산__상품판매_대금, new BigDecimal("1000"), BigDecimal.ZERO, mock(PayoutItem.class)
+                SellerEventType.정산__상품판매_대금, new BigDecimal("1000"), BigDecimal.ZERO, mock(PayoutItem.class)
         );
 
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(1L, "OrderItem"))
@@ -69,7 +69,7 @@ class PayoutRefundUseCaseTest {
     @DisplayName("단건 전액 환불: save 1회 호출, 음수 금액으로 createRefundItem 호출")
     void processRefund_single_candidate_full_refund() {
         PayoutCandidateItem candidate = mockCandidate(
-                PayoutEventType.정산__상품판매_대금, new BigDecimal("1000"), new BigDecimal("0.5"), null
+                SellerEventType.정산__상품판매_대금, new BigDecimal("1000"), new BigDecimal("0.5"), null
         );
 
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(1L, "OrderItem"))
@@ -82,7 +82,7 @@ class PayoutRefundUseCaseTest {
         // 환불 아이템 생성 시 refundAmount가 음수(-1000)로 전달되어야 함
         verify(payoutMapper).createRefundItem(
                 eq(candidate),
-                eq(PayoutEventType.정산__상품환불_대금),
+                eq(SellerEventType.정산__상품환불_대금),
                 eq(new BigDecimal("-1000")),
                 any()
         );
@@ -95,10 +95,10 @@ class PayoutRefundUseCaseTest {
     @DisplayName("2개 후보(600:400) 환불 1000 → 각각 -600, -400으로 생성")
     void processRefund_two_candidates_proportional_allocation() {
         PayoutCandidateItem candidateA = mockCandidate(
-                PayoutEventType.정산__상품판매_대금, new BigDecimal("600"), BigDecimal.ZERO, null
+                SellerEventType.정산__상품판매_대금, new BigDecimal("600"), BigDecimal.ZERO, null
         );
         PayoutCandidateItem candidateB = mockCandidate(
-                PayoutEventType.정산__상품판매_수수료, new BigDecimal("400"), BigDecimal.ZERO, null
+                SellerEventType.정산__상품판매_수수료, new BigDecimal("400"), BigDecimal.ZERO, null
         );
 
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(1L, "OrderItem"))
@@ -110,12 +110,12 @@ class PayoutRefundUseCaseTest {
 
         // A: 600/1000 × 1000 = 600 → -600
         verify(payoutMapper).createRefundItem(
-                eq(candidateA), eq(PayoutEventType.정산__상품환불_대금),
+                eq(candidateA), eq(SellerEventType.정산__상품환불_대금),
                 eq(new BigDecimal("-600")), any()
         );
         // B: 400/1000 × 1000 = 400 → -400
         verify(payoutMapper).createRefundItem(
-                eq(candidateB), eq(PayoutEventType.정산__상품환불_수수료),
+                eq(candidateB), eq(SellerEventType.정산__상품환불_수수료),
                 eq(new BigDecimal("-400")), any()
         );
     }
@@ -128,9 +128,9 @@ class PayoutRefundUseCaseTest {
         // amount 1:1:1 → total=3, refundAmount=10
         // 각 item → 10 × (1/3) = 3.33... → floor → 3
         // allocatedSum = 9, remainder = 1 → 마지막에 +1 → 4
-        PayoutCandidateItem cA = mockCandidate(PayoutEventType.정산__상품판매_대금, new BigDecimal("1"), BigDecimal.ZERO, null);
-        PayoutCandidateItem cB = mockCandidate(PayoutEventType.정산__상품판매_수수료, new BigDecimal("1"), BigDecimal.ZERO, null);
-        PayoutCandidateItem cC = mockCandidate(PayoutEventType.정산__상품판매_기부금, new BigDecimal("1"), BigDecimal.ZERO, null);
+        PayoutCandidateItem cA = mockCandidate(SellerEventType.정산__상품판매_대금, new BigDecimal("1"), BigDecimal.ZERO, null);
+        PayoutCandidateItem cB = mockCandidate(SellerEventType.정산__상품판매_수수료, new BigDecimal("1"), BigDecimal.ZERO, null);
+        PayoutCandidateItem cC = mockCandidate(SellerEventType.정산__상품판매_기부금, new BigDecimal("1"), BigDecimal.ZERO, null);
 
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(1L, "OrderItem"))
                 .thenReturn(List.of(cA, cB, cC));
@@ -159,7 +159,7 @@ class PayoutRefundUseCaseTest {
     @DisplayName("정산__상품판매_대금 → 정산__상품환불_대금 타입으로 변환")
     void convertToRefundEventType_판매대금_to_환불대금() {
         PayoutCandidateItem candidate = mockCandidate(
-                PayoutEventType.정산__상품판매_대금, new BigDecimal("1000"), BigDecimal.ZERO, null
+                SellerEventType.정산__상품판매_대금, new BigDecimal("1000"), BigDecimal.ZERO, null
         );
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(any(), any()))
                 .thenReturn(List.of(candidate));
@@ -168,14 +168,14 @@ class PayoutRefundUseCaseTest {
 
         payoutRefundUseCase.processRefund(1L, new BigDecimal("1000"), new BigDecimal("1000"));
 
-        verify(payoutMapper).createRefundItem(any(), eq(PayoutEventType.정산__상품환불_대금), any(), any());
+        verify(payoutMapper).createRefundItem(any(), eq(SellerEventType.정산__상품환불_대금), any(), any());
     }
 
     @Test
     @DisplayName("정산__상품판매_수수료 → 정산__상품환불_수수료 타입으로 변환")
     void convertToRefundEventType_판매수수료_to_환불수수료() {
         PayoutCandidateItem candidate = mockCandidate(
-                PayoutEventType.정산__상품판매_수수료, new BigDecimal("200"), BigDecimal.ZERO, null
+                SellerEventType.정산__상품판매_수수료, new BigDecimal("200"), BigDecimal.ZERO, null
         );
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(any(), any()))
                 .thenReturn(List.of(candidate));
@@ -184,14 +184,14 @@ class PayoutRefundUseCaseTest {
 
         payoutRefundUseCase.processRefund(1L, new BigDecimal("200"), new BigDecimal("200"));
 
-        verify(payoutMapper).createRefundItem(any(), eq(PayoutEventType.정산__상품환불_수수료), any(), any());
+        verify(payoutMapper).createRefundItem(any(), eq(SellerEventType.정산__상품환불_수수료), any(), any());
     }
 
     @Test
     @DisplayName("정산__상품판매_기부금 → 정산__상품환불_기부금 타입으로 변환")
     void convertToRefundEventType_판매기부금_to_환불기부금() {
         PayoutCandidateItem candidate = mockCandidate(
-                PayoutEventType.정산__상품판매_기부금, new BigDecimal("50"), BigDecimal.ZERO, null
+                SellerEventType.정산__상품판매_기부금, new BigDecimal("50"), BigDecimal.ZERO, null
         );
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(any(), any()))
                 .thenReturn(List.of(candidate));
@@ -200,7 +200,7 @@ class PayoutRefundUseCaseTest {
 
         payoutRefundUseCase.processRefund(1L, new BigDecimal("50"), new BigDecimal("50"));
 
-        verify(payoutMapper).createRefundItem(any(), eq(PayoutEventType.정산__상품환불_기부금), any(), any());
+        verify(payoutMapper).createRefundItem(any(), eq(SellerEventType.정산__상품환불_기부금), any(), any());
     }
 
     // ===== 플랫폼 쿠폰 분리 처리 =====
@@ -212,10 +212,10 @@ class PayoutRefundUseCaseTest {
         // refundAmount=500, buyerPaidAmount=1000
         // platform ratio = 500/1000 = 0.5 → platform refund = 200 × 0.5 = 100
         PayoutCandidateItem buyerItem = mockCandidate(
-                PayoutEventType.정산__상품판매_대금, new BigDecimal("1000"), BigDecimal.ZERO, null
+                SellerEventType.정산__상품판매_대금, new BigDecimal("1000"), BigDecimal.ZERO, null
         );
         PayoutCandidateItem platformItem = mockCandidate(
-                PayoutEventType.정산__프로모션_플랫폼부담, new BigDecimal("200"), BigDecimal.ZERO, null
+                SellerEventType.정산__프로모션_플랫폼부담, new BigDecimal("200"), BigDecimal.ZERO, null
         );
 
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(1L, "OrderItem"))
@@ -227,12 +227,12 @@ class PayoutRefundUseCaseTest {
 
         // buyer 항목: -500
         verify(payoutMapper).createRefundItem(
-                eq(buyerItem), eq(PayoutEventType.정산__상품환불_대금),
+                eq(buyerItem), eq(SellerEventType.정산__상품환불_대금),
                 eq(new BigDecimal("-500")), any()
         );
         // platform 항목: -(200 × 0.5) = -100
         verify(payoutMapper).createRefundItem(
-                eq(platformItem), eq(PayoutEventType.정산__상품환불_플랫폼부담),
+                eq(platformItem), eq(SellerEventType.정산__상품환불_플랫폼부담),
                 eq(new BigDecimal("-100")), any()
         );
 
@@ -244,7 +244,7 @@ class PayoutRefundUseCaseTest {
     @DisplayName("플랫폼 쿠폰 항목이 없으면 buyer만 처리하고 save 1회")
     void processRefund_no_platform_coupon_only_buyer_processed() {
         PayoutCandidateItem buyerItem = mockCandidate(
-                PayoutEventType.정산__상품판매_대금, new BigDecimal("1000"), BigDecimal.ZERO, null
+                SellerEventType.정산__상품판매_대금, new BigDecimal("1000"), BigDecimal.ZERO, null
         );
 
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(1L, "OrderItem"))
@@ -265,7 +265,7 @@ class PayoutRefundUseCaseTest {
         // amount=1000, carbonKg=1.0, 전액 환불
         // ratio = 1.0 → itemRefundCarbon = 1.0 × 1.0 = 1.00 → negate → -1.00
         PayoutCandidateItem candidate = mockCandidate(
-                PayoutEventType.정산__상품판매_대금, new BigDecimal("1000"), new BigDecimal("1.00"), null
+                SellerEventType.정산__상품판매_대금, new BigDecimal("1000"), new BigDecimal("1.00"), null
         );
         when(candidateItemRepository.findByRelIdAndRelTypeCodeWithLock(any(), any()))
                 .thenReturn(List.of(candidate));
@@ -287,7 +287,7 @@ class PayoutRefundUseCaseTest {
      * lenient()로 등록하여 UnnecessaryStubbingException을 방지
      */
     private PayoutCandidateItem mockCandidate(
-            PayoutEventType eventType,
+            SellerEventType eventType,
             BigDecimal amount,
             BigDecimal carbonKg,
             PayoutItem payoutItem
