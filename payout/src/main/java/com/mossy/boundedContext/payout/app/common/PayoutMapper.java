@@ -12,7 +12,7 @@ import com.mossy.shared.market.enums.IssuerType;
 import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.member.payload.UserPayload;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -61,7 +61,7 @@ public interface PayoutMapper {
         @Mapping(target = "carbonKg", source = "carbonKg")
         PayoutCandidateItemCreateDto toCandidateItemCreateDto(
                 PayoutCandidateCreateDto dto,
-                PayoutEventType eventType,
+                SellerEventType eventType,
                 PayoutUser payer,
                 PayoutSeller payee,
                 BigDecimal amount,
@@ -121,7 +121,7 @@ public interface PayoutMapper {
         @Mapping(target = "carbonKg", source = "refundCarbon")
         PayoutCandidateItem createRefundItem(
                 PayoutCandidateItem original,
-                PayoutEventType refundEventType,
+                SellerEventType refundEventType,
                 BigDecimal refundAmount,
                 BigDecimal refundCarbon
         );

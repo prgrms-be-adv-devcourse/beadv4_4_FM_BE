@@ -14,7 +14,7 @@ import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemReposit
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 
 
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -57,7 +57,7 @@ public class PayoutAddPayoutCandidateItemsUseCase {
         // [레이어 2] 멱등성 체크: 이미 처리된 이벤트인지 확인
         // 정산__상품판매_대금은 모든 OrderItem 처리 시 반드시 생성되므로 대표 체크값으로 사용
         if (payoutCandidateItemRepository.existsByRelTypeCodeAndRelIdAndEventType(
-                "OrderItem", dto.orderItemId(), PayoutEventType.정산__상품판매_대금)) {
+                "OrderItem", dto.orderItemId(), SellerEventType.정산__상품판매_대금)) {
             log.warn("[멱등성] 이미 처리된 이벤트 skip. orderItemId={}", dto.orderItemId());
             return;
         }
@@ -123,19 +123,19 @@ public class PayoutAddPayoutCandidateItemsUseCase {
 
         // --- 계산된 금액을 바탕으로 3가지 종류의 정산 후보 아이템을 생성 ---
         makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
-                dto, PayoutEventType.정산__상품판매_수수료, buyer, system, adjustedFee, BigDecimal.ZERO));
+                dto, SellerEventType.정산__상품판매_수수료, buyer, system, adjustedFee, BigDecimal.ZERO));
 
         makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
-                dto, PayoutEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee, BigDecimal.ZERO));
+                dto, SellerEventType.정산__상품판매_대금, buyer, seller, salePriceWithoutFee, BigDecimal.ZERO));
 
         makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
-                dto, PayoutEventType.정산__상품판매_기부금, buyer, donation, donationAmount, carbonKg));
+                dto, SellerEventType.정산__상품판매_기부금, buyer, donation, donationAmount, carbonKg));
 
         // 플랫폼 부담 할인이 있으면 판매자 보상 아이템 추가
         BigDecimal platformDiscountAmount = dto.platformDiscountAmount();
         if (platformDiscountAmount != null && platformDiscountAmount.compareTo(BigDecimal.ZERO) > 0) {
             makePayoutCandidateItem(payoutMapper.toCandidateItemCreateDto(
-                    dto, PayoutEventType.정산__프로모션_플랫폼부담, null, seller, platformDiscountAmount, BigDecimal.ZERO));
+                    dto, SellerEventType.정산__프로모션_플랫폼부담, null, seller, platformDiscountAmount, BigDecimal.ZERO));
         }
 
     }

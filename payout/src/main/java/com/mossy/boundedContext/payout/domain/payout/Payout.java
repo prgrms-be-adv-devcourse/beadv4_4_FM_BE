@@ -5,7 +5,7 @@ import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import com.mossy.shared.payout.event.PayoutCompletedEvent;
 import com.mossy.shared.payout.payload.PayoutEventDto;
 import jakarta.persistence.*;
@@ -58,7 +58,7 @@ public class Payout extends BaseIdAndTime {
      * 이 Payout에 새로운 PayoutItem을 추가 (빌더 패턴 적용)
      */
     public PayoutItem addItem(
-            PayoutEventType eventType,
+            SellerEventType eventType,
             String relTypeCode,
             Long relId,
             LocalDateTime payDate,

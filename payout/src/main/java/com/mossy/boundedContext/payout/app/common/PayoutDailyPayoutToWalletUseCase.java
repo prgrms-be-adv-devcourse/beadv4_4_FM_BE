@@ -6,6 +6,7 @@ import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
+import com.mossy.shared.cash.enums.SellerEventType;
 import com.mossy.shared.payout.event.PayoutSellerWalletCreditEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +77,7 @@ public class PayoutDailyPayoutToWalletUseCase {
                 PayoutSellerWalletCreditEvent event = PayoutSellerWalletCreditEvent.builder()
                         .sellerId(sellerId)
                         .amount(totalAmount)
+                        .eventType(SellerEventType.정산수령__일괄지급)
                         .creditDate(today)
                         .build();
 

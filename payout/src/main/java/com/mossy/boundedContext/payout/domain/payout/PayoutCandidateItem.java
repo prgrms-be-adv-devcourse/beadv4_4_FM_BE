@@ -6,7 +6,7 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.payout.app.common.PayoutAddPayoutCandidateItemsUseCase;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,7 +38,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type", length = 30, nullable = false)
-    private PayoutEventType eventType;
+    private SellerEventType eventType;
 
     /**
      * 이 정산 후보 아이템이 참조하는 외부 엔티티의 타입 코드
@@ -125,7 +125,7 @@ public class PayoutCandidateItem extends BaseIdAndTime {
      * @param carbonKg         탄소 배출량 (kg 단위)
      */
     @Builder
-    public PayoutCandidateItem(PayoutEventType eventType, String relTypeCode, Long relId,
+    public PayoutCandidateItem(SellerEventType eventType, String relTypeCode, Long relId,
                                LocalDateTime paymentDate, PayoutUser payer, PayoutSeller payee, BigDecimal amount,
                                String weightGrade, BigDecimal deliveryDistance, BigDecimal carbonKg) {
 
