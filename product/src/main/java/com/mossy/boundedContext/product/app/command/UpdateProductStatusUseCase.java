@@ -27,6 +27,6 @@ public class UpdateProductStatusUseCase {
 
         product.updateStatusBySeller(command.newStatus());
 
-        eventPublisher.publishEvent(new ProductCatalogSyncEvent(product.getId()));
+        eventPublisher.publishEvent(new ProductCatalogSyncEvent(product.getCatalogProductId()));
     }
 }

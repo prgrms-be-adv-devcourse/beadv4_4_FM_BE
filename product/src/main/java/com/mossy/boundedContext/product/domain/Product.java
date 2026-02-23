@@ -88,16 +88,10 @@ public class Product extends BaseIdAndTime {
     }
 
     public void addProductItem(ProductItem item) {
-        if (this.productItems == null) {
-            this.productItems = new ArrayList<>();
-        }
         this.productItems.add(item);
     }
 
     public void addOptionGroup(ProductOptionGroup optionGroup) {
-        if (this.optionGroups == null) {
-            this.optionGroups = new ArrayList<>();
-        }
         this.optionGroups.add(optionGroup);
     }
 
@@ -181,10 +175,6 @@ public class Product extends BaseIdAndTime {
     }
 
     private void syncItemsToStoppedStatus() {
-        if (this.productItems == null || this.productItems.isEmpty()) {
-            return;
-        }
-
         this.productItems.forEach(ProductItem::markAsStopped);
     }
 
@@ -196,6 +186,10 @@ public class Product extends BaseIdAndTime {
                 .orElseThrow(() -> new DomainException(ErrorCode.PRODUCT_ITEM_NOT_FOUND));
 
         targetItem.decreaseStock(quantity);
+
+        if (this.status == ProductStatus.FOR_SALE && isAllOutOfStock()) {
+            this.status = ProductStatus.OUT_OF_STOCK;
+        }
     }
 
     // 아이템 재고 복구
@@ -207,7 +201,8 @@ public class Product extends BaseIdAndTime {
 
         targetItem.increaseStock(quantity);
 
-        if (this.status == ProductStatus.OUT_OF_STOCK) {
+        if (this.status == ProductStatus.OUT_OF_STOCK
+                && targetItem.getQuantity() > 0) {
             this.status = ProductStatus.FOR_SALE;
         }
     }
@@ -217,5 +212,14 @@ public class Product extends BaseIdAndTime {
 
         return this.productItems.stream()
                 .anyMatch(item -> item.getId().equals(productItemId));
+    }
+
+    // 상품 아이템 재고 확인
+    private boolean isAllOutOfStock() {
+        if (this.productItems == null || this.productItems.isEmpty()) {
+            return true;
+        }
+        return this.productItems.stream()
+                .allMatch(item -> item.getQuantity() <= 0);
     }
 }

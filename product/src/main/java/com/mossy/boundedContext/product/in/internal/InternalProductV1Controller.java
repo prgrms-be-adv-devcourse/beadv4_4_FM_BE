@@ -22,4 +22,9 @@ public class InternalProductV1Controller {
     public void decreaseStock(@RequestBody List<StockCheckRequest> items) {
         productFacade.decreaseStock(items);
     }
+
+    @PostMapping("/increase")
+    public void increaseStock(@RequestBody List<StockCheckRequest> items) {
+        productFacade.increaseStock(items);
+    };
 }

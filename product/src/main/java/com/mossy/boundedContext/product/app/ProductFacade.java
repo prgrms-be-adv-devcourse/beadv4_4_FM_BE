@@ -26,6 +26,7 @@ public class ProductFacade {
     private final DeleteProductItemUseCase deleteProductItemUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
     private final DecreaseStockUseCase decreaseStockUseCase;
+    private final IncreaseStockUsecase increaseStockUseCase;
 
     // 상품 등록
     public Long registerProduct(Long currentSellerId, ProductCreateRequest request) {
@@ -74,6 +75,14 @@ public class ProductFacade {
         if (requests == null || requests.isEmpty()) {
             return;
         }
-        decreaseStockUseCase.decreaseStocks(requests);
+        decreaseStockUseCase.execute(requests);
+    }
+
+    // 재고 복구
+    public void increaseStock(List<StockCheckRequest> requests) {
+        if (requests == null || requests.isEmpty()) {
+            return;
+        }
+        increaseStockUseCase.execute(requests);
     }
 }

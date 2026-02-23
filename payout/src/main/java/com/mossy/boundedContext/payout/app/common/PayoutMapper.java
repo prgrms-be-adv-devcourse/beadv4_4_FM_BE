@@ -7,6 +7,8 @@ import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
 import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateItemCreateDto;
 import com.mossy.boundedContext.payout.in.dto.event.PayoutSellerDto;
 import com.mossy.boundedContext.payout.in.dto.event.PayoutUserDto;
+import com.mossy.shared.market.enums.CouponType;
+import com.mossy.shared.market.enums.IssuerType;
 import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import com.mossy.shared.member.payload.SellerPayload;
 import com.mossy.shared.member.payload.UserPayload;
@@ -16,6 +18,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Mapper(
         componentModel = "spring",
@@ -71,7 +74,7 @@ public interface PayoutMapper {
         @Mapping(target = "sellerId", source = "orderItem.sellerId")
         @Mapping(target = "orderPrice", source = "orderItem.finalPrice")
         @Mapping(target = "originalPrice", source = "orderItem.originalPrice")
-        @Mapping(target = "platformDiscountAmount", source = "orderItem.platformDiscountAmount")
+        @Mapping(target = "platformDiscountAmount", expression = "java(calculatePlatformDiscountAmount(orderItem))")
         @Mapping(target = "paymentDate", source = "event.paidAt")
         PayoutCandidateCreateDto toCreatePayoutCandidateDto(
                 OrderPurchaseConfirmedEvent event,
@@ -79,6 +82,27 @@ public interface PayoutMapper {
                 BigDecimal deliveryDistance,
                 String weightGrade
         );
+
+        /**
+         * 플랫폼(ADMIN) 쿠폰일 때만 실제 할인 금액을 계산하여 반환.
+         * - FIXED: discountAmount 자체가 고정 할인 금액
+         * - PERCENTAGE: originalPrice × (discountAmount / 100) 으로 계산
+         * 판매자(SELLER) 쿠폰은 finalPrice에 이미 반영되어 있으므로 0 반환.
+         */
+        default BigDecimal calculatePlatformDiscountAmount(
+                OrderPurchaseConfirmedEvent.OrderItemPayload orderItem
+        ) {
+            if (orderItem.issuerType() != IssuerType.ADMIN || orderItem.discountAmount() == null) {
+                return BigDecimal.ZERO;
+            }
+            if (orderItem.couponType() == CouponType.FIXED) {
+                return orderItem.discountAmount();
+            }
+            // PERCENTAGE: originalPrice × rate / 100
+            return orderItem.originalPrice()
+                    .multiply(orderItem.discountAmount())
+                    .divide(BigDecimal.valueOf(100), 0, RoundingMode.HALF_UP);
+        }
 
 
         // --- [조회 응답 매핑] ---
