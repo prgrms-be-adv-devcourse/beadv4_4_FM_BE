@@ -13,14 +13,15 @@ import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.in.dto.OAuth2UserDto;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
-import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.boundedContext.out.external.dto.response.MemberVerifyExternResponse;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.shared.member.payload.UserPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -38,13 +39,14 @@ public class UserFacade {
     private final SetPasswordUseCase setPasswordUseCase;
     private final VerfyMemberUseCase verfyMemberUseCase;
     private final UserMapper mapper;
-    private final EventPublisher eventPublisher;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     //회원가입
+    @Transactional
     public Long signup(SignupRequest req) {
         User savedUser = signupUseCase.execute(req);
         UserPayload userPayload = mapper.toPayload(savedUser);
-        eventPublisher.publish(new UserJoinedEvent(userPayload));
+        kafkaEventPublisher.publish(new UserJoinedEvent(userPayload));
         return savedUser.getId();
     }
 
