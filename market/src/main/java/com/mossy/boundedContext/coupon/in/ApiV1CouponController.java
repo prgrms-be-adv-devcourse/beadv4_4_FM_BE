@@ -31,7 +31,7 @@ public class ApiV1CouponController {
     )
     @PostMapping("/seller")
     public RsData<Long> createSellerCoupon(
-            @RequestParam(name = "sellerId") Long sellerId,
+            @RequestHeader("X-Seller-Id") Long sellerId,
             @RequestBody @Valid CouponCreateRequest request
     ) {
         return RsData.success(SuccessCode.COUPON_CREATE, couponFacade.createSellerCoupon(sellerId, request));
@@ -40,7 +40,7 @@ public class ApiV1CouponController {
     @Operation(summary = "관리자 쿠폰 생성", description = "관리자가 쿠폰을 생성합니다.")
     @PostMapping("/admin")
     public RsData<Long> createAdminCoupon(
-            @RequestParam(name = "adminId") Long adminId,
+            @RequestHeader("X-User-Id") Long adminId,
             @RequestBody @Valid CouponCreateRequest request
     ) {
         return RsData.success(SuccessCode.COUPON_CREATE, couponFacade.createAdminCoupon(adminId, request));
@@ -49,7 +49,7 @@ public class ApiV1CouponController {
     @Operation(summary = "판매자 쿠폰 목록 조회", description = "판매자가 자신이 생성한 쿠폰 목록을 조회합니다.")
     @GetMapping("/seller/my")
     public RsData<List<SellerCouponListResponse>> getSellerCoupons(
-            @RequestParam(name = "sellerId") Long sellerId
+            @RequestHeader("X-Seller-Id") Long sellerId
     ) {
         return RsData.success(SuccessCode.COUPON_LIST, couponFacade.getSellerCoupons(sellerId));
     }
@@ -57,7 +57,7 @@ public class ApiV1CouponController {
     @Operation(summary = "판매자 쿠폰 수정", description = "판매자가 자신의 쿠폰을 수정합니다.")
     @PatchMapping("/seller/{couponId}")
     public RsData<Void> updateSellerCoupon(
-            @RequestParam(name = "sellerId") Long sellerId,
+            @RequestHeader("X-Seller-Id") Long sellerId,
             @PathVariable Long couponId,
             @RequestBody @Valid CouponUpdateRequest request
     ) {
@@ -68,7 +68,7 @@ public class ApiV1CouponController {
     @Operation(summary = "판매자 쿠폰 비활성화", description = "판매자가 자신의 쿠폰을 비활성화합니다.")
     @PatchMapping("/seller/{couponId}/deactivate")
     public RsData<Void> deactivateSellerCoupon(
-            @RequestParam(name = "sellerId") Long sellerId,
+            @RequestHeader("X-Seller-Id") Long sellerId,
             @PathVariable Long couponId
     ) {
         couponFacade.deactivateSellerCoupon(sellerId, couponId);
@@ -78,8 +78,8 @@ public class ApiV1CouponController {
     @Operation(summary = "다운로드 가능한 쿠폰 목록 조회", description = "상품에 적용 가능한 다운로드 가능 쿠폰 목록을 조회합니다.")
     @GetMapping
     public RsData<List<CouponResponse>> getDownloadableCoupons(
-            @RequestParam(name = "productItemId") Long productItemId,
-            @RequestParam(name = "userId") Long userId
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestParam(name = "productItemId") Long productItemId
     ) {
         return RsData.success(SuccessCode.COUPON_LIST, couponFacade.getDownloadableCoupons(productItemId, userId));
     }
@@ -87,8 +87,8 @@ public class ApiV1CouponController {
     @Operation(summary = "쿠폰 다운로드", description = "사용자가 쿠폰을 다운로드합니다.")
     @PostMapping("/{couponId}/download")
     public RsData<Long> downloadCoupon(
-            @PathVariable Long couponId,
-            @RequestParam(name = "userId") Long userId
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long couponId
     ) {
         return RsData.success(SuccessCode.COUPON_DOWNLOAD, couponFacade.downloadCoupon(couponId, userId));
     }
@@ -96,7 +96,7 @@ public class ApiV1CouponController {
     @Operation(summary = "내 쿠폰 목록 조회", description = "사용자가 보유한 쿠폰 목록을 조회합니다.")
     @GetMapping("/me")
     public RsData<List<UserCouponResponse>> getMyUserCoupons(
-            @RequestParam(name = "userId") Long userId
+            @RequestHeader("X-User-Id") Long userId
     ) {
         return RsData.success(SuccessCode.MY_COUPON_LIST, couponFacade.getMyUserCoupons(userId));
     }
@@ -104,7 +104,7 @@ public class ApiV1CouponController {
     @Operation(summary = "주문 시 적용 가능한 쿠폰 조회", description = "주문 상품에 적용 가능한 보유 쿠폰 목록을 조회합니다.")
     @GetMapping("/applicable")
     public RsData<List<UserCouponResponse>> getApplicableCoupons(
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
             @RequestParam(name = "productItemIds") List<Long> productItemIds
     ) {
         return RsData.success(SuccessCode.APPLICABLE_COUPON_LIST, couponFacade.getApplicableCoupons(userId, productItemIds));

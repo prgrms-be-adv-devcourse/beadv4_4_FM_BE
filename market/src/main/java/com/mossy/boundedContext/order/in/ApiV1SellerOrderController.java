@@ -29,7 +29,7 @@ public class ApiV1SellerOrderController {
     @GetMapping
     public RsData<Page<OrderListSellerResponse>> getSellerOrders(
             @Parameter(hidden = true)
-            @RequestParam(name="sellerId") Long sellerId,
+            @RequestHeader("X-Seller-Id") Long sellerId,
 
             @Parameter(hidden = true)
             @PageableDefault(size = 5) Pageable pageable
@@ -41,11 +41,11 @@ public class ApiV1SellerOrderController {
             summary = "판매자 판매 내역 상세 조회",
             description = "판매자가 판매한 특정 상품의 판매 내역의 상세를 조회합니다."
     )
-    @GetMapping("/{orderDetailId}")
+    @GetMapping("/{orderItemId}")
     public RsData<OrderDetailSellerResponse> getSellerOrderDetail(
             @Parameter(description = "주문 상세 ID", required = true)
-            @PathVariable Long orderDetailId
+            @PathVariable Long orderItemId
     ) {
-        return RsData.success(SuccessCode.SELLER_ORDER_DETAIL, orderFacade.getSellerOrderDetail(orderDetailId));
+        return RsData.success(SuccessCode.SELLER_ORDER_DETAIL, orderFacade.getSellerOrderDetail(orderItemId));
     }
 }

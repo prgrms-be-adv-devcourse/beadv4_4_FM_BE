@@ -24,7 +24,7 @@ public class ApiV1WishListApiController {
     @PostMapping
     public RsData<Long> createWishList(
             @Parameter(description = "사용자 ID", required = true)
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
             @Parameter(description = "상품 ID", required = true)
             @RequestParam(name = "productId") Long productId
     ) {
@@ -35,7 +35,7 @@ public class ApiV1WishListApiController {
     @DeleteMapping
     public RsData<Void> deleteWishList(
             @Parameter(description = "사용자 ID", required = true)
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
             @Parameter(description = "상품 ID", required = true)
             @RequestParam(name = "productId") Long productId
     ) {
@@ -47,7 +47,7 @@ public class ApiV1WishListApiController {
     @GetMapping
     public RsData<List<WishlistResponse>> getWishList(
             @Parameter(description = "사용자 ID", required = true)
-            @RequestParam(name = "userId") Long userId
+            @RequestHeader("X-User-Id") Long userId
     ) {
         return RsData.success(SuccessCode.WISHLIST_GET, wishListFacade.getWishList(userId));
     }
@@ -56,7 +56,7 @@ public class ApiV1WishListApiController {
     @GetMapping("/check")
     public RsData<Boolean> checkWishList(
             @Parameter(description = "사용자 ID", required = true)
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
             @Parameter(description = "상품 ID", required = true)
             @RequestParam(name = "productId") Long productId
     ) {

@@ -93,7 +93,7 @@ public class OrderFacade {
         return getSellerOrderUseCase.getSellerOrderList(sellerId, pageable);
     }
 
-    public OrderDetailSellerResponse getSellerOrderDetail(Long orderDetailId) {
-        return getSellerOrderUseCase.getSellerOrderDetail(orderDetailId);
+    public OrderDetailSellerResponse getSellerOrderDetail(Long orderItemId) {
+        return getSellerOrderUseCase.getSellerOrderDetail(orderItemId);
     }
 }
