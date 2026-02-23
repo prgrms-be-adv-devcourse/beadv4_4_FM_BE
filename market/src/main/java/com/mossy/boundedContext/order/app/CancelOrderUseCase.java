@@ -7,7 +7,10 @@ import com.mossy.boundedContext.order.in.dto.event.OrderCancelEvent;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.global.eventPublisher.EventPublisher;
+import com.mossy.kafka.KafkaTopics;
+import com.mossy.kafka.outbox.service.OutboxPublisher;
 import com.mossy.shared.market.enums.OrderState;
+import com.mossy.shared.market.event.OrderStockReturnEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +25,11 @@ public class CancelOrderUseCase {
 
     private final OrderRepository orderRepository;
     private final EventPublisher eventPublisher;
+    private final OutboxPublisher outboxPublisher;
 
     @Transactional
     public void cancelOrder(Long orderId, Long userId, String cancelReason) {
-        Order order = orderRepository.findWithItemsById(orderId)
+        Order order = orderRepository.findWithItemsAndCouponsById(orderId)
             .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
 
         if (!order.getBuyer().getId().equals(userId)) {
@@ -42,17 +46,32 @@ public class CancelOrderUseCase {
 
         order.cancel(cancelReason);
 
-        orderRepository.save(order);
-
         List<Long> userCouponIds = order.getOrderItems().stream()
                 .map(OrderItem::getUserCouponId)
                 .filter(Objects::nonNull)
                 .toList();
 
+        // 쿠폰 복구를 위한 내부 이벤트 발행
         eventPublisher.publish(new OrderCancelEvent(
                 order.getId(),
                 order.getBuyer().getId(),
                 userCouponIds
         ));
+
+        // 재고 복구를 위한 이벤트를 아웃박스에 저장
+        List<OrderStockReturnEvent.OrderItemStock> orderItemStocks = order.getOrderItems().stream()
+                .map(orderItem -> new OrderStockReturnEvent.OrderItemStock(
+                        orderItem.getProductItemId(),
+                        orderItem.getQuantity()
+                ))
+                .toList();
+
+        outboxPublisher.saveEvent(
+                KafkaTopics.ORDER_STOCK_RETURN,
+                "Order",
+                order.getId(),
+                OrderStockReturnEvent.class.getSimpleName(),
+                new OrderStockReturnEvent(orderItemStocks)
+        );
     }
 }

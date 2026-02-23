@@ -25,7 +25,7 @@ public class ApiV1CartController {
             description = "사용자의 장바구니와 장바구니 상품 목록을 조회합니다."
     )
     @GetMapping
-    public RsData<CartResponse> getCart(@RequestParam(name = "userId") Long userId) {
+    public RsData<CartResponse> getCart(@RequestHeader("X-User-Id") Long userId) {
         return RsData.success(SuccessCode.CART_GET, cartFacade.getCart(userId));
     }
 
@@ -36,7 +36,7 @@ public class ApiV1CartController {
     @PostMapping("/items")
     public RsData<Void> addCartItem(
             @Parameter(description = "사용자 ID")
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
 
             @Parameter(description = "장바구니 상품 추가 요청 DTO", required = true)
             @RequestBody CartItemAddRequest request
@@ -51,7 +51,7 @@ public class ApiV1CartController {
     )
     @PatchMapping("/items")
     public RsData<Void> updateCartItem(
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
 
             @Parameter(description = "장바구니 상품 수량 수정 요청 DTO", required = true)
             @RequestBody CartItemUpdateRequest request
@@ -66,7 +66,7 @@ public class ApiV1CartController {
     )
     @DeleteMapping("/items/{productId}")
     public RsData<Void> removeCartItem(
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
             @PathVariable Long productId
     ) {
         cartFacade.removeCartItem(userId, productId);
@@ -79,7 +79,7 @@ public class ApiV1CartController {
     )
     @DeleteMapping("/items")
     public RsData<Void> removeCartItems(
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
             @RequestBody CartItemDeleteRequest request
     ) {
         cartFacade.removeCartItems(userId, request.productItemIds());
@@ -91,7 +91,7 @@ public class ApiV1CartController {
             description = "사용자의 장바구니를 전부 비웁니다."
     )
     @DeleteMapping
-    public RsData<Void> clearCart(@RequestParam(name = "userId") Long userId) {
+    public RsData<Void> clearCart(@RequestHeader("X-User-Id") Long userId) {
         cartFacade.clearCart(userId);
         return RsData.success(SuccessCode.CART_CLEAR);
     }

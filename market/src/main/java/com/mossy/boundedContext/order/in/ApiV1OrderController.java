@@ -32,7 +32,7 @@ public class ApiV1OrderController {
     )
     @PostMapping
     public RsData<OrderCreatedResponse> createOrder(
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
 
             @Parameter(description = "주문 생성 요청 DTO", required = true)
             @RequestBody OrderCreatedRequest request
@@ -46,7 +46,7 @@ public class ApiV1OrderController {
     )
     @GetMapping
     public RsData<Page<OrderListResponse>> getMyOrders(
-            @RequestParam(name = "userId") Long userId,
+            @RequestHeader("X-User-Id") Long userId,
 
             @Parameter(hidden = true)
             @PageableDefault(size = 5) Pageable pageable
@@ -69,8 +69,8 @@ public class ApiV1OrderController {
     @Operation(summary = "주문 삭제", description = "특정 주문을 삭제 합니다.")
     @DeleteMapping("/{orderId}")
     public RsData<Void> deleteOrder(
-            @PathVariable Long orderId,
-            @RequestParam(name = "userId") Long userId
+            @RequestHeader("X-User-Id") Long userId,
+            @PathVariable Long orderId
     ) {
         orderFacade.deleteOrder(orderId, userId);
         return RsData.success(SuccessCode.ORDER_DELETE);

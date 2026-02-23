@@ -1,7 +1,9 @@
 package com.mossy.boundedContext.order.domain;
 
+import com.mossy.boundedContext.coupon.domain.UserCoupon;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.market.enums.CouponType;
+import com.mossy.shared.market.enums.IssuerType;
 import com.mossy.shared.market.enums.OrderState;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,18 +24,15 @@ public class OrderItem extends BaseIdAndTime {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_coupon_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private UserCoupon userCoupon;
+
     @Column(name = "seller_id", nullable = false)
     private Long sellerId;
 
     @Column(name = "product_item_id")
     private Long productItemId;
-
-    @Column(name = "user_coupon_id")
-    private Long userCouponId;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "coupon_type", length = 20)
-    private CouponType couponType;
 
     @Column(nullable = false)
     private int quantity;
@@ -63,8 +62,7 @@ public class OrderItem extends BaseIdAndTime {
             Long productItemId,
             int quantity,
             BigDecimal weight,
-            Long userCouponId,
-            CouponType couponType,
+            UserCoupon userCoupon,
             BigDecimal originalPrice,
             BigDecimal discountAmount
     ) {
@@ -78,8 +76,7 @@ public class OrderItem extends BaseIdAndTime {
                 .productItemId(productItemId)
                 .quantity(quantity)
                 .weight(weight)
-                .userCouponId(userCouponId)
-                .couponType(couponType)
+                .userCoupon(userCoupon)
                 .originalPrice(originalPrice)
                 .discountAmount(discountAmount)
                 .finalPrice(finalPrice)
@@ -93,5 +90,17 @@ public class OrderItem extends BaseIdAndTime {
 
     public void updateCancelReason(String reason) {
         this.cancelReason = reason;
+    }
+
+    public Long getUserCouponId() {
+        return userCoupon != null ? userCoupon.getId() : null;
+    }
+
+    public CouponType getCouponType() {
+        return userCoupon != null ? userCoupon.getCoupon().getCouponType() : null;
+    }
+
+    public IssuerType getIssuerType() {
+        return userCoupon != null ? userCoupon.getCoupon().getIssuerType() : null;
     }
 }

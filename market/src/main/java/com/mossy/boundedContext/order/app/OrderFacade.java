@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.order.app;
 
 import com.mossy.boundedContext.coupon.app.CouponFacade;
-import com.mossy.boundedContext.coupon.dto.CouponDiscountInfo;
+import com.mossy.boundedContext.coupon.domain.UserCoupon;
 import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest;
 import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest.OrderItemRequest;
 import com.mossy.boundedContext.order.in.dto.response.*;
@@ -15,11 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,15 +45,18 @@ public class OrderFacade {
                 throw new DomainException(ErrorCode.DUPLICATE_ORDER_REQUEST);
             }
 
-            // 쿠폰 썼는지 검증
-            boolean hasCoupon = request.items().stream()
-                    .anyMatch(item -> item.userCouponId() != null);
+            // 쿠폰 사용 여부 확인
+            List<Long> userCouponIds = request.items().stream()
+                    .map(OrderItemRequest::userCouponId)
+                    .filter(Objects::nonNull)
+                    .toList();
 
-            Map<Long, CouponDiscountInfo> couponInfoMap = hasCoupon
-                    ? couponFacade.calculateDiscounts(buildUserCouponPriceMap(request.items()))
+            Map<Long, UserCoupon> userCouponMap =
+                    !userCouponIds.isEmpty()
+                    ? couponFacade.getUserCoupons(userCouponIds)
                     : Map.of();
 
-            return createOrderUseCase.create(userId, request, couponInfoMap);
+            return createOrderUseCase.create(userId, request, userCouponMap);
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -91,16 +93,7 @@ public class OrderFacade {
         return getSellerOrderUseCase.getSellerOrderList(sellerId, pageable);
     }
 
-    public OrderDetailSellerResponse getSellerOrderDetail(Long orderDetailId) {
-        return getSellerOrderUseCase.getSellerOrderDetail(orderDetailId);
-    }
-
-    private Map<Long, BigDecimal> buildUserCouponPriceMap(List<OrderItemRequest> items) {
-        return items.stream()
-            .filter(item -> item.userCouponId() != null)
-            .collect(Collectors.toMap(
-                    OrderItemRequest::userCouponId,
-                    item -> item.price().multiply(BigDecimal.valueOf(item.quantity()))
-            ));
+    public OrderDetailSellerResponse getSellerOrderDetail(Long orderItemId) {
+        return getSellerOrderUseCase.getSellerOrderDetail(orderItemId);
     }
 }

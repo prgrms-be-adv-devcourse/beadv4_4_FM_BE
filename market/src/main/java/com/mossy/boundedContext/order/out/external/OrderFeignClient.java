@@ -10,6 +10,9 @@ import java.util.List;
 @FeignClient(name = "order-product", url = "http://localhost:8090")
 public interface OrderFeignClient {
 
-    @PostMapping("/internal/v1/orders/products/decrease")
+    @PostMapping("/internal/v1/products/decrease")
     void decreaseStock(@RequestBody List<StockCheckRequest> items);
+
+    @PostMapping("/internal/v1/products/increase")
+    void increaseStock(@RequestBody List<StockCheckRequest> items);
 }

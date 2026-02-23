@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.mossy.boundedContext.coupon.domain.QCoupon.coupon;
+import static com.mossy.boundedContext.coupon.domain.QUserCoupon.userCoupon;
 import static com.mossy.boundedContext.marketUser.domain.QMarketSeller.marketSeller;
 import static com.mossy.boundedContext.marketUser.domain.QMarketUser.marketUser;
 import static com.mossy.boundedContext.order.domain.QOrder.order;
@@ -127,6 +129,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .selectFrom(order)
                 .join(order.buyer, marketUser).fetchJoin()
                 .leftJoin(order.orderItems, orderItem).fetchJoin()
+                .leftJoin(orderItem.userCoupon, userCoupon).fetchJoin()
+                .leftJoin(userCoupon.coupon, coupon).fetchJoin()
                 .where(condition)
                 .orderBy(order.updatedAt.asc())
                 .offset(pageable.getOffset())

@@ -1,6 +1,6 @@
 package com.mossy.boundedContext.coupon.app;
 
-import com.mossy.boundedContext.coupon.dto.CouponDiscountInfo;
+import com.mossy.boundedContext.coupon.domain.UserCoupon;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
@@ -13,7 +13,6 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -31,10 +30,10 @@ public class CouponFacade {
     private final DownloadCouponUseCase downloadCouponUseCase;
     private final GetMyUserCouponsUseCase getMyUserCouponsUseCase;
     private final GetApplicableCouponsUseCase getApplicableCouponsUseCase;
-    private final CalculateCouponDiscountsUseCase calculateCouponDiscountsUseCase;
     private final UseCouponsUseCase useCouponsUseCase;
     private final RestoreCouponsUseCase restoreCouponsUseCase;
     private final GetSellerCouponsUseCase getSellerCouponsUseCase;
+    private final GetUserCouponsUseCase getUserCouponsUseCase;
 
     public Long createSellerCoupon(Long sellerId, CouponCreateRequest request) {
         return createSellerCouponUseCase.create(sellerId, request);
@@ -87,8 +86,8 @@ public class CouponFacade {
         return getApplicableCouponsUseCase.get(userId, productItemIds);
     }
 
-    public Map<Long, CouponDiscountInfo> calculateDiscounts(Map<Long, BigDecimal> userCouponPriceMap) {
-        return calculateCouponDiscountsUseCase.calculateDiscounts(userCouponPriceMap);
+    public Map<Long, UserCoupon> getUserCoupons(List<Long> userCouponIds) {
+        return getUserCouponsUseCase.getUserCoupons(userCouponIds);
     }
 
     public void useCoupons(List<Long> userCouponIds) {

@@ -32,9 +32,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    // Spring Batch
-    implementation("org.springframework.boot:spring-boot-starter-batch")
-
     // Jackson (JSON 직렬화)
     implementation("com.fasterxml.jackson.core:jackson-databind")
 

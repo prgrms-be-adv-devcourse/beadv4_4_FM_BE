@@ -21,7 +21,7 @@ public class GetSellerOrderUseCase {
     }
 
     @Transactional(readOnly = true)
-    public OrderDetailSellerResponse getSellerOrderDetail(Long orderDetailId) {
-        return orderRepository.findSellerOrderDetailById(orderDetailId);
+    public OrderDetailSellerResponse getSellerOrderDetail(Long orderItemId) {
+        return orderRepository.findSellerOrderDetailById(orderItemId);
     }
 }

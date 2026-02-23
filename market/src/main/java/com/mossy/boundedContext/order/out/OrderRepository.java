@@ -15,12 +15,16 @@ import java.util.Optional;
 public interface OrderRepository  extends JpaRepository<Order, Long>, OrderRepositoryCustom{
 
     @EntityGraph(attributePaths = {"orderItems", "buyer"})
-    Optional<Order> findWithItemsById(Long id);
+    Optional<Order> findWithItemsById(Long orderId);
+
+    @EntityGraph(attributePaths = {"orderItems", "buyer", "orderItems.userCoupon"})
+    Optional<Order> findWithItemsAndCouponsById(Long orderId);
 
     @Modifying
     @Query("delete from Order o where o.state = 'EXPIRED' and o.createdAt < :threshold")
     void deleteExpiredOrders(@Param("threshold") LocalDateTime threshold);
 
+    @EntityGraph(attributePaths = {"orderItems", "orderItems.userCoupon"})
     @Query("select o from Order o where o.state = 'PENDING' and o.createdAt < :threshold")
     List<Order> findPendingOrdersCreatedBefore(@Param("threshold") LocalDateTime threshold);
 }
