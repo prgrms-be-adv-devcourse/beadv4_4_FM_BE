@@ -11,8 +11,11 @@ public enum ErrorCode implements BaseCode {
     // ========================================
     // 401 Unauthorized (인증 실패)
     // ========================================
+    NO_AUTH_HEADER(401, "인증 헤더가 없습니다."),
+    INVALID_TOKEN_FORMAT(401, "토큰 형식이 잘못되었습니다."),
+    EMPTY_TOKEN(401, "토큰이 비어있습니다."),
     INVALID_TOKEN(401, "유효하지 않은 토큰입니다."),
-    EXPIRED_TOKEN(401, "만료된 토큰입니다."),
+    EXPIRED_TOKEN(401, "토큰이 만료되었습니다. 다시 로그인해주세요."),
     TOKEN_SIGNATURE_ERROR(401, "토큰 서명이 일치하지 않습니다."),
     AUTH_REQUIRED(401, "로그인이 필요한 서비스입니다."),
 
