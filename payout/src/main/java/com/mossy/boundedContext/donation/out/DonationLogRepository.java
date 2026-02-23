@@ -5,6 +5,7 @@ import com.mossy.boundedContext.donation.domain.DonationLog;
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -26,4 +27,6 @@ public interface DonationLogRepository extends JpaRepository<DonationLog, Long> 
      * @return 특정 주문 아이템의 기부 로그 리스트
      */
     List<DonationLog> findByOrderItemId(Long orderItemId);
+
+    List<DonationLog> findByUser_IdAndCreatedAtBetween(Long userId, LocalDateTime from, LocalDateTime to);
 }
