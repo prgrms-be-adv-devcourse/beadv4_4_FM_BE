@@ -10,6 +10,6 @@ import java.util.List;
 @FeignClient(name = "cart-product", url = "http://localhost:8090")
 public interface CartFeignClient {
 
-    @GetMapping("/api/v1/carts/products")
+    @GetMapping("/internal/v1/products")
     List<ProductInfoResponse> findByIds(@RequestParam("productItemIds") List<Long> productItemIds);
 }
