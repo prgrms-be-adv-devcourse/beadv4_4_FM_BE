@@ -17,7 +17,7 @@ spring:
       fail-on-empty-beans: false
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -39,6 +39,11 @@ spring:
     redis:
       host: localhost
       port: 6379
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: product
 
   elasticsearch:
     uris:

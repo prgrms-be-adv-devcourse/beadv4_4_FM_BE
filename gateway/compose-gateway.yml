@@ -8,15 +8,9 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - ../envs/.env.gateway
+      - .env.gateway
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-    depends_on:
-      - market
-      - member
-      - cash
-      - payout
-      - review
     networks:
       - mossy-network
 

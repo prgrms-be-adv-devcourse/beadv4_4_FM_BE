@@ -1,6 +1,3 @@
-include:
-  - ../compose-infra.yml # Redis 등은 여전히 로컬 도커를 쓴다면 포함
-
 services:
   auth:
     build:
@@ -9,17 +6,14 @@ services:
     container_name: auth
     restart: always
     ports:
-      - "8086:8080"
+      - "8086:8086"
     env_file:
       - .env.auth
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-    depends_on:
-      redis:
-        condition: service_healthy
     networks:
       - mossy-network
 
 networks:
   mossy-network:
-    name: mossy-network
+    external: true

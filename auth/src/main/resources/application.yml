@@ -6,7 +6,7 @@ spring:
     name: auth
   # .env.auth 파일에서 상세 값을 읽어오도록 설정
   config:
-    import: "optional:file:.env.auth[.properties]"
+    import: "optional:file:./auth/.env.auth[.properties]"
 
   output:
     ansi:
@@ -47,7 +47,7 @@ spring:
   # Redis 설정 (토큰 저장 및 로그인 제한용)
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: localhost
       port: 6379
 
 # JWT 설정

@@ -4,18 +4,21 @@ spring:
   application:
     name: review
   config:
-    import: "optional:file:../../../envs/.env.review[.properties]"
+    import: "optional:file:.env.review[.properties]"
   output:
     ansi:
       enabled: always
+
   jackson:
     serialization:
       fail-on-empty-beans: false
+
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:mossy}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:mossyProject123@}
+    url: jdbc:postgresql://localhost:5432/mossy
+    username: postgres
+    password: 1234
     driver-class-name: org.postgresql.Driver
+
   jpa:
     open-in-view: false
     hibernate:
@@ -23,12 +26,24 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 100
+
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: review
+
   cache:
     type: redis
+
+# S3
+cloud:
+  aws:
+    s3:
+      bucket: ${CLOUD_AWS_S3_BUCKET}
+    credentials:
+      access-key: ${CLOUD_AWS_ACCESS_KEY}
+      secret-key: ${CLOUD_AWS_SECRET_KEY}
+    region: ${CLOUD_AWS_REGION}
 
 # 모든 서비스에서 동일한 경로로 스웨거 사용
 springdoc:

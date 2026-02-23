@@ -29,6 +29,8 @@ repositories {
 dependencies {
     // 공통
     implementation(project(":common"))
+    implementation(project(":kafka"))
+
     implementation("org.springframework.boot:spring-boot-starter-web")
     //implementation("org.springframework.boot:spring-boot-starter-batch")
 

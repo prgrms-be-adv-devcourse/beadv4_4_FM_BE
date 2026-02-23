@@ -4,24 +4,20 @@ spring:
   application:
     name: payout
   config:
-    import: "optional:file:payout/.env.payout[.properties]"
+    import: "optional:file:./payout/.env.payout[.properties]"
   output:
     ansi:
       enabled: always
   jackson:
     serialization:
       fail-on-empty-beans: false
+
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:mossy}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:mossyProject123@}
+    url: jdbc:postgresql://localhost:5432/mossy
+    username: postgres
+    password: mossyProject123@
     driver-class-name: org.postgresql.Driver
-#   #로컬환경
-#    datasource:
-#      url: jdbc:postgresql://${localhost}:${5432}/${mossy}
-#      username: ${postgres}
-#      password: ${mossyProject123@}
-#      driver-class-name: org.postgresql.Driver
+
   jpa:
     open-in-view: false
     hibernate:
@@ -35,7 +31,7 @@ spring:
   cache:
     type: redis
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: payout
 

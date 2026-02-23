@@ -9,7 +9,7 @@ import com.mossy.boundedContext.recommendation.out.ProductServiceAdapter;
 import com.mossy.boundedContext.recommendation.out.external.dto.response.ProductResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.shared.market.event.ProductUpdatedEvent;
+import com.mossy.shared.product.event.ProductUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.stereotype.Service;

@@ -24,8 +24,7 @@ services:
 
 networks:
   mossy-network:
-    name: mossy-network
-    driver: bridge
+    external: true
 
 volumes:
   redis-data:

@@ -6,7 +6,7 @@ services:
     container_name: payout
     restart: always
     ports:
-      - "8084:8080"
+      - "8084:8084"
     env_file:
       - .env.payout
     networks:
