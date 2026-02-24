@@ -3,6 +3,8 @@ package com.mossy.boundedContext.coupon.app;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import com.mossy.boundedContext.coupon.out.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +17,7 @@ public class GetMyUserCouponsUseCase {
     private final UserCouponRepository userCouponRepository;
 
     @Transactional(readOnly = true)
-    public List<UserCouponResponse> get(Long userId) {
-        return userCouponRepository.findMyUserCoupons(userId);
+    public Page<UserCouponResponse> get(Long userId, Pageable pageable) {
+        return userCouponRepository.findMyUserCoupons(userId, pageable);
     }
 }

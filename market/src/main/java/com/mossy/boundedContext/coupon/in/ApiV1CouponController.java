@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -95,10 +98,11 @@ public class ApiV1CouponController {
 
     @Operation(summary = "내 쿠폰 목록 조회", description = "사용자가 보유한 쿠폰 목록을 조회합니다.")
     @GetMapping("/me")
-    public RsData<List<UserCouponResponse>> getMyUserCoupons(
-            @RequestHeader("X-User-Id") Long userId
+    public RsData<Page<UserCouponResponse>> getMyUserCoupons(
+            @RequestHeader("X-User-Id") Long userId,
+            @PageableDefault Pageable pageable
     ) {
-        return RsData.success(SuccessCode.MY_COUPON_LIST, couponFacade.getMyUserCoupons(userId));
+        return RsData.success(SuccessCode.MY_COUPON_LIST, couponFacade.getMyUserCoupons(userId, pageable));
     }
 
     @Operation(summary = "주문 시 적용 가능한 쿠폰 조회", description = "주문 상품에 적용 가능한 보유 쿠폰 목록을 조회합니다.")

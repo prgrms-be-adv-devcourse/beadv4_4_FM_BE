@@ -11,6 +11,8 @@ import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -78,8 +80,8 @@ public class CouponFacade {
         }
     }
 
-    public List<UserCouponResponse> getMyUserCoupons(Long userId) {
-        return getMyUserCouponsUseCase.get(userId);
+    public Page<UserCouponResponse> getMyUserCoupons(Long userId, Pageable pageable) {
+        return getMyUserCouponsUseCase.get(userId, pageable);
     }
 
     public List<UserCouponResponse> getApplicableCoupons(Long userId, List<Long> productItemIds) {
