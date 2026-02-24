@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "product", url = "http://localhost:8090")
+@FeignClient(name = "product", url = "${mossy.feign.product-url}")
 public interface ProductFeignClient {
 
     @PostMapping("/api/v1/internal/products/filter-by-reviews")

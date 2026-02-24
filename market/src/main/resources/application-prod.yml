@@ -34,6 +34,10 @@ spring:
     consumer:
       group-id: market
 
+mossy:
+  feign:
+    product-url: http://product:8090  # 배포 환경: Docker 네트워크 내 product 서비스
+
 logging:
   level:
     root: INFO

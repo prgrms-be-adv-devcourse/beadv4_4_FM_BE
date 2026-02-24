@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "wishlist-product", url = "http://localhost:8090")
+@FeignClient(name = "wishlist-product", url = "${mossy.feign.product-url}")
 public interface WishlistFeignClient {
 
     @GetMapping("/internal/v1/products")
