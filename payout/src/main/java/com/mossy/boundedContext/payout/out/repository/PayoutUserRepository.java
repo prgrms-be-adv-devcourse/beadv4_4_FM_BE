@@ -1,3 +1,4 @@
+
 package com.mossy.boundedContext.payout.out.repository;
 
 import com.mossy.boundedContext.payout.domain.user.PayoutUser;
