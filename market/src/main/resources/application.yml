@@ -40,13 +40,6 @@ spring:
       host: localhost
       port: 6379
 
-  elasticsearch:
-    uris:
-      - http://localhost:9200
-
-  cache:
-    type: redis
-
   # Kafka 설정
   kafka:
     bootstrap-servers: localhost:9092
@@ -91,12 +84,3 @@ outbox:
     interval-ms: 5000
   cleanup:
     cron: "0 0 3 * * *"
-
-toss:
-  payments:
-    base-url: https://api.tosspayments.com
-    secret-key: ${TOSS_SECRET_KEY:test_sk_*******************}
-
-# 테스트 데이터 초기화 설정
-data-init:
-  enabled: true  # false로 변경하면 DataInit 비활성화

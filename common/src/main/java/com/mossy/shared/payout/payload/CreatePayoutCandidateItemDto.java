@@ -1,7 +1,7 @@
 package com.mossy.shared.payout.payload;
 
 
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 @Builder
 public record CreatePayoutCandidateItemDto(
-        PayoutEventType eventType,
+        SellerEventType eventType,
         String relTypeCode,
         Long relId,
         LocalDateTime paymentDate,
