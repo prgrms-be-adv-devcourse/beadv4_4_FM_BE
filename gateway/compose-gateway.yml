@@ -13,7 +13,3 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
     networks:
       - mossy-network
-
-networks:
-  mossy-network:
-    external: true

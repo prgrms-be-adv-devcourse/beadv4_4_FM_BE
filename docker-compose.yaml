@@ -52,24 +52,15 @@ services:
         condition: service_healthy
       redpanda:
         condition: service_healthy
-
-
   gateway:
     depends_on:
-      market:
-        condition: service_healthy
-      product:
-        condition: service_healthy
-      member:
-        condition: service_healthy
-      auth:
-        condition: service_healthy
-      cash:
-        condition: service_healthy
-      review:
-        condition: service_healthy
-      ai:
-        condition: service_healthy
+      - market
+      - product
+      - member
+      - auth
+      - cash
+      - review
+      - ai
 
 
 networks:

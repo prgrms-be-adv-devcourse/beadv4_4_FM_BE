@@ -22,10 +22,6 @@ services:
     networks:
       - mossy-network
 
-networks:
-  mossy-network:
-    external: true
-
 volumes:
   redis-data:
     driver: local
