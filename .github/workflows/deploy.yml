@@ -1,9 +1,5 @@
 name: Build and Deploy to EC2 Kubernetes
 
-permissions:
-  contents: read
-  packages: write
-
 on:
   push:
     branches:

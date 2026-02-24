@@ -17,7 +17,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: member-service
-          image: ghcr.io/ddubuk228/beadv4_4_fm_be/member:latest
+          image: ghcr.io/ddubuk228/beadv4_4_fm_bemember-service
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
