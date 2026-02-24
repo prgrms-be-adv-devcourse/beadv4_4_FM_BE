@@ -63,24 +63,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - service: ai
-            changed: true
-          - service: auth
-            changed: true
-          - service: cash
-            changed: true
-          - service: gateway
-            changed: true
-          - service: market
-            changed: true
-          - service: member
-            changed: true
-          - service: payout
-            changed: true
-          - service: product
-            changed: true
-          - service: review
-            changed: true
+          - service: ai-service
+            changed: ${{ needs.detect-changes.outputs.ai == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: auth-service
+            changed: ${{ needs.detect-changes.outputs.auth == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: cash-service
+            changed: ${{ needs.detect-changes.outputs.cash == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: gateway-service
+            changed: ${{ needs.detect-changes.outputs.gateway == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: market-service
+            changed: ${{ needs.detect-changes.outputs.market == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: member-service
+            changed: ${{ needs.detect-changes.outputs.member == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: payout-service
+            changed: ${{ needs.detect-changes.outputs.payout == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: product-service
+            changed: ${{ needs.detect-changes.outputs.product == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: review-service
+            changed: ${{ needs.detect-changes.outputs.review == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
