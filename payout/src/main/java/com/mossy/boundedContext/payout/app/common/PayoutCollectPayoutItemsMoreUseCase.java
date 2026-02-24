@@ -11,7 +11,7 @@ import com.mossy.boundedContext.payout.out.repository.PayoutRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.global.rsData.RsData;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -61,13 +61,13 @@ public class PayoutCollectPayoutItemsMoreUseCase {
                         item.setPayoutItem(payoutItem);
 
                         // 6. 플랫폼 부담 할인 아이템인 경우 SYSTEM Payout에서 동일 금액 차감
-                        if (item.getEventType() == PayoutEventType.정산__프로모션_플랫폼부담) {
+                        if (item.getEventType() == SellerEventType.정산__프로모션_플랫폼부담) {
                             PayoutSeller system = payoutSupport.findSystemSeller()
                                     .orElseThrow(() -> new DomainException(ErrorCode.SYSTEM_SELLER_NOT_FOUND));
                             Payout systemPayout = findActiveByPayee(system)
                                     .orElseThrow(() -> new DomainException(ErrorCode.PAYOUT_NOT_FOUND));
                             systemPayout.addItem(
-                                    PayoutEventType.정산__프로모션_플랫폼부담,
+                                    SellerEventType.정산__프로모션_플랫폼부담,
                                     item.getRelTypeCode(),
                                     item.getRelId(),
                                     item.getPaymentDate(),

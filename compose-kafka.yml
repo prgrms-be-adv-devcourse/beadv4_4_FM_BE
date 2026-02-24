@@ -36,7 +36,3 @@ services:
       KAFKA_BROKERS: redpanda:29092
     networks:
       - mossy-network
-
-networks:
-  mossy-network:
-    external: true

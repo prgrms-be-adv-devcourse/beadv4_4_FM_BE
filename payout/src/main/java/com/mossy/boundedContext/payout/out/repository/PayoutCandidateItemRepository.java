@@ -2,7 +2,7 @@ package com.mossy.boundedContext.payout.out.repository;
 
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.domain.payout.PayoutItem;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -57,7 +57,7 @@ public interface PayoutCandidateItemRepository extends JpaRepository<PayoutCandi
      * @param eventType 조회할 이벤트 타입 (예: 정산__상품판매_기부금)
      * @return 조회 조건에 맞는 정산 후보 아이템 리스트
      */
-    List<PayoutCandidateItem> findByPayoutItem_Payout_IdAndEventType(Long payoutId, PayoutEventType eventType);
+    List<PayoutCandidateItem> findByPayoutItem_Payout_IdAndEventType(Long payoutId, SellerEventType eventType);
 
     List<PayoutCandidateItem> findByRelIdAndRelTypeCode(Long relId, String relTypeCode);
 
@@ -71,7 +71,7 @@ public interface PayoutCandidateItemRepository extends JpaRepository<PayoutCandi
      * @return 이미 처리된 경우 true
      */
     boolean existsByRelTypeCodeAndRelIdAndEventType(
-            String relTypeCode, Long relId, PayoutEventType eventType
+            String relTypeCode, Long relId, SellerEventType eventType
     );
 
     /**

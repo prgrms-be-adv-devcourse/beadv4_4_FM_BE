@@ -5,7 +5,7 @@ import com.mossy.boundedContext.payout.domain.user.PayoutUser;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,7 +30,7 @@ public class PayoutItem extends BaseIdAndTime {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_type", length = 30, nullable = false)
-    private PayoutEventType eventType;
+    private SellerEventType eventType;
 
     @Column(name = "rel_type_code", length = 100, nullable = false)
     private String relTypeCode;
@@ -57,7 +57,7 @@ public class PayoutItem extends BaseIdAndTime {
      * 기존 검증 로직을 유지하여 안전한 객체 생성을 보장합니다.
      */
     @Builder
-    public PayoutItem(Payout payout, PayoutEventType eventType, String relTypeCode, Long relId,
+    public PayoutItem(Payout payout, SellerEventType eventType, String relTypeCode, Long relId,
                       LocalDateTime paymentDate, PayoutUser payer, PayoutSeller payee, BigDecimal amount) {
 
         validatePayoutItem(payout, eventType, relTypeCode, relId, paymentDate, payee, amount);
@@ -72,7 +72,7 @@ public class PayoutItem extends BaseIdAndTime {
         this.amount = amount;
     }
 
-    private void validatePayoutItem(Payout payout, PayoutEventType eventType, String relTypeCode,
+    private void validatePayoutItem(Payout payout, SellerEventType eventType, String relTypeCode,
                                     Long relId, LocalDateTime paymentDate, PayoutSeller payee, BigDecimal amount) {
 
         if (payout == null) throw new DomainException(ErrorCode.PAYOUT_IS_NULL);

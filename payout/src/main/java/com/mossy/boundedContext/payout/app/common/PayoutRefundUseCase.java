@@ -4,7 +4,7 @@ import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,11 +60,11 @@ public class PayoutRefundUseCase {
 
         // 4. 환불 처리 — BUYER/PLATFORM 그룹 분리
         List<PayoutCandidateItem> buyerItems = candidates.stream()
-                .filter(c -> c.getEventType() != PayoutEventType.정산__프로모션_플랫폼부담)
+                .filter(c -> c.getEventType() != SellerEventType.정산__프로모션_플랫폼부담)
                 .toList();
 
         List<PayoutCandidateItem> platformItems = candidates.stream()
-                .filter(c -> c.getEventType() == PayoutEventType.정산__프로모션_플랫폼부담)
+                .filter(c -> c.getEventType() == SellerEventType.정산__프로모션_플랫폼부담)
                 .toList();
 
         refundCandidates(buyerItems, refundAmount);
@@ -142,12 +142,12 @@ public class PayoutRefundUseCase {
     /**
      * 정산 타입 → 환불 타입 변환
      */
-    private PayoutEventType convertToRefundEventType(PayoutEventType original) {
+    private SellerEventType convertToRefundEventType(SellerEventType original) {
         return switch (original) {
-            case 정산__상품판매_대금 -> PayoutEventType.정산__상품환불_대금;
-            case 정산__상품판매_수수료 -> PayoutEventType.정산__상품환불_수수료;
-            case 정산__상품판매_기부금 -> PayoutEventType.정산__상품환불_기부금;
-            case 정산__프로모션_플랫폼부담 -> PayoutEventType.정산__상품환불_플랫폼부담;
+            case 정산__상품판매_대금 -> SellerEventType.정산__상품환불_대금;
+            case 정산__상품판매_수수료 -> SellerEventType.정산__상품환불_수수료;
+            case 정산__상품판매_기부금 -> SellerEventType.정산__상품환불_기부금;
+            case 정산__프로모션_플랫폼부담 -> SellerEventType.정산__상품환불_플랫폼부담;
             default -> throw new DomainException(
                     ErrorCode.INVALID_PAYOUT_EVENT_TYPE
             );

@@ -9,9 +9,7 @@ services:
       - "8084:8084"
     env_file:
       - .env.payout
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
     networks:
       - mossy-network
-
-networks:
-  mossy-network:
-    external: true

@@ -3,7 +3,7 @@ package com.mossy.boundedContext.payout.app.common;
 import com.mossy.boundedContext.payout.domain.payout.PayoutCandidateItem;
 import com.mossy.boundedContext.payout.out.external.dto.event.DonationLogCreateEvent;
 import com.mossy.boundedContext.payout.out.repository.PayoutCandidateItemRepository;
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import com.mossy.shared.payout.event.PayoutCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,7 +25,7 @@ public class PayoutHandlePayoutCompletedUseCase {
         List<PayoutCandidateItem> donationCandidates = payoutCandidateItemRepository
                 .findByPayoutItem_Payout_IdAndEventType(
                         payoutId,
-                        PayoutEventType.정산__상품판매_기부금
+                        SellerEventType.정산__상품판매_기부금
                 );
 
         donationCandidates.forEach(candidate -> {

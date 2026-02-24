@@ -1,7 +1,7 @@
 package com.mossy.boundedContext.donation.in.dto.response;
 
 
-import com.mossy.shared.payout.enums.PayoutEventType;
+import com.mossy.shared.cash.enums.SellerEventType;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -15,7 +15,7 @@ public record PayoutCandidateItemResponse(
         Long id,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        PayoutEventType eventType,
+        SellerEventType eventType,
         String relTypeCode,
         Long relId,
         LocalDateTime paymentDate,
