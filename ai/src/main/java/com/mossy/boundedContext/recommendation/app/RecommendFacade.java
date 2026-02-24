@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.recommendation.app;
 
 import com.mossy.boundedContext.recommendation.app.usecase.RecommendGenerateReasonUseCase;
+import com.mossy.boundedContext.recommendation.app.usecase.RecommendPersonalizedUseCase;
 import com.mossy.boundedContext.recommendation.app.usecase.RecommendSearchItemsUseCase;
 import com.mossy.boundedContext.recommendation.app.usecase.RecommendSyncItemUseCase;
 import com.mossy.boundedContext.recommendation.in.dto.request.ProductCreateRequestDto;
@@ -26,6 +27,7 @@ public class RecommendFacade {
     private final RecommendSyncItemUseCase recommendSyncItemUseCase;
     private final RecommendSearchItemsUseCase recommendSearchItemsUseCase;
     private final RecommendGenerateReasonUseCase recommendGenerateReasonUseCase;
+    private final RecommendPersonalizedUseCase recommendPersonalizedUseCase;
     private final ProductServiceAdapter marketServiceAdapter;
     private final EmbeddingModel embeddingModel;
 
@@ -40,6 +42,17 @@ public class RecommendFacade {
     public Mono<List<ProductResponse>> searchRecommendations(Long productId) {
         return recommendSearchItemsUseCase.searchSimilarProductIds(productId)
             .flatMap(marketServiceAdapter::getProductsFilteredByReviews);
+    }
+
+    //유저 클릭 이력 기반 개인화 추천, 클릭 이력이 없으면 빈 리스트 반환
+    public Mono<List<ProductResponse>> getPersonalRecommendations(Long userId) {
+        return recommendPersonalizedUseCase.execute(userId)
+            .flatMap(productIds -> {
+                if (productIds.isEmpty()) {
+                    return Mono.just(List.<ProductResponse>of());
+                }
+                return marketServiceAdapter.getProductDetails(productIds);
+            });
     }
 
     public Mono<List<RecommendProductResponse>> chatRecommend(String query) {

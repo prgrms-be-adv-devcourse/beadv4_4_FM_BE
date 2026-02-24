@@ -7,6 +7,7 @@ import com.mossy.shared.market.event.OrderStockReturnEvent;
 import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;
+import com.mossy.shared.product.event.ProductClickedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -43,6 +44,7 @@ public class KafkaEventPublisher {
             case OrderPurchaseConfirmedEvent e -> KafkaTopics.ORDER_PURCHASE_CONFIRMED;
             case UserJoinedEvent e -> KafkaTopics.USER_JOINED;
             case SellerJoinedEvent e -> KafkaTopics.SELLER_JOINED;
+            case ProductClickedEvent e -> KafkaTopics.PRODUCT_CLICKED;
             default -> null;
         };
     }
