@@ -11,5 +11,7 @@ services:
       - .env.ai
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - REDIS_HOST=redis
+      - MOSSY_FEIGN_PRODUCT_URL=http://product:8090
     networks:
       - mossy-network

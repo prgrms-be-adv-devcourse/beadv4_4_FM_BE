@@ -11,5 +11,7 @@ services:
       - .env.cash
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - REDIS_HOST=redis
+      - MOSSY_FEIGN_MARKET_URL=http://market:8081
     networks:
       - mossy-network
