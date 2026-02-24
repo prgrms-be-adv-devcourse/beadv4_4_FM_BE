@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.coupon.in;
 
 import com.mossy.boundedContext.coupon.app.CouponFacade;
+import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
@@ -100,9 +101,10 @@ public class ApiV1CouponController {
     @GetMapping("/me")
     public RsData<Page<UserCouponResponse>> getMyUserCoupons(
             @RequestHeader("X-User-Id") Long userId,
+            @RequestParam(name = "status", required = false) UserCouponStatus status,
             @PageableDefault Pageable pageable
     ) {
-        return RsData.success(SuccessCode.MY_COUPON_LIST, couponFacade.getMyUserCoupons(userId, pageable));
+        return RsData.success(SuccessCode.MY_COUPON_LIST, couponFacade.getMyUserCoupons(userId, status, pageable));
     }
 
     @Operation(summary = "주문 시 적용 가능한 쿠폰 조회", description = "주문 상품에 적용 가능한 보유 쿠폰 목록을 조회합니다.")

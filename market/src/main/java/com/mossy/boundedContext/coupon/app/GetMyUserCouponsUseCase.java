@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.coupon.app;
 
+import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import com.mossy.boundedContext.coupon.out.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class GetMyUserCouponsUseCase {
     private final UserCouponRepository userCouponRepository;
 
     @Transactional(readOnly = true)
-    public Page<UserCouponResponse> get(Long userId, Pageable pageable) {
-        return userCouponRepository.findMyUserCoupons(userId, pageable);
+    public Page<UserCouponResponse> get(Long userId, UserCouponStatus status, Pageable pageable) {
+        return userCouponRepository.findMyUserCoupons(userId, status, pageable);
     }
 }

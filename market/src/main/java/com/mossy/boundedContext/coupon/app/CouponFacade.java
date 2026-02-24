@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.coupon.app;
 
 import com.mossy.boundedContext.coupon.domain.UserCoupon;
+import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
@@ -80,8 +81,8 @@ public class CouponFacade {
         }
     }
 
-    public Page<UserCouponResponse> getMyUserCoupons(Long userId, Pageable pageable) {
-        return getMyUserCouponsUseCase.get(userId, pageable);
+    public Page<UserCouponResponse> getMyUserCoupons(Long userId, UserCouponStatus status, Pageable pageable) {
+        return getMyUserCouponsUseCase.get(userId, status, pageable);
     }
 
     public List<UserCouponResponse> getApplicableCoupons(Long userId, List<Long> productItemIds) {

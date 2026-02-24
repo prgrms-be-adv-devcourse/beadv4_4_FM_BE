@@ -19,10 +19,10 @@ import static com.mossy.boundedContext.coupon.domain.QUserCoupon.userCoupon;
 @RequiredArgsConstructor
 public class UserCouponRepositoryImpl implements UserCouponRepositoryCustom {
 
-    private final JPAQueryFactory queryFactory;
+        private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<UserCouponResponse> findMyUserCoupons(Long userId, Pageable pageable) {
+    public Page<UserCouponResponse> findMyUserCoupons(Long userId, UserCouponStatus status, Pageable pageable) {
         List<UserCouponResponse> content = queryFactory
                 .select(Projections.constructor(UserCouponResponse.class,
                         userCoupon.id,
@@ -31,48 +31,51 @@ public class UserCouponRepositoryImpl implements UserCouponRepositoryCustom {
                         coupon.discountValue,
                         coupon.maxDiscountAmount,
                         userCoupon.status,
-                        userCoupon.expireAt
-                ))
-                .from(userCoupon)
-                .join(userCoupon.coupon, coupon)
-                .where(userCoupon.marketUser.id.eq(userId))
-                .orderBy(userCoupon.createdAt.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        JPAQuery<Long> countQuery = queryFactory
-                .select(userCoupon.count())
-                .from(userCoupon)
-                .where(userCoupon.marketUser.id.eq(userId));
-
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-    }
-
-    @Override
-    public List<UserCouponResponse> findApplicableCoupons(Long userId, List<Long> productItemIds) {
-        return queryFactory
-                .select(Projections.constructor(UserCouponResponse.class,
-                        userCoupon.id,
-                        coupon.couponName,
-                        coupon.couponType,
-                        coupon.discountValue,
-                        coupon.maxDiscountAmount,
-                        userCoupon.status,
-                        userCoupon.expireAt
+                        coupon.endAt
                 ))
                 .from(userCoupon)
                 .join(userCoupon.coupon, coupon)
                 .where(
                         userCoupon.marketUser.id.eq(userId),
-                        coupon.productItemId.in(productItemIds),
-                        userCoupon.status.eq(UserCouponStatus.UNUSED),
-                        userCoupon.expireAt.gt(LocalDateTime.now())
+                        status != null ? userCoupon.status.eq(status) : null
                 )
-                .orderBy(
-                        coupon.discountValue.desc(),
-                        userCoupon.expireAt.asc()
-                )
+                .orderBy(userCoupon.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
-    }
+
+                JPAQuery<Long> countQuery = queryFactory
+                                .select(userCoupon.count())
+                                .from(userCoupon)
+                                .where(
+                                        userCoupon.marketUser.id.eq(userId),
+                                        status != null ? userCoupon.status.eq(status) : null
+                                );
+
+                return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+        }
+
+        @Override
+        public List<UserCouponResponse> findApplicableCoupons(Long userId, List<Long> productItemIds) {
+                return queryFactory
+                                .select(Projections.constructor(UserCouponResponse.class,
+                                                userCoupon.id,
+                                                coupon.couponName,
+                                                coupon.couponType,
+                                                coupon.discountValue,
+                                                coupon.maxDiscountAmount,
+                                                userCoupon.status,
+                                                coupon.endAt))
+                                .from(userCoupon)
+                                .join(userCoupon.coupon, coupon)
+                                .where(
+                                                userCoupon.marketUser.id.eq(userId),
+                                                coupon.productItemId.in(productItemIds),
+                                                userCoupon.status.eq(UserCouponStatus.UNUSED),
+                                                coupon.endAt.gt(LocalDateTime.now()))
+                                .orderBy(
+                                                coupon.discountValue.desc(),
+                                                coupon.endAt.asc())
+                                .fetch();
+        }
 }
