@@ -66,4 +66,3 @@ services:
 networks:
   mossy-network:
     name: mossy-network
-    driver: bridge
