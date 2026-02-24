@@ -51,6 +51,10 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
+mossy:
+  feign:
+    market-url: http://localhost:8081  # 로컬 개발 환경: market 서비스 주소
+
 # OpenFeign 설정 (로깅 및 타임아웃)
 feign:
   client:
