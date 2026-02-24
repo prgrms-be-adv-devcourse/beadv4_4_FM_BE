@@ -90,7 +90,7 @@ jobs:
         if: ${{ matrix.changed == 'true' }}
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '21' # 자바 버전
           distribution: 'temurin'
 
       - name: Login to GitHub Container Registry
