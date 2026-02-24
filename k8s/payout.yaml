@@ -13,6 +13,8 @@ spec:
       labels:
         app: payout-service
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: payout-service
           image: ghcr.io/ddubuk228/beadv4_4_fm_be/payout:latest

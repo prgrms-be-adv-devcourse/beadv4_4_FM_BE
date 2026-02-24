@@ -13,6 +13,8 @@ spec:
       labels:
         app: review-service
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: review-service
           image: ghcr.io/ddubuk228/beadv4_4_fm_be/review:latest
