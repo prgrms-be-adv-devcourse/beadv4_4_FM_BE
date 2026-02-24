@@ -1,0 +1,231 @@
+name: Build and Deploy to EC2 Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'ai/**'
+      - 'auth/**'
+      - 'cash/**'
+      - 'gateway/**'
+      - 'market/**'
+      - 'member/**'
+      - 'payout/**'
+      - 'product/**'
+      - 'review/**'
+      - 'common/**'
+      - 'k8s/**'
+      - '.github/workflows/**'
+
+env:
+  # 이전에 설정하신 이미지 경로에 맞게 설정 (ghcr.io/ddubuk228/beadv4_4_fm_be)
+  REGISTRY: ghcr.io/${{ github.repository_owner }}/beadv4_4_fm_be
+  # 배포할 대상 EC2 인스턴스의 Name 태그값 (본인 AWS 환경에 맞게 변경 필수)
+  EC2_INSTANCE_TAG_NAME: k8s-cluster-node
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      ai: ${{ steps.filter.outputs.ai }}
+      auth: ${{ steps.filter.outputs.auth }}
+      cash: ${{ steps.filter.outputs.cash }}
+      gateway: ${{ steps.filter.outputs.gateway }}
+      market: ${{ steps.filter.outputs.market }}
+      member: ${{ steps.filter.outputs.member }}
+      payout: ${{ steps.filter.outputs.payout }}
+      product: ${{ steps.filter.outputs.product }}
+      review: ${{ steps.filter.outputs.review }}
+      common: ${{ steps.filter.outputs.common }}
+      workflow: ${{ steps.filter.outputs.workflow }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            ai: 'ai/**'
+            auth: 'auth/**'
+            cash: 'cash/**'
+            gateway: 'gateway/**'
+            market: 'market/**'
+            member: 'member/**'
+            payout: 'payout/**'
+            product: 'product/**'
+            review: 'review/**'
+            common: 'common/**'
+            workflow: '.github/workflows/**'
+
+  build-and-push:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - service: ai
+            changed: ${{ needs.detect-changes.outputs.ai == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: auth
+            changed: ${{ needs.detect-changes.outputs.auth == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: cash
+            changed: ${{ needs.detect-changes.outputs.cash == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: gateway
+            changed: ${{ needs.detect-changes.outputs.gateway == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: market
+            changed: ${{ needs.detect-changes.outputs.market == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: member
+            changed: ${{ needs.detect-changes.outputs.member == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: payout
+            changed: ${{ needs.detect-changes.outputs.payout == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: product
+            changed: ${{ needs.detect-changes.outputs.product == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+          - service: review
+            changed: ${{ needs.detect-changes.outputs.review == 'true' || needs.detect-changes.outputs.common == 'true' || needs.detect-changes.outputs.workflow == 'true' }}
+    steps:
+      - name: Checkout code
+        if: ${{ matrix.changed == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        if: ${{ matrix.changed == 'true' }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Login to GitHub Container Registry
+        if: ${{ matrix.changed == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        if: ${{ matrix.changed == 'true' }}
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push ${{ matrix.service }}
+        if: ${{ matrix.changed == 'true' }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./${{ matrix.service }}/Dockerfile
+          push: true
+          # ghcr.io/ddubuk228/beadv4_4_fm_be/member:latest 형태로 만들어짐
+          tags: ${{ env.REGISTRY }}/${{ matrix.service }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: [detect-changes, build-and-push]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate secret.yaml from template
+        env:
+          # Github Secrets & Vars에 등록해둔 값
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          CLOUD_AWS_ACCESS_KEY: ${{ secrets.CLOUD_AWS_ACCESS_KEY }}
+          CLOUD_AWS_SECRET_KEY: ${{ secrets.CLOUD_AWS_SECRET_KEY }}
+          CLOUD_AWS_REGION: ${{ vars.CLOUD_AWS_REGION }}
+          CLOUD_AWS_S3_BUCKET: ${{ vars.CLOUD_AWS_S3_BUCKET }}
+          TOSS_SECRET_KEY: ${{ secrets.TOSS_SECRET_KEY }}
+          OAUTH_GOOGLE_CLIENT_ID: ${{ secrets.OAUTH_GOOGLE_CLIENT_ID }}
+          OAUTH_GOOGLE_CLIENT_SECRET: ${{ secrets.OAUTH_GOOGLE_CLIENT_SECRET }}
+        run: |
+          envsubst < k8s/secret.yaml > k8s/secret-applied.yaml
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.CLOUD_AWS_REGION || 'ap-northeast-2' }}
+
+      - name: Get EC2 Instance ID
+        id: get_instance_id
+        run: |
+          INSTANCE_ID=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=${{ env.EC2_INSTANCE_TAG_NAME }}" "Name=instance-state-name,Values=running" \
+            --query "Reservations[].Instances[].InstanceId" --output text)
+          [[ -n "${INSTANCE_ID}" && "${INSTANCE_ID}" != "None" ]] || { echo "No running instance found"; exit 1; }
+          echo "INSTANCE_ID=${INSTANCE_ID}" >> "${GITHUB_ENV}"
+
+      - name: Deploy to Kubernetes via SSM
+        run: |
+          SERVICES=""
+          WORKFLOW_CHANGED="${{ needs.detect-changes.outputs.workflow }}"
+          COMMON_CHANGED="${{ needs.detect-changes.outputs.common }}"
+
+          # Deployment 이름이 통일된 상태 (-service)
+          if [ "$WORKFLOW_CHANGED" == "true" ] || [ "$COMMON_CHANGED" == "true" ]; then
+            SERVICES="ai-service auth-service cash-service gateway-service market-service member-service payout-service product-service review-service"
+          else
+            [[ "${{ needs.detect-changes.outputs.ai }}" == "true" ]] && SERVICES="$SERVICES ai-service"
+            [[ "${{ needs.detect-changes.outputs.auth }}" == "true" ]] && SERVICES="$SERVICES auth-service"
+            [[ "${{ needs.detect-changes.outputs.cash }}" == "true" ]] && SERVICES="$SERVICES cash-service"
+            [[ "${{ needs.detect-changes.outputs.gateway }}" == "true" ]] && SERVICES="$SERVICES gateway-service"
+            [[ "${{ needs.detect-changes.outputs.market }}" == "true" ]] && SERVICES="$SERVICES market-service"
+            [[ "${{ needs.detect-changes.outputs.member }}" == "true" ]] && SERVICES="$SERVICES member-service"
+            [[ "${{ needs.detect-changes.outputs.payout }}" == "true" ]] && SERVICES="$SERVICES payout-service"
+            [[ "${{ needs.detect-changes.outputs.product }}" == "true" ]] && SERVICES="$SERVICES product-service"
+            [[ "${{ needs.detect-changes.outputs.review }}" == "true" ]] && SERVICES="$SERVICES review-service"
+          fi
+          
+          SERVICES=$(echo $SERVICES | xargs)
+          SECRET_YAML_BASE64=$(base64 -w 0 k8s/secret-applied.yaml)
+
+          cat > /tmp/ssm-commands.json << EOF
+          {
+            "commands": [
+              "export KUBECONFIG=/etc/kubernetes/admin.conf",
+              "cd /tmp",
+              "rm -rf beadv4_4_fm_be",
+              "git clone https://github.com/${{ github.repository }}.git beadv4_4_fm_be",
+              "cd beadv4_4_fm_be",
+              "echo '${SECRET_YAML_BASE64}' | base64 -d > k8s/secret.yaml",
+              "kubectl apply -f k8s/",
+              "if [ -n \"${SERVICES}\" ]; then kubectl rollout restart deployment ${SERVICES} -n backend || true; fi"
+            ]
+          }
+          EOF
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "${INSTANCE_ID}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters file:///tmp/ssm-commands.json \
+            --query "Command.CommandId" \
+            --output text)
+
+          echo "Waiting for SSM command to complete..."
+          aws ssm wait command-executed \
+            --command-id "$COMMAND_ID" \
+            --instance-id "${INSTANCE_ID}" || true
+
+          aws ssm get-command-invocation \
+            --command-id "$COMMAND_ID" \
+            --instance-id "${INSTANCE_ID}" \
+            --query "[Status, StandardOutputContent, StandardErrorContent]" \
+            --output text
+
+      - name: Verify deployment
+        run: |
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "${INSTANCE_ID}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters 'commands=["export KUBECONFIG=/etc/kubernetes/admin.conf && kubectl get pods -n backend"]' \
+            --query "Command.CommandId" \
+            --output text)
+
+          sleep 5
+
+          aws ssm get-command-invocation \
+            --command-id "$COMMAND_ID" \
+            --instance-id "${INSTANCE_ID}" \
+            --query "StandardOutputContent" \
+            --output text

@@ -6,69 +6,13 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: api.sik2.cloud
+    - host: mossy-eco.biz
       http:
         paths:
-          - path: /api/v1/ai
-            pathType: Prefix
-            backend:
-              service:
-                name: ai-service
-                port:
-                  number: 8080
-          - path: /api/v1/auth
-            pathType: Prefix
-            backend:
-              service:
-                name: auth-service
-                port:
-                  number: 8080
-          - path: /api/v1/cash
-            pathType: Prefix
-            backend:
-              service:
-                name: cash-service
-                port:
-                  number: 8080
-          - path: /api/v1/gateway
+          - path: /
             pathType: Prefix
             backend:
               service:
                 name: gateway-service
-                port:
-                  number: 8080
-          - path: /api/v1/market
-            pathType: Prefix
-            backend:
-              service:
-                name: market-service
-                port:
-                  number: 8080
-          - path: /api/v1/member
-            pathType: Prefix
-            backend:
-              service:
-                name: member-service
-                port:
-                  number: 8080
-          - path: /api/v1/payout
-            pathType: Prefix
-            backend:
-              service:
-                name: payout-service
-                port:
-                  number: 8080
-          - path: /api/v1/product
-            pathType: Prefix
-            backend:
-              service:
-                name: product-service
-                port:
-                  number: 8080
-          - path: /api/v1/review
-            pathType: Prefix
-            backend:
-              service:
-                name: review-service
                 port:
                   number: 8080
