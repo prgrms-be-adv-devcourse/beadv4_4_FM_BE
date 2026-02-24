@@ -56,4 +56,4 @@ cloud:
 
 mossy:
   feign:
-    url: http://localhost:8086
+    auth-url: http://localhost:8086

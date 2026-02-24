@@ -68,7 +68,7 @@ mossy:
     access-token-expire-ms: 1800000    # 30분
     refresh-token-expire-ms: 1209600000    # 14일
   feign:
-    url: http://localhost:8082
+    member-url: http://localhost:8082
 
 # OpenFeign 설정 (로깅 및 타임아웃)
 feign:

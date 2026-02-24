@@ -48,7 +48,7 @@ spring:
 
 mossy:
   feign:
-    url: http://member:8082
+    member-url: http://member:8082
 
 security:
   refresh-token:
