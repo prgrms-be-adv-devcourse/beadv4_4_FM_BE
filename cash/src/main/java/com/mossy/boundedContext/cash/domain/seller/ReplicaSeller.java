@@ -47,7 +47,8 @@ public abstract class ReplicaSeller extends BaseSeller {
                 businessNum,
                 latitude,
                 longitude,
-                status
+                status,
+                null
         );
         this.id = id;
         this.createdAt = createdAt;

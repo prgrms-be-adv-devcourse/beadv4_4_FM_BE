@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.app.seller;
 
 import com.mossy.boundedContext.domain.seller.SellerRequest;
+import com.mossy.boundedContext.domain.user.ProfileConstants;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
@@ -38,6 +39,11 @@ public class SellerRequestUserFacade {
             throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 
+        String profileImageUrl = req.profileImageUrl();
+        if (profileImageUrl == null || profileImageUrl.isBlank()) {
+            profileImageUrl = ProfileConstants.DEFAULT_SELLER_PROFILE_IMAGE_URL;
+        }
+
         SellerRequest entity = SellerRequest.pending(
                 // userID 수정
                 userId,
@@ -50,7 +56,8 @@ public class SellerRequestUserFacade {
                 req.address1(),
                 req.address2(),
                 req.latitude(),
-                req.longitude()
+                req.longitude(),
+                profileImageUrl
         );
 
         SellerRequest saved = sellerRequestRepository.save(entity);

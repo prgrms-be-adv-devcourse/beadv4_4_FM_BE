@@ -57,6 +57,9 @@ public class SellerRequest extends BaseIdAndTime {
     @Column(name = "longitude", precision = 10, scale = 7)
     private BigDecimal longitude;
 
+    @Column(name = "profile_image_url", length = 500)
+    private String profileImageUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     private SellerRequestStatus status;
@@ -72,7 +75,8 @@ public class SellerRequest extends BaseIdAndTime {
             String address1,
             String address2,
             BigDecimal latitude,
-            BigDecimal longitude
+            BigDecimal longitude,
+            String profileImageUrl
     ) {
         SellerRequest r = new SellerRequest();
         r.userId = userId;
@@ -89,6 +93,7 @@ public class SellerRequest extends BaseIdAndTime {
         r.address2 = address2;
         r.latitude = latitude;
         r.longitude = longitude;
+        r.profileImageUrl = profileImageUrl;
 
         r.status = SellerRequestStatus.PENDING;
         return r;

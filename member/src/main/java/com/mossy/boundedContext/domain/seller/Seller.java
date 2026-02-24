@@ -53,7 +53,8 @@ public class Seller extends SourceSeller {
                        String contactEmail,
                        String contactPhone,
                        String address1,
-                       String address2) {
+                       String address2,
+                       String profileImageUrl) {
                 super(
                         userId,
                         sellerType,
@@ -61,7 +62,8 @@ public class Seller extends SourceSeller {
                         businessNum,
                         latitude,
                         longitude,
-                        SellerStatus.ACTIVE
+                        SellerStatus.ACTIVE,
+                        profileImageUrl
                 );
 
                 this.representativeName = representativeName;
@@ -83,7 +85,8 @@ public class Seller extends SourceSeller {
                         req.getContactEmail(),
                         req.getContactPhone(),
                         req.getAddress1(),
-                        req.getAddress2()
+                        req.getAddress2(),
+                        req.getProfileImageUrl()
                 );
         }
 
