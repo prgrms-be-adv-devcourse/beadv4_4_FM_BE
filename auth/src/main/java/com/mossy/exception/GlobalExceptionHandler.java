@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import feign.FeignException;
 
 @Slf4j
 @RestControllerAdvice
@@ -67,6 +68,22 @@ public class GlobalExceptionHandler {
                 .body(new RsData<>("F-400", message, null));
     }
 
+
+    // FeignException 처리 (회원 서비스 등 외부 API 호출 실패)
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<RsData<Void>> handleFeignException(FeignException e) {
+        log.warn("FeignException: {} - {}", e.status(), e.getMessage());
+
+        if (e.status() == 404 || e.status() == 401 || e.status() == 400) {
+            return ResponseEntity
+                    .status(ErrorCode.INVALID_CREDENTIALS.getStatus())
+                    .body(RsData.fail(ErrorCode.INVALID_CREDENTIALS));
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new RsData<>("F-500", "외부 서비스 호출 중 오류가 발생했습니다.", null));
+    }
 
     //예상하지 못한 예외 처리
     @ExceptionHandler(Exception.class)

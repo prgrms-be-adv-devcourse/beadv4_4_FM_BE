@@ -7,7 +7,8 @@ public record OAuth2UserDTO(
         String providerId,
         String provider,
         String email,
-        String name
+        String name,
+        Long linkUserId
 ) {
 }
 

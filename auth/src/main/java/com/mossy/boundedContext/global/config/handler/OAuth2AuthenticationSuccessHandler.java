@@ -33,6 +33,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final AuthFacade authFacade;
     private final AuthMapper mapper;
     private final Environment environment;
+    private final com.mossy.boundedContext.global.jwt.JwtProvider jwtProvider;
 
     @Value("${spring.security.oauth2.frontendUrl:http://localhost:5173}")
     private String frontendUrl;
@@ -47,10 +48,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String registrationId = authToken.getAuthorizedClientRegistrationId();
 
         OAuth2UserInfo userInfo = new OAuth2UserInfoImpl(oAuth2User.getAttributes(), registrationId);
-        OAuth2UserDTO userDTO = mapper.toOAuth2UserDTO(userInfo);
+        
+        Long linkUserId = extractLinkUserIdFromCookie(request, response);
+        OAuth2UserDTO userDTO = mapper.toOAuth2UserDTO(userInfo, linkUserId);
 
-        log.debug("OAuth2 사용자 정보: provider={}, email={}, name={}",
-                userInfo.provider(), userInfo.email(), userInfo.name());
+        log.debug("OAuth2 사용자 정보: provider={}, email={}, name={}, linkUserId={}",
+                userInfo.provider(), userInfo.email(), userInfo.name(), linkUserId);
 
         try {
             LoginResponse loginResponse = authFacade.upsertUserAndIssueToken(userDTO);
@@ -94,5 +97,29 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     //운영 환경 여부 확인
     private boolean isProductionEnvironment() {
         return Arrays.asList(environment.getActiveProfiles()).contains("prod");
+    }
+
+    //연동 토큰 추출 및 삭제
+    private Long extractLinkUserIdFromCookie(HttpServletRequest request, HttpServletResponse response) {
+        if (request.getCookies() == null) return null;
+        for (Cookie cookie : request.getCookies()) {
+            if ("linkToken".equals(cookie.getName())) {
+                try {
+                    String token = cookie.getValue();
+                    Long userId = jwtProvider.getUserId(token);
+                    
+                    // 쿠키 삭제
+                    Cookie deleteCookie = new Cookie("linkToken", null);
+                    deleteCookie.setMaxAge(0);
+                    deleteCookie.setPath("/");
+                    response.addCookie(deleteCookie);
+                    
+                    return userId;
+                } catch (Exception e) {
+                    log.warn("Failed to parse linkToken cookie: {}", e.getMessage());
+                }
+            }
+        }
+        return null;
     }
 }
