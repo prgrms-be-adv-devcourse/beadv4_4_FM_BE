@@ -30,6 +30,10 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
 
+mossy:
+  feign:
+    url: http://auth:8086
+
 logging:
   level:
     root: INFO
