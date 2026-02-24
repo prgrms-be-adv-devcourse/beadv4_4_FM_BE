@@ -112,8 +112,8 @@ jobs:
           context: .
           file: ./${{ matrix.service }}/Dockerfile
           push: true
-          # ghcr.io/ddubuk228/beadv4_4_fm_be/member:latest 형태로 만들어짐
-          tags: ${{ env.REGISTRY }}/${{ matrix.service }}:latest
+          # ghcr.io/ddubuk228/beadv4_4_fm_be:member-service 형태로 만들어짐
+          tags: ${{ env.REGISTRY }}:${{ matrix.service }}-service
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
