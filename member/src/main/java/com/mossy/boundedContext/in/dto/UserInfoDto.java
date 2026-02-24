@@ -9,6 +9,7 @@ public record UserInfoDto(
         String nickname,
         String email,
         String username,
+        String profileImage,
         String rrn,
         String phoneNum,
         String address,

@@ -31,7 +31,7 @@ spring:
         - id: member-private
           uri: http://member:8082
           predicates:
-            - Path=/api/v1/users/me, /api/v1/users/profile, /api/v1/users/password, /api/v1/users/address, /api/v1/users/phone, /api/v1/users/set-password, /api/v1/users/nickname
+            - Path=/api/v1/users/me, /api/v1/users/profile, /api/v1/users/password, /api/v1/users/address, /api/v1/users/phone, /api/v1/users/set-password, /api/v1/users/nickname, /api/v1/users/profile-image
           filters:
             - name: JwtAuthenticationFilter
 

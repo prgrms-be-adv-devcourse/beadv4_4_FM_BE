@@ -36,6 +36,7 @@ public interface UserMapper {
                 user.getNickname(),
                 user.getEmail(),
                 user.getName(),
+                user.getProfileImage(),
                 user.getRrnEncrypted(),
                 user.getPhoneNum(),
                 user.getAddress(),

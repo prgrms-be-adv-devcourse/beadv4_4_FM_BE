@@ -16,6 +16,8 @@ public enum SuccessCode implements BaseCode {
     CHANGE_PHONE_COMPLETE(200, "전화번호가 변경되었습니다."),
     CHANGE_NICKNAME_COMPLETE(200, "닉네임이 변경되었습니다."),
     SET_PASSWORD_COMPLETE(200, "비밀번호가 설정되었습니다."),
+    CHANGE_PROFILE_IMAGE_COMPLETE(200, "프로필 이미지가 변경되었습니다."),
+    DELETE_PROFILE_IMAGE_COMPLETE(200, "프로필 이미지가 삭제되었습니다."),
 
     // 판매자
     SELLER_REQUEST_COMPLETE(200, "판매자 신청이 완료되었습니다."),
