@@ -62,26 +62,25 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        matrix:
-          include:
-            - service: ai
-              changed: true
-            - service: auth
-              changed: true
-            - service: cash
-              changed: true
-            - service: gateway
-              changed: true
-            - service: market
-              changed: true
-            - service: member
-              changed: true
-            - service: payout
-              changed: true
-            - service: product
-              changed: true
-            - service: review
-              changed: true
+        include:
+          - service: ai
+            changed: true
+          - service: auth
+            changed: true
+          - service: cash
+            changed: true
+          - service: gateway
+            changed: true
+          - service: market
+            changed: true
+          - service: member
+            changed: true
+          - service: payout
+            changed: true
+          - service: product
+            changed: true
+          - service: review
+            changed: true
     steps:
       - name: Checkout code
         if: ${{ matrix.changed == 'true' }}
