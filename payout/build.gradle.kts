@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.1"
     id("io.spring.dependency-management") version "1.1.7"
+    id("me.champeau.jmh") version "0.7.2"
 }
 
 group = "com.mossy"
@@ -60,6 +61,17 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+jmh {
+    jmhVersion = "1.37"
+    warmupIterations = 3
+    iterations = 5
+    fork = 1
+    timeUnit = "ms"          // 결과 단위: ms (AverageTime 기준)
+    benchmarkMode = listOf("thrpt", "avgt")  // 처리량 + 평균 시간 동시 측정
+    resultsFile = project.file("${project.buildDir}/reports/jmh/results.txt")
+    zip64 = true             // 클래스파일 65535개 초과 시 필요
 }
 
 springBoot {
