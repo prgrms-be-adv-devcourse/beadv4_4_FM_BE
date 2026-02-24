@@ -9,11 +9,15 @@ import com.mossy.boundedContext.product.in.rest.dto.request.ProductUpdateRequest
 import com.mossy.boundedContext.product.in.rest.dto.response.ProductDetailResponse;
 import com.mossy.shared.product.enums.ProductItemStatus;
 import com.mossy.shared.product.enums.ProductStatus;
+import com.mossy.shared.product.event.ProductClickedEvent;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductFacade {
@@ -27,6 +31,7 @@ public class ProductFacade {
     private final DeleteProductUseCase deleteProductUseCase;
     private final DecreaseStockUseCase decreaseStockUseCase;
     private final IncreaseStockUsecase increaseStockUseCase;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     // 상품 등록
     public Long registerProduct(Long currentSellerId, ProductCreateRequest request) {
@@ -37,8 +42,19 @@ public class ProductFacade {
     }
 
     // 상품 상세 정보 조회
-    public ProductDetailResponse getProductDetail(Long catalogProductId) {
-        return getProductDetailUseCase.execute(catalogProductId);
+    public ProductDetailResponse getProductDetail(Long catalogProductId, Long userId) {
+        ProductDetailResponse response = getProductDetailUseCase.execute(catalogProductId);
+
+        // 로그인 유저일 경우 클릭 이벤트 카프카 발행
+        if (userId != null) {
+            try {
+                kafkaEventPublisher.publish(new ProductClickedEvent(userId, catalogProductId));
+            } catch (Exception e) {
+                log.warn("상품 클릭 이벤트 발행 실패: userId={}, productId={}", userId, catalogProductId, e);
+            }
+        }
+
+        return response;
     }
 
     // 상품 정보 수정

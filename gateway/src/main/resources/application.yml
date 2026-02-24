@@ -97,6 +97,8 @@ spring:
           predicates:
             - Path=/api/v1/products/search/**, /api/v1/products/{catalogProductId}
             - Method=GET
+          filters:
+            - name: OptionalJwtAuthenticationFilter
 
         - id: product-private
           uri: http://127.0.0.1:8090
@@ -104,6 +106,19 @@ spring:
             - Path=/api/v1/products/**
           filters:
             - name: JwtAuthenticationFilter
+
+        # ── AI Recommendation (공개 + 인증) ──
+        - id: ai-recommendation-personal
+          uri: http://127.0.0.1:8087
+          predicates:
+            - Path=/api/v1/recommendations/personal
+          filters:
+            - name: JwtAuthenticationFilter
+
+        - id: ai-recommendation-public
+          uri: http://127.0.0.1:8087
+          predicates:
+            - Path=/api/v1/recommendations/**
 
 jwt:
   secret: ${JWT_SECRET}

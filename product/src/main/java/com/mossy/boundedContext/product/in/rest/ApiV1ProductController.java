@@ -28,8 +28,10 @@ public class ApiV1ProductController {
             summary = "상품 상세 정보",
             description = "상품 상세 정보를 조회 합니다")
     @GetMapping("/{catalogProductId}")
-    public RsData<ProductDetailResponse> getProductById(@PathVariable Long catalogProductId) {
-        ProductDetailResponse response = productFacade.getProductDetail(catalogProductId);
+    public RsData<ProductDetailResponse> getProductById(
+            @PathVariable Long catalogProductId,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId) {
+        ProductDetailResponse response = productFacade.getProductDetail(catalogProductId, userId);
         return RsData.success(SuccessCode.GET_PRODUCT_SUCCESS, response);
     }
 
