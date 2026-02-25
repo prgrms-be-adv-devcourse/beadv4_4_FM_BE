@@ -13,14 +13,16 @@ import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.in.dto.OAuth2UserDto;
 import com.mossy.boundedContext.out.external.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.external.dto.response.SocialLonginResponse;
-import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.boundedContext.out.external.dto.response.MemberVerifyExternResponse;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.shared.member.payload.UserPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -35,17 +37,29 @@ public class UserFacade {
     private final ChangeAddressUseCase changeAddressUseCase;
     private final ChangePhoneNumUseCase changePhoneNumUseCase;
     private final ChangeNicknameUseCase changeNicknameUseCase;
+    private final ChangeProfileImageUseCase changeProfileImageUseCase;
     private final SetPasswordUseCase setPasswordUseCase;
     private final VerfyMemberUseCase verfyMemberUseCase;
     private final UserMapper mapper;
-    private final EventPublisher eventPublisher;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     //회원가입
-    public Long signup(SignupRequest req) {
-        User savedUser = signupUseCase.execute(req);
+    @Transactional
+    public Long signup(SignupRequest req, MultipartFile profileImage) {
+        User savedUser = signupUseCase.execute(req, profileImage);
         UserPayload userPayload = mapper.toPayload(savedUser);
-        eventPublisher.publish(new UserJoinedEvent(userPayload));
+        kafkaEventPublisher.publish(new UserJoinedEvent(userPayload));
         return savedUser.getId();
+    }
+
+    // 프로필 이미지 변경
+    public String changeProfileImage(Long userId, MultipartFile file) {
+        return changeProfileImageUseCase.execute(userId, file);
+    }
+
+    // 프로필 이미지 삭제 (기본 이미지로 복원)
+    public void deleteProfileImage(Long userId) {
+        changeProfileImageUseCase.deleteAndResetToDefault(userId);
     }
 
     //사용자 정보 조회 (판매자 신청 상태 포함)

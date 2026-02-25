@@ -43,6 +43,9 @@ public abstract class BaseSeller extends BaseEntity {
     @Column(name = "status", nullable = false, length = 20)
     protected SellerStatus status = SellerStatus.ACTIVE;
 
+    @Column(name = "profile_image_url", length = 500)
+    protected String profileImageUrl;
+
     public BaseSeller(
             Long userId,
             SellerType sellerType,
@@ -50,7 +53,8 @@ public abstract class BaseSeller extends BaseEntity {
             String businessNum,
             BigDecimal latitude,
             BigDecimal longitude,
-            SellerStatus status
+            SellerStatus status,
+            String profileImageUrl
     ) {
         this.userId = userId;
         this.sellerType = sellerType;
@@ -59,6 +63,7 @@ public abstract class BaseSeller extends BaseEntity {
         this.latitude = latitude;
         this.longitude = longitude;
         this.status = status;
+        this.profileImageUrl = profileImageUrl;
     }
 
     public void suspend() {

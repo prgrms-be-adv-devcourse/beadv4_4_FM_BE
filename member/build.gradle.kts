@@ -43,6 +43,10 @@ dependencies {
     // Feign Client 추가
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.0")
 
+    // AWS S3
+    implementation(platform("software.amazon.awssdk:bom:2.24.0"))
+    implementation("software.amazon.awssdk:s3")
+
     // Security
     implementation ("org.springframework.boot:spring-boot-starter-security")
 

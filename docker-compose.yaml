@@ -42,6 +42,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+      member:
+        condition: service_healthy
   review:
     depends_on:
       redpanda:
@@ -66,4 +68,3 @@ services:
 networks:
   mossy-network:
     name: mossy-network
-    driver: bridge

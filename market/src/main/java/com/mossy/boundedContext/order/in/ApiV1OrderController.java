@@ -49,7 +49,7 @@ public class ApiV1OrderController {
             @RequestHeader("X-User-Id") Long userId,
 
             @Parameter(hidden = true)
-            @PageableDefault(size = 5) Pageable pageable
+            @PageableDefault Pageable pageable
     ) {
         return RsData.success(SuccessCode.ORDER_LIST, orderFacade.getOrderListByUserId(userId, pageable));
     }

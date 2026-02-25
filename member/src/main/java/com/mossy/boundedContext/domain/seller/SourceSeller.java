@@ -39,12 +39,12 @@ public abstract class SourceSeller extends BaseSeller {
             String businessNum,
             BigDecimal latitude,
             BigDecimal longitude,
-            SellerStatus status
+            SellerStatus status,
+            String profileImageUrl
     ) {
         super(
                 userId, sellerType, storeName, businessNum,
-                latitude, longitude, status
-
+                latitude, longitude, status, profileImageUrl
         );
     }
 }

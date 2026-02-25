@@ -89,7 +89,7 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '21' # 자바 버전 설정
+          java-version: '21' # 자바 버전
           distribution: 'temurin'
 
       - name: Login to GitHub Container Registry

@@ -24,3 +24,9 @@ spring:
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: ai
+
+mossy:
+  feign:
+    product-url: http://product:8080  # 배포 환경: Docker 네트워크 내 product 서비스

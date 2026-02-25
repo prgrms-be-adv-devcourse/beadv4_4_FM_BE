@@ -37,6 +37,7 @@ dependencyManagement {
 dependencies {
     // common 모듈
     implementation(project(":common"))
+    implementation(project(":kafka"))
 
     // WebFlux (논블로킹/리액티브)
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -87,5 +88,5 @@ tasks.bootJar {
 }
 
 tasks.jar {
-    enabled = true
+    enabled = false
 }

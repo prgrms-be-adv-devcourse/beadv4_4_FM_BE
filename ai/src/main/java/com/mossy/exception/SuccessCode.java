@@ -13,6 +13,7 @@ public enum SuccessCode implements BaseCode {
     // =============================================================
     RECOMMENDATION_FOUND(200, "추천 상품 목록을 조회했습니다."),
     CHAT_RECOMMENDATION_FOUND(200, "AI 추천 상품 목록을 조회했습니다."),
+    PERSONAL_RECOMMENDATION_FOUND(200, "개인 맞춤 추천 상품 목록을 조회했습니다."),
     ;
 
     private final int status;

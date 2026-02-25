@@ -30,6 +30,7 @@ public class UserInfoDecryptor {
                 dto.nickname(),
                 dto.email(),
                 dto.username(),
+                dto.profileImage(),
                 decryptedRrn,
                 decryptedPhoneNum,
                 decryptedAddress,

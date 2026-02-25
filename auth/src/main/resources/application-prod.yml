@@ -48,6 +48,10 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
+mossy:
+  feign:
+    member-url: http://member:8080
+
 security:
   refresh-token:
     pepper: ${AUTH_REFRESH_TOKEN_PEPPER}

@@ -61,6 +61,9 @@ public interface PayoutRepository extends JpaRepository<Payout, Long> {
 
     List<Payout> findByPayoutDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 
+    List<Payout> findByPayeeAndPayoutDateBetweenOrderByPayoutDateDesc(
+            PayoutSeller payee, LocalDateTime from, LocalDateTime to);
+
     /**
      * 정산은 완료되었으나 아직 지급되지 않은 Payout들을 조회
      * 지급 배치에서 사용

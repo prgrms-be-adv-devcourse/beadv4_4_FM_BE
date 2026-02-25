@@ -22,6 +22,7 @@ public enum ErrorCode implements BaseCode {
     USER_ID_REQUIRED(400, "사용자 식별자(ID)는 필수입니다."),
     MISSING_BUSINESS_NUMBER(400, "법인사업자는 사업자번호가 필수입니다."),
     SOCIAL_ACCOUNT_EXISTS(400, "해당 이메일로 가입된 소셜 계정이 있습니다. 소셜 로그인을 이용해 주세요."),
+    ALREADY_REGISTERED_EMAIL(400, "이미 다른 계정으로 연동된 이메일이거나 가입된 이메일입니다."),
 
     // ========================================
     // 401 Unauthorized (인증 관련)

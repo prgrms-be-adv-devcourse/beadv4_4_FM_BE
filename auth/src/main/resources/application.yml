@@ -50,12 +50,25 @@ spring:
       host: localhost
       port: 6379
 
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
 # JWT 설정
 mossy:
   jwt:
     secret: ${JWT_SECRET}
     access-token-expire-ms: 1800000    # 30분
     refresh-token-expire-ms: 1209600000    # 14일
+  feign:
+    member-url: http://localhost:8082
 
 # OpenFeign 설정 (로깅 및 타임아웃)
 feign:
@@ -68,6 +81,7 @@ feign:
 security:
   refresh-token:
     pepper: ${AUTH_REFRESH_TOKEN_PEPPER}
+
 
 # 로깅 설정 (Feign 통신 확인용)
 logging:

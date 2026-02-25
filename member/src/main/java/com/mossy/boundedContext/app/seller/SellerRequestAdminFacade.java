@@ -15,6 +15,7 @@ import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import com.mossy.boundedContext.out.repository.user.RoleRepository;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
 import com.mossy.global.eventPublisher.EventPublisher;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.member.domain.enums.SellerRequestStatus;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
@@ -34,7 +35,7 @@ public class SellerRequestAdminFacade {
     private final SellerMapper sellerMapper;
     private final SellerRequestMapper sellerRequestMapper;
     private final RoleRepository roleRepository;
-    private final EventPublisher eventPublisher;
+    private final KafkaEventPublisher kafkaEventPublisher;
     private final UserRepository userRepository;
 
     @Transactional
@@ -74,7 +75,7 @@ public class SellerRequestAdminFacade {
         }
 
         // SellerJoinedEvent 발행 → SellerKafkaEventPublisher가 AFTER_COMMIT 시 Kafka로 전달
-        eventPublisher.publish(sellerMapper.toSellerJoinedEvent(seller));
+        kafkaEventPublisher.publish(sellerMapper.toSellerJoinedEvent(seller));
 
         return new SellerAppoveResult(seller.getId(), userId);
     }

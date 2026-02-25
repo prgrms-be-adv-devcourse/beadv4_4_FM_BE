@@ -12,4 +12,5 @@ public class KafkaTopics {
     public static final String ORDER_PURCHASE_CONFIRMED = "order.purchase.confirmed";
     public static final String ORDER_REFUNDED = "order.refunded";
     public static final String PAYOUT_WALLET_CREDIT = "payout.wallet.credit";
+    public static final String PRODUCT_CLICKED = "product.clicked";
 }

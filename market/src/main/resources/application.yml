@@ -72,6 +72,10 @@ market:
     cart:
       max_quantity: 100
 
+mossy:
+  feign:
+    product-url: http://localhost:8090  # 로컬 개발 환경: product 서비스 주소
+
 batch:
   confirm-orders:
     chunk-size: 100

@@ -8,7 +8,7 @@ import com.mossy.boundedContext.out.dto.response.SocialLonginResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "member", url = "http://localhost:8082")
+@FeignClient(name = "member", url = "${mossy.feign.member-url}")
 public interface MemberFeignClient {
 
     @PostMapping("/internal/v1/users/verify")

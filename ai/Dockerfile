@@ -49,7 +49,7 @@ RUN apk add --no-cache tzdata && \
     adduser -u 1001 -S appuser -G appgroup
 
 # 빌드 결과물만 복사
-COPY --from=build /app/ai/build/libs/*.jar app.jar
+COPY --from=build /app/ai/build/libs/recommendation.jar app.jar
 
 # 권한 부여 및 사용자 전환
 RUN chown appuser:appgroup app.jar

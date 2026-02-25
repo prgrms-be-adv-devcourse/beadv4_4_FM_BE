@@ -59,7 +59,7 @@ public class AdminUserInit {
                 .phoneNum("")
                 .address("")
                 .rrnEncrypted("")
-                .profileImage("default.png")
+                .profileImage("default-user")
                 .status(UserStatus.ACTIVE)
                 .longitude(BigDecimal.ZERO)
                 .latitude(BigDecimal.ZERO)

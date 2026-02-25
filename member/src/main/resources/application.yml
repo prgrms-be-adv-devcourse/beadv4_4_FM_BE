@@ -11,9 +11,17 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
     open-in-view: false
     defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         default_batch_fetch_size: 100
@@ -45,3 +53,7 @@ cloud:
       access-key: ${CLOUD_AWS_ACCESS_KEY}
       secret-key: ${CLOUD_AWS_SECRET_KEY}
     region: ${CLOUD_AWS_REGION}
+
+mossy:
+  feign:
+    auth-url: http://localhost:8086

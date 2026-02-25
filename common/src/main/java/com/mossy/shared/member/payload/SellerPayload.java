@@ -17,6 +17,7 @@ public record SellerPayload(
         BigDecimal latitude,
         BigDecimal longitude,
         SellerStatus status,
+        String profileImageUrl,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 

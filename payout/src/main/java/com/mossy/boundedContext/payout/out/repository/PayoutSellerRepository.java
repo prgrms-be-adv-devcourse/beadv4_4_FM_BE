@@ -18,4 +18,6 @@ public interface PayoutSellerRepository extends JpaRepository<PayoutSeller, Long
      * @return 조회된 PayoutSeller 객체 (Optional)
      */
     Optional<PayoutSeller> findByStoreName(String storeName);
+
+    Optional<PayoutSeller> findByUserId(Long userId);
 }

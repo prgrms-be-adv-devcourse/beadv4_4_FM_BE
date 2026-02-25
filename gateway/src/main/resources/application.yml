@@ -15,7 +15,7 @@ spring:
         - id: market
           uri: http://127.0.0.1:8081
           predicates:
-            - Path=/api/v1/carts/**, /api/v1/orders/**, /api/v1/payments/**
+            - Path=/api/v1/carts/**, /api/v1/orders/**, /api/v1/coupons/**, /api/v1/seller/orders**, /api/v1/wishlist/**
           filters:
             - name: JwtAuthenticationFilter
 
@@ -24,12 +24,14 @@ spring:
           uri: http://127.0.0.1:8082
           predicates:
             - Path=/api/v1/users/signup
+          filters:
+            - name: StripInternalHeadersFilter
 
         # ── Member (인증 필요) ──
         - id: member-private
           uri: http://127.0.0.1:8082
           predicates:
-            - Path=/api/v1/users/me, /api/v1/users/profile, /api/v1/users/password, /api/v1/users/address, /api/v1/users/phone, /api/v1/users/set-password, /api/v1/users/nickname
+            - Path=/api/v1/users/me, /api/v1/users/profile, /api/v1/users/password, /api/v1/users/address, /api/v1/users/phone, /api/v1/users/set-password, /api/v1/users/nickname, /api/v1/users/profile-image
           filters:
             - name: JwtAuthenticationFilter
 
@@ -78,12 +80,16 @@ spring:
           uri: http://127.0.0.1:8086
           predicates:
             - Path=/api/v1/auth/**
+          filters:
+            - name: StripInternalHeadersFilter
 
         # ── Auth OAuth2 ──
         - id: auth-oauth2
           uri: http://127.0.0.1:8086
           predicates:
             - Path=/oauth2/**, /login/oauth2/**
+          filters:
+            - name: StripInternalHeadersFilter
 
         # ── Product ──
         - id: product-public
@@ -91,6 +97,8 @@ spring:
           predicates:
             - Path=/api/v1/products/search/**, /api/v1/products/{catalogProductId}
             - Method=GET
+          filters:
+            - name: OptionalJwtAuthenticationFilter
 
         - id: product-private
           uri: http://127.0.0.1:8090
@@ -98,6 +106,19 @@ spring:
             - Path=/api/v1/products/**
           filters:
             - name: JwtAuthenticationFilter
+
+        # ── AI Recommendation (공개 + 인증) ──
+        - id: ai-recommendation-personal
+          uri: http://127.0.0.1:8087
+          predicates:
+            - Path=/api/v1/recommendations/personal
+          filters:
+            - name: JwtAuthenticationFilter
+
+        - id: ai-recommendation-public
+          uri: http://127.0.0.1:8087
+          predicates:
+            - Path=/api/v1/recommendations/**
 
 jwt:
   secret: ${JWT_SECRET}

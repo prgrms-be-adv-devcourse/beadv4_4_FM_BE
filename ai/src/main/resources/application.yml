@@ -12,13 +12,11 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
-  # 🟢 완전한 논블로킹 DB 설정 (driver-class-name 삭제됨)
   r2dbc:
     url: r2dbc:${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-  # 🟢 AI 모델 설정 추가
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
@@ -38,3 +36,7 @@ springdoc:
     path: /mossy-docs
   api-docs:
     path: /v3/api-docs
+
+mossy:
+  feign:
+    product-url: http://localhost:8090  # 로컬 개발 환경: product 서비스 주소

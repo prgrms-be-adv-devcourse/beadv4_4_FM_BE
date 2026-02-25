@@ -16,6 +16,7 @@ public record SellerRequestCreateRequest(
         @NotBlank String address1,
         String address2,
         @NotNull BigDecimal latitude,
-        @NotNull BigDecimal longitude
+        @NotNull BigDecimal longitude,
+        String profileImageUrl
 ) {
 }

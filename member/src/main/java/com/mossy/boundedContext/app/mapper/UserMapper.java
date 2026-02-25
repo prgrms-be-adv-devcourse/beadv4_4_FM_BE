@@ -28,14 +28,25 @@ public interface UserMapper {
                     .map(UserSocialAccount::getProvider)
                     .toList()
                 : List.of();
-                
+
         boolean hasPassword = !user.isSocialOnly();
+
+        // 프로필 이미지 정책 적용
+        String profileImage = user.getProfileImage();
+        if (profileImage != null && !profileImage.isBlank()) {
+            if (profileImage.contains("default-seller")) {
+                profileImage = "default-seller";
+            } else if (profileImage.contains("default-user") || profileImage.contains("default-seller")) {
+                profileImage = "default-user";
+            }
+        }
 
         return new UserInfoDto(
                 user.getId(),
                 user.getNickname(),
                 user.getEmail(),
                 user.getName(),
+                profileImage,
                 user.getRrnEncrypted(),
                 user.getPhoneNum(),
                 user.getAddress(),

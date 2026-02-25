@@ -15,21 +15,26 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "User", description = "로그인 사용자 정보 조회 API")
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-public class UserController {
+public class ApiV1UserController {
 
     private final UserFacade userFacade;
 
-    @Operation(summary = "회원가입", description = "일반 유저(USER)로 가입")
-    @PostMapping("/signup")
-    public RsData<Long> signup(@RequestBody SignupRequest req) {
-        return RsData.success(SuccessCode.SIGNUP_COMPLETE, userFacade.signup(req));
+    @Operation(summary = "회원가입", description = "일반 유저(USER)로 가입. 프로필 이미지 미첨부 시 기본 이미지 적용")
+    @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public RsData<Long> signup(
+            @Valid @RequestPart("data") SignupRequest req,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
+    ) {
+        return RsData.success(SuccessCode.SIGNUP_COMPLETE, userFacade.signup(req, profileImage));
     }
 
     @Operation(summary = "마이페이지", description = "현재 로그인된 사용자의 기본 식별 정보(userId)를 조회")
@@ -109,6 +114,25 @@ public class UserController {
     ) {
         userFacade.changeNickname(userId, request);
         return RsData.success(SuccessCode.CHANGE_NICKNAME_COMPLETE, null);
+    }
+
+    @Operation(summary = "프로필 이미지 변경", description = "프로필 이미지를 S3에 업로드하고 변경합니다.")
+    @PatchMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public RsData<String> changeProfileImage(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestPart("profileImage") MultipartFile profileImage
+    ) {
+        String newImageUrl = userFacade.changeProfileImage(userId, profileImage);
+        return RsData.success(SuccessCode.CHANGE_PROFILE_IMAGE_COMPLETE, newImageUrl);
+    }
+
+    @Operation(summary = "프로필 이미지 삭제", description = "프로필 이미지를 삭제하고 기본 이미지로 복원합니다.")
+    @DeleteMapping("/profile-image")
+    public RsData<Void> deleteProfileImage(
+            @RequestHeader("X-User-Id") Long userId
+    ) {
+        userFacade.deleteProfileImage(userId);
+        return RsData.success(SuccessCode.DELETE_PROFILE_IMAGE_COMPLETE, null);
     }
 }
 

@@ -36,12 +36,39 @@ public class ProcessSocialLoginUseCase {
         String provider = userDTO.provider();
         String providerId = userDTO.providerId();
         String email = userDTO.email();
+        Long linkUserId = userDTO.linkUserId();
 
         if (email == null || email.isBlank()) {
             throw new DomainException(ErrorCode.INVALID_USER_DATA);
         }
 
-        // 1. 이미 연동된 소셜 계정이 있으면 → 해당 유저로 로그인
+        // 0. 명시적 연동 (linkUserId가 존재하는 경우)
+        if (linkUserId != null) {
+            log.info("기존 계정에 소셜 연동 요청: userId={}, provider={}", linkUserId, provider);
+            
+            // 이미 이 소셜 계정이 다른 유저에게 연결되어 있는지 확인
+            Optional<UserSocialAccount> existingSocialAccount =
+                    socialAccountRepository.findByProviderAndProviderId(provider, providerId);
+                    
+            if (existingSocialAccount.isPresent()) {
+                if (!existingSocialAccount.get().getUser().getId().equals(linkUserId)) {
+                    log.error("이미 다른 계정에 연동된 소셜 계정입니다: provider={}, providerId={}", provider, providerId);
+                    throw new DomainException(ErrorCode.ALREADY_REGISTERED_EMAIL);
+                }
+                // 이미 현재 유저에 연동되어 있음
+                User user = existingSocialAccount.get().getUser();
+                return mapper.toSocialLoginResponse(user, extractRoleNames(user), false);
+            }
+            
+            // 연동 수행
+            User user = userRepository.findById(linkUserId)
+                    .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
+            
+            saveSocialAccount(user, provider, providerId, email);
+            return mapper.toSocialLoginResponse(user, extractRoleNames(user), false);
+        }
+
+        // 1. 일반 로그인: 이미 연동된 소셜 계정이 있으면 → 해당 유저로 로그인
         Optional<UserSocialAccount> existingSocialAccount =
                 socialAccountRepository.findByProviderAndProviderId(provider, providerId);
 
@@ -53,21 +80,11 @@ public class ProcessSocialLoginUseCase {
             return mapper.toSocialLoginResponse(user, extractRoleNames(user), needsAdditionalInfo);
         }
 
-        // 2. 동일 이메일 유저 조회 → 있으면 소셜 계정만 추가 연동
+        // 2. 일반 로그인: 동일 이메일 유저 조회 → 있으면 자동 연동 방지 (에러 발생)
         Optional<User> existingUser = userRepository.findByEmailWithRoles(email);
         if (existingUser.isPresent()) {
-            User user = existingUser.get();
-            log.info("기존 유저에 소셜 계정 연동 시작: userId={}, email={}, provider={}, userStatus={}",
-                    user.getId(), email, provider, user.getStatus());
-
-            // 기존 user의 상태 확인
-            if (user.isPending()) {
-                log.warn("기존 PENDING 유저 재사용: userId={}, email={}, provider={}", user.getId(), email, provider);
-            }
-
-            saveSocialAccount(user, provider, providerId, email);
-            log.info("기존 유저에 소셜 계정 연동 완료: userId={}, provider={}", user.getId(), provider);
-            return mapper.toSocialLoginResponse(user, extractRoleNames(user), false);
+            log.error("로그인 시도 중 동일 이메일 발견, 자동 연동 방지: email={}", email);
+            throw new DomainException(ErrorCode.ALREADY_REGISTERED_EMAIL);
         }
 
         // 3. 신규 유저 생성 + 소셜 계정 생성

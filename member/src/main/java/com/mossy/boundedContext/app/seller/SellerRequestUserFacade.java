@@ -8,6 +8,8 @@ import com.mossy.boundedContext.out.repository.seller.SellerRequestRepository;
 import com.mossy.shared.member.domain.enums.SellerType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import com.mossy.boundedContext.out.s3.S3Adapter;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
 
 
@@ -16,9 +18,10 @@ import org.springframework.stereotype.Service;
 public class SellerRequestUserFacade {
 
     private final SellerRequestRepository sellerRequestRepository;
+    private final S3Adapter s3Adapter;
 
     @Transactional
-    public Long request(Long userId, SellerRequestCreateRequest req) {
+    public Long request(Long userId, SellerRequestCreateRequest req, MultipartFile profileImage) {
 
         // 판매자 신청 중복 체크
         if (sellerRequestRepository.existsByUserId(userId)) {
@@ -38,6 +41,13 @@ public class SellerRequestUserFacade {
             throw new DomainException(ErrorCode.DUPLICATE_BUSINESS_NUMBER);
         }
 
+        String profileImageUrl = req.profileImageUrl();
+        if (profileImage != null && !profileImage.isEmpty()) {
+            profileImageUrl = s3Adapter.uploadProfileImage(profileImage);
+        } else if (profileImageUrl == null || profileImageUrl.isBlank()) {
+            profileImageUrl = "default-seller";
+        }
+
         SellerRequest entity = SellerRequest.pending(
                 // userID 수정
                 userId,
@@ -50,7 +60,8 @@ public class SellerRequestUserFacade {
                 req.address1(),
                 req.address2(),
                 req.latitude(),
-                req.longitude()
+                req.longitude(),
+                profileImageUrl
         );
 
         SellerRequest saved = sellerRequestRepository.save(entity);

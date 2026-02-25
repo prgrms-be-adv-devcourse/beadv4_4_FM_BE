@@ -7,6 +7,7 @@ import com.mossy.boundedContext.global.ut.EncryptionUtils;
 import com.mossy.boundedContext.in.dto.request.SignupRequest;
 import com.mossy.boundedContext.out.repository.user.RoleRepository;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
+import com.mossy.boundedContext.out.s3.S3Adapter;
 import com.mossy.shared.member.domain.enums.UserStatus;
 import com.mossy.shared.member.domain.role.Role;
 import com.mossy.shared.member.domain.role.RoleCode;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +26,12 @@ public class SignupUseCase {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EncryptionUtils encryptionUtils;
+    private final S3Adapter s3Adapter;
 
     @Transactional
-    public User execute(SignupRequest req) {
+    public User execute(SignupRequest req, MultipartFile profileImage) {
 
         userRepository.findByEmail(req.email()).ifPresent(existing -> {
-            // 소셜 계정이 연동된 이메일이면 소셜 로그인 유도
             if (existing.getSocialAccounts() != null && !existing.getSocialAccounts().isEmpty()) {
                 throw new DomainException(ErrorCode.SOCIAL_ACCOUNT_EXISTS);
             }
@@ -38,6 +40,12 @@ public class SignupUseCase {
 
         if (userRepository.existsByNickname(req.nickname())) {
             throw new DomainException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+
+        // 프로필 이미지 처리: 파일이 있으면 S3 업로드, 없으면 기본 이미지
+        String profileImageUrl = "default-user";
+        if (profileImage != null && !profileImage.isEmpty()) {
+            profileImageUrl = s3Adapter.uploadProfileImage(profileImage);
         }
 
         User user = User.builder()
@@ -50,7 +58,7 @@ public class SignupUseCase {
                 .rrnEncrypted(encryptionUtils.encrypt(req.rrn()))
                 .longitude(req.longitude())
                 .latitude(req.latitude())
-                .profileImage("default.png")
+                .profileImage(profileImageUrl)
                 .status(UserStatus.ACTIVE)
                 .build();
 

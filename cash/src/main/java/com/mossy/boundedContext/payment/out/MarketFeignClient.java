@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "market", url = "http://localhost:8081")
+@FeignClient(name = "market", url = "${mossy.feign.market-url}")
 public interface MarketFeignClient {
 
     @GetMapping("/api/v1/internal/orders/{orderId}")

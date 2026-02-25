@@ -12,5 +12,13 @@ services:
       - .env.auth
     environment:
       - SPRING_PROFILES_ACTIVE=prod
+      - REDIS_HOST=redis
+      - MOSSY_FEIGN_MEMBER_URL=http://member:8082
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO /dev/null http://localhost:8086/v3/api-docs || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
     networks:
       - mossy-network
