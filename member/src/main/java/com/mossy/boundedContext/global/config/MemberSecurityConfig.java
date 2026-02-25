@@ -32,6 +32,7 @@ public class MemberSecurityConfig {
                                 "/internal/**" // 내부 서비스 간 통신
                                          ).permitAll()
                         .requestMatchers("/mossy-docs/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/actuator/health/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

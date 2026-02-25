@@ -19,7 +19,7 @@ spring:
   # Redis 설정
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: ${REDIS_HOST}
       port: 6379
 
   kafka:

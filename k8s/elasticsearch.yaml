@@ -24,6 +24,13 @@ spec:
       containers:
         - name: elasticsearch
           image: docker.elastic.co/elasticsearch/elasticsearch:8.10.4
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - |
+              if ! bin/elasticsearch-plugin list | grep -q analysis-nori; then
+                bin/elasticsearch-plugin install --batch analysis-nori
+              fi
+              /usr/local/bin/docker-entrypoint.sh elasticsearch
           env:
             - name: discovery.type
               value: "single-node"
