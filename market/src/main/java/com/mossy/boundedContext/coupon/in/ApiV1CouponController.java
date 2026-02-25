@@ -30,7 +30,6 @@ public class ApiV1CouponController {
 
     private final CouponFacade couponFacade;
 
-
     @Operation(
             summary = "판매자 쿠폰 생성",
             description = "판매자가 자신의 상품에 대한 쿠폰을 생성합니다."
@@ -58,8 +57,30 @@ public class ApiV1CouponController {
             @RequestHeader("X-Seller-Id") Long sellerId,
             @PageableDefault Pageable pageable
     ) {
-        log.info("sellerId : {}", sellerId);
-        return RsData.success(SuccessCode.COUPON_LIST, couponFacade.getSellerCoupons(sellerId, pageable));
+        log.info("========================================");
+        log.info("쿠폰 목록 조회 요청 - Seller ID: {}", sellerId);
+
+        SellerCouponPageResponse response = couponFacade.getSellerCoupons(sellerId, pageable);
+
+        log.info("=== 응답 통계 ===");
+        log.info("총 발급: {}", response.summary().totalCount());
+        log.info("활성: {}", response.summary().activeCount());
+        log.info("비활성: {}", response.summary().inactiveCount());
+        log.info("종료: {}", response.summary().expiredCount());
+
+        log.info("=== 쿠폰 목록 ===");
+        response.coupons().getContent().forEach(coupon ->
+            log.info("ID: {}, 이름: {}, 상태: {}, 기간: {} ~ {}",
+                coupon.couponId(),
+                coupon.couponName(),
+                coupon.status(),
+                coupon.startAt(),
+                coupon.endAt()
+            )
+        );
+        log.info("========================================");
+
+        return RsData.success(SuccessCode.COUPON_LIST, response);
     }
 
     @Operation(summary = "판매자 쿠폰 수정", description = "판매자가 자신의 쿠폰을 수정합니다.")
@@ -81,6 +102,16 @@ public class ApiV1CouponController {
     ) {
         couponFacade.deactivateSellerCoupon(sellerId, couponId);
         return RsData.success(SuccessCode.COUPON_DEACTIVATE);
+    }
+
+    @Operation(summary = "판매자 쿠폰 삭제", description = "판매자가 자신의 쿠폰을 삭제합니다. 다운로드된 쿠폰은 만료 처리됩니다.")
+    @DeleteMapping("/seller/{couponId}")
+    public RsData<Void> deleteSellerCoupon(
+            @RequestHeader("X-Seller-Id") Long sellerId,
+            @PathVariable Long couponId
+    ) {
+        couponFacade.deleteSellerCoupon(sellerId, couponId);
+        return RsData.success(SuccessCode.COUPON_DELETE);
     }
 
     @Operation(summary = "다운로드 가능한 쿠폰 목록 조회", description = "상품에 적용 가능한 다운로드 가능 쿠폰 목록을 조회합니다.")

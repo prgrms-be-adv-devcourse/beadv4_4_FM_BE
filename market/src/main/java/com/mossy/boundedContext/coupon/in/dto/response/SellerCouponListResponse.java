@@ -15,10 +15,10 @@ public record SellerCouponListResponse(
         BigDecimal maxDiscountAmount,
         LocalDateTime startAt,
         LocalDateTime endAt,
-        boolean isActive,
-        LocalDateTime createdAt
-) {
+        String status,
+        LocalDateTime createdAt) {
     public static SellerCouponListResponse from(Coupon coupon) {
+        String status = determineStatus(coupon);
         return new SellerCouponListResponse(
                 coupon.getId(),
                 coupon.getProductItemId(),
@@ -28,8 +28,24 @@ public record SellerCouponListResponse(
                 coupon.getMaxDiscountAmount(),
                 coupon.getStartAt(),
                 coupon.getEndAt(),
-                coupon.isActive(),
-                coupon.getCreatedAt()
-        );
+                status,
+                coupon.getCreatedAt());
+    }
+
+    private static String determineStatus(Coupon coupon) {
+        LocalDateTime now = LocalDateTime.now();
+
+        // 비활성화 (판매자가 수동으로 중지)
+        if (coupon.isDeactivated()) {
+            return "INACTIVE";
+        }
+
+        // 종료됨 (기간 만료)
+        if (now.isAfter(coupon.getEndAt())) {
+            return "EXPIRED";
+        }
+
+        // 활성
+        return "ACTIVE";
     }
 }

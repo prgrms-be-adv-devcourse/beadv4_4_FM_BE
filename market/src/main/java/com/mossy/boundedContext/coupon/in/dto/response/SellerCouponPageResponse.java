@@ -14,7 +14,8 @@ public record SellerCouponPageResponse(
     public record CouponSummary(
             Long totalCount,
             Long activeCount,
-            Long inactiveCount
+            Long inactiveCount,
+            Long expiredCount
     ) {}
 
     public static SellerCouponPageResponse of(
@@ -26,7 +27,8 @@ public record SellerCouponPageResponse(
         CouponSummary summary = new CouponSummary(
                 stats.totalCount(),
                 stats.activeCount(),
-                stats.inactiveCount()
+                stats.inactiveCount(),
+                stats.expiredCount()
         );
         return new SellerCouponPageResponse(summary, page);
     }

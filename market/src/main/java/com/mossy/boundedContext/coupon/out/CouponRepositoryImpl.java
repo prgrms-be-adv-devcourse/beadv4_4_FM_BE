@@ -20,80 +20,81 @@ import static com.mossy.boundedContext.coupon.domain.QUserCoupon.userCoupon;
 @RequiredArgsConstructor
 public class CouponRepositoryImpl implements CouponRepositoryCustom {
 
-    private final JPAQueryFactory queryFactory;
+        private final JPAQueryFactory queryFactory;
 
-    @Override
-    public List<CouponResponse> findDownloadableCoupons(Long productItemId, Long userId) {
-        return queryFactory
-                .select(Projections.constructor(CouponResponse.class,
-                        coupon.id,
-                        coupon.couponName,
-                        coupon.couponType,
-                        coupon.discountValue,
-                        coupon.maxDiscountAmount,
-                        coupon.endAt
-                ))
-                .from(coupon)
-                .where(
-                        coupon.productItemId.eq(productItemId),
-                        coupon.isActive.isTrue(),
-                        coupon.endAt.gt(LocalDateTime.now()),
-                        JPAExpressions.selectOne()
-                                .from(userCoupon)
+        @Override
+        public List<CouponResponse> findDownloadableCoupons(Long productItemId, Long userId) {
+                return queryFactory
+                                .select(Projections.constructor(CouponResponse.class,
+                                                coupon.id,
+                                                coupon.couponName,
+                                                coupon.couponType,
+                                                coupon.discountValue,
+                                                coupon.maxDiscountAmount,
+                                                coupon.endAt))
+                                .from(coupon)
                                 .where(
-                                        userCoupon.coupon.eq(coupon),
-                                        userCoupon.marketUser.id.eq(userId)
-                                )
-                                .notExists()
-                )
-                .fetch();
-    }
+                                                coupon.productItemId.eq(productItemId),
+                                                coupon.isActive.isTrue(),
+                                                coupon.endAt.gt(LocalDateTime.now()),
+                                                JPAExpressions.selectOne()
+                                                                .from(userCoupon)
+                                                                .where(
+                                                                                userCoupon.coupon.eq(coupon),
+                                                                                userCoupon.marketUser.id.eq(userId))
+                                                                .notExists())
+                                .fetch();
+        }
 
-    @Override
-    public CouponStatistics getSellerCouponStatistics(Long sellerId, IssuerType issuerType) {
-        return queryFactory
-                .select(Projections.constructor(CouponStatistics.class,
-                        coupon.count(),
-                        new CaseBuilder()
-                                .when(coupon.isActive.isTrue()).then(1L)
-                                .otherwise(0L)
-                                .sum(),
-                        new CaseBuilder()
-                                .when(coupon.isActive.isFalse()).then(1L)
-                                .otherwise(0L)
-                                .sum()
-                ))
-                .from(coupon)
-                .where(
-                        coupon.issuerId.eq(sellerId),
-                        coupon.issuerType.eq(issuerType)
-                )
-                .fetchOne();
-    }
+        @Override
+        public CouponStatistics getSellerCouponStatistics(Long sellerId, IssuerType issuerType) {
+                LocalDateTime now = LocalDateTime.now();
 
-    @Override
-    public List<SellerCouponListResponse> findSellerCouponsContentOnly(Long sellerId, IssuerType issuerType, Pageable pageable) {
-        return queryFactory
-                .select(Projections.constructor(SellerCouponListResponse.class,
-                        coupon.id,
-                        coupon.productItemId,
-                        coupon.couponName,
-                        coupon.couponType,
-                        coupon.discountValue,
-                        coupon.maxDiscountAmount,
-                        coupon.startAt,
-                        coupon.endAt,
-                        coupon.isActive,
-                        coupon.createdAt
-                ))
-                .from(coupon)
-                .where(
-                        coupon.issuerId.eq(sellerId),
-                        coupon.issuerType.eq(issuerType)
-                )
-                .orderBy(coupon.createdAt.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-    }
+                return queryFactory
+                                .select(Projections.constructor(CouponStatistics.class,
+                                                coupon.count(),
+                                                // activeCount: 비활성화 안됨 && 기간 내 && 활성 상태
+                                                new CaseBuilder()
+                                                                .when(coupon.deactivated.isFalse()
+                                                                                .and(coupon.endAt.goe(now))
+                                                                                .and(coupon.isActive.isTrue()))
+                                                                .then(1L)
+                                                                .otherwise(0L)
+                                                                .sum(),
+                                                // inactiveCount: 판매자가 수동 비활성화
+                                                new CaseBuilder()
+                                                                .when(coupon.deactivated.isTrue()).then(1L)
+                                                                .otherwise(0L)
+                                                                .sum(),
+                                                // expiredCount: 비활성화 안됨 && 기간 만료
+                                                new CaseBuilder()
+                                                                .when(coupon.deactivated.isFalse()
+                                                                                .and(coupon.endAt.lt(now)))
+                                                                .then(1L)
+                                                                .otherwise(0L)
+                                                                .sum()))
+                                .from(coupon)
+                                .where(
+                                                coupon.issuerId.eq(sellerId),
+                                                coupon.issuerType.eq(issuerType))
+                                .fetchOne();
+        }
+
+        @Override
+        public List<SellerCouponListResponse> findSellerCouponsContentOnly(Long sellerId, IssuerType issuerType,
+                        Pageable pageable) {
+                List<com.mossy.boundedContext.coupon.domain.Coupon> coupons = queryFactory
+                                .selectFrom(coupon)
+                                .where(
+                                                coupon.issuerId.eq(sellerId),
+                                                coupon.issuerType.eq(issuerType))
+                                .orderBy(coupon.createdAt.desc())
+                                .offset(pageable.getOffset())
+                                .limit(pageable.getPageSize())
+                                .fetch();
+
+                return coupons.stream()
+                                .map(SellerCouponListResponse::from)
+                                .toList();
+        }
 }
