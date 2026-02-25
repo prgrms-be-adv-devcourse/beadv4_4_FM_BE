@@ -25,7 +25,11 @@ public enum SuccessCode implements BaseCode {
     // 관리자
     SELLER_APPROVE_COMPLETE(200, "판매자 승인이 완료되었습니다."),
     SELLER_REJECT_COMPLETE(200, "판매자 반려가 완료되었습니다."),
-    GET_SELLER_REQUESTS_COMPLETE(200, "판매자 신청 목록 조회가 완료되었습니다.");
+    GET_SELLER_REQUESTS_COMPLETE(200, "판매자 신청 목록 조회가 완료되었습니다."),
+    GET_BUYERS_COMPLETE(200, "구매자 목록 조회가 완료되었습니다."),
+    GET_SELLERS_COMPLETE(200, "판매자 목록 조회가 완료되었습니다."),
+    SUSPEND_USER_COMPLETE(200, "회원 정지가 완료되었습니다."),
+    ACTIVATE_USER_COMPLETE(200, "회원 정지 해제가 완료되었습니다.");
 
     private final int status;
     private final String msg;
