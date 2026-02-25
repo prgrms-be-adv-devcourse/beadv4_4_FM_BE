@@ -29,11 +29,11 @@ public class CouponScheduler {
 
     @Scheduled(cron = "0 * * * * *")
     @Transactional
-    public void deactivateCoupons() {
+    public void expireCoupons() {
         List<Coupon> expiredCoupons = couponRepository.findExpiredCoupons(LocalDateTime.now());
         if (expiredCoupons.isEmpty()) return;
 
-        expiredCoupons.forEach(Coupon::deactivate);
+        expiredCoupons.forEach(Coupon::expire);
 
         List<Long> couponIds = expiredCoupons.stream().map(Coupon::getId).toList();
 

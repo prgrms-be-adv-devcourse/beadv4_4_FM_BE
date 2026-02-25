@@ -29,6 +29,7 @@ public class CouponFacade {
     private final CreateAdminCouponUseCase createAdminCouponUseCase;
     private final UpdateSellerCouponUseCase updateSellerCouponUseCase;
     private final DeactivateSellerCouponUseCase deactivateSellerCouponUseCase;
+    private final DeleteSellerCouponUseCase deleteSellerCouponUseCase;
     private final GetDownloadableCouponsUseCase getDownloadableCouponsUseCase;
     private final DownloadCouponUseCase downloadCouponUseCase;
     private final GetMyUserCouponsUseCase getMyUserCouponsUseCase;
@@ -52,6 +53,10 @@ public class CouponFacade {
 
     public void deactivateSellerCoupon(Long sellerId, Long couponId) {
         deactivateSellerCouponUseCase.deactivate(sellerId, couponId);
+    }
+
+    public void deleteSellerCoupon(Long sellerId, Long couponId) {
+        deleteSellerCouponUseCase.delete(sellerId, couponId);
     }
 
     public List<CouponResponse> getDownloadableCoupons(Long productItemId, Long userId) {

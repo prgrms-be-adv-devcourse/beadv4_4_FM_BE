@@ -2,7 +2,6 @@ package com.mossy.boundedContext.order.out;
 
 import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
-import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
 import com.mossy.shared.market.enums.OrderState;
@@ -84,14 +83,18 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         List<OrderListSellerResponse> content = queryFactory
                 .select(Projections.constructor(OrderListSellerResponse.class,
                         orderItem.id,
+                        order.orderNo,
                         orderItem.productItemId,
                         orderItem.quantity,
                         orderItem.originalPrice,
-                        order.state,
-                        orderItem.createdAt
+                        orderItem.state,
+                        orderItem.createdAt,
+                        marketUser.name,
+                        order.address
                 ))
                 .from(order)
                     .join(order.orderItems, orderItem)
+                    .join(order.buyer, marketUser)
                 .where(condition)
                 .orderBy(orderItem.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -103,21 +106,6 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .from(orderItem)
                 .where(condition)
                 .fetchOne());
-    }
-
-    @Override
-    public OrderDetailSellerResponse findSellerOrderDetailById(Long orderItemId) {
-        return queryFactory
-                .select(Projections.constructor(OrderDetailSellerResponse.class,
-                        order.orderNo,
-                        marketUser.name,
-                        order.address
-                ))
-                .from(order)
-                    .join(order.orderItems, orderItem)
-                    .join(order.buyer, marketUser)
-                .where(orderItem.id.eq(orderItemId))
-                .fetchOne();
     }
 
     @Override

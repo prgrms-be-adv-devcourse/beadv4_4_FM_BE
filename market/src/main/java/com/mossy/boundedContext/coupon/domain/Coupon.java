@@ -72,7 +72,6 @@ public class Coupon extends BaseIdAndTime {
             LocalDateTime startAt,
             LocalDateTime endAt
     ) {
-        validateStartAtFuture(startAt);
         validatePeriod(startAt, endAt);
         return Coupon.builder()
             .issuerId(issuerId)
@@ -96,6 +95,10 @@ public class Coupon extends BaseIdAndTime {
     public void deactivate() {
         this.isActive = false;
         this.deactivated = true;
+    }
+
+    public void expire() {
+        this.isActive = false;
     }
 
     public void update(
@@ -144,13 +147,6 @@ public class Coupon extends BaseIdAndTime {
     private static void validatePeriod(LocalDateTime startAt, LocalDateTime endAt) {
         if (!startAt.isBefore(endAt)) {
             throw new DomainException(ErrorCode.INVALID_COUPON_PERIOD);
-        }
-    }
-
-    // 현재 시간이 쿠폰 시작 시간보다 과거일 때 검증
-    private static void validateStartAtFuture(LocalDateTime startAt) {
-        if (!LocalDateTime.now().isBefore(startAt)) {
-            throw new DomainException(ErrorCode.INVALID_COUPON_START_AT);
         }
     }
 }

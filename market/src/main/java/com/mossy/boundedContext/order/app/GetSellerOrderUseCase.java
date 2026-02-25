@@ -1,6 +1,5 @@
 package com.mossy.boundedContext.order.app;
 
-import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
 import com.mossy.boundedContext.order.out.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +17,5 @@ public class GetSellerOrderUseCase {
     @Transactional(readOnly = true)
     public Page<OrderListSellerResponse> getSellerOrderList(Long sellerId, Pageable pageable) {
         return orderRepository.findSellerOrderListBySellerId(sellerId, pageable);
-    }
-
-    @Transactional(readOnly = true)
-    public OrderDetailSellerResponse getSellerOrderDetail(Long orderItemId) {
-        return orderRepository.findSellerOrderDetailById(orderItemId);
     }
 }
