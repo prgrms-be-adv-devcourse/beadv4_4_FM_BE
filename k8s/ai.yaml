@@ -26,6 +26,8 @@ spec:
               value: "prod"
             - name: KAFKA_BOOTSTRAP_SERVERS
               value: "redpanda:29092"
+            - name: REDIS_HOST
+              value: "redis"
           envFrom:
             - secretRef:
                 name: app-secret
