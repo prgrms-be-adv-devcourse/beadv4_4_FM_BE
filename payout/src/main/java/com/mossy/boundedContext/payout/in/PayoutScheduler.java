@@ -61,16 +61,28 @@ public class PayoutScheduler {
     }
 
     /**
-     * 일별 지급 배치 - 매일 23:59 실행
+     * 지급 배치 - 매월 15일 23:59 실행
      */
-    @Scheduled(cron = "0 59 23 * * *", zone = "Asia/Seoul")
-    public void runDailyWalletCredit() throws Exception {
+    @Scheduled(cron = "0 59 23 15 * *", zone = "Asia/Seoul")
+    public void runWalletCreditOn15th() throws Exception {
+        runWalletCreditBatchJob();
+    }
+
+    /**
+     * 지급 배치 - 매월 말일 23:59 실행
+     */
+    @Scheduled(cron = "0 59 23 L * *", zone = "Asia/Seoul")
+    public void runWalletCreditOnLastDay() throws Exception {
+        runWalletCreditBatchJob();
+    }
+
+    private void runWalletCreditBatchJob() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addString(
                         "runDateTime",
                         LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                 )
                 .toJobParameters();
-        JobExecution execution = jobLauncher.run(payoutDailyWalletCreditJob, jobParameters);
+        jobLauncher.run(payoutDailyWalletCreditJob, jobParameters);
     }
 }
