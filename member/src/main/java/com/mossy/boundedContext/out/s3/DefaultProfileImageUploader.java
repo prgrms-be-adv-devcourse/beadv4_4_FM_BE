@@ -23,7 +23,7 @@ public class DefaultProfileImageUploader implements CommandLineRunner {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    private static final String PROFILE_KEY = "profile/default-profile.svg";
+    private static final String PROFILE_KEY = "profile/default-user.png";
     private static final String SVG_CONTENT = """
             <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
               <!-- 외부 원 -->
@@ -70,7 +70,7 @@ public class DefaultProfileImageUploader implements CommandLineRunner {
         PutObjectRequest putRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(PROFILE_KEY)
-                .contentType("image/svg+xml")
+                .contentType("image/png")
                 .contentLength((long) SVG_CONTENT.getBytes().length)
                 .build();
 

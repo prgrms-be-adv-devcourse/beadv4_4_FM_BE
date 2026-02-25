@@ -1,6 +1,5 @@
 package com.mossy.boundedContext.app.user;
 
-import com.mossy.boundedContext.domain.user.ProfileConstants;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
@@ -29,8 +28,6 @@ public class SignupUseCase {
     private final EncryptionUtils encryptionUtils;
     private final S3Adapter s3Adapter;
 
-    private static final String DEFAULT_PROFILE_IMAGE = ProfileConstants.DEFAULT_PROFILE_IMAGE_URL;
-
     @Transactional
     public User execute(SignupRequest req, MultipartFile profileImage) {
 
@@ -46,7 +43,7 @@ public class SignupUseCase {
         }
 
         // 프로필 이미지 처리: 파일이 있으면 S3 업로드, 없으면 기본 이미지
-        String profileImageUrl = DEFAULT_PROFILE_IMAGE;
+        String profileImageUrl = "default-user";
         if (profileImage != null && !profileImage.isEmpty()) {
             profileImageUrl = s3Adapter.uploadProfileImage(profileImage);
         }

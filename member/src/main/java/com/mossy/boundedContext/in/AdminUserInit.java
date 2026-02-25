@@ -1,7 +1,6 @@
 package com.mossy.boundedContext.in;
 
 import com.mossy.boundedContext.domain.role.UserRole;
-import com.mossy.boundedContext.domain.user.ProfileConstants;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.out.repository.user.RoleRepository;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
@@ -60,7 +59,7 @@ public class AdminUserInit {
                 .phoneNum("")
                 .address("")
                 .rrnEncrypted("")
-                .profileImage(ProfileConstants.DEFAULT_PROFILE_IMAGE_URL)
+                .profileImage("default-user")
                 .status(UserStatus.ACTIVE)
                 .longitude(BigDecimal.ZERO)
                 .latitude(BigDecimal.ZERO)

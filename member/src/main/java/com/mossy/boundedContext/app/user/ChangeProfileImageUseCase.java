@@ -1,6 +1,5 @@
 package com.mossy.boundedContext.app.user;
 
-import com.mossy.boundedContext.domain.user.ProfileConstants;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
 import com.mossy.boundedContext.out.s3.S3Adapter;
@@ -20,17 +19,15 @@ public class ChangeProfileImageUseCase {
     private final UserRepository userRepository;
     private final S3Adapter s3Adapter;
 
-    private static final String DEFAULT_PROFILE_IMAGE = ProfileConstants.DEFAULT_PROFILE_IMAGE_URL;
-
     //프로필 이미지 변경
     @Transactional
     public String execute(Long userId, MultipartFile file) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
-        // 기존 프로필 이미지 삭제 (default가 아닌 경우)
+        // 기존 프로필 이미지 삭제 (default-user가 아닌 경우)
         String oldImage = user.getProfileImage();
-        if (oldImage != null && !oldImage.equals(DEFAULT_PROFILE_IMAGE)) {
+        if (oldImage != null && !oldImage.equals("default-user")) {
             s3Adapter.deleteFile(oldImage);
         }
 
@@ -48,13 +45,10 @@ public class ChangeProfileImageUseCase {
                 .orElseThrow(() -> new DomainException(ErrorCode.USER_NOT_FOUND));
 
         String oldImage = user.getProfileImage();
-        if (oldImage != null && !oldImage.equals(DEFAULT_PROFILE_IMAGE)) {
+        if (oldImage != null && !oldImage.equals("default-user")) {
             s3Adapter.deleteFile(oldImage);
         }
 
-        user.changeProfileImage(DEFAULT_PROFILE_IMAGE);
+        user.changeProfileImage("default-user");
     }
 }
-
-
-

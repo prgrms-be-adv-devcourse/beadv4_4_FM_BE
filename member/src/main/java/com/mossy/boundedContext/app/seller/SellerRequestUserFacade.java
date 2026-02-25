@@ -1,7 +1,6 @@
 package com.mossy.boundedContext.app.seller;
 
 import com.mossy.boundedContext.domain.seller.SellerRequest;
-import com.mossy.boundedContext.domain.user.ProfileConstants;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.in.dto.request.SellerRequestCreateRequest;
@@ -46,7 +45,7 @@ public class SellerRequestUserFacade {
         if (profileImage != null && !profileImage.isEmpty()) {
             profileImageUrl = s3Adapter.uploadProfileImage(profileImage);
         } else if (profileImageUrl == null || profileImageUrl.isBlank()) {
-            profileImageUrl = ProfileConstants.DEFAULT_SELLER_PROFILE_IMAGE_URL;
+            profileImageUrl = "default-seller";
         }
 
         SellerRequest entity = SellerRequest.pending(

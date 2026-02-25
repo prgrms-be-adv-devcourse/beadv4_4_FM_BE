@@ -25,7 +25,7 @@ public class UserSellerRequestController {
     @PostMapping(value = "/seller-request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public RsData<Long> requestSeller(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestPart("data") SellerRequestCreateRequest req,
+            @Valid @RequestPart("data") SellerRequestCreateRequest req,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
         Long requestId = sellerRequestUserFacade.request(userId, req, profileImage);

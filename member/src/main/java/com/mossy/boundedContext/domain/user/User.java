@@ -59,7 +59,7 @@ public class User extends SourceUser {
                 .phoneNum("")
                 .address("")
                 .rrnEncrypted("")
-                .profileImage(ProfileConstants.DEFAULT_PROFILE_IMAGE_URL)
+                .profileImage("default-user")
                 .status(UserStatus.PENDING)
                 .longitude(BigDecimal.ZERO)
                 .latitude(BigDecimal.ZERO)
