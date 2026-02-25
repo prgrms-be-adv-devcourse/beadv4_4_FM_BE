@@ -4,6 +4,8 @@ public record ProfileUpdateRequest(
         String phoneNum,
         String address,
         String rrn,
-        String nickname
+        String nickname,
+        Double latitude,
+        Double longitude
 ) {
 }

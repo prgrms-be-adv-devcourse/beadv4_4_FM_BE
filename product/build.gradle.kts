@@ -50,6 +50,11 @@ dependencies {
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
+    // 컴파일 도구 및 DB 드라이버
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    runtimeOnly("org.postgresql:postgresql")
+
     // MapStruct
     implementation ("org.mapstruct:mapstruct:1.5.5.Final")
     annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
@@ -58,10 +63,6 @@ dependencies {
     // Swagger UI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
 
-    // 컴파일 도구 및 DB 드라이버
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-    runtimeOnly("org.postgresql:postgresql")
 }
 
 dependencyManagement {
