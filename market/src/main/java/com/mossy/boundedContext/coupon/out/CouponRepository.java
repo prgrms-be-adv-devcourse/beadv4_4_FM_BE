@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long>, CouponRepositoryCustom {
 
-    @Query("SELECT c FROM Coupon c WHERE c.isActive = false AND c.deactivated = false AND c.startAt <= :now")
+    @Query("SELECT c FROM Coupon c WHERE c.isActive = false AND c.deactivated = false AND c.startAt <= :now AND c.endAt > :now")
     List<Coupon> findActivatableCoupons(@Param("now") LocalDateTime now);
 
     @Query("SELECT c FROM Coupon c WHERE c.isActive = true AND c.endAt <= :now")

@@ -6,6 +6,7 @@ import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.out.CouponRepository;
 import com.mossy.boundedContext.coupon.out.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CouponScheduler {
@@ -23,8 +25,16 @@ public class CouponScheduler {
     @Scheduled(cron = "0 * * * * *")
     @Transactional
     public void activateCoupons() {
-        couponRepository.findActivatableCoupons(LocalDateTime.now())
-                .forEach(Coupon::activate);
+        LocalDateTime now = LocalDateTime.now();
+        List<Coupon> coupons = couponRepository.findActivatableCoupons(now);
+
+        log.info("[activateCoupons] 현재: {}, 대상: {}개", now, coupons.size());
+        coupons.forEach(c -> {
+            log.info("[activateCoupons] 활성화 전 - ID:{}, 종료:{}, deact:{}, active:{}",
+                c.getId(), c.getEndAt(), c.isDeactivated(), c.isActive());
+            c.activate();
+            log.info("[activateCoupons] 활성화 후 - ID:{}, active:{}", c.getId(), c.isActive());
+        });
     }
 
     @Scheduled(cron = "0 * * * * *")

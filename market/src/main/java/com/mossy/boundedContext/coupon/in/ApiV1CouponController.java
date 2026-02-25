@@ -9,11 +9,11 @@ import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponPageResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
+import com.mossy.shared.market.enums.CouponType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @Tag(name = "Coupon", description = "쿠폰 관리 API")
 @RestController
 @RequestMapping("/api/v1/coupons")
@@ -55,31 +54,11 @@ public class ApiV1CouponController {
     @GetMapping("/seller/my")
     public RsData<SellerCouponPageResponse> getSellerCoupons(
             @RequestHeader("X-Seller-Id") Long sellerId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) CouponType couponType,
             @PageableDefault Pageable pageable
     ) {
-        log.info("========================================");
-        log.info("쿠폰 목록 조회 요청 - Seller ID: {}", sellerId);
-
-        SellerCouponPageResponse response = couponFacade.getSellerCoupons(sellerId, pageable);
-
-        log.info("=== 응답 통계 ===");
-        log.info("총 발급: {}", response.summary().totalCount());
-        log.info("활성: {}", response.summary().activeCount());
-        log.info("비활성: {}", response.summary().inactiveCount());
-        log.info("종료: {}", response.summary().expiredCount());
-
-        log.info("=== 쿠폰 목록 ===");
-        response.coupons().getContent().forEach(coupon ->
-            log.info("ID: {}, 이름: {}, 상태: {}, 기간: {} ~ {}",
-                coupon.couponId(),
-                coupon.couponName(),
-                coupon.status(),
-                coupon.startAt(),
-                coupon.endAt()
-            )
-        );
-        log.info("========================================");
-
+        SellerCouponPageResponse response = couponFacade.getSellerCoupons(sellerId, status, couponType, pageable);
         return RsData.success(SuccessCode.COUPON_LIST, response);
     }
 

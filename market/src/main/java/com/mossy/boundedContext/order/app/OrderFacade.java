@@ -11,6 +11,7 @@ import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
+import com.mossy.shared.market.enums.OrderState;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -92,7 +93,7 @@ public class OrderFacade {
         cancelOrderUseCase.cancelOrder(orderId, userId, cancelReason);
     }
 
-    public Page<OrderListSellerResponse> getSellerOrderList(Long sellerId, Pageable pageable) {
-        return getSellerOrderUseCase.getSellerOrderList(sellerId, pageable);
+    public Page<OrderListSellerResponse> getSellerOrderList(Long sellerId, OrderState state, Pageable pageable) {
+        return getSellerOrderUseCase.getSellerOrderList(sellerId, state, pageable);
     }
 }

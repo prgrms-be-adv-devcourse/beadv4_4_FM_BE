@@ -77,8 +77,12 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     @Override
-    public Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, Pageable pageable) {
+    public Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, OrderState state, Pageable pageable) {
         BooleanExpression condition = orderItem.sellerId.eq(sellerId);
+
+        if (state != null) {
+            condition = condition.and(orderItem.state.eq(state));
+        }
 
         List<OrderListSellerResponse> content = queryFactory
                 .select(Projections.constructor(OrderListSellerResponse.class,
@@ -86,7 +90,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                         order.orderNo,
                         orderItem.productItemId,
                         orderItem.quantity,
-                        orderItem.originalPrice,
+                        orderItem.finalPrice,
                         orderItem.state,
                         orderItem.createdAt,
                         marketUser.name,
@@ -101,10 +105,11 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        BooleanExpression finalCondition = condition;
         return createPage(content, pageable, () -> queryFactory
                 .select(orderItem.count())
                 .from(orderItem)
-                .where(condition)
+                .where(finalCondition)
                 .fetchOne());
     }
 

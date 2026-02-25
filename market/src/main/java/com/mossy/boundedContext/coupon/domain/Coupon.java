@@ -73,6 +73,12 @@ public class Coupon extends BaseIdAndTime {
             LocalDateTime endAt
     ) {
         validatePeriod(startAt, endAt);
+        validateDiscountValue(couponType, discountValue);
+
+        // startAt이 현재 시간 이전이면 즉시 활성화
+        LocalDateTime now = LocalDateTime.now();
+        boolean shouldActivate = !startAt.isAfter(now) && endAt.isAfter(now);
+
         return Coupon.builder()
             .issuerId(issuerId)
             .issuerType(issuerType)
@@ -83,12 +89,13 @@ public class Coupon extends BaseIdAndTime {
             .maxDiscountAmount(couponType == CouponType.FIXED ? null : maxDiscountAmount)
             .startAt(startAt)
             .endAt(endAt)
-            .isActive(false)
+            .isActive(shouldActivate)
             .build();
     }
 
     public void activate() {
         if (this.deactivated) return;
+        if (LocalDateTime.now().isAfter(this.endAt)) return;
         this.isActive = true;
     }
 
@@ -110,8 +117,12 @@ public class Coupon extends BaseIdAndTime {
         LocalDateTime newEndAt = endAt != null ? endAt : this.endAt;
         validatePeriod(this.startAt, newEndAt);
 
+        if (discountValue != null) {
+            validateDiscountValue(this.couponType, discountValue);
+            this.discountValue = discountValue;
+        }
+
         if (couponName != null) this.couponName = couponName;
-        if (discountValue != null) this.discountValue = discountValue;
 
         if (this.couponType == CouponType.PERCENTAGE && maxDiscountAmount != null)
             this.maxDiscountAmount = maxDiscountAmount;
@@ -143,10 +154,28 @@ public class Coupon extends BaseIdAndTime {
         }
     }
 
+    // 쿠폰 삭제 가능 여부 검증
+    // 수동 비활성화 또는 기간 만료된 쿠폰만 삭제 가능
+    public void validateDeletable() {
+        boolean isDeletable = this.deactivated || LocalDateTime.now().isAfter(this.endAt);
+        if (!isDeletable) {
+            throw new DomainException(ErrorCode.COUPON_NOT_DELETABLE);
+        }
+    }
+
     // 쿠폰 시작 시간보다 끝나는 시간이 미래일 때 검증
     private static void validatePeriod(LocalDateTime startAt, LocalDateTime endAt) {
         if (!startAt.isBefore(endAt)) {
             throw new DomainException(ErrorCode.INVALID_COUPON_PERIOD);
+        }
+    }
+
+    // 할인 값 검증 (정률 할인은 0~100 사이)
+    private static void validateDiscountValue(CouponType couponType, BigDecimal discountValue) {
+        if (couponType == CouponType.PERCENTAGE) {
+            if (discountValue.compareTo(BigDecimal.ZERO) <= 0 || discountValue.compareTo(BigDecimal.valueOf(100)) > 0) {
+                throw new DomainException(ErrorCode.INVALID_DISCOUNT_VALUE);
+            }
         }
     }
 }

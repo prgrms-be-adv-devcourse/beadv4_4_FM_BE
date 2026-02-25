@@ -13,6 +13,7 @@ public enum ErrorCode implements BaseCode {
     // ========================================
     INVALID_COUPON_PERIOD(400, "쿠폰 시작일은 종료일보다 이전이어야 합니다."),
     INVALID_COUPON_START_AT(400, "쿠폰 시작일은 현재 시간 이후여야 합니다."),
+    INVALID_DISCOUNT_VALUE(400, "정률 할인은 0~100 사이의 값이어야 합니다."),
 
     // ========================================
     // 403 Forbidden (접근 거부)
@@ -48,6 +49,7 @@ public enum ErrorCode implements BaseCode {
     // 422 Unprocessable Entity (비즈니스 규칙 위배)
     // ========================================
     QUANTITY_LIMIT_EXCEEDED(422, "수량 제한을 초과했습니다."),
+    COUPON_NOT_DELETABLE(422, "활성 중인 쿠폰은 삭제할 수 없습니다. 비활성화하거나 기간이 만료된 후 삭제해주세요."),
     ORDER_CANNOT_DELETE(422, "삭제할 수 없는 주문입니다."),
     ORDER_CANNOT_CANCEL(422, "취소할 수 없는 주문입니다."),
     ORDER_PURCHASE_CONFIRMED(422, "구매 확정된 주문은 취소할 수 없습니다.");

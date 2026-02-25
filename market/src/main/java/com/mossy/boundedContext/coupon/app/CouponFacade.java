@@ -9,6 +9,7 @@ import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponPageResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
+import com.mossy.shared.market.enums.CouponType;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -106,7 +107,12 @@ public class CouponFacade {
         restoreCouponsUseCase.restore(userCouponIds);
     }
 
-    public SellerCouponPageResponse getSellerCoupons(Long sellerId, Pageable pageable) {
-        return getSellerCouponsUseCase.getSellerCoupons(sellerId, pageable);
+    public SellerCouponPageResponse getSellerCoupons(
+            Long sellerId,
+            String status,
+            CouponType couponType,
+            Pageable pageable
+    ) {
+        return getSellerCouponsUseCase.getSellerCoupons(sellerId, status, couponType, pageable);
     }
 }

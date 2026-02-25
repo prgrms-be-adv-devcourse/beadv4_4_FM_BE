@@ -3,8 +3,11 @@ package com.mossy.boundedContext.coupon.out;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
 import com.mossy.boundedContext.coupon.out.dto.CouponStatistics;
+import com.mossy.shared.market.enums.CouponType;
 import com.mossy.shared.market.enums.IssuerType;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -82,12 +85,40 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
 
         @Override
         public List<SellerCouponListResponse> findSellerCouponsContentOnly(Long sellerId, IssuerType issuerType,
-                        Pageable pageable) {
+                        String status, CouponType couponType, Pageable pageable) {
+                LocalDateTime now = LocalDateTime.now();
+                BooleanBuilder builder = new BooleanBuilder();
+
+                // 기본 조건
+                builder.and(coupon.issuerId.eq(sellerId))
+                                .and(coupon.issuerType.eq(issuerType));
+
+                // 상태 필터링
+                if (status != null) {
+                        switch (status.toUpperCase()) {
+                                case "ACTIVE":
+                                        builder.and(coupon.deactivated.isFalse())
+                                                        .and(coupon.endAt.goe(now))
+                                                        .and(coupon.isActive.isTrue());
+                                        break;
+                                case "INACTIVE":
+                                        builder.and(coupon.deactivated.isTrue());
+                                        break;
+                                case "EXPIRED":
+                                        builder.and(coupon.deactivated.isFalse())
+                                                        .and(coupon.endAt.lt(now));
+                                        break;
+                        }
+                }
+
+                // 쿠폰 타입 필터링
+                if (couponType != null) {
+                        builder.and(coupon.couponType.eq(couponType));
+                }
+
                 List<com.mossy.boundedContext.coupon.domain.Coupon> coupons = queryFactory
                                 .selectFrom(coupon)
-                                .where(
-                                                coupon.issuerId.eq(sellerId),
-                                                coupon.issuerType.eq(issuerType))
+                                .where(builder)
                                 .orderBy(coupon.createdAt.desc())
                                 .offset(pageable.getOffset())
                                 .limit(pageable.getPageSize())

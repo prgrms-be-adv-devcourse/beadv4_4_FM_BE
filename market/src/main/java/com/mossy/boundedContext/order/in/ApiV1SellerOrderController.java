@@ -4,15 +4,18 @@ import com.mossy.boundedContext.order.app.OrderFacade;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
 import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
+import com.mossy.shared.market.enums.OrderState;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/seller/orders")
 @RequiredArgsConstructor
@@ -30,9 +33,12 @@ public class ApiV1SellerOrderController {
             @Parameter(hidden = true)
             @RequestHeader("X-Seller-Id") Long sellerId,
 
+            @RequestParam(required = false) OrderState state,
+
             @Parameter(hidden = true)
             @PageableDefault Pageable pageable
     ) {
-        return RsData.success(SuccessCode.SELLER_ORDER_LIST, orderFacade.getSellerOrderList(sellerId, pageable));
+        Page<OrderListSellerResponse> response = orderFacade.getSellerOrderList(sellerId, state, pageable);
+        return RsData.success(SuccessCode.SELLER_ORDER_LIST, response);
     }
 }

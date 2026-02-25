@@ -26,9 +26,9 @@ public class DeleteSellerCouponUseCase {
                 .orElseThrow(() -> new DomainException(ErrorCode.COUPON_NOT_FOUND));
 
         coupon.validateOwnerSeller(sellerId);
+        coupon.validateDeletable();
 
-        userCouponRepository.findAllByCouponIdInAndStatus(List.of(couponId), UserCouponStatus.UNUSED)
-                .forEach(UserCoupon::expire);
+        userCouponRepository.deleteByCouponId(couponId);
 
         couponRepository.delete(coupon);
     }
