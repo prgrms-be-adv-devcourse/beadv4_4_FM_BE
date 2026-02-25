@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.coupon.app;
 
 import com.mossy.boundedContext.coupon.domain.UserCoupon;
+import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
@@ -11,6 +12,8 @@ import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -78,8 +81,8 @@ public class CouponFacade {
         }
     }
 
-    public List<UserCouponResponse> getMyUserCoupons(Long userId) {
-        return getMyUserCouponsUseCase.get(userId);
+    public Page<UserCouponResponse> getMyUserCoupons(Long userId, UserCouponStatus status, Pageable pageable) {
+        return getMyUserCouponsUseCase.get(userId, status, pageable);
     }
 
     public List<UserCouponResponse> getApplicableCoupons(Long userId, List<Long> productItemIds) {
