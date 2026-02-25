@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record OrderListSellerResponse(
-        Long orderDetailId,
+        Long orderItemId,
         Long productId,
         int quantity,
         BigDecimal orderPrice,

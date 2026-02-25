@@ -1,6 +1,6 @@
-package com.mossy.boundedContext.wishList.app;
+package com.mossy.boundedContext.wishlist.app;
 
-import com.mossy.boundedContext.wishList.in.dto.response.WishlistResponse;
+import com.mossy.boundedContext.wishlist.in.dto.response.WishlistResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class WishListFacade {
+public class WishlistFacade {
 
     private final AddWishlistUseCase addWishlistUseCase;
     private final DeleteWishlistUseCase deleteWishlistUseCase;

@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.wishList.in.dto.response;
+package com.mossy.boundedContext.wishlist.in.dto.response;
 
 import lombok.Builder;
 
