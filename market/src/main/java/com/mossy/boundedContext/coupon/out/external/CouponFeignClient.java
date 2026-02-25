@@ -7,9 +7,4 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "coupon-product", url = "${mossy.feign.product-url}")
 public interface CouponFeignClient {
 
-    @GetMapping("/internal/v1/products/validate-owner")
-    void validateProductOwner(
-            @RequestParam("productItemId") Long productItemId,
-            @RequestParam("sellerId") Long sellerId
-    );
 }

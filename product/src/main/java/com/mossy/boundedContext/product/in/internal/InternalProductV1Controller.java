@@ -2,12 +2,11 @@ package com.mossy.boundedContext.product.in.internal;
 
 import com.mossy.boundedContext.product.app.ProductFacade;
 import com.mossy.boundedContext.product.in.internal.dto.request.StockCheckRequest;
+import com.mossy.boundedContext.product.in.internal.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.product.in.internal.dto.response.WishlistProductResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,4 +26,19 @@ public class InternalProductV1Controller {
     public void increaseStock(@RequestBody List<StockCheckRequest> items) {
         productFacade.increaseStock(items);
     };
+
+    @GetMapping("/wishlists")
+    public List<WishlistProductResponse> getWishlists(
+            @RequestParam("productIds") List<Long> productItemIds
+    ) {
+        return productFacade.getWishlistProducts(productItemIds);
+    }
+
+    @GetMapping("/carts")
+    public List<ProductInfoResponse> getCarts(
+            @RequestParam("productItemIds") List<Long> productItemIds
+    ) {
+        return productFacade.getCartProductInfos(productItemIds);
+    }
+
 }

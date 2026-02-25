@@ -11,5 +11,5 @@ import java.util.List;
 public interface WishlistFeignClient {
 
     @GetMapping("/internal/v1/products")
-    List<WishlistProductResponse> findByIds(@RequestParam("productItemIds") List<Long> productItemIds);
+    List<WishlistProductResponse> findByIds(@RequestParam("productIds") List<Long> productItemIds);
 }
