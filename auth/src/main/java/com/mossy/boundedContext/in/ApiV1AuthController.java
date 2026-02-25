@@ -20,7 +20,7 @@ import jakarta.servlet.http.Cookie;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class ApiV1AuthController {
 
     private final AuthFacade authFacade;
 

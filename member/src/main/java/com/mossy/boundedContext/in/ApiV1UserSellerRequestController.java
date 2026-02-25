@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-public class UserSellerRequestController {
+public class ApiV1UserSellerRequestController {
 
     private final SellerRequestUserFacade sellerRequestUserFacade;
 

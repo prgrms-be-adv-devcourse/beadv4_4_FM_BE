@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/admin/seller-requests")
 @RequiredArgsConstructor
-public class AdminSellerRequestController {
+public class ApiV1AdminSellerRequestController {
 
     private final SellerRequestAdminFacade sellerRequestAdminFacade;
     private final AuthApiClient authApiClient;
