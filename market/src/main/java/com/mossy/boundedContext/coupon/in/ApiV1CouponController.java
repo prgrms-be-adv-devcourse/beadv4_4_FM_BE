@@ -5,7 +5,6 @@ import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
-import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponPageResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import com.mossy.exception.SuccessCode;

@@ -4,7 +4,6 @@ import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
 import com.mossy.boundedContext.coupon.out.dto.CouponStatistics;
 import com.mossy.shared.market.enums.IssuerType;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

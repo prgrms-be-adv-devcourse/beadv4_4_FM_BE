@@ -18,8 +18,4 @@ public interface CouponRepository extends JpaRepository<Coupon, Long>, CouponRep
 
     @Query("SELECT c FROM Coupon c WHERE c.isActive = true AND c.endAt <= :now")
     List<Coupon> findExpiredCoupons(@Param("now") LocalDateTime now);
-
-    List<Coupon> findByIssuerIdAndIssuerTypeOrderByCreatedAtDesc(Long issuerId, IssuerType issuerType);
-
-    Page<Coupon> findByIssuerIdAndIssuerTypeOrderByCreatedAtDesc(Long issuerId, IssuerType issuerType, Pageable pageable);
 }
