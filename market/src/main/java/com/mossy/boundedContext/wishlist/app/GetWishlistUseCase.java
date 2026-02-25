@@ -1,10 +1,10 @@
-package com.mossy.boundedContext.wishList.app;
+package com.mossy.boundedContext.wishlist.app;
 
-import com.mossy.boundedContext.wishList.out.external.dto.WishlistProductResponse;
-import com.mossy.boundedContext.wishList.domain.Wishlist;
-import com.mossy.boundedContext.wishList.in.dto.response.WishlistResponse;
-import com.mossy.boundedContext.wishList.out.WishlistRepository;
-import com.mossy.boundedContext.wishList.out.external.WishlistFeignClient;
+import com.mossy.boundedContext.wishlist.out.external.dto.WishlistProductResponse;
+import com.mossy.boundedContext.wishlist.domain.Wishlist;
+import com.mossy.boundedContext.wishlist.in.dto.response.WishlistResponse;
+import com.mossy.boundedContext.wishlist.out.WishlistRepository;
+import com.mossy.boundedContext.wishlist.out.external.WishlistFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

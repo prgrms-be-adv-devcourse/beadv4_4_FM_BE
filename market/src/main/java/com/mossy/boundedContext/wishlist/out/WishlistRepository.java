@@ -1,6 +1,6 @@
-package com.mossy.boundedContext.wishList.out;
+package com.mossy.boundedContext.wishlist.out;
 
-import com.mossy.boundedContext.wishList.domain.Wishlist;
+import com.mossy.boundedContext.wishlist.domain.Wishlist;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.wishList.domain;
+package com.mossy.boundedContext.wishlist.domain;
 
 import com.mossy.boundedContext.marketUser.domain.MarketUser;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
