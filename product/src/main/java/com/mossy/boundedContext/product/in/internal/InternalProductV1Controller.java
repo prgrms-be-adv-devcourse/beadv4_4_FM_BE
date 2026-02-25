@@ -29,16 +29,16 @@ public class InternalProductV1Controller {
 
     @GetMapping("/wishlists")
     public List<WishlistProductResponse> getWishlists(
-            @RequestParam("productIds") List<Long> productItemIds
+            @RequestParam("productItemIds") List<Long> productItemIds
     ) {
-        return productFacade.getWishlistProducts(productItemIds);
+        return productFacade.getWishlistProductItems(productItemIds);
     }
 
     @GetMapping("/carts")
     public List<ProductInfoResponse> getCarts(
             @RequestParam("productItemIds") List<Long> productItemIds
     ) {
-        return productFacade.getCartProductInfos(productItemIds);
+        return productFacade.getCartProductItems(productItemIds);
     }
 
 }

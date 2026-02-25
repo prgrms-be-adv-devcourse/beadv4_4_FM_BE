@@ -3,9 +3,9 @@ package com.mossy.boundedContext.product.in.internal.dto.response;
 import java.math.BigDecimal;
 
 public record WishlistProductResponse(
-        Long productId,
+        Long productItemId,
         String productName,
         String categoryName,
-        BigDecimal price,
+        BigDecimal totalPrice,
         String thumbnailUrl
 ) {}

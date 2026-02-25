@@ -109,12 +109,12 @@ public class ProductFacade {
     }
 
     // 위시리스트
-    public List<WishlistProductResponse> getWishlistProducts(List<Long> productIds) {
+    public List<WishlistProductResponse> getWishlistProductItems(List<Long> productIds) {
         return getWishlistProductsUseCase.execute(productIds);
     }
 
     // 장바구니
-    public List<ProductInfoResponse> getCartProductInfos(List<Long> productItemIds) {
+    public List<ProductInfoResponse> getCartProductItems(List<Long> productItemIds) {
         return getCartProductDetailsUseCase.execute(productItemIds);
     }
 }

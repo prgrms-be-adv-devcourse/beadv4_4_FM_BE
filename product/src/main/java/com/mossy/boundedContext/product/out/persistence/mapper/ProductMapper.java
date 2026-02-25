@@ -71,21 +71,4 @@ public interface ProductMapper {
     @Mapping(target = "productItemsId", source = "id")
     ProductDetailResponse.ProductItemDto toItemDto(ProductItem item);
 
-    // 위시리스트
-    @Mapping(source = "id", target = "productId")
-    @Mapping(source = "category.name", target = "categoryName")
-    WishlistProductResponse toWishlistResponse(Product product);
-
-    List<WishlistProductResponse> toWishlistResponses(List<Product> products);
-
-    // 장바구니용
-    @Mapping(source = "product.id", target = "productId")
-    @Mapping(source = "catalogInfo.name", target = "productName")
-    @Mapping(source = "catalogInfo.categoryName", target = "categoryName")
-    @Mapping(source = "product.price", target = "basePrice")
-    @Mapping(source = "catalogInfo.thumbnailUrl", target = "thumbnailUrl")
-    ProductInfoResponse toProductInfoResponse(
-            Product product,
-            CatalogProductWithCategoryInfo catalogInfo
-    );
 }
