@@ -2,11 +2,14 @@ package com.mossy.boundedContext.app;
 
 import com.mossy.boundedContext.in.dto.request.WriteReviewRequest;
 import com.mossy.boundedContext.in.dto.response.ReviewResponse;
+import com.mossy.boundedContext.in.dto.response.ReviewableItemResponse;
 import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,5 +33,13 @@ public class ReviewFacade {
 
     public Page<ReviewResponse> getReviewsByProductId(Long productId, Pageable pageable) {
         return getReviewUseCase.getByProductId(productId, pageable);
+    }
+
+    public List<ReviewableItemResponse> getPendingReviews(Long userId) {
+        return getReviewUseCase.getPendingReviews(userId);
+    }
+
+    public Page<ReviewResponse> getMyReviews(Long userId, Pageable pageable) {
+        return getReviewUseCase.getMyReviews(userId, pageable);
     }
 }
