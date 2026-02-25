@@ -32,7 +32,7 @@ public class ApiV1SellerOrderController {
             @RequestHeader("X-Seller-Id") Long sellerId,
 
             @Parameter(hidden = true)
-            @PageableDefault(size = 5) Pageable pageable
+            @PageableDefault Pageable pageable
     ) {
         return RsData.success(SuccessCode.SELLER_ORDER_LIST, orderFacade.getSellerOrderList(sellerId, pageable));
     }

@@ -5,7 +5,7 @@ import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
-import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
+import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponPageResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @Tag(name = "Coupon", description = "쿠폰 관리 API")
 @RestController
 @RequestMapping("/api/v1/coupons")
@@ -50,12 +52,14 @@ public class ApiV1CouponController {
         return RsData.success(SuccessCode.COUPON_CREATE, couponFacade.createAdminCoupon(adminId, request));
     }
 
-    @Operation(summary = "판매자 쿠폰 목록 조회", description = "판매자가 자신이 생성한 쿠폰 목록을 조회합니다.")
+    @Operation(summary = "판매자 쿠폰 목록 조회", description = "판매자가 자신이 생성한 쿠폰 목록을 조회합니다. 통계 정보(총 쿠폰, 활성 쿠폰, 비활성 쿠폰 수)와 함께 페이징된 쿠폰 목록을 반환합니다.")
     @GetMapping("/seller/my")
-    public RsData<List<SellerCouponListResponse>> getSellerCoupons(
-            @RequestHeader("X-Seller-Id") Long sellerId
+    public RsData<SellerCouponPageResponse> getSellerCoupons(
+            @RequestHeader("X-Seller-Id") Long sellerId,
+            @PageableDefault Pageable pageable
     ) {
-        return RsData.success(SuccessCode.COUPON_LIST, couponFacade.getSellerCoupons(sellerId));
+        log.info("sellerId : {}", sellerId);
+        return RsData.success(SuccessCode.COUPON_LIST, couponFacade.getSellerCoupons(sellerId, pageable));
     }
 
     @Operation(summary = "판매자 쿠폰 수정", description = "판매자가 자신의 쿠폰을 수정합니다.")

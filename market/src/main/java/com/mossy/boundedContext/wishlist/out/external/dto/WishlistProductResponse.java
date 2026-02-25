@@ -1,4 +1,4 @@
-package com.mossy.boundedContext.wishList.out.external.dto;
+package com.mossy.boundedContext.wishlist.out.external.dto;
 
 import java.math.BigDecimal;
 
