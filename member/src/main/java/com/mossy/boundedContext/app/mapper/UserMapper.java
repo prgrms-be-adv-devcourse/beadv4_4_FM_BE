@@ -65,11 +65,12 @@ public interface UserMapper {
         );
     }
 
-    default MemberVerifyExternResponse toMemberVerifyResponse(User user, List<RoleCode> roles, boolean isValid) {
+    default MemberVerifyExternResponse toMemberVerifyResponse(User user, List<RoleCode> roles, boolean isValid, Long sellerId) {
         return new MemberVerifyExternResponse(
                 user.getId(),
                 roles,
-                isValid
+                isValid,
+                sellerId
         );
     }
 

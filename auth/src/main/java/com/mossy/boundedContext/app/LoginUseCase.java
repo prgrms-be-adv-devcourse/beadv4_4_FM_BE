@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +28,11 @@ public class LoginUseCase {
             throw new DomainException(ErrorCode.INVALID_CREDENTIALS);
         }
 
-        String role = response.roles().isEmpty() ? "USER" : response.roles().get(0).name();
-        return new LoginContext(response.userId(), role);
+        List<String> roles = response.roles().stream()
+            .map(Enum::name)
+            .toList();
+        Long sellerId = (roles.contains("SELLER") && response.sellerId() != null) ? response.sellerId() : null;
+        return new LoginContext(response.userId(), roles, sellerId);
     }
-    public record LoginContext(Long userId, String role) {}
+    public record LoginContext(Long userId, List<String> roles, Long sellerId) {}
 }

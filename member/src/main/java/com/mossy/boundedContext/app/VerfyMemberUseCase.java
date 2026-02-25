@@ -1,8 +1,10 @@
 package com.mossy.boundedContext.app;
 
+import com.mossy.boundedContext.domain.seller.SourceSeller;
 import com.mossy.boundedContext.domain.user.User;
 import com.mossy.boundedContext.app.mapper.UserMapper;
 import com.mossy.boundedContext.out.repository.user.UserRepository;
+import com.mossy.boundedContext.out.repository.seller.SellerRepository;
 import com.mossy.boundedContext.out.external.dto.response.MemberVerifyExternResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
@@ -21,6 +23,7 @@ public class VerfyMemberUseCase {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
+    private final SellerRepository sellerRepository;
 
     @Transactional(readOnly = true)
     public MemberVerifyExternResponse execute(String email, String password) {
@@ -33,6 +36,12 @@ public class VerfyMemberUseCase {
                 .map(ur -> ur.getRole().getCode())
                 .toList();
 
-        return mapper.toMemberVerifyResponse(user, roles, isValid);
+        Long sellerId = null;
+        if (roles.contains(RoleCode.SELLER)) {
+            sellerId = sellerRepository.findByUserId(user.getId())
+                    .map(SourceSeller::getId)
+                    .orElse(null);
+        }
+        return mapper.toMemberVerifyResponse(user, roles, isValid, sellerId);
     }
 }
