@@ -20,29 +20,29 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 public class PayoutEventListener {
     private final PayoutFacade payoutFacade;
 
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void sellerJoinedEvent(SellerJoinedEvent event) {
-        payoutFacade.syncSeller(event.seller());
-    }
-
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void sellerUpdatedEvent(SellerUpdatedEvent event) {
-        payoutFacade.syncSeller(event.seller());
-    }
-
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void userJoinedEvent(UserJoinedEvent event) {
-        payoutFacade.syncUser(event.user());
-    }
-
-    @TransactionalEventListener(phase = AFTER_COMMIT)
-    @Transactional(propagation = REQUIRES_NEW)
-    public void userUpdatedEvent(UserUpdatedEvent event) {
-        payoutFacade.syncUser(event.user());
-    }
+//    @TransactionalEventListener(phase = AFTER_COMMIT)
+//    @Transactional(propagation = REQUIRES_NEW)
+//    public void sellerJoinedEvent(SellerJoinedEvent event) {
+//        payoutFacade.syncSeller(event.seller());
+//    }
+//
+//    @TransactionalEventListener(phase = AFTER_COMMIT)
+//    @Transactional(propagation = REQUIRES_NEW)
+//    public void sellerUpdatedEvent(SellerUpdatedEvent event) {
+//        payoutFacade.syncSeller(event.seller());
+//    }
+//
+//    @TransactionalEventListener(phase = AFTER_COMMIT)
+//    @Transactional(propagation = REQUIRES_NEW)
+//    public void userJoinedEvent(UserJoinedEvent event) {
+//        payoutFacade.syncUser(event.user());
+//    }
+//
+//    @TransactionalEventListener(phase = AFTER_COMMIT)
+//    @Transactional(propagation = REQUIRES_NEW)
+//    public void userUpdatedEvent(UserUpdatedEvent event) {
+//        payoutFacade.syncUser(event.user());
+//    }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
