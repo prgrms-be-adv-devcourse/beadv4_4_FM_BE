@@ -28,6 +28,10 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
 
+mossy:
+  feign:
+    product-url: http://product:8090
+
 logging:
   level:
     root: INFO
