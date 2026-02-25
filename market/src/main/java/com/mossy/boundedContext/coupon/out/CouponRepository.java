@@ -2,6 +2,8 @@ package com.mossy.boundedContext.coupon.out;
 
 import com.mossy.boundedContext.coupon.domain.Coupon;
 import com.mossy.shared.market.enums.IssuerType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +20,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long>, CouponRep
     List<Coupon> findExpiredCoupons(@Param("now") LocalDateTime now);
 
     List<Coupon> findByIssuerIdAndIssuerTypeOrderByCreatedAtDesc(Long issuerId, IssuerType issuerType);
+
+    Page<Coupon> findByIssuerIdAndIssuerTypeOrderByCreatedAtDesc(Long issuerId, IssuerType issuerType, Pageable pageable);
 }
