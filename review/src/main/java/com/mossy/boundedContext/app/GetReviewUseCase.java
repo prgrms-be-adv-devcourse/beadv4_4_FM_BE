@@ -2,9 +2,9 @@ package com.mossy.boundedContext.app;
 
 import com.mossy.boundedContext.domain.Review;
 import com.mossy.boundedContext.in.dto.response.ReviewResponse;
-import com.mossy.boundedContext.in.dto.response.ReviewableItemResponse;
 import com.mossy.boundedContext.out.ReviewRepository;
-import com.mossy.boundedContext.out.ReviewableItemRepository;
+import com.mossy.boundedContext.out.external.ProductFeignClient;
+import com.mossy.boundedContext.out.external.dto.ProductInfoResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -14,40 +14,37 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GetReviewUseCase {
 
     private final ReviewRepository reviewRepository;
-    private final ReviewableItemRepository reviewableItemRepository;
+    private final ProductFeignClient productFeignClient;
 
     @Transactional(readOnly = true)
     public ReviewResponse get(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new DomainException(ErrorCode.REVIEW_NOT_FOUND));
 
-        return ReviewResponse.from(review);
+        ProductInfoResponse productInfo = productFeignClient
+                .getProductInfos(List.of(review.getProductId()))
+                .stream().findFirst().orElse(null);
+
+        return ReviewResponse.from(review, productInfo);
     }
 
     @Transactional(readOnly = true)
     public Page<ReviewResponse> getByProductId(Long productId, Pageable pageable) {
-        return reviewRepository.findByProductIdOrderByCreatedAtDesc(productId, pageable)
-                .map(ReviewResponse::from);
-    }
+        Page<Review> reviews = reviewRepository.findByProductIdOrderByCreatedAtDesc(productId, pageable);
 
-    @Transactional(readOnly = true)
-    public List<ReviewableItemResponse> getPendingReviews(Long userId) {
-        return reviewableItemRepository
-                .findByBuyerIdAndReviewedFalseOrderByCreatedAtDesc(userId)
+        Map<Long, ProductInfoResponse> productInfoMap = productFeignClient
+                .getProductInfos(List.of(productId))
                 .stream()
-                .map(ReviewableItemResponse::from)
-                .toList();
-    }
+                .collect(Collectors.toMap(ProductInfoResponse::productId, p -> p));
 
-    @Transactional(readOnly = true)
-    public Page<ReviewResponse> getMyReviews(Long userId, Pageable pageable) {
-        return reviewRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable)
-                .map(ReviewResponse::from);
+        return reviews.map(review -> ReviewResponse.from(review, productInfoMap.get(review.getProductId())));
     }
 }
