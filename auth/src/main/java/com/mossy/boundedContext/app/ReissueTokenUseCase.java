@@ -49,8 +49,10 @@ public class ReissueTokenUseCase {
         }
 
         try {
-            String role = pickPrimaryRole(authInfo.roles());
-            String newAccessToken = jwtProvider.createAccessToken(userId, role, authInfo.sellerId());
+            List<String> roles = authInfo.roles().stream()
+                .map(Enum::name)
+                .toList();
+            String newAccessToken = jwtProvider.createAccessToken(userId, roles, authInfo.sellerId());
             String newRefreshToken = jwtProvider.createRefreshToken(userId);
 
             refreshTokenUseCase.rotate(oldRefreshToken, newRefreshToken);
@@ -59,13 +61,5 @@ public class ReissueTokenUseCase {
         } catch (Exception e) {
             throw e;
         }
-    }
-
-    private String pickPrimaryRole(List<RoleCode> roles) {
-        if (roles == null || roles.isEmpty()) return "USER";
-
-        if (roles.contains(RoleCode.ADMIN)) return "ADMIN";
-        if (roles.contains(RoleCode.SELLER)) return "SELLER";
-        return "USER";
     }
 }

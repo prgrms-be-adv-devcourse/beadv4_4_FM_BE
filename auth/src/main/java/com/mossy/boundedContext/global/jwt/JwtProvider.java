@@ -4,13 +4,12 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -23,15 +22,15 @@ public class JwtProvider {
     private static final String CLAIM_SELLER_ID = "seller_id";
 
 
-    public String createAccessToken(Long userId, String role, Long sellerId) {
-        return createToken(userId, role, sellerId, jwtProperties.accessTokenExpireMs());
+    public String createAccessToken(Long userId, List<String> roles, Long sellerId) {
+        return createToken(userId, roles, sellerId, jwtProperties.accessTokenExpireMs());
     }
 
     public String createRefreshToken(Long userId) {
-        return createToken(userId, null,null, jwtProperties.refreshTokenExpireMs());
+        return createToken(userId, null, null, jwtProperties.refreshTokenExpireMs());
     }
 
-    public String createToken(Long userId, String role, Long sellerId, long expireMs) {
+    public String createToken(Long userId, List<String> roles, Long sellerId, long expireMs) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expireMs);
 
@@ -41,8 +40,8 @@ public class JwtProvider {
                 .setExpiration(expiry)
                 .signWith(key);
 
-        if (role != null) {
-            builder.claim("role", role);
+        if (roles != null && !roles.isEmpty()) {
+            builder.claim("roles", roles);
         }
 
         if (sellerId != null) {
@@ -109,5 +108,3 @@ public class JwtProvider {
     }
 
 }
-
-
