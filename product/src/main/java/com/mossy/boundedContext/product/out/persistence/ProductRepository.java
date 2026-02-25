@@ -92,5 +92,14 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
         WHERE pi.id IN :productItemIds
     """)
     List<Product> findAllByProductItemIds(@Param("productItemIds") List<Long> productItemIds);
+
+
+    @Query("""
+        SELECT p.catalogProductId
+        FROM Product p
+        JOIN p.productItems pi
+        WHERE pi.id = :productItemId
+    """)
+    Optional<Long> findCatalogProductIdByProductItemId(@Param("productItemId") Long productItemId);
 }
 

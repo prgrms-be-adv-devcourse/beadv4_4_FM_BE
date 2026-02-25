@@ -2,6 +2,7 @@ package com.mossy.boundedContext.product.app;
 
 import com.mossy.boundedContext.product.app.command.*;
 import com.mossy.boundedContext.product.app.query.GetCartProductDetailsUseCase;
+import com.mossy.boundedContext.product.app.query.GetCatalogIdUseCase;
 import com.mossy.boundedContext.product.app.query.GetProductDetailUseCase;
 import com.mossy.boundedContext.product.app.query.GetWishlistProductsUseCase;
 import com.mossy.boundedContext.product.domain.Product;
@@ -37,6 +38,7 @@ public class ProductFacade {
     private final IncreaseStockUsecase increaseStockUseCase;
     private final GetWishlistProductsUseCase getWishlistProductsUseCase;
     private final GetCartProductDetailsUseCase getCartProductDetailsUseCase;
+    private final GetCatalogIdUseCase getCatalogIdUseCase;
     private final KafkaEventPublisher kafkaEventPublisher;
 
     // 상품 등록
@@ -116,5 +118,9 @@ public class ProductFacade {
     // 장바구니
     public List<ProductInfoResponse> getCartProductItems(List<Long> productItemIds) {
         return getCartProductDetailsUseCase.execute(productItemIds);
+    }
+
+    public Long getCatalogIdByProductItemId(Long productItemId) {
+        return getCatalogIdUseCase.execute(productItemId);
     }
 }
