@@ -15,7 +15,7 @@ spring:
         - id: market
           uri: http://127.0.0.1:8081
           predicates:
-            - Path=/api/v1/carts/**, /api/v1/orders/**, /api/v1/payments/**
+            - Path=/api/v1/carts/**, /api/v1/orders/**, /api/v1/coupons/**, /api/v1/seller/orders**, /api/v1/wishlist/**
           filters:
             - name: JwtAuthenticationFilter
 

@@ -1,5 +1,7 @@
 package com.mossy.kafka.infra.config;
 
+import com.mossy.kafka.KafkaTopics;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -62,5 +64,61 @@ public class KafkaConfig {
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
+    }
+
+    // 토픽 자동 생성 (파티션 1개, 복제본 1개)
+    @Bean
+    public NewTopic paymentRefundTopic() {
+        return new NewTopic(KafkaTopics.PAYMENT_REFUND, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic orderCancelTopic() {
+        return new NewTopic(KafkaTopics.ORDER_CANCEL, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic orderStockReturnTopic() {
+        return new NewTopic(KafkaTopics.ORDER_STOCK_RETURN, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic paymentCompletedTopic() {
+        return new NewTopic(KafkaTopics.PAYMENT_COMPLETED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic userJoinedTopic() {
+        return new NewTopic(KafkaTopics.USER_JOINED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic userUpdatedTopic() {
+        return new NewTopic(KafkaTopics.USER_UPDATED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic sellerJoinedTopic() {
+        return new NewTopic(KafkaTopics.SELLER_JOINED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic sellerUpdatedTopic() {
+        return new NewTopic(KafkaTopics.SELLER_UPDATED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic orderPurchaseConfirmedTopic() {
+        return new NewTopic(KafkaTopics.ORDER_PURCHASE_CONFIRMED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic orderRefundedTopic() {
+        return new NewTopic(KafkaTopics.ORDER_REFUNDED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic payoutWalletCreditTopic() {
+        return new NewTopic(KafkaTopics.PAYOUT_WALLET_CREDIT, 1, (short) 1);
     }
 }

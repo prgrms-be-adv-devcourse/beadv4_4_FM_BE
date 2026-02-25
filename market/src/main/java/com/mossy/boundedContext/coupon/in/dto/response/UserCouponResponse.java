@@ -13,5 +13,5 @@ public record UserCouponResponse(
         BigDecimal discountValue,
         BigDecimal maxDiscountAmount,
         UserCouponStatus status,
-        LocalDateTime expireAt
+        LocalDateTime endAt
 ) {}
