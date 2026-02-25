@@ -1,12 +1,10 @@
 package com.mossy.boundedContext.app;
 
 import com.mossy.boundedContext.global.jwt.JwtProvider;
-import com.mossy.boundedContext.in.dto.response.TokenResponse;
 import com.mossy.boundedContext.out.dto.response.MemberAuthInfoResponse;
 import com.mossy.boundedContext.out.external.MemberFeignClient;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
-import com.mossy.shared.member.domain.role.RoleCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +19,10 @@ public class ReissueTokenUseCase {
     private final RefreshTokenUseCase refreshTokenUseCase;
     private final MemberFeignClient memberFeignClient;
 
+    public record ReissueResult(String accessToken, String refreshToken, String primaryRole) {}
+
     @Transactional
-    public TokenResponse execute(String oldRefreshToken) {
+    public ReissueResult execute(String oldRefreshToken) {
         //1. old RT에서 userId 추출(서명/만료 검증 포함)
         final Long userId;
         try {
@@ -57,9 +57,16 @@ public class ReissueTokenUseCase {
 
             refreshTokenUseCase.rotate(oldRefreshToken, newRefreshToken);
 
-            return new TokenResponse(newAccessToken, newRefreshToken);
+            String primaryRole = getPrimaryRole(roles);
+            return new ReissueResult(newAccessToken, newRefreshToken, primaryRole);
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    private String getPrimaryRole(List<String> roles) {
+        if (roles.contains("ADMIN")) return "ADMIN";
+        if (roles.contains("SELLER")) return "SELLER";
+        return "USER";
     }
 }

@@ -42,6 +42,7 @@ public class JwtProvider {
 
         if (roles != null && !roles.isEmpty()) {
             builder.claim("roles", roles);
+            builder.claim("role", getPrimaryRole(roles));
         }
 
         if (sellerId != null) {
@@ -86,6 +87,12 @@ public class JwtProvider {
                 claims.get(CLAIM_ROLE, String.class),
                 claims.get(CLAIM_SELLER_ID, Long.class)
         );
+    }
+
+    private String getPrimaryRole(List<String> roles) {
+        if (roles.contains("ADMIN")) return "ADMIN";
+        if (roles.contains("SELLER")) return "SELLER";
+        return "USER";
     }
 
     public boolean verifyToken(String token) {

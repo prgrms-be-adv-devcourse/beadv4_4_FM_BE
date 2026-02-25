@@ -43,13 +43,36 @@ spring:
           filters:
             - name: JwtAuthenticationFilter
 
-        # ── Admin 판매자 관리 (인증 필요) ──
+        # ── Admin 로그인 (공개) ──
+        - id: admin-login
+          uri: http://127.0.0.1:8086
+          predicates:
+            - Path=/api/v1/admin/login
+          filters:
+            - name: StripInternalHeadersFilter
+            - RewritePath=/api/v1/admin/login, /api/v1/auth/login
+
+        # ── Admin 판매자 신청 관리 (ADMIN 권한 필요) ──
         - id: admin-seller
           uri: http://127.0.0.1:8082
           predicates:
             - Path=/api/v1/admin/seller-requests/**
           filters:
             - name: JwtAuthenticationFilter
+            - name: RoleAuthorizationFilter
+              args:
+                requiredRole: ADMIN
+
+        # ── Admin 회원 관리 (ADMIN 권한 필요) ──
+        - id: admin-user
+          uri: http://127.0.0.1:8082
+          predicates:
+            - Path=/api/v1/admin/users/**
+          filters:
+            - name: JwtAuthenticationFilter
+            - name: RoleAuthorizationFilter
+              args:
+                requiredRole: ADMIN
 
         # ── Cash ──
         - id: cash

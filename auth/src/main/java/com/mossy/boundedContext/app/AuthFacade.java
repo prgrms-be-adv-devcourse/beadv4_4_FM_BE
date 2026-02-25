@@ -30,13 +30,13 @@ public class AuthFacade {
         var ctx = loginUseCase.execute(request.email(), request.password());
         log.info("[auth] issueTokenUseCase: userId={}, roles={}, sellerId={}", ctx.userId(), ctx.roles(), ctx.sellerId());
         TokenResponse tokens = issueTokenUseCase.execute(ctx.userId(), ctx.roles(), ctx.sellerId());
-        return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
+        return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false, getPrimaryRole(ctx.roles()));
     }
 
     //토큰 재발급
     public LoginResponse reissue(String oldRefreshToken) {
-        TokenResponse tokens = reissueTokenUseCase.execute(oldRefreshToken);
-        return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
+        ReissueTokenUseCase.ReissueResult result = reissueTokenUseCase.execute(oldRefreshToken);
+        return new LoginResponse(result.accessToken(), result.refreshToken(), false, result.primaryRole());
     }
 
     //로그아웃
@@ -47,7 +47,13 @@ public class AuthFacade {
     //판매자 승인 후 토큰 재발급
     public LoginResponse issueForSellerApproved(Long userId, Long sellerId) {
         TokenResponse tokens = issueTokenUseCase.execute(userId, List.of("USER", "SELLER"), sellerId);
-        return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
+        return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false, "SELLER");
+    }
+
+    private String getPrimaryRole(List<String> roles) {
+        if (roles.contains("ADMIN")) return "ADMIN";
+        if (roles.contains("SELLER")) return "SELLER";
+        return "USER";
     }
 
     //OAuth2 로그인 처리 및 토큰 발급
@@ -66,7 +72,7 @@ public class AuthFacade {
         // 2단계: 토큰 발급 - 실패 시 member 보상 트랜잭션 호출
         try {
             TokenResponse tokens = issueTokenUseCase.execute(user.id(), List.of("USER"), null);
-            return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), user.isNewUser());
+            return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), user.isNewUser(), "USER");
         } catch (Exception e) {
             log.error("토큰 발급 실패, member 보상 트랜잭션 실행: userId={}, error={}", user.id(), e.getMessage(), e);
             try {
