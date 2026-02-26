@@ -78,6 +78,6 @@ public class ApiV1ReviewController {
             @PageableDefault(size = 10) Pageable pageable
     ) {
         Page<ReviewResponse> response = reviewFacade.getMyReviews(userId, pageable);
-        return RsData.success(SuccessCode.REVIEW_MY_LIST_GET, newn PageResponse<>(response));
+        return RsData.success(SuccessCode.REVIEW_MY_LIST_GET, new PageResponse<>(response));
     }
 }

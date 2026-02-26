@@ -13,9 +13,9 @@ spring:
       fail-on-empty-beans: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/mossy
-    username: postgres
-    password: mossyProject123@
+    url: jdbc:${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
