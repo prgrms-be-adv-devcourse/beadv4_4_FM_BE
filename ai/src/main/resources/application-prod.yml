@@ -4,7 +4,7 @@ spring:
       on-profile: prod
 
   r2dbc:
-    url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: r2dbc:${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
