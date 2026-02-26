@@ -67,7 +67,7 @@ public class ApiV1PaymentController {
     @PostMapping("/cancel")
     public RsData<Void> cancelPayment(@Valid @RequestBody PaymentCancelRequestDto request) {
         paymentFacade.cancelPayment(request);
-        return RsData.success(SuccessCode.TOSS_PAYMENT_CANCELLED);
+        return RsData.success(SuccessCode.PAYMENT_CANCELLED);
     }
 
     @Operation(

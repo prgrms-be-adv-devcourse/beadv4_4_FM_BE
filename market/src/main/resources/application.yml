@@ -85,6 +85,6 @@ outbox:
     enabled: true
     batch-size: 100
     max-retry: 5
-    interval-ms: 5000
+    interval-ms: 60000  # 1분 (실패한 이벤트만 재발행)
   cleanup:
     cron: "0 0 3 * * *"

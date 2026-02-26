@@ -29,13 +29,19 @@ public class OutboxPollerScheduler {
     @Value("${outbox.poller.max-retry}")
     private int maxRetry;
 
-    // 폴링 스케쥴러
+    // 폴링 스케쥴러 - 실패한 이벤트만 재발행 (30초 이상 지난 PENDING)
     @Scheduled(fixedDelayString = "${outbox.poller.interval-ms}")
     public void pollAndPublish() {
-        List<OutboxEvent> pendingEvents = outboxEventRepository
-            .findByStatusOrderByCreatedAtAsc(OutboxStatus.PENDING, PageRequest.of(0, batchSize));
+        // 생성된 지 30초 이상 지났는데 아직 PENDING인 것만 조회 (실패한 것)
+        LocalDateTime thirtySecondsAgo = LocalDateTime.now().minusSeconds(30);
+        List<OutboxEvent> stuckEvents = outboxEventRepository
+            .findByStatusAndCreatedAtBeforeOrderByCreatedAtAsc(
+                OutboxStatus.PENDING,
+                thirtySecondsAgo,
+                PageRequest.of(0, batchSize)
+            );
 
-        pendingEvents.forEach(event -> {
+        stuckEvents.forEach(event -> {
             boolean acquired = outboxEventPublisher.markProcessing(event.getId());
             if (acquired) {
                 outboxEventPublisher.publishAndComplete(event.getId(), maxRetry);

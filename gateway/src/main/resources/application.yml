@@ -55,7 +55,7 @@ spring:
         - id: cash
           uri: http://127.0.0.1:8083
           predicates:
-            - Path=/api/v1/cash/**
+            - Path=/api/v1/cash/**, /api/v1/payments/**
           filters:
             - name: JwtAuthenticationFilter
 

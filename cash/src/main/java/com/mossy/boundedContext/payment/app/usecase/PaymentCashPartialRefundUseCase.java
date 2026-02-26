@@ -36,7 +36,7 @@ public class PaymentCashPartialRefundUseCase {
         MarketOrderResponse order = paymentSupport.findOrderForCancel(payment.getOrderId());
 
         // 부분 환불 이력 저장 (Toss API 호출 없음)
-        paymentSupport.processPartialCancel(payment.getOrderNo(), payment.getPaymentKey(), cancelAmount, PayMethod.CASH, cancelReason);
+        paymentSupport.processPartialCancel(payment.getOrderId(), payment.getOrderNo(), payment.getPaymentKey(), cancelAmount, PayMethod.CASH, cancelReason);
 
         PaymentCashRefundEvent cashRefundEvent = new PaymentCashRefundEvent(order.orderId(), order.buyerId(), cancelAmount, PayMethod.CASH);
 
