@@ -9,23 +9,6 @@ spring:
 
   cloud:
     gateway:
-      globalcors:
-        add-to-simple-url-handler-mapping: true
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins:
-              - "http://mossy-eco.biz"
-              - "https://mossy-eco.biz"
-              - "http://localhost:5173"
-            allowedMethods:
-              - "GET"
-              - "POST"
-              - "PUT"
-              - "DELETE"
-              - "OPTIONS"
-              - "PATCH"
-            allowedHeaders: "*"
-            allowCredentials: true
       routes:
         # ── Market ──
         - id: market
@@ -129,10 +112,5 @@ spring:
           uri: http://ai-service:8080
           predicates:
             - Path=/api/v1/recommendations/**
-    data:
-      redis:
-        host: ${REDIS_HOST}
-        port: 6379
-
 jwt:
   secret: ${JWT_SECRET}
