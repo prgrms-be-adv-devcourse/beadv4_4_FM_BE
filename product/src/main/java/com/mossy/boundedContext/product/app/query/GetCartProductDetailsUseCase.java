@@ -60,7 +60,9 @@ public class GetCartProductDetailsUseCase {
                                     catalogInfo.categoryName(),
                                     item.getTotalPrice(),
                                     catalogInfo.thumbnailUrl(),
-                                    item.getQuantity()
+                                    item.getQuantity(),
+                                    item.getOptionCombination()
+
                             );
                         })
                 )

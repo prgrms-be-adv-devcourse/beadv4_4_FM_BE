@@ -29,7 +29,7 @@ public class InternalProductV1Controller {
         productFacade.decreaseStock(items);
     }
 
-    // 재고 복수
+    // 재고 복구
     @PostMapping("/increase")
     public void increaseStock(@RequestBody List<StockCheckRequest> items) {
         productFacade.increaseStock(items);
