@@ -50,7 +50,7 @@ spring:
 
 mossy:
   feign:
-    member-url: http://member:8080
+    member-url: http://member-service:8080
 
 security:
   refresh-token:

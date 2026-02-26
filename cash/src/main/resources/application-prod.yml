@@ -38,7 +38,7 @@ spring:
 
 mossy:
   feign:
-    market-url: http://market:8080  # 배포 환경: Docker 네트워크 내 market 서비스
+    market-url: http://market-service:8080  # 배포 환경: Docker 네트워크 내 market 서비스
 
 logging:
   level:

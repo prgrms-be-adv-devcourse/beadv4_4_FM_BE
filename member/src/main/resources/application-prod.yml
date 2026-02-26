@@ -34,7 +34,7 @@ spring:
 
 mossy:
   feign:
-    auth-url: http://auth:8080
+    auth-url: http://auth-service:8080
 
 logging:
   level:
