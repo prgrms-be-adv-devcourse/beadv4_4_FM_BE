@@ -191,8 +191,8 @@ jobs:
               "git clone https://github.com/${{ github.repository }}.git beadv4_4_fm_be",
               "cd beadv4_4_fm_be",
               "echo '${SECRET_YAML_BASE64}' | base64 -d > k8s/secret.yaml",
-              "kubectl apply -f k8s/",
-              "if [ -n \"${SERVICES}\" ]; then kubectl rollout restart deployment ${SERVICES} -n backend || true; fi"
+              "kubectl apply -k k8s/",
+              "if [ -n \"${SERVICES}\" ]; then kubectl rollout restart deployment ${SERVICES} -n mossy || true; fi"
             ]
           }
           EOF
@@ -220,7 +220,7 @@ jobs:
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "${INSTANCE_ID}" \
             --document-name "AWS-RunShellScript" \
-            --parameters 'commands=["export KUBECONFIG=/etc/rancher/k3s/k3s.yaml && kubectl get pods -n backend"]' \
+            --parameters 'commands=["export KUBECONFIG=/etc/rancher/k3s/k3s.yaml && kubectl get pods -n mossy"]' \
             --query "Command.CommandId" \
             --output text)
 

@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: mossy
+
+resources:
+  - namespace.yaml
+  - ai.yaml
+  - auth.yaml
+  - cash.yaml
+  - elasticsearch.yaml
+  - gateway.yaml
+  - ingress.yaml
+  - market.yaml
+  - member.yaml
+  - payout.yaml
+  - product.yaml
+  - redis.yaml
+  - redpanda.yaml
+  - review.yaml
+  - secret.yaml
+
+
+
+
+
+
+
+
