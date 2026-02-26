@@ -8,8 +8,11 @@ spring:
       on-profile: prod
   data:
     redis:
+      timeout: 2s
+      connect-timeout: 2s
       host: ${SPRING_DATA_REDIS_HOST}
       port: 6379
+
 
   cloud:
     gateway:
