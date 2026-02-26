@@ -17,7 +17,7 @@ spec:
       containers:
         - name: member-service
           image: ghcr.io/ddubuk228/beadv4_4_fm_be:member-service
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:

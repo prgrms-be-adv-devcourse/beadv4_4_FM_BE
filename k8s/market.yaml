@@ -17,7 +17,7 @@ spec:
       containers:
         - name: market-service
           image: ghcr.io/ddubuk228/beadv4_4_fm_be:market-service
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
