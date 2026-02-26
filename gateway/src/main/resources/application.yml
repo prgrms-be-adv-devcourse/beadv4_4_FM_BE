@@ -9,6 +9,11 @@ spring:
   config:
     import: "optional:file:./gateway/.env.gateway[.properties]"
 
+  data:
+    redis:
+      host: redis
+      port: 6379
+
   cloud:
     gateway:
       routes:
@@ -120,10 +125,6 @@ spring:
           uri: http://127.0.0.1:8087
           predicates:
             - Path=/api/v1/recommendations/**
-  data:
-    redis:
-      host: redis
-      port: 6379
 
 jwt:
   secret: ${JWT_SECRET}
