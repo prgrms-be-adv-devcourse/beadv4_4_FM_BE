@@ -22,11 +22,11 @@ services:
     networks:
       - mossy-network
 
-volumes:
-  redis-data:
-    driver: local
-
 networks:
   mossy-network:
     name: mossy-network
     driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
