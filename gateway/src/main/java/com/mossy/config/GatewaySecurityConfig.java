@@ -21,7 +21,7 @@ public class GatewaySecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // 1. CSRF, FormLogin, HttpBasic 비활성화 (Stateless API)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(form -> form.disable())
