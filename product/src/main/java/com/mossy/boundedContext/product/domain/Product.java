@@ -222,4 +222,14 @@ public class Product extends BaseIdAndTime {
         return this.productItems.stream()
                 .allMatch(item -> item.getQuantity() <= 0);
     }
+
+    public Long getMinTotalPrice() {
+        if (this.productItems == null || this.productItems.isEmpty()) {
+            return this.basePrice.longValue();
+        }
+        return this.productItems.stream()
+                .map(item -> item.getTotalPrice().longValue())
+                .min(Long::compare)
+                .orElse(this.basePrice.longValue());
+    }
 }

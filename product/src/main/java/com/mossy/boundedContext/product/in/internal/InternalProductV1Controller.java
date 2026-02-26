@@ -5,6 +5,7 @@ import com.mossy.boundedContext.catalog.app.dto.CatalogReviewInfoDto;
 import com.mossy.boundedContext.product.app.ProductFacade;
 import com.mossy.boundedContext.product.in.internal.dto.request.StockCheckRequest;
 import com.mossy.boundedContext.product.in.internal.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.product.in.internal.dto.response.ProductResponse;
 import com.mossy.boundedContext.product.in.internal.dto.response.ReviewProductInfoResponse;
 import com.mossy.boundedContext.product.in.internal.dto.response.WishlistProductResponse;
 import com.mossy.boundedContext.product.out.persistence.ProductRepository;
@@ -63,5 +64,19 @@ public class InternalProductV1Controller {
                 catalogInfo.name(),
                 catalogInfo.thumbnail()
         );
+    }
+
+    // 필터 정렬
+    @PostMapping("/filter-by-reviews")
+    public List<ProductResponse> filterByReviews(
+            @RequestBody List<Long> productIds
+    ) {
+        return productFacade.filterByReviews(productIds);
+    }
+
+    // 추천 상품 정보
+    @PostMapping("/details")
+    public List<ProductResponse> getProductDetails(@RequestBody List<Long> productIds) {
+        return productFacade.getProductDetails(productIds);
     }
 }
