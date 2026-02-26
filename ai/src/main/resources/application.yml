@@ -13,7 +13,7 @@ spring:
       fail-on-empty-beans: false
 
   r2dbc:
-    url: r2dbc:postgresql://${DB_URL}
+    url: r2dbc:${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
