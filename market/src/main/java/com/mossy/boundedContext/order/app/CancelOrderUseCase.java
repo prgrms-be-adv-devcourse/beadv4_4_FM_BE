@@ -30,7 +30,7 @@ public class CancelOrderUseCase {
 
     @Transactional
     public void cancelOrder(TossCancelPayload response) {
-        Order order = orderRepository.findByOrderNoWithItemsAndCoupons(response.orderId())
+        Order order = orderRepository.findByOrderNo(response.orderId())
             .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
 
         if (order.getState() != OrderState.PAID) {

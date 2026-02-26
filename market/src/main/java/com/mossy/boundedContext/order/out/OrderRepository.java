@@ -21,7 +21,7 @@ public interface OrderRepository  extends JpaRepository<Order, Long>, OrderRepos
     Optional<Order> findWithItemsAndCouponsById(Long orderId);
 
     @EntityGraph(attributePaths = {"orderItems", "buyer", "orderItems.userCoupon"})
-    Optional<Order> findByOrderNoWithItemsAndCoupons(String orderNo);
+    Optional<Order> findByOrderNo(String orderNo);
 
     @Modifying
     @Query("delete from Order o where o.state = 'EXPIRED' and o.createdAt < :threshold")
