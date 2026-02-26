@@ -21,7 +21,6 @@ public class GatewaySecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // 1. CSRF, FormLogin, HttpBasic 비활성화 (Stateless API)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(form -> form.disable())
@@ -39,22 +38,5 @@ public class GatewaySecurityConfig {
                 )
                 .build();
     }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList(
-                "http://mossy-eco.biz",
-                "https://mossy-eco.biz",
-                "http://localhost:5173",
-                "http://localhost:3000"
-        ));
-        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
-        config.addAllowedHeader("*");
-        config.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
+    
 }

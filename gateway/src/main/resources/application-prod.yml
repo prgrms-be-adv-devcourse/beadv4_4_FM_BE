@@ -16,6 +16,26 @@ spring:
 
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://mossy-eco.biz"
+              - "https://mossy-eco.biz"
+              - "http://localhost:5173"
+              - "http://localhost:3000"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+        # 이 설정이 가장 중요합니다! OPTIONS 요청을 하위 서비스로 넘기지 않고 Gateway가 즉시 처리합니다.
+        add-to-simple-url-handler-mapping: true
       routes:
         # ── Market ──
         - id: market
