@@ -63,7 +63,7 @@ spring:
         - id: payout
           uri: http://payout:8084
           predicates:
-            - Path=/api/payout/**
+            - Path=/api/v1/payouts/**, /api/v1/donations/**
           filters:
             - name: JwtAuthenticationFilter
 
