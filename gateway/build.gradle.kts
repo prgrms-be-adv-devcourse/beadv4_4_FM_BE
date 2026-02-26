@@ -30,7 +30,6 @@ dependencies {
     implementation(project(":common")) {
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
         exclude(group = "org.springframework.boot", module = "spring-boot-starter-data-jpa")
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-data-redis")
     }
 
     // API Gateway
