@@ -33,6 +33,7 @@ public class GatewaySecurityConfig {
                         .pathMatchers("/internal/**").denyAll()
                         .pathMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .pathMatchers("/api/v1/seller/**").hasRole("SELLER")
+                        .pathMatchers("/actuator/**").permitAll()
                         .anyExchange().permitAll()
                 )
                 .build();
