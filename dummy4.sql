@@ -1,1 +1,0 @@
-INSERT INTO public.catalog_product (created_at, updated_at, brand, description, model_number, "name", review_count, sales_count, status, thumbnail, weight, category_id) VALUES
