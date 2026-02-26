@@ -11,7 +11,6 @@ public record CouponUpdateRequest(
         @Positive(message = "할인 값은 0보다 커야 합니다")
         BigDecimal discountValue,
 
-        @Positive(message = "최대 할인 금액은 0보다 커야 합니다")
         BigDecimal maxDiscountAmount,
 
         LocalDateTime endAt

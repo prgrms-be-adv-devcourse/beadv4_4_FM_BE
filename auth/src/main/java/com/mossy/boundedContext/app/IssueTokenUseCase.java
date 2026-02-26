@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class IssueTokenUseCase {
@@ -14,8 +16,8 @@ public class IssueTokenUseCase {
     private final RefreshTokenUseCase refreshTokenUseCase;
 
     @Transactional
-    public TokenResponse execute (Long userId, String role, Long sellerId) {
-        String accessToken = jwtProvider.createAccessToken(userId, role, sellerId);
+    public TokenResponse execute (Long userId, List<String> roles, Long sellerId) {
+        String accessToken = jwtProvider.createAccessToken(userId, roles, sellerId);
         String refreshToken = jwtProvider.createRefreshToken(userId);
         refreshTokenUseCase.save(userId, refreshToken);
 

@@ -23,6 +23,7 @@ public enum SuccessCode implements BaseCode {
     COUPON_DOWNLOAD(200, "쿠폰이 다운로드되었습니다."),
     COUPON_UPDATE(200, "쿠폰이 수정되었습니다."),
     COUPON_DEACTIVATE(200, "쿠폰이 비활성화되었습니다."),
+    COUPON_DELETE(200, "쿠폰이 삭제되었습니다."),
 
     // Order
     ORDER_CREATE(200, "주문이 생성되었습니다."),

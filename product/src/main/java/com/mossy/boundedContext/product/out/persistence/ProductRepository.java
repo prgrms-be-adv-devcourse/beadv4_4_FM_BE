@@ -82,5 +82,24 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
         ORDER BY p.id ASC
     """)
     List<Product> findAllByProductItemIdsWithLock(@Param("itemIds") List<Long> itemIds);
+
+    List<Product> findDistinctByProductItems_IdIn(List<Long> productItemIds);
+
+    @Query("""
+        SELECT DISTINCT p 
+        FROM Product p 
+        JOIN FETCH p.productItems pi 
+        WHERE pi.id IN :productItemIds
+    """)
+    List<Product> findAllByProductItemIds(@Param("productItemIds") List<Long> productItemIds);
+
+
+    @Query("""
+        SELECT p.catalogProductId
+        FROM Product p
+        JOIN p.productItems pi
+        WHERE pi.id = :productItemId
+    """)
+    Optional<Long> findCatalogProductIdByProductItemId(@Param("productItemId") Long productItemId);
 }
 

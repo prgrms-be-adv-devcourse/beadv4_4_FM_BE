@@ -1,9 +1,14 @@
 package com.mossy.boundedContext.product.app;
 
 import com.mossy.boundedContext.product.app.command.*;
+import com.mossy.boundedContext.product.app.query.GetCartProductDetailsUseCase;
+import com.mossy.boundedContext.product.app.query.GetCatalogIdUseCase;
 import com.mossy.boundedContext.product.app.query.GetProductDetailUseCase;
+import com.mossy.boundedContext.product.app.query.GetWishlistProductsUseCase;
 import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.in.internal.dto.request.StockCheckRequest;
+import com.mossy.boundedContext.product.in.internal.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.product.in.internal.dto.response.WishlistProductResponse;
 import com.mossy.boundedContext.product.in.rest.dto.request.ProductCreateRequest;
 import com.mossy.boundedContext.product.in.rest.dto.request.ProductUpdateRequest;
 import com.mossy.boundedContext.product.in.rest.dto.response.ProductDetailResponse;
@@ -31,6 +36,9 @@ public class ProductFacade {
     private final DeleteProductUseCase deleteProductUseCase;
     private final DecreaseStockUseCase decreaseStockUseCase;
     private final IncreaseStockUsecase increaseStockUseCase;
+    private final GetWishlistProductsUseCase getWishlistProductsUseCase;
+    private final GetCartProductDetailsUseCase getCartProductDetailsUseCase;
+    private final GetCatalogIdUseCase getCatalogIdUseCase;
     private final KafkaEventPublisher kafkaEventPublisher;
 
     // 상품 등록
@@ -100,5 +108,19 @@ public class ProductFacade {
             return;
         }
         increaseStockUseCase.execute(requests);
+    }
+
+    // 위시리스트
+    public List<WishlistProductResponse> getWishlistProductItems(List<Long> productIds) {
+        return getWishlistProductsUseCase.execute(productIds);
+    }
+
+    // 장바구니
+    public List<ProductInfoResponse> getCartProductItems(List<Long> productItemIds) {
+        return getCartProductDetailsUseCase.execute(productItemIds);
+    }
+
+    public Long getCatalogIdByProductItemId(Long productItemId) {
+        return getCatalogIdUseCase.execute(productItemId);
     }
 }

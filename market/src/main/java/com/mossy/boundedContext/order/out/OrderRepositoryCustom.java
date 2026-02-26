@@ -2,9 +2,9 @@ package com.mossy.boundedContext.order.out;
 
 import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
-import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
+import com.mossy.shared.market.enums.OrderState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,9 +17,7 @@ public interface OrderRepositoryCustom {
 
     List<OrderDetailResponse> findOrderDetailsByOrderId(Long orderId);
 
-    Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, Pageable pageable);
-
-    OrderDetailSellerResponse findSellerOrderDetailById(Long orderDetailId);
+    Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, OrderState state, Pageable pageable);
 
     Page<Order> findPaidOrdersUpdatedBefore(LocalDateTime threshold, Pageable pageable);
 }

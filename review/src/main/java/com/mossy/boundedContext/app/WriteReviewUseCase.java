@@ -6,6 +6,8 @@ import com.mossy.boundedContext.in.dto.request.WriteReviewRequest;
 import com.mossy.boundedContext.in.dto.response.ReviewResponse;
 import com.mossy.boundedContext.out.ReviewableItemRepository;
 import com.mossy.boundedContext.out.ReviewRepository;
+import com.mossy.boundedContext.out.external.ProductFeignClient;
+import com.mossy.boundedContext.out.external.dto.ProductInfoResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.shared.review.enums.ReviewStatus;
@@ -13,12 +15,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class WriteReviewUseCase {
 
     private final ReviewableItemRepository reviewableItemRepository;
     private final ReviewRepository reviewRepository;
+    private final ProductFeignClient productFeignClient;
 
     @Transactional
     public ReviewResponse write(Long userId, Long orderItemId, WriteReviewRequest request) {
@@ -45,6 +50,10 @@ public class WriteReviewUseCase {
         reviewRepository.save(review);
         reviewableItem.markAsReviewed();
 
-        return ReviewResponse.from(review);
+        ProductInfoResponse productInfo = productFeignClient
+                .getProductInfos(List.of(review.getProductId()))
+                .stream().findFirst().orElse(null);
+
+        return ReviewResponse.from(review, productInfo);
     }
 }

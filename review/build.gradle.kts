@@ -7,6 +7,8 @@ plugins {
 group = "com.mossy"
 version = "0.0.1-SNAPSHOT"
 
+val springCloudVersion = "2024.0.0"
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -23,12 +25,21 @@ repositories {
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+    }
+}
+
 dependencies {
     // common 모듈
     implementation(project(":common"))
     // kafka 모듈
     implementation(project(":kafka"))
     implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // OpenFeign
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.kafka:spring-kafka")

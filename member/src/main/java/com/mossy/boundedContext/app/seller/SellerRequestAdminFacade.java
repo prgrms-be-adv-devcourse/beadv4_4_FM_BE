@@ -74,7 +74,7 @@ public class SellerRequestAdminFacade {
             user.addUserRole(new UserRole(user, sellerRole));
         }
 
-        // SellerJoinedEvent 발행 → SellerKafkaEventPublisher가 AFTER_COMMIT 시 Kafka로 전달
+        // SellerJoinedEvent 발행
         kafkaEventPublisher.publish(sellerMapper.toSellerJoinedEvent(seller));
 
         return new SellerAppoveResult(seller.getId(), userId);
