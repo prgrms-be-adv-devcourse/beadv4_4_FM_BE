@@ -21,6 +21,7 @@ public class GatewaySecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
+                .cors(cors -> {})
                 // 1. CSRF, FormLogin, HttpBasic 비활성화 (Stateless API)
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(form -> form.disable())
@@ -38,5 +39,22 @@ public class GatewaySecurityConfig {
                 )
                 .build();
     }
-    
+    @Bean
+    public org.springframework.web.cors.reactive.CorsConfigurationSource corsConfigurationSource() {
+        var config = new org.springframework.web.cors.CorsConfiguration();
+        config.setAllowedOrigins(java.util.List.of(
+                "http://mossy-eco.biz",
+                "https://mossy-eco.biz",
+                "http://localhost:5173",
+                "http://localhost:3000"
+        ));
+        config.setAllowedMethods(java.util.List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
+        config.setAllowedHeaders(java.util.List.of("*"));
+        config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
+
+        var source = new org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 }
