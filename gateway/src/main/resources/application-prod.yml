@@ -13,10 +13,10 @@ spring:
         add-to-simple-url-handler-mapping: true
         corsConfigurations:
           '[/**]':
-            allowedOriginPatterns:
-              - "http://localhost:5173"
+            allowedOrigins:
               - "http://mossy-eco.biz"
               - "https://mossy-eco.biz"
+              - "http://localhost:5173"
             allowedMethods:
               - "GET"
               - "POST"
