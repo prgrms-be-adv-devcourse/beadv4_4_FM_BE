@@ -72,7 +72,8 @@ public class ProductDataInit {
                     // 최저가 상품의 ID를
                     Long minPriceProductId = (summary != null) ? summary.getMinPriceProductId() : null;
 
-                    String thumbnailUrl = thumbnailMap.getOrDefault(catalog.getId(), "default_image_url");
+                    //String thumbnailUrl = thumbnailMap.getOrDefault(catalog.getId(), "default_image_url");
+                    String thumbnailUrl = catalog.getThumbnail();
 
                     return CatalogDocument.from(catalog, thumbnailUrl, minPrice, sellerCount, minPriceProductId);
                 })
