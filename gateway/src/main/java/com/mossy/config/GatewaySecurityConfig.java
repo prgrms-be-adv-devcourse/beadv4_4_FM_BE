@@ -40,8 +40,12 @@ public class GatewaySecurityConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
-        // ✅ 허용할 도메인 목록에 운영 도메인 추가
-        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://mossy-eco.biz"));
+        corsConfig.setAllowedOriginPatterns(Arrays.asList(
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "http://mossy-eco.biz",
+                "https://mossy-eco.biz"
+        ));
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         corsConfig.setAllowedHeaders(Arrays.asList("*"));
         corsConfig.setAllowCredentials(true);
