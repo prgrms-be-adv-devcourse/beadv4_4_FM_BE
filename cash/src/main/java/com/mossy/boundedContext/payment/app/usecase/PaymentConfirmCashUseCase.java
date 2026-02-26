@@ -8,7 +8,8 @@ import com.mossy.boundedContext.payment.in.dto.command.PaymentCompletedDto;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmCashRequestDto;
 import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.exception.DomainException;
-import com.mossy.global.eventPublisher.EventPublisher;
+import com.mossy.kafka.KafkaTopics;
+import com.mossy.kafka.outbox.service.OutboxPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PaymentConfirmCashUseCase {
 
-    private final EventPublisher eventPublisher;
+    private final OutboxPublisher outboxPublisher;
     private final PaymentSupport paymentSupport;
     private final CashFacade cashFacade;
     private final PaymentMapper paymentMapper;
@@ -46,12 +47,18 @@ public class PaymentConfirmCashUseCase {
 
             cashFacade.cashHolding(paymentMapper.toCashHoldingRequestDto(PaymentCompletedDto.of(order,payment)));
 
-            eventPublisher.publish(new PaymentCompletedEvent(
-                order.orderId(),
-                order.buyerId(),
-                payment.getCreatedAt(),
-                request.amount(),
-                PayMethod.CASH.name())
+            outboxPublisher.saveEvent(
+                KafkaTopics.PAYMENT_COMPLETED,
+                "Payment",
+                payment.getId(),
+                PaymentCompletedEvent.class.getSimpleName(),
+                new PaymentCompletedEvent(
+                    order.orderId(),
+                    order.buyerId(),
+                    payment.getCreatedAt(),
+                    request.amount(),
+                    PayMethod.CASH.name()
+                )
             );
 
         } catch (DomainException e) {

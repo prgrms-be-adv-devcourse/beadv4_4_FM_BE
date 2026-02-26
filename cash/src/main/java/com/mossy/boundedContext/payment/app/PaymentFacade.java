@@ -1,20 +1,19 @@
 package com.mossy.boundedContext.payment.app;
 
-import com.mossy.boundedContext.payment.app.usecase.PaymentCancelCashUseCase;
-import com.mossy.boundedContext.payment.app.usecase.PaymentCancelTossUseCase;
+import com.mossy.boundedContext.payment.app.usecase.PaymentTossFullRefundUseCase;
+import com.mossy.boundedContext.payment.app.usecase.PaymentTossPartialRefundUseCase;
+import com.mossy.boundedContext.payment.app.usecase.PaymentCashCancelUseCase;
+import com.mossy.boundedContext.payment.app.usecase.PaymentCashPartialRefundUseCase;
 import com.mossy.boundedContext.payment.app.usecase.PaymentConfirmCashUseCase;
 import com.mossy.boundedContext.payment.app.usecase.PaymentConfirmTossUseCase;
 import com.mossy.boundedContext.payment.app.usecase.PaymentFindAllUseCase;
 import com.mossy.boundedContext.payment.app.usecase.PaymentRetrieveUseCase;
-import com.mossy.boundedContext.payment.domain.Payment;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelCashRequestDto;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelTossRequestDto;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmCashRequestDto;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmTossRequestDto;
 import com.mossy.boundedContext.payment.in.dto.response.PaymentResponse;
 import com.mossy.boundedContext.payment.in.dto.response.TossPaymentResponse;
-import com.mossy.shared.cash.enums.PayMethod;
-import com.mossy.shared.market.event.OrderCancelEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,12 +24,13 @@ import org.springframework.stereotype.Service;
 public class PaymentFacade {
 
     private final PaymentConfirmTossUseCase paymentConfirmTossUseCase;
-    private final PaymentCancelCashUseCase paymentCancelCashUseCase;
+    private final PaymentCashCancelUseCase paymentCancelCashUseCase;
+    private final PaymentCashPartialRefundUseCase cashPartialRefundUseCase;
     private final PaymentConfirmCashUseCase paymentConfirmCashUseCase;
-    private final PaymentCancelTossUseCase paymentCancelTossUseCase;
+    private final PaymentTossFullRefundUseCase fullRefundUseCase;
+    private final PaymentTossPartialRefundUseCase partialRefundUseCase;
     private final PaymentFindAllUseCase paymentGetInfoUseCase;
     private final PaymentRetrieveUseCase paymentRetrieveUseCase;
-    private final PaymentSupport paymentSupport;
 
     // PG 결제 승인
     public void confirmTossPayment(PaymentConfirmTossRequestDto request) {
@@ -42,26 +42,22 @@ public class PaymentFacade {
         paymentConfirmCashUseCase.confirmCash(request);
     }
 
-    // PG 결제 취소
+    // PG 결제 취소 (ids 없으면 전체 환불, 있으면 부분 환불)
     public void cancelTossPayment(PaymentCancelTossRequestDto request) {
-        paymentCancelTossUseCase.cancelTossPayment(request);
-    }
-
-    // 주문 취소로 인한 결제 취소
-    public void orderCancelPayment(OrderCancelEvent event) {
-        Payment payment = paymentSupport.findPayment(event.orderNo());
-        PayMethod payMethod = payment.getPayMethod();
-
-        if (payMethod == PayMethod.CARD) {
-            paymentCancelTossUseCase.orderCancelTossPayment(event);
-        } else if (payMethod == PayMethod.CASH) {
-            paymentCancelCashUseCase.orderCancelCashPayment(event);
+        if (request.isPartialCancel()) {
+            partialRefundUseCase.execute(request.orderId(), request.cancelReason(), request.ids(), request.cancelAmount());
+        } else {
+            fullRefundUseCase.execute(request.orderId(), request.cancelReason());
         }
     }
 
-    // 예치금 결제 취소
+    // 예치금 결제 취소 (ids 없으면 전체 환불, 있으면 부분 환불)
     public void cancelCashPayment(PaymentCancelCashRequestDto request) {
-        paymentCancelCashUseCase.cancelCashPayment(request);
+        if (request.isPartialCancel()) {
+            cashPartialRefundUseCase.execute(request.orderId(), request.cancelReason(), request.ids(), request.cancelAmount());
+        } else {
+            paymentCancelCashUseCase.cancelCashPayment(request);
+        }
     }
 
     // PG-승인된 결제 내역 조회

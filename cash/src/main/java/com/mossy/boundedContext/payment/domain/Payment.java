@@ -87,8 +87,14 @@ public class Payment extends BaseIdAndTime {
             .build();
     }
 
-    // 결제 취소 시 호출
-    public static Payment createCanceled(Long orderId, String paymentKey, String orderNo, BigDecimal amount,
+    // 전체 취소 시 상태 업데이트 (기존 PAID 레코드 변경)
+    public void cancel(String cancelReason) {
+        this.status = PaymentStatus.CANCELED;
+        this.failReason = cancelReason;
+    }
+
+    // 보상 트랜잭션용 전체 취소 레코드 생성 (PAID 레코드가 롤백될 때)
+    public static Payment createFullCanceled(Long orderId, String paymentKey, String orderNo, BigDecimal amount,
                                           PayMethod payMethod, String cancelReason) {
         return Payment.builder()
             .orderId(orderId)
@@ -97,6 +103,20 @@ public class Payment extends BaseIdAndTime {
             .amount(amount)
             .payMethod(payMethod)
             .status(PaymentStatus.CANCELED)
+            .failReason(cancelReason)
+            .build();
+    }
+
+    // 부분 취소 시 호출
+    public static Payment createPartialCanceled(Long orderId, String paymentKey, String orderNo, BigDecimal amount,
+                                                 PayMethod payMethod, String cancelReason) {
+        return Payment.builder()
+            .orderId(orderId)
+            .paymentKey(paymentKey)
+            .orderNo(orderNo)
+            .amount(amount)
+            .payMethod(payMethod)
+            .status(PaymentStatus.PARTIAL_CANCELED)
             .failReason(cancelReason)
             .build();
     }

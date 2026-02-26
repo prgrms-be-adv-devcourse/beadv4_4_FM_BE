@@ -58,8 +58,8 @@ public class ApiV1PaymentController {
     }
 
     @Operation(
-        summary = "토스 결제 취소",
-        description = "이미 PG 승인된 주문을 취소하고 토스페이먼츠를 통해 환불을 진행합니다.",
+        summary = "토스 결제 취소 (전체/부분 환불)",
+        description = "PG 승인된 주문을 취소합니다. ids가 없으면 전체 환불, ids가 있으면 해당 상품만 부분 환불합니다.",
         responses = {
             @ApiResponse(responseCode = "200", description = "취소 성공"),
             @ApiResponse(responseCode = "404", description = "취소할 결제 내역을 찾을 수 없음")
@@ -72,10 +72,11 @@ public class ApiV1PaymentController {
     }
 
     @Operation(
-        summary = "예치금 결제 취소",
-        description = "예치금으로 결제된 주문을 취소하고 차감되었던 예치금을 복구합니다.",
+        summary = "예치금 결제 취소 (전체/부분 환불)",
+        description = "예치금으로 결제된 주문을 취소합니다. ids가 없으면 전체 환불, ids가 있으면 해당 상품만 부분 환불합니다.",
         responses = {
-            @ApiResponse(responseCode = "200", description = "환불 완료")
+            @ApiResponse(responseCode = "200", description = "환불 완료"),
+            @ApiResponse(responseCode = "404", description = "취소할 결제 내역을 찾을 수 없음")
         }
     )
     @PostMapping("/cancel/cash")
