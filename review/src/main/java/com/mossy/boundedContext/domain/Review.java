@@ -7,7 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Table(name = "Review")
+@Table(name = "REVIEW_REVIEW")
 @SQLRestriction("status != 'DELETED'")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

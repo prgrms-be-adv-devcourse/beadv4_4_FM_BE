@@ -72,7 +72,7 @@ public class Payout extends BaseIdAndTime {
         }
 
         // 2. 금액 검증
-        if (this.amount == null || this.amount.compareTo(BigDecimal.ZERO) < 0) {
+        if (amount == null) {
             throw new DomainException(ErrorCode.INVALID_PAYOUT_AMOUNT);
         }
 
