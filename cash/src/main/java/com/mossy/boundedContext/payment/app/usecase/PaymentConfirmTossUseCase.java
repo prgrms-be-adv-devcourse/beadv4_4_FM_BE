@@ -84,7 +84,7 @@ public class PaymentConfirmTossUseCase {
 
             // DB 취소 이력 저장
             paymentSupport.processFullCancel(
-                orderNo, tossResponse.paymentKey(), request.amount(),
+                order.orderId(), orderNo, tossResponse.paymentKey(), request.amount(),
                 PayMethod.CARD, "시스템 오류로 인한 결제 취소: " + e.getMessage()
             );
             throw e;

@@ -45,7 +45,7 @@ public class PaymentSupport {
 
     public MarketOrderResponse findOrderForCancel(Long orderId) {
         MarketOrderResponse order = marketFeignClient.getOrder(orderId);
-        if (order.status() != OrderState.PAID) {
+        if (order.status() == OrderState.PENDING) {
             throw new DomainException(ErrorCode.PAID_ORDER_NOT_FOUND);
         }
         return order;
@@ -109,16 +109,16 @@ public class PaymentSupport {
 
     // 보상 트랜잭션: PG 승인 후 시스템 오류 시 별도 취소 이력 생성 (PAID 레코드가 롤백되므로 REQUIRES_NEW)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processFullCancel(String orderNo, String paymentKey, BigDecimal amount,
+    public void processFullCancel(Long orderId, String orderNo, String paymentKey, BigDecimal amount,
         PayMethod method, String cancelReason) {
-        Payment canceled = Payment.createFullCanceled(null, paymentKey, orderNo, amount, method, cancelReason);
+        Payment canceled = Payment.createFullCanceled(orderId, paymentKey, orderNo, amount, method, cancelReason);
         paymentRepository.save(canceled);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processPartialCancel(String orderNo, String paymentKey, BigDecimal amount,
+    public void processPartialCancel(Long orderId, String orderNo, String paymentKey, BigDecimal amount,
         PayMethod method, String cancelReason) {
-        Payment canceled = Payment.createPartialCanceled(null, paymentKey, orderNo, amount, method, cancelReason);
+        Payment canceled = Payment.createPartialCanceled(orderId, paymentKey, orderNo, amount, method, cancelReason);
         paymentRepository.save(canceled);
     }
 

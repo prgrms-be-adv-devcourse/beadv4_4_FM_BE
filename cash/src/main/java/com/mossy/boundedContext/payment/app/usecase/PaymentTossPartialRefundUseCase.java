@@ -41,7 +41,7 @@ public class PaymentTossPartialRefundUseCase {
         TossCancelResponse response = paymentSupport.callTossPartialCancel(payment.getPaymentKey(), cancelReason, cancelAmount);
 
         // 부분 환불 성공 담보 (취소 내역 저장)
-        paymentSupport.processPartialCancel(payment.getOrderNo(), payment.getPaymentKey(), cancelAmount, PayMethod.CARD, cancelReason);
+        paymentSupport.processPartialCancel(payment.getOrderId(), payment.getOrderNo(), payment.getPaymentKey(), cancelAmount, PayMethod.CARD, cancelReason);
 
         PaymentCashRefundEvent cashRefundEvent = new PaymentCashRefundEvent(order.orderId(), order.buyerId(), cancelAmount, PayMethod.CARD);
 

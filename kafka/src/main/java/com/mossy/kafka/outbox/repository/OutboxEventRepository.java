@@ -12,5 +12,8 @@ public interface OutboxEventRepository extends JpaRepository<OutboxEvent, Long> 
 
     List<OutboxEvent> findByStatusOrderByCreatedAtAsc(OutboxStatus status, Pageable pageable);
 
+    List<OutboxEvent> findByStatusAndCreatedAtBeforeOrderByCreatedAtAsc(
+        OutboxStatus status, LocalDateTime createdBefore, Pageable pageable);
+
     void deleteByStatusAndCreatedAtBefore(OutboxStatus status, LocalDateTime cutoff);
 }

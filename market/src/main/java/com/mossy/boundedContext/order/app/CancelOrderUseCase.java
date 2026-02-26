@@ -10,16 +10,16 @@ import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
 import com.mossy.shared.cash.payload.TossCancelPayload;
-import com.mossy.shared.market.enums.OrderState;
 import com.mossy.shared.market.event.OrderStockReturnEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CancelOrderUseCase {
@@ -33,45 +33,72 @@ public class CancelOrderUseCase {
         Order order = orderRepository.findByOrderNo(response.orderId())
             .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
 
-        if (order.getState() != OrderState.PAID) {
-            throw new DomainException(ErrorCode.ORDER_CANNOT_CANCEL);
+        String cancelReason = extractCancelReason(response);
+
+        List<OrderItem> canceledItems = processCancellation(order, response, cancelReason);
+
+        publishCancelEvents(order, canceledItems);
+    }
+
+    private String extractCancelReason(TossCancelPayload response) {
+        return response.cancels().isEmpty()
+            ? "사용자 요청"
+            : response.cancels().getFirst().cancelReason();
+    }
+
+    private List<OrderItem> processCancellation(Order order, TossCancelPayload response, String cancelReason) {
+        if ("PARTIAL_CANCELED".equals(response.refundType())) {
+            return processPartialCancellation(order, response, cancelReason);
         }
+        return processFullCancellation(order, cancelReason);
+    }
 
-        if (order.getUpdatedAt().isBefore(LocalDateTime.now().minusWeeks(1))) {
-            throw new DomainException(ErrorCode.ORDER_PURCHASE_CONFIRMED);
-        }
+    private List<OrderItem> processPartialCancellation(Order order, TossCancelPayload response, String cancelReason) {
+        order.cancelPartial(response.orderItemIds(), cancelReason);
+        return order.getOrderItems().stream()
+            .filter(item -> response.orderItemIds().contains(item.getId()))
+            .toList();
+    }
 
-        String cancelReason = response.cancels().isEmpty()
-            ? "사용자 요청" : response.cancels().getFirst().cancelReason();
-
+    private List<OrderItem> processFullCancellation(Order order, String cancelReason) {
         order.cancel(cancelReason);
+        return order.getOrderItems();
+    }
 
-        List<Long> userCouponIds = order.getOrderItems().stream()
-                .map(OrderItem::getUserCouponId)
-                .filter(Objects::nonNull)
-                .toList();
+    private void publishCancelEvents(Order order, List<OrderItem> canceledItems) {
+        restoreCoupons(order, canceledItems);
+        returnStock(order, canceledItems);
+    }
 
-        // 쿠폰 복구를 위한 내부 이벤트 발행
-        eventPublisher.publish(new OrderCancelEvent(
+    private void restoreCoupons(Order order, List<OrderItem> canceledItems) {
+        List<Long> userCouponIds = canceledItems.stream()
+            .map(OrderItem::getUserCouponId)
+            .filter(Objects::nonNull)
+            .toList();
+
+        if (!userCouponIds.isEmpty()) {
+            eventPublisher.publish(new OrderCancelEvent(
                 order.getId(),
                 order.getBuyer().getId(),
                 userCouponIds
-        ));
+            ));
+        }
+    }
 
-        // 재고 복구를 위한 이벤트를 아웃박스에 저장
-        List<OrderStockReturnEvent.OrderItemStock> orderItemStocks = order.getOrderItems().stream()
-                .map(orderItem -> new OrderStockReturnEvent.OrderItemStock(
-                        orderItem.getProductItemId(),
-                        orderItem.getQuantity()
-                ))
-                .toList();
+    private void returnStock(Order order, List<OrderItem> canceledItems) {
+        List<OrderStockReturnEvent.OrderItemStock> orderItemStocks = canceledItems.stream()
+            .map(orderItem -> new OrderStockReturnEvent.OrderItemStock(
+                orderItem.getProductItemId(),
+                orderItem.getQuantity()
+            ))
+            .toList();
 
         outboxPublisher.saveEvent(
-                KafkaTopics.ORDER_STOCK_RETURN,
-                "Order",
-                order.getId(),
-                OrderStockReturnEvent.class.getSimpleName(),
-                new OrderStockReturnEvent(orderItemStocks)
+            KafkaTopics.ORDER_STOCK_RETURN,
+            "Order",
+            order.getId(),
+            OrderStockReturnEvent.class.getSimpleName(),
+            new OrderStockReturnEvent(orderItemStocks)
         );
     }
 }

@@ -27,6 +27,7 @@ public enum SuccessCode implements BaseCode {
     // =============================================================
     TOSS_PAYMENT_CONFIRMED(200, "결제가 완료되었습니다."),
     CASH_PAYMENT_CONFIRMED(200, "예치금 결제가 완료되었습니다."),
+    PAYMENT_CANCELLED(200, "결제가 취소되었습니다."),
     TOSS_PAYMENT_CANCELLED(200, "PG-결제가 취소되었습니다."),
     CASH_PAYMENT_CANCELLED(200, "예치금 결제가 취소되었습니다."),
     PAYMENT_HISTORY_FOUND(200, "주문 결제 이력 조회 성공"),

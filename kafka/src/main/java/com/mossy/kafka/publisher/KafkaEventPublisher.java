@@ -2,9 +2,9 @@ package com.mossy.kafka.publisher;
 
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.shared.cash.event.PaymentCashRefundEvent;
-import com.mossy.shared.market.event.OrderCancelEvent;
-import com.mossy.shared.market.event.OrderStockReturnEvent;
+import com.mossy.shared.cash.event.PaymentTossRefundEvent;
 import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
+import com.mossy.shared.market.event.OrderStockReturnEvent;
 import com.mossy.shared.member.event.SellerJoinedEvent;
 import com.mossy.shared.member.event.UserJoinedEvent;
 import com.mossy.shared.product.event.ProductClickedEvent;
@@ -39,7 +39,7 @@ public class KafkaEventPublisher {
     private String resolveTopicName(Object event) {
         return switch (event) {
             case PaymentCashRefundEvent e -> KafkaTopics.PAYMENT_REFUND;
-            case OrderCancelEvent e -> KafkaTopics.ORDER_CANCEL;
+            case PaymentTossRefundEvent e -> KafkaTopics.ORDER_CANCEL;
             case OrderStockReturnEvent e -> KafkaTopics.ORDER_STOCK_RETURN;
             case OrderPurchaseConfirmedEvent e -> KafkaTopics.ORDER_PURCHASE_CONFIRMED;
             case UserJoinedEvent e -> KafkaTopics.USER_JOINED;
