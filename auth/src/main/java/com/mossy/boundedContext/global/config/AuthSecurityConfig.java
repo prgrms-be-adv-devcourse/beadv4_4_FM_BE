@@ -59,10 +59,20 @@ public class AuthSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://mossy-eco.biz", "https://mossy-eco.biz"));
-        config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
+
+        config.setAllowedOriginPatterns(List.of(
+                "http://mossy-eco.biz",
+                "https://mossy-eco.biz",
+                "http://localhost:*",
+                "http://127.0.0.1:*"
+        ));
+
+        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
+        config.setAllowedHeaders(List.of("Authorization","Content-Type","X-Requested-With","Accept","Origin"));
+        config.setExposedHeaders(List.of("Authorization","Set-Cookie"));
         config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
