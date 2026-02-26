@@ -1,14 +1,20 @@
 package com.mossy.boundedContext.order.in.dto.response;
 
+import com.mossy.shared.market.enums.CouponType;
 import lombok.Builder;
 
 import java.math.BigDecimal;
 
 @Builder
 public record OrderDetailResponse(
-        Long productId,
+        Long orderItemId,
+        Long productItemId,
         int quantity,
-        BigDecimal orderPrice,
+        BigDecimal originalPrice,
+        BigDecimal discountAmount,
+        BigDecimal finalPrice,
+        String couponName,
+        CouponType couponType,
         String sellerName
 ) {
 }

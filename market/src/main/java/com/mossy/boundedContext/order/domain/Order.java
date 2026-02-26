@@ -122,7 +122,7 @@ public class Order extends BaseIdAndTime {
     }
 
     public void cancel(String cancelReason) {
-        if (this.state == OrderState.PENDING || this.state == OrderState.PAID) {
+        if (this.state == OrderState.PAID) {
             this.state = OrderState.CANCELED;
             this.orderItems.forEach(item -> {
                 item.updateState(OrderState.CANCELED);

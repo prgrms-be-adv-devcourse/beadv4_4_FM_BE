@@ -87,8 +87,8 @@ public class CouponFacade {
         }
     }
 
-    public Page<UserCouponResponse> getMyUserCoupons(Long userId, UserCouponStatus status, Pageable pageable) {
-        return getMyUserCouponsUseCase.get(userId, status, pageable);
+    public Page<UserCouponResponse> getMyUserCoupons(Long userId, UserCouponStatus status, CouponType couponType, Pageable pageable) {
+        return getMyUserCouponsUseCase.get(userId, status, couponType, pageable);
     }
 
     public List<UserCouponResponse> getApplicableCoupons(Long userId, List<Long> productItemIds) {

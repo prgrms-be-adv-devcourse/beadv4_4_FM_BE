@@ -111,14 +111,15 @@ public class ApiV1CouponController {
         return RsData.success(SuccessCode.COUPON_DOWNLOAD, couponFacade.downloadCoupon(couponId, userId));
     }
 
-    @Operation(summary = "내 쿠폰 목록 조회", description = "사용자가 보유한 쿠폰 목록을 조회합니다.")
+    @Operation(summary = "내 쿠폰 목록 조회", description = "사용자가 보유한 쿠폰 목록을 조회합니다. 쿠폰 상태와 타입으로 필터링할 수 있습니다.")
     @GetMapping("/me")
     public RsData<Page<UserCouponResponse>> getMyUserCoupons(
             @RequestHeader("X-User-Id") Long userId,
             @RequestParam(name = "status", required = false) UserCouponStatus status,
+            @RequestParam(name = "couponType", required = false) CouponType couponType,
             @PageableDefault Pageable pageable
     ) {
-        return RsData.success(SuccessCode.MY_COUPON_LIST, couponFacade.getMyUserCoupons(userId, status, pageable));
+        return RsData.success(SuccessCode.MY_COUPON_LIST, couponFacade.getMyUserCoupons(userId, status, couponType, pageable));
     }
 
     @Operation(summary = "주문 시 적용 가능한 쿠폰 조회", description = "주문 상품에 적용 가능한 보유 쿠폰 목록을 조회합니다.")

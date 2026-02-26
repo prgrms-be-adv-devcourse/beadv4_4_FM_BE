@@ -7,6 +7,7 @@ import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
 import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
+import com.mossy.shared.market.enums.OrderState;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,8 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -42,16 +45,25 @@ public class ApiV1OrderController {
 
     @Operation(
             summary = "구매 내역 목록 조회",
-            description = "사용자의 구매 내역 목록을 페이징하여 조회합니다."
+            description = "사용자의 구매 내역 목록을 페이징하여 조회합니다. 주문 상태와 날짜 범위로 필터링할 수 있습니다."
     )
     @GetMapping
     public RsData<Page<OrderListResponse>> getMyOrders(
             @RequestHeader("X-User-Id") Long userId,
 
+            @Parameter(description = "주문 상태 (PAID: 주문완료, CONFIRMED: 주문확정, CANCELED: 주문취소)")
+            @RequestParam(required = false) OrderState state,
+
+            @Parameter(description = "시작 날짜 (yyyy-MM-dd)")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+
+            @Parameter(description = "종료 날짜 (yyyy-MM-dd)")
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+
             @Parameter(hidden = true)
             @PageableDefault Pageable pageable
     ) {
-        return RsData.success(SuccessCode.ORDER_LIST, orderFacade.getOrderListByUserId(userId, pageable));
+        return RsData.success(SuccessCode.ORDER_LIST, orderFacade.getOrderListByUserId(userId, state, startDate, endDate, pageable));
     }
 
     @Operation(

@@ -77,8 +77,8 @@ public class OrderFacade {
         completePaymentUseCase.completePayment(event.orderId(), event.paymentDate());
     }
 
-    public Page<OrderListResponse> getOrderListByUserId(Long userId, Pageable pageable) {
-        return getOrderUseCase.getOrderListByUserId(userId, pageable);
+    public Page<OrderListResponse> getOrderListByUserId(Long userId, OrderState state, java.time.LocalDate startDate, java.time.LocalDate endDate, Pageable pageable) {
+        return getOrderUseCase.getOrderListByUserId(userId, state, startDate, endDate, pageable);
     }
 
     public List<OrderDetailResponse> getOrderDetails(Long orderId) {

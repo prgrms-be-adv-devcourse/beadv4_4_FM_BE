@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Supplier;
@@ -30,9 +31,21 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<OrderListResponse> findOrderListByUserId(Long userId, Pageable pageable) {
+    public Page<OrderListResponse> findOrderListByUserId(Long userId, OrderState state, LocalDate startDate, LocalDate endDate, Pageable pageable) {
         BooleanExpression condition = order.buyer.id.eq(userId)
                 .and(order.state.notIn(OrderState.PENDING, OrderState.EXPIRED));
+
+        if (state != null) {
+            condition = condition.and(order.state.eq(state));
+        }
+
+        if (startDate != null) {
+            condition = condition.and(order.createdAt.goe(startDate.atStartOfDay()));
+        }
+
+        if (endDate != null) {
+            condition = condition.and(order.createdAt.lt(endDate.plusDays(1).atStartOfDay()));
+        }
 
         List<OrderListResponse> content = queryFactory
                 .select(Projections.constructor(OrderListResponse.class,
@@ -53,10 +66,11 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        BooleanExpression finalCondition = condition;
         return createPage(content, pageable, () -> queryFactory
                 .select(order.count())
                 .from(order)
-                .where(condition)
+                .where(finalCondition)
                 .fetchOne());
     }
 
@@ -64,14 +78,21 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     public List<OrderDetailResponse> findOrderDetailsByOrderId(Long orderId) {
         return queryFactory
                 .select(Projections.constructor(OrderDetailResponse.class,
+                        orderItem.id,
                         orderItem.productItemId,
                         orderItem.quantity,
                         orderItem.originalPrice,
+                        orderItem.discountAmount,
+                        orderItem.finalPrice,
+                        coupon.couponName,
+                        coupon.couponType,
                         marketSeller.storeName
                 ))
                 .from(order)
                     .join(order.orderItems, orderItem)
                     .join(marketSeller).on(orderItem.sellerId.eq(marketSeller.id))
+                    .leftJoin(orderItem.userCoupon, userCoupon)
+                    .leftJoin(userCoupon.coupon, coupon)
                 .where(order.id.eq(orderId))
                 .fetch();
     }

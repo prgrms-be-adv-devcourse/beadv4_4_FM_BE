@@ -2,6 +2,7 @@ package com.mossy.boundedContext.coupon.out;
 
 import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
+import com.mossy.shared.market.enums.CouponType;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -22,7 +23,7 @@ public class UserCouponRepositoryImpl implements UserCouponRepositoryCustom {
         private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<UserCouponResponse> findMyUserCoupons(Long userId, UserCouponStatus status, Pageable pageable) {
+    public Page<UserCouponResponse> findMyUserCoupons(Long userId, UserCouponStatus status, CouponType couponType, Pageable pageable) {
         List<UserCouponResponse> content = queryFactory
                 .select(Projections.constructor(UserCouponResponse.class,
                         userCoupon.id,
@@ -37,7 +38,8 @@ public class UserCouponRepositoryImpl implements UserCouponRepositoryCustom {
                 .join(userCoupon.coupon, coupon)
                 .where(
                         userCoupon.marketUser.id.eq(userId),
-                        status != null ? userCoupon.status.eq(status) : null
+                        status != null ? userCoupon.status.eq(status) : null,
+                        couponType != null ? coupon.couponType.eq(couponType) : null
                 )
                 .orderBy(userCoupon.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -47,9 +49,11 @@ public class UserCouponRepositoryImpl implements UserCouponRepositoryCustom {
                 JPAQuery<Long> countQuery = queryFactory
                                 .select(userCoupon.count())
                                 .from(userCoupon)
+                                .join(userCoupon.coupon, coupon)
                                 .where(
                                         userCoupon.marketUser.id.eq(userId),
-                                        status != null ? userCoupon.status.eq(status) : null
+                                        status != null ? userCoupon.status.eq(status) : null,
+                                        couponType != null ? coupon.couponType.eq(couponType) : null
                                 );
 
                 return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
