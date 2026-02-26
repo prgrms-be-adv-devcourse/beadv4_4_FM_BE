@@ -71,4 +71,4 @@ logging:
 toss:
   payments:
     base-url: https://api.tosspayments.com
-    secret-key: ${TOSS_SECRET_KEY:test_sk_*******************}
+    secret-key: ${TOSS_SECRET_KEY}

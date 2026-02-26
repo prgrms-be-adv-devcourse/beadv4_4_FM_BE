@@ -8,6 +8,7 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentCashRefundEvent;
 import com.mossy.shared.cash.event.PaymentTossRefundEvent;
@@ -24,6 +25,8 @@ public class PaymentTossPartialRefundUseCase {
 
     private final PaymentSupport paymentSupport;
     private final OutboxPublisher outboxPublisher;
+    private final KafkaEventPublisher kafkaEventPublisher;
+
 
     @Transactional
     public void execute(String orderId, String cancelReason, List<Long> ids, BigDecimal cancelAmount) {
@@ -40,23 +43,31 @@ public class PaymentTossPartialRefundUseCase {
         // 부분 환불 성공 담보 (취소 내역 저장)
         paymentSupport.processPartialCancel(payment.getOrderNo(), payment.getPaymentKey(), cancelAmount, PayMethod.CARD, cancelReason);
 
-        // 캐시/잔액 복구 → Outbox 패턴으로 정합성 보장
+        PaymentCashRefundEvent cashRefundEvent = new PaymentCashRefundEvent(order.orderId(), order.buyerId(), cancelAmount, PayMethod.CARD);
+
+        // 1. Kafka Event 직접 선행 발행
+        kafkaEventPublisher.publish(cashRefundEvent);
+        // 2. 캐시/잔액 복구 → Outbox 패턴으로 정합성 보장
         outboxPublisher.saveEvent(
             KafkaTopics.PAYMENT_REFUND,
             "Payment",
             payment.getId(),
             PaymentCashRefundEvent.class.getSimpleName(),
-            new PaymentCashRefundEvent(order.orderId(), order.buyerId(), cancelAmount, PayMethod.CARD)
+            cashRefundEvent
         );
 
-        // 주문 아이템 상태 업데이트 → 다른 모듈(market)이므로 Outbox 패턴
         TossCancelPayload payload = buildPayload(response, ids);
+        PaymentTossRefundEvent tossRefundEvent = new PaymentTossRefundEvent(payload);
+
+        // 1. Kafka Event 직접 선행 발행
+        kafkaEventPublisher.publish(tossRefundEvent);
+        // 2. 주문 아이템 상태 업데이트 → 다른 모듈(market)이므로 Outbox 패턴
         outboxPublisher.saveEvent(
             KafkaTopics.ORDER_CANCEL,
             "Payment",
             payment.getId(),
             PaymentTossRefundEvent.class.getSimpleName(),
-            new PaymentTossRefundEvent(payload)
+            tossRefundEvent
         );
     }
 
@@ -64,6 +75,6 @@ public class PaymentTossPartialRefundUseCase {
         List<TossCancelPayload.Cancel> cancels = response.cancels().stream()
             .map(c -> new TossCancelPayload.Cancel(c.cancelAmount(), c.cancelReason()))
             .toList();
-        return new TossCancelPayload(response.orderId(), cancels, orderItemIds);
+        return new TossCancelPayload(response.orderId(), cancels, orderItemIds, "PARTIAL_CANCELED");
     }
 }

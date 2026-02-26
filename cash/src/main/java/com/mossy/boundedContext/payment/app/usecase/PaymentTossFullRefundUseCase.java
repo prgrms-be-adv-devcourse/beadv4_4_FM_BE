@@ -6,6 +6,7 @@ import com.mossy.boundedContext.payment.in.dto.response.TossCancelResponse;
 import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentCashRefundEvent;
 import com.mossy.shared.cash.event.PaymentTossRefundEvent;
@@ -22,8 +23,8 @@ public class PaymentTossFullRefundUseCase {
 
     private final PaymentSupport paymentSupport;
     private final OutboxPublisher outboxPublisher;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
-    // 사용자 요청으로 인한 전체 환불 (market에 주문 상태 변경 알림 필요)
     @Transactional
     public void execute(String orderId, String cancelReason) {
         processRefund(orderId, cancelReason);
@@ -37,23 +38,31 @@ public class PaymentTossFullRefundUseCase {
         TossCancelResponse response = paymentSupport.callTossFullCancel(payment.getPaymentKey(), cancelReason);
         paymentSupport.updateFullCanceled(payment, cancelReason);
 
-        // 캐시/잔액 복구 → Outbox 패턴으로 정합성 보장
+        PaymentCashRefundEvent cashRefundEvent = new PaymentCashRefundEvent(order.orderId(), order.buyerId(), refundAmount, PayMethod.CARD);
+
+        // 1. Kafka Event 발행
+        kafkaEventPublisher.publish(cashRefundEvent);
+        // 2. 캐시/잔액 복구 → Outbox 패턴
         outboxPublisher.saveEvent(
             KafkaTopics.PAYMENT_REFUND,
             "Payment",
             payment.getId(),
             PaymentCashRefundEvent.class.getSimpleName(),
-            new PaymentCashRefundEvent(order.orderId(), order.buyerId(), refundAmount, PayMethod.CARD)
+            cashRefundEvent
         );
 
-        // 주문 상태 업데이트 → 다른 모듈(market)이므로 Outbox 패턴
         TossCancelPayload payload = buildPayload(response, List.of());
+        PaymentTossRefundEvent tossRefundEvent = new PaymentTossRefundEvent(payload);
+
+        // 1. Kafka Event 발행 (추가된 부분)
+        kafkaEventPublisher.publish(tossRefundEvent);
+        // 2. 주문 상태 업데이트 → Outbox 패턴
         outboxPublisher.saveEvent(
             KafkaTopics.ORDER_CANCEL,
             "Payment",
             payment.getId(),
             PaymentTossRefundEvent.class.getSimpleName(),
-            new PaymentTossRefundEvent(payload)
+            tossRefundEvent
         );
     }
 
@@ -61,6 +70,6 @@ public class PaymentTossFullRefundUseCase {
         List<TossCancelPayload.Cancel> cancels = response.cancels().stream()
             .map(c -> new TossCancelPayload.Cancel(c.cancelAmount(), c.cancelReason()))
             .toList();
-        return new TossCancelPayload(response.orderId(), cancels, orderItemIds);
+        return new TossCancelPayload(response.orderId(), cancels, orderItemIds,"CANCELED");
     }
 }

@@ -1,8 +1,7 @@
 package com.mossy.boundedContext.payment.in;
 
 import com.mossy.boundedContext.payment.app.PaymentFacade;
-import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelCashRequestDto;
-import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelTossRequestDto;
+import com.mossy.boundedContext.payment.in.dto.request.PaymentCancelRequestDto;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmCashRequestDto;
 import com.mossy.boundedContext.payment.in.dto.request.PaymentConfirmTossRequestDto;
 import com.mossy.boundedContext.payment.in.dto.response.PaymentResponse;
@@ -58,31 +57,17 @@ public class ApiV1PaymentController {
     }
 
     @Operation(
-        summary = "토스 결제 취소 (전체/부분 환불)",
-        description = "PG 승인된 주문을 취소합니다. ids가 없으면 전체 환불, ids가 있으면 해당 상품만 부분 환불합니다.",
+        summary = "결제 취소 (전체/부분 환불)",
+        description = "주문 번호를 기반으로 결제 수단을 자동 파악하여 결제를 취소합니다. ids가 없으면 전체 환불, ids가 있으면 부분 환불합니다.",
         responses = {
             @ApiResponse(responseCode = "200", description = "취소 성공"),
             @ApiResponse(responseCode = "404", description = "취소할 결제 내역을 찾을 수 없음")
         }
     )
-    @PostMapping("/cancel/toss")
-    public RsData<Void> cancelTossPayment(@Valid @RequestBody PaymentCancelTossRequestDto request) {
-        paymentFacade.cancelTossPayment(request);
+    @PostMapping("/cancel")
+    public RsData<Void> cancelPayment(@Valid @RequestBody PaymentCancelRequestDto request) {
+        paymentFacade.cancelPayment(request);
         return RsData.success(SuccessCode.TOSS_PAYMENT_CANCELLED);
-    }
-
-    @Operation(
-        summary = "예치금 결제 취소 (전체/부분 환불)",
-        description = "예치금으로 결제된 주문을 취소합니다. ids가 없으면 전체 환불, ids가 있으면 해당 상품만 부분 환불합니다.",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "환불 완료"),
-            @ApiResponse(responseCode = "404", description = "취소할 결제 내역을 찾을 수 없음")
-        }
-    )
-    @PostMapping("/cancel/cash")
-    public RsData<Void> cancelCashPayment(@Valid @RequestBody PaymentCancelCashRequestDto request) {
-        paymentFacade.cancelCashPayment(request);
-        return RsData.success(SuccessCode.CASH_PAYMENT_CANCELLED);
     }
 
     @Operation(
