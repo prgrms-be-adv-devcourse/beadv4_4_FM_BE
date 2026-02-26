@@ -20,6 +20,9 @@ public interface OrderRepository  extends JpaRepository<Order, Long>, OrderRepos
     @EntityGraph(attributePaths = {"orderItems", "buyer", "orderItems.userCoupon"})
     Optional<Order> findWithItemsAndCouponsById(Long orderId);
 
+    @EntityGraph(attributePaths = {"orderItems", "buyer", "orderItems.userCoupon"})
+    Optional<Order> findByOrderNo(String orderNo);
+
     @Modifying
     @Query("delete from Order o where o.state = 'EXPIRED' and o.createdAt < :threshold")
     void deleteExpiredOrders(@Param("threshold") LocalDateTime threshold);

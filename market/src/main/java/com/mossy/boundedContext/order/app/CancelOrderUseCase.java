@@ -9,6 +9,7 @@ import com.mossy.exception.ErrorCode;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
+import com.mossy.shared.cash.payload.TossCancelPayload;
 import com.mossy.shared.market.enums.OrderState;
 import com.mossy.shared.market.event.OrderStockReturnEvent;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +29,9 @@ public class CancelOrderUseCase {
     private final OutboxPublisher outboxPublisher;
 
     @Transactional
-    public void cancelOrder(Long orderId, Long userId, String cancelReason) {
-        Order order = orderRepository.findWithItemsAndCouponsById(orderId)
+    public void cancelOrder(TossCancelPayload response) {
+        Order order = orderRepository.findByOrderNo(response.orderId())
             .orElseThrow(() -> new DomainException(ErrorCode.ORDER_NOT_FOUND));
-
-        if (!order.getBuyer().getId().equals(userId)) {
-            throw new DomainException(ErrorCode.ORDER_ACCESS_DENIED);
-        }
 
         if (order.getState() != OrderState.PAID) {
             throw new DomainException(ErrorCode.ORDER_CANNOT_CANCEL);
@@ -43,6 +40,9 @@ public class CancelOrderUseCase {
         if (order.getUpdatedAt().isBefore(LocalDateTime.now().minusWeeks(1))) {
             throw new DomainException(ErrorCode.ORDER_PURCHASE_CONFIRMED);
         }
+
+        String cancelReason = response.cancels().isEmpty()
+            ? "사용자 요청" : response.cancels().getFirst().cancelReason();
 
         order.cancel(cancelReason);
 

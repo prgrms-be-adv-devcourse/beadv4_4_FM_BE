@@ -7,6 +7,5 @@ public enum OrderState {
     FAILED,
     CANCELED,
     CONFIRMED,
-    PARTIAL_REFUND,
-    REFUND
+    PARTIAL_CANCELED,
 }
