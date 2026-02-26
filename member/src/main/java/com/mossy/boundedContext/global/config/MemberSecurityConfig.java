@@ -7,7 +7,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -26,11 +28,13 @@ public class MemberSecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
+                .exceptionHandling(eh -> eh.authenticationEntryPoint(new NoPopupAuthenticationEntryPoint()))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/internal/v1/**").permitAll() // 내부 서비스간 통신 허용
                         .requestMatchers("/api/v1/users/**", "/api/v1/seller/auth/**",
-                                "/api/v1/auth/**", "/api/v1/admin/**", //로그인, 어드민 기능 (게이트웨이에서 인증/권한 확인)
-                                "/internal/**" // 내부 서비스 간 통신
-                                         ).permitAll()
+                                "/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/seller/**").hasRole("SELLER")
                         .requestMatchers("/mossy-docs/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 );
