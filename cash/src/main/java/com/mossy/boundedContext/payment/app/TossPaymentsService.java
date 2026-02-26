@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -64,14 +65,23 @@ public class TossPaymentsService {
             throw new DomainException(ErrorCode.TOSS_PAYMENT_CONFIRM_FAILED);
         }
     }
-    //토스페이먼츠 결제 취소 API 호출
+    //토스페이먼츠 결제 취소 API 호출 (전체 취소)
     public TossCancelResponse cancel(String paymentKey, String cancelReason) {
+        return cancelWithBody(paymentKey, new TossCancelRequest(cancelReason));
+    }
+
+    //토스페이먼츠 결제 취소 API 호출 (부분 취소)
+    public TossCancelResponse cancel(String paymentKey, String cancelReason, BigDecimal cancelAmount) {
+        return cancelWithBody(paymentKey, new TossCancelRequest(cancelReason, cancelAmount));
+    }
+
+    private TossCancelResponse cancelWithBody(String paymentKey, TossCancelRequest request) {
         try {
             TossCancelResponse response = tossRestClient.post()
                 .uri("/v1/payments/{paymentKey}/cancel", paymentKey)
                 .header("Authorization", "Basic " + encodedSecretKey)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new TossCancelRequest(cancelReason))
+                .body(request)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, (req, res) -> {
                     log.error("토스페이먼츠 결제 취소 실패: status={}", res.getStatusCode());

@@ -1,6 +1,5 @@
 package com.mossy.boundedContext.payment.app;
 
-import com.mossy.boundedContext.payment.app.mapper.PaymentMapper;
 import com.mossy.boundedContext.payment.domain.Payment;
 import com.mossy.boundedContext.payment.in.dto.request.TossConfirmRequest;
 import com.mossy.boundedContext.payment.in.dto.response.TossCancelResponse;
@@ -12,13 +11,9 @@ import com.mossy.exception.ErrorCode;
 import com.mossy.exception.DomainException;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.enums.PaymentStatus;
-import com.mossy.shared.cash.event.PaymentTossRefundEvent;
-import com.mossy.shared.cash.payload.TossCancelPayload;
 import com.mossy.shared.market.enums.OrderState;
-
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +24,7 @@ public class PaymentSupport {
 
     private final PaymentRepository paymentRepository;
     private final TossPaymentsService tossPaymentsService;
-    private final ApplicationEventPublisher eventPublisher;
     private final MarketFeignClient marketFeignClient;
-    private final PaymentMapper mapper;
 
     // ── 결제 조회 ──
 
@@ -73,11 +66,17 @@ public class PaymentSupport {
         return tossPaymentsService.confirm(request);
     }
 
-    public void requestTossCancel(String paymentKey, String cancelReason) {
+    public TossCancelResponse callTossFullCancel(String paymentKey, String cancelReason) {
         try {
-            TossCancelResponse response = tossPaymentsService.cancel(paymentKey, cancelReason);
-            TossCancelPayload payload = mapper.toTossCancelPayload(response);
-            eventPublisher.publishEvent(new PaymentTossRefundEvent(payload));
+            return tossPaymentsService.cancel(paymentKey, cancelReason);
+        } catch (Exception e) {
+            throw new DomainException(ErrorCode.TOSS_PAYMENT_CANCEL_FAILED);
+        }
+    }
+
+    public TossCancelResponse callTossPartialCancel(String paymentKey, String cancelReason, BigDecimal cancelAmount) {
+        try {
+            return tossPaymentsService.cancel(paymentKey, cancelReason, cancelAmount);
         } catch (Exception e) {
             throw new DomainException(ErrorCode.TOSS_PAYMENT_CANCEL_FAILED);
         }
@@ -102,10 +101,24 @@ public class PaymentSupport {
         paymentRepository.save(failed);
     }
 
+    // 환불 처리: 기존 PAID 레코드를 CANCELED 로 업데이트 (같은 트랜잭션)
+    public void updateFullCanceled(Payment payment, String cancelReason) {
+        payment.cancel(cancelReason);
+        paymentRepository.save(payment);
+    }
+
+    // 보상 트랜잭션: PG 승인 후 시스템 오류 시 별도 취소 이력 생성 (PAID 레코드가 롤백되므로 REQUIRES_NEW)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processCancel(String orderNo, String paymentKey, BigDecimal amount,
+    public void processFullCancel(String orderNo, String paymentKey, BigDecimal amount,
         PayMethod method, String cancelReason) {
-        Payment canceled = Payment.createCanceled(null, paymentKey, orderNo, amount, method, cancelReason);
+        Payment canceled = Payment.createFullCanceled(null, paymentKey, orderNo, amount, method, cancelReason);
+        paymentRepository.save(canceled);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void processPartialCancel(String orderNo, String paymentKey, BigDecimal amount,
+        PayMethod method, String cancelReason) {
+        Payment canceled = Payment.createPartialCanceled(null, paymentKey, orderNo, amount, method, cancelReason);
         paymentRepository.save(canceled);
     }
 
