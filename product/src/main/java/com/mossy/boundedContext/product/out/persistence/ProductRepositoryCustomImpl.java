@@ -49,21 +49,16 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 )
                 .fetchFirst();
 
-        if (mainProductId == null) return null;
-
-        //해당 product의 productItems 전체 fetchJoin
-        Product mainProductEntity = queryFactory
-                .selectFrom(product)
-                .leftJoin(product.productItems, productItem).fetchJoin()
-                .where(product.id.eq(mainProductId))
-                .fetchOne();
-
         // 카탈로그 정보 조회
         CatalogProduct catalogEntity = queryFactory
                 .selectFrom(catalogProduct)
                 .join(catalogProduct.category, category).fetchJoin()
                 .where(catalogProduct.id.eq(catalogProductId))
                 .fetchOne();
+        
+        if (catalogEntity == null) {
+            return null;
+        }
 
         // 카탈로그 상품 이미지 리스트
         List<CatalogImage> images = queryFactory
@@ -71,6 +66,21 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 .where(catalogImage.targetId.eq(catalogProductId))
                 .limit(5)
                 .fetch();
+
+        if (mainProductId == null) {
+            return new ProductDetailResponse(
+                    productMapper.toCatalogDto(catalogEntity, images),
+                    null,
+                    List.of()
+            );
+        }
+
+        //해당 product의 productItems 전체 fetchJoin
+        Product mainProductEntity = queryFactory
+                .selectFrom(product)
+                .leftJoin(product.productItems, productItem).fetchJoin()
+                .where(product.id.eq(mainProductId))
+                .fetchOne();
 
         // 다른 판매자들 조회 (위에서 뽑힌 메인 상품 제외)
         List<ProductDetailResponse.OtherSellerDto> otherSellers = queryFactory
