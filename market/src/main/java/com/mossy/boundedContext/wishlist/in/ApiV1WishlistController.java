@@ -1,7 +1,7 @@
-package com.mossy.boundedContext.wishList.in;
+package com.mossy.boundedContext.wishlist.in;
 
-import com.mossy.boundedContext.wishList.app.WishListFacade;
-import com.mossy.boundedContext.wishList.in.dto.response.WishlistResponse;
+import com.mossy.boundedContext.wishlist.app.WishlistFacade;
+import com.mossy.boundedContext.wishlist.in.dto.response.WishlistResponse;
 import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,9 +16,9 @@ import java.util.List;
 @RequestMapping("/api/v1/wishlist")
 @RequiredArgsConstructor
 @Tag(name = "Wishlist", description = "찜 API")
-public class ApiV1WishListApiController {
+public class ApiV1WishlistController {
 
-    private final WishListFacade wishListFacade;
+    private final WishlistFacade wishListFacade;
 
     @Operation(summary = "찜 추가", description = "상품을 찜 목록에 추가합니다.")
     @PostMapping

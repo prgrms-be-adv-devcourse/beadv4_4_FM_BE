@@ -7,7 +7,9 @@ import lombok.Getter;
 public enum SuccessCode implements BaseCode {
     REVIEW_CREATED(201, "리뷰가 작성되었습니다."),
     REVIEW_GET(200, "리뷰가 조회되었습니다."),
-    REVIEW_LIST_GET(200, "리뷰 목록이 조회되었습니다.");
+    REVIEW_LIST_GET(200, "리뷰 목록이 조회되었습니다."),
+    REVIEW_PENDING_LIST_GET(200, "작성 가능한 리뷰 목록이 조회되었습니다."),
+    REVIEW_MY_LIST_GET(200, "내가 작성한 리뷰 목록이 조회되었습니다.");
 
     private final int status;
     private final String msg;

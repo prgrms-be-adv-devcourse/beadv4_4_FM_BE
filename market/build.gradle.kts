@@ -48,11 +48,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
-    // Market 서비스 전용 라이브러리
-//    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
-//    implementation(platform("software.amazon.awssdk:bom:2.24.0"))
-//    implementation("software.amazon.awssdk:s3")
-
     // QueryDSL (JPA 사용 시 공통으로 필요)
     implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
     annotationProcessor("com.querydsl:querydsl-apt:5.1.0:jakarta")
@@ -61,11 +56,6 @@ dependencies {
 
     // Swagger UI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
-
-    // MapStruct
-//    implementation ("org.mapstruct:mapstruct:1.5.5.Final")
-//    annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
-//    annotationProcessor ("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
     // Spring Boot Actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")

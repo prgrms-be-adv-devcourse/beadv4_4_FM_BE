@@ -4,10 +4,14 @@ import com.mossy.boundedContext.coupon.app.CouponFacade;
 import com.mossy.boundedContext.coupon.domain.UserCoupon;
 import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest;
 import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest.OrderItemRequest;
-import com.mossy.boundedContext.order.in.dto.response.*;
+import com.mossy.boundedContext.order.in.dto.response.OrderCreatedResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
+import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
+import com.mossy.shared.market.enums.OrderState;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -89,11 +93,7 @@ public class OrderFacade {
         cancelOrderUseCase.cancelOrder(orderId, userId, cancelReason);
     }
 
-    public Page<OrderListSellerResponse> getSellerOrderList(Long sellerId, Pageable pageable) {
-        return getSellerOrderUseCase.getSellerOrderList(sellerId, pageable);
-    }
-
-    public OrderDetailSellerResponse getSellerOrderDetail(Long orderItemId) {
-        return getSellerOrderUseCase.getSellerOrderDetail(orderItemId);
+    public Page<OrderListSellerResponse> getSellerOrderList(Long sellerId, OrderState state, Pageable pageable) {
+        return getSellerOrderUseCase.getSellerOrderList(sellerId, state, pageable);
     }
 }

@@ -29,4 +29,6 @@ public interface DonationLogRepository extends JpaRepository<DonationLog, Long> 
     List<DonationLog> findByOrderItemId(Long orderItemId);
 
     List<DonationLog> findByUser_IdAndCreatedAtBetween(Long userId, LocalDateTime from, LocalDateTime to);
+
+    List<DonationLog> findByUser_IdOrderByCreatedAtDesc(Long userId);
 }

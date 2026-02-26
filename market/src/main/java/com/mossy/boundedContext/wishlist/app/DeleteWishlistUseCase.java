@@ -1,6 +1,6 @@
-package com.mossy.boundedContext.wishList.app;
+package com.mossy.boundedContext.wishlist.app;
 
-import com.mossy.boundedContext.wishList.out.WishlistRepository;
+import com.mossy.boundedContext.wishlist.out.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

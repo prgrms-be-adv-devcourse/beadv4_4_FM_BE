@@ -1,16 +1,11 @@
-package com.mossy.boundedContext.wishList.in.dto.response;
-
-import lombok.Builder;
+package com.mossy.boundedContext.wishlist.out.external.dto;
 
 import java.math.BigDecimal;
 
-@Builder
-public record WishlistResponse(
-        Long wishlistId,
+public record WishlistProductResponse(
         Long productId,
         String productName,
         String categoryName,
         BigDecimal price,
         String thumbnailUrl
-) {
-}
+) {}

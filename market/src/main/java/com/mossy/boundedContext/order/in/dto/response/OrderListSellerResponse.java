@@ -8,11 +8,13 @@ import java.time.LocalDateTime;
 
 @Builder
 public record OrderListSellerResponse(
-        Long orderDetailId,
-        Long productId,
-        int quantity,
-        BigDecimal orderPrice,
-        OrderState state,
-        LocalDateTime createdAt
-) {
+                Long orderItemId,
+                String orderNo,
+                Long productItemId,
+                int quantity,
+                BigDecimal orderPrice,
+                OrderState state,
+                LocalDateTime createdAt,
+                String buyerName,
+                String deliveryAddress) {
 }

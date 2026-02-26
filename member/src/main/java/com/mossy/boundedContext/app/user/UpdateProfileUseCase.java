@@ -26,7 +26,9 @@ public class UpdateProfileUseCase {
                 request.phoneNum() != null ? encryptionUtils.encrypt(request.phoneNum()) : null,
                 request.address() != null ? encryptionUtils.encrypt(request.address()) : null,
                 request.rrn() != null ? encryptionUtils.encrypt(request.rrn()) : null,
-                request.nickname()
+                request.nickname(),
+                request.latitude(),
+                request.longitude()
         );
 
         // 소셜 로그인 후 추가정보 입력 완료 → PENDING → ACTIVE로 변경

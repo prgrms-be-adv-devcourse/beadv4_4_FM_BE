@@ -12,10 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-/**
- * 인증 관련 비즈니스 로직을 조율하는 Facade 클래스
- * 로그인, 토큰 재발급, 로그아웃, OAuth2 소셜 로그인을 처리합니다.
- */
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -30,7 +28,8 @@ public class AuthFacade {
     //일반 로그인 (이메일/비밀번호)
     public LoginResponse login(LoginRequest request) {
         var ctx = loginUseCase.execute(request.email(), request.password());
-        TokenResponse tokens = issueTokenUseCase.execute(ctx.userId(), ctx.role(), null);
+        log.info("[auth] issueTokenUseCase: userId={}, roles={}, sellerId={}", ctx.userId(), ctx.roles(), ctx.sellerId());
+        TokenResponse tokens = issueTokenUseCase.execute(ctx.userId(), ctx.roles(), ctx.sellerId());
         return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
     }
 
@@ -47,7 +46,7 @@ public class AuthFacade {
 
     //판매자 승인 후 토큰 재발급
     public LoginResponse issueForSellerApproved(Long userId, Long sellerId) {
-        TokenResponse tokens = issueTokenUseCase.execute(userId, "SELLER", sellerId);
+        TokenResponse tokens = issueTokenUseCase.execute(userId, List.of("USER", "SELLER"), sellerId);
         return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), false);
     }
 
@@ -66,7 +65,7 @@ public class AuthFacade {
 
         // 2단계: 토큰 발급 - 실패 시 member 보상 트랜잭션 호출
         try {
-            TokenResponse tokens = issueTokenUseCase.execute(user.id(), "USER", null);
+            TokenResponse tokens = issueTokenUseCase.execute(user.id(), List.of("USER"), null);
             return new LoginResponse(tokens.accessToken(), tokens.refreshToken(), user.isNewUser());
         } catch (Exception e) {
             log.error("토큰 발급 실패, member 보상 트랜잭션 실행: userId={}, error={}", user.id(), e.getMessage(), e);

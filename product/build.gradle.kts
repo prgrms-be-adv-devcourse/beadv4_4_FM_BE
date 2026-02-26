@@ -32,7 +32,6 @@ dependencies {
     implementation(project(":kafka"))
 
     implementation("org.springframework.boot:spring-boot-starter-web")
-    //implementation("org.springframework.boot:spring-boot-starter-batch")
 
     // ElasticSearch
     implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")

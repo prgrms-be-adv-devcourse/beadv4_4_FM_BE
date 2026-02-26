@@ -1,10 +1,13 @@
 package com.mossy.boundedContext.product.out.persistence.mapper;
 
+import com.mossy.boundedContext.catalog.app.dto.CatalogProductWithCategoryInfo;
 import com.mossy.boundedContext.catalog.domain.CatalogImage;
 import com.mossy.boundedContext.catalog.domain.CatalogProduct;
 import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.domain.ProductItem;
 import com.mossy.boundedContext.product.domain.ProductOptionValue;
+import com.mossy.boundedContext.product.in.internal.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.product.in.internal.dto.response.WishlistProductResponse;
 import com.mossy.boundedContext.product.in.rest.dto.response.ProductDetailResponse;
 import com.mossy.shared.product.enums.ProductItemStatus;
 import org.mapstruct.Mapper;
@@ -67,4 +70,5 @@ public interface ProductMapper {
     // ProductItemDto 매핑
     @Mapping(target = "productItemsId", source = "id")
     ProductDetailResponse.ProductItemDto toItemDto(ProductItem item);
+
 }

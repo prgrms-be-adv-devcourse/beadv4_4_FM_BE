@@ -5,10 +5,11 @@ import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponUpdateRequest;
 import com.mossy.boundedContext.coupon.in.dto.response.CouponResponse;
-import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponListResponse;
+import com.mossy.boundedContext.coupon.in.dto.response.SellerCouponPageResponse;
 import com.mossy.boundedContext.coupon.in.dto.response.UserCouponResponse;
 import com.mossy.exception.SuccessCode;
 import com.mossy.global.rsData.RsData;
+import com.mossy.shared.market.enums.CouponType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,7 +28,6 @@ import java.util.List;
 public class ApiV1CouponController {
 
     private final CouponFacade couponFacade;
-
 
     @Operation(
             summary = "판매자 쿠폰 생성",
@@ -50,12 +50,16 @@ public class ApiV1CouponController {
         return RsData.success(SuccessCode.COUPON_CREATE, couponFacade.createAdminCoupon(adminId, request));
     }
 
-    @Operation(summary = "판매자 쿠폰 목록 조회", description = "판매자가 자신이 생성한 쿠폰 목록을 조회합니다.")
+    @Operation(summary = "판매자 쿠폰 목록 조회", description = "판매자가 자신이 생성한 쿠폰 목록을 조회합니다. 통계 정보(총 쿠폰, 활성 쿠폰, 비활성 쿠폰 수)와 함께 페이징된 쿠폰 목록을 반환합니다.")
     @GetMapping("/seller/my")
-    public RsData<List<SellerCouponListResponse>> getSellerCoupons(
-            @RequestHeader("X-Seller-Id") Long sellerId
+    public RsData<SellerCouponPageResponse> getSellerCoupons(
+            @RequestHeader("X-Seller-Id") Long sellerId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) CouponType couponType,
+            @PageableDefault Pageable pageable
     ) {
-        return RsData.success(SuccessCode.COUPON_LIST, couponFacade.getSellerCoupons(sellerId));
+        SellerCouponPageResponse response = couponFacade.getSellerCoupons(sellerId, status, couponType, pageable);
+        return RsData.success(SuccessCode.COUPON_LIST, response);
     }
 
     @Operation(summary = "판매자 쿠폰 수정", description = "판매자가 자신의 쿠폰을 수정합니다.")
@@ -77,6 +81,16 @@ public class ApiV1CouponController {
     ) {
         couponFacade.deactivateSellerCoupon(sellerId, couponId);
         return RsData.success(SuccessCode.COUPON_DEACTIVATE);
+    }
+
+    @Operation(summary = "판매자 쿠폰 삭제", description = "판매자가 자신의 쿠폰을 삭제합니다. 다운로드된 쿠폰은 만료 처리됩니다.")
+    @DeleteMapping("/seller/{couponId}")
+    public RsData<Void> deleteSellerCoupon(
+            @RequestHeader("X-Seller-Id") Long sellerId,
+            @PathVariable Long couponId
+    ) {
+        couponFacade.deleteSellerCoupon(sellerId, couponId);
+        return RsData.success(SuccessCode.COUPON_DELETE);
     }
 
     @Operation(summary = "다운로드 가능한 쿠폰 목록 조회", description = "상품에 적용 가능한 다운로드 가능 쿠폰 목록을 조회합니다.")

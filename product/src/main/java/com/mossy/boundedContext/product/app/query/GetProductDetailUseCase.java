@@ -10,11 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class GetProductDetailUseCase {
 
     private final ProductRepository productRepository;
 
+    @Transactional(readOnly = true)
     public ProductDetailResponse execute(Long catalogProductId) {
 
         ProductDetailResponse response = productRepository.findProductDetail(catalogProductId);

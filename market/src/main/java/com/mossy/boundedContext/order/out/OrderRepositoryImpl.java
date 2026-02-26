@@ -2,7 +2,6 @@ package com.mossy.boundedContext.order.out;
 
 import com.mossy.boundedContext.order.domain.Order;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
-import com.mossy.boundedContext.order.in.dto.response.OrderDetailSellerResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
 import com.mossy.shared.market.enums.OrderState;
@@ -78,46 +77,40 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     @Override
-    public Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, Pageable pageable) {
+    public Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, OrderState state, Pageable pageable) {
         BooleanExpression condition = orderItem.sellerId.eq(sellerId);
+
+        if (state != null) {
+            condition = condition.and(orderItem.state.eq(state));
+        }
 
         List<OrderListSellerResponse> content = queryFactory
                 .select(Projections.constructor(OrderListSellerResponse.class,
                         orderItem.id,
+                        order.orderNo,
                         orderItem.productItemId,
                         orderItem.quantity,
-                        orderItem.originalPrice,
-                        order.state,
-                        orderItem.createdAt
-                ))
-                .from(order)
-                    .join(order.orderItems, orderItem)
-                .where(condition)
-                .orderBy(orderItem.createdAt.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        return createPage(content, pageable, () -> queryFactory
-                .select(orderItem.count())
-                .from(orderItem)
-                .where(condition)
-                .fetchOne());
-    }
-
-    @Override
-    public OrderDetailSellerResponse findSellerOrderDetailById(Long orderItemId) {
-        return queryFactory
-                .select(Projections.constructor(OrderDetailSellerResponse.class,
-                        order.orderNo,
+                        orderItem.finalPrice,
+                        orderItem.state,
+                        orderItem.createdAt,
                         marketUser.name,
                         order.address
                 ))
                 .from(order)
                     .join(order.orderItems, orderItem)
                     .join(order.buyer, marketUser)
-                .where(orderItem.id.eq(orderItemId))
-                .fetchOne();
+                .where(condition)
+                .orderBy(orderItem.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        BooleanExpression finalCondition = condition;
+        return createPage(content, pageable, () -> queryFactory
+                .select(orderItem.count())
+                .from(orderItem)
+                .where(finalCondition)
+                .fetchOne());
     }
 
     @Override

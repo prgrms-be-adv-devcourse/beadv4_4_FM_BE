@@ -67,6 +67,9 @@ dependencies {
     // Spring Boot Actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
+    // Spring Boot Actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     // 테스트
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")

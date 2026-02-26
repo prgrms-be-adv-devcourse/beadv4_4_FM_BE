@@ -82,11 +82,15 @@ public class User extends SourceUser {
                 .orElse(RoleCode.USER);
     }
 
-    public void updateProfile(String phoneNum, String address, String encryptedRrn, String nickname) {
+    public void updateProfile(String phoneNum, String address, String encryptedRrn, String nickname, Double latitude, Double longitude) {
         this.phoneNum = phoneNum;
         this.address = address;
         this.rrnEncrypted = encryptedRrn;
         this.nickname = nickname;
+        if (latitude != null && longitude != null) {
+            this.latitude = java.math.BigDecimal.valueOf(latitude);
+            this.longitude = java.math.BigDecimal.valueOf(longitude);
+        }
     }
 
     public void changeAddress(String encryptedAddress) {

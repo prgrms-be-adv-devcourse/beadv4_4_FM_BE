@@ -10,6 +10,6 @@ import java.util.List;
 @FeignClient(name = "cart-product", url = "${mossy.feign.product-url}")
 public interface CartFeignClient {
 
-    @GetMapping("/internal/v1/products")
+    @GetMapping("/internal/v1/products/carts")
     List<ProductInfoResponse> findByIds(@RequestParam("productItemIds") List<Long> productItemIds);
 }
