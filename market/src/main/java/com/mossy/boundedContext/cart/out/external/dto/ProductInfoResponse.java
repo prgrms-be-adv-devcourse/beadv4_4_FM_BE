@@ -12,5 +12,6 @@ public record ProductInfoResponse(
         String categoryName,
         BigDecimal price,
         String thumbnailUrl,
-        Integer quantity
+        Integer quantity,
+        String optionCombination
 ) { }

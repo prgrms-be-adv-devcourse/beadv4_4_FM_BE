@@ -9,5 +9,6 @@ public record ProductInfoResponse(
         String categoryName,
         BigDecimal totalPrice,
         String thumbnailUrl,
-        Integer quantity
+        Integer quantity,
+        String optionCombination
 ) { }
