@@ -15,7 +15,7 @@ import java.util.Map;
 @Configuration
 public class OutboxKafkaConfig {
 
-    @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
+    @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
     @Bean
