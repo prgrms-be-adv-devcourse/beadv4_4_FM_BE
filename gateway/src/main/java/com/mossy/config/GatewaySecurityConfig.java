@@ -6,6 +6,11 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebFluxSecurity // WebFlux 전용 보안 어노테이션
@@ -29,5 +34,20 @@ public class GatewaySecurityConfig {
                         .anyExchange().permitAll()
                 )
                 .build();
+    }
+
+    @Bean
+    public CorsWebFilter corsWebFilter() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+
+        // ✅ 허용할 도메인 목록에 운영 도메인 추가
+        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://mossy-eco.biz"));
+        corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        corsConfig.setAllowedHeaders(Arrays.asList("*"));
+        corsConfig.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+        return new CorsWebFilter(source);
     }
 }
