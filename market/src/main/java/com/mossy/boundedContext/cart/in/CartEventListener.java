@@ -20,7 +20,6 @@ public class CartEventListener {
 
     private final CartFacade cartFacade;
 
-    @Retryable()
     @TransactionalEventListener(phase = AFTER_COMMIT)
     @Transactional(propagation = REQUIRES_NEW)
     public void MarketCartCreatedEvent(MarketUserCreatedEvent event) {

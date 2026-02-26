@@ -42,16 +42,8 @@ dependencies {
     // Spring Batch
     implementation("org.springframework.boot:spring-boot-starter-batch")
 
-    // Redisson (분산 락)
-    implementation("org.redisson:redisson-spring-boot-starter:3.27.2")
-
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-
-    // Market 서비스 전용 라이브러리
-//    implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
-//    implementation(platform("software.amazon.awssdk:bom:2.24.0"))
-//    implementation("software.amazon.awssdk:s3")
 
     // QueryDSL (JPA 사용 시 공통으로 필요)
     implementation("com.querydsl:querydsl-jpa:5.1.0:jakarta")
@@ -61,11 +53,6 @@ dependencies {
 
     // Swagger UI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
-
-    // MapStruct
-//    implementation ("org.mapstruct:mapstruct:1.5.5.Final")
-//    annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
-//    annotationProcessor ("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
     // 컴파일 도구 및 DB 드라이버
     compileOnly("org.projectlombok:lombok")

@@ -11,10 +11,9 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.shared.market.enums.CouponType;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class CouponFacade {
 
-    private final RedissonClient redissonClient;
+    private final StringRedisTemplate redisTemplate;
     private final CreateSellerCouponUseCase createSellerCouponUseCase;
     private final CreateAdminCouponUseCase createAdminCouponUseCase;
     private final UpdateSellerCouponUseCase updateSellerCouponUseCase;
@@ -65,26 +64,17 @@ public class CouponFacade {
     }
 
     public Long downloadCoupon(Long couponId, Long userId) {
-        String lockKey = "coupon:download:" + userId + ":" + couponId;
-        RLock lock = redissonClient.getLock(lockKey);
+        String key = "coupon:prevent:" + userId + ":" + couponId;
 
-        try {
-            boolean isLocked = lock.tryLock(2, 5, TimeUnit.SECONDS);
+        // 중복 다운로드 방지 (5초 동안 같은 쿠폰 다운로드 차단)
+        Boolean isFirstRequest = redisTemplate.opsForValue()
+                .setIfAbsent(key, "1", 5, TimeUnit.SECONDS);
 
-            if (!isLocked) {
-                throw new DomainException(ErrorCode.COUPON_DOWNLOAD_LOCKED);
-            }
-
-            return downloadCouponUseCase.download(couponId, userId);
-
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new DomainException(ErrorCode.COUPON_DOWNLOAD_FAILED);
-        } finally {
-            if (lock.isHeldByCurrentThread()) {
-                lock.unlock();
-            }
+        if (Boolean.FALSE.equals(isFirstRequest)) {
+            throw new DomainException(ErrorCode.COUPON_DOWNLOAD_LOCKED);
         }
+
+        return downloadCouponUseCase.download(couponId, userId);
     }
 
     public Page<UserCouponResponse> getMyUserCoupons(Long userId, UserCouponStatus status, CouponType couponType, Pageable pageable) {

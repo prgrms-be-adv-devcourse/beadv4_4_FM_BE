@@ -13,10 +13,9 @@ import com.mossy.exception.ErrorCode;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
 import com.mossy.shared.market.enums.OrderState;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class OrderFacade {
 
-    private final RedissonClient redissonClient;
+    private final StringRedisTemplate redisTemplate;
     private final CreateOrderUseCase createOrderUseCase;
     private final GetOrderUseCase getOrderUseCase;
     private final GetSellerOrderUseCase getSellerOrderUseCase;
@@ -38,39 +37,28 @@ public class OrderFacade {
     private final CouponFacade couponFacade;
 
     public OrderCreatedResponse createOrder(Long userId, OrderCreatedRequest request) {
-        String lockKey = "order:user:" + userId;
-        RLock lock = redissonClient.getLock(lockKey);
+        String key = "order:prevent:" + userId;
 
-        try {
-            // 2초 대기, 5초 후 자동 해제
-            boolean isLocked = lock.tryLock(2, 5, TimeUnit.SECONDS);
+        // 중복 요청 방지 (5초 동안 같은 사용자의 주문 생성 차단)
+        Boolean isFirstRequest = redisTemplate.opsForValue()
+                .setIfAbsent(key, "1", 5, TimeUnit.SECONDS);
 
-            if (!isLocked) {
-                throw new DomainException(ErrorCode.DUPLICATE_ORDER_REQUEST);
-            }
-
-            // 쿠폰 사용 여부 확인
-            List<Long> userCouponIds = request.items().stream()
-                    .map(OrderItemRequest::userCouponId)
-                    .filter(Objects::nonNull)
-                    .toList();
-
-            Map<Long, UserCoupon> userCouponMap =
-                    !userCouponIds.isEmpty()
-                    ? couponFacade.getUserCoupons(userCouponIds)
-                    : Map.of();
-
-            return createOrderUseCase.create(userId, request, userCouponMap);
-
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new DomainException(ErrorCode.ORDER_CREATION_FAILED);
-        } finally {
-            // 락 해제
-            if (lock.isHeldByCurrentThread()) {
-                lock.unlock();
-            }
+        if (Boolean.FALSE.equals(isFirstRequest)) {
+            throw new DomainException(ErrorCode.DUPLICATE_ORDER_REQUEST);
         }
+
+        // 쿠폰 사용 여부 확인
+        List<Long> userCouponIds = request.items().stream()
+                .map(OrderItemRequest::userCouponId)
+                .filter(Objects::nonNull)
+                .toList();
+
+        Map<Long, UserCoupon> userCouponMap =
+                !userCouponIds.isEmpty()
+                ? couponFacade.getUserCoupons(userCouponIds)
+                : Map.of();
+
+        return createOrderUseCase.create(userId, request, userCouponMap);
     }
 
     public void completePayment(PaymentCompletedEvent event) {
