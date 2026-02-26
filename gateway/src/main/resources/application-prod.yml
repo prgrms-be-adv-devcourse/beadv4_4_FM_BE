@@ -15,6 +15,23 @@ spring:
 
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials # 헤더 중복 방지
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://mossy-eco.biz"
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowedHeaders: "*"
+            allowCredentials: true
       routes:
         # ── Market ──
         - id: market
@@ -83,6 +100,8 @@ spring:
           uri: http://auth-service:8080
           predicates:
             - Path=/api/v1/auth/**
+          filters:
+            - name: StripInternalHeadersFilter
 
         # ── Auth OAuth2 ──
         - id: auth-oauth2
@@ -92,7 +111,7 @@ spring:
 
         # ── Product ──
         - id: product-public
-          uri: http://product:8090
+          uri: http://product:8080
           predicates:
             - Path=/api/v1/products/search/**, /api/v1/products/{catalogProductId}
             - Method=GET
@@ -100,7 +119,7 @@ spring:
             - name: OptionalJwtAuthenticationFilter
 
         - id: product-private
-          uri: http://product:8090
+          uri: http://product:8080
           predicates:
             - Path=/api/v1/products/**
           filters:

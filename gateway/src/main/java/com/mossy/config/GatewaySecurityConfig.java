@@ -20,7 +20,7 @@ public class GatewaySecurityConfig {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
                 // 1. Gateway에서 글로벌 CORS 설정 적용
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(ServerHttpSecurity.CorsSpec::disable)
 
                 // 2. CSRF, FormLogin, HttpBasic 비활성화
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
@@ -39,22 +39,22 @@ public class GatewaySecurityConfig {
     }
 
     // CORS 정책 정의 (WebFlux 환경용)
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        // 실제 프론트엔드 도메인 추가 (localhost도 개발용으로 남겨둠)
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://mossy-eco.biz",
-                "http://localhost:5173",
-                "http://localhost:3000"
-        ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        // 실제 프론트엔드 도메인 추가 (localhost도 개발용으로 남겨둠)
+//        configuration.setAllowedOrigins(Arrays.asList(
+//                "http://mossy-eco.biz",
+//                "http://localhost:5173",
+//                "http://localhost:3000"
+//        ));
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+//        configuration.setAllowedHeaders(Arrays.asList("*"));
+//        configuration.setAllowCredentials(true);
+//        configuration.setMaxAge(3600L);
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 }
