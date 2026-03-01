@@ -24,10 +24,6 @@ public class DownloadCouponUseCase {
 
     @Transactional
     public Long download(Long couponId, Long userId) {
-        if (userCouponRepository.existsByCouponIdAndMarketUserId(couponId, userId)) {
-            throw new DomainException(ErrorCode.COUPON_ALREADY_DOWNLOADED);
-        }
-
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new DomainException(ErrorCode.COUPON_NOT_FOUND));
 
