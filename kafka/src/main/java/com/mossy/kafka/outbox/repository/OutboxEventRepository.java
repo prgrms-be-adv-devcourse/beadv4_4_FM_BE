@@ -22,14 +22,6 @@ public interface OutboxEventRepository extends JpaRepository<OutboxEvent, Long> 
     @Query("DELETE FROM OutboxEvent o WHERE o.status = :status AND o.createdAt < :cutoff")
     long deleteByStatusAndCreatedAtBefore(@Param("status") OutboxStatus status, @Param("cutoff") LocalDateTime cutoff);
 
-    /**
-     * 원자적 상태 업데이트 (Race Condition 방지)
-     * <p>
-     * UPDATE outbox_event SET status = :newStatus WHERE id = :id AND status = :currentStatus
-     * <p>
-     * - 영향받은 행 수 0: 이미 다른 Pod가 처리 중 (획득 실패)
-     * - 영향받은 행 수 1: 상태 변경 성공 (획득 성공)
-     */
     @Modifying
     @Query("UPDATE OutboxEvent o SET o.status = :newStatus WHERE o.id = :id AND o.status = :currentStatus")
     int updateStatus(@Param("id") Long id,
