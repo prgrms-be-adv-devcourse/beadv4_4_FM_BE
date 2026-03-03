@@ -1,0 +1,21 @@
+package com.mossy.exception;
+
+import com.mossy.global.exception.BaseCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public enum SuccessCode implements BaseCode {
+
+    // =============================================================
+    // === Recommendation
+    // =============================================================
+    RECOMMENDATION_FOUND(200, "추천 상품 목록을 조회했습니다."),
+    CHAT_RECOMMENDATION_FOUND(200, "AI 추천 상품 목록을 조회했습니다."),
+    PERSONAL_RECOMMENDATION_FOUND(200, "개인 맞춤 추천 상품 목록을 조회했습니다."),
+    ;
+
+    private final int status;
+    private final String msg;
+}

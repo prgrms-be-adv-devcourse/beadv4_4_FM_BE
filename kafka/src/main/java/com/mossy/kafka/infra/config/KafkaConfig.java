@@ -1,0 +1,124 @@
+package com.mossy.kafka.infra.config;
+
+import com.mossy.kafka.KafkaTopics;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.*;
+import org.springframework.kafka.support.converter.StringJsonMessageConverter;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@EnableKafka
+@Configuration
+public class KafkaConfig {
+
+    @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
+    private String bootstrapServers;
+
+    @Value("${spring.kafka.consumer.group-id}")
+    private String groupId;
+
+    // producer
+    @Bean
+    public ProducerFactory<String, Object> producerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+    @Bean
+    public KafkaTemplate<String, Object> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
+    // consumer
+    @Bean
+    public ConsumerFactory<String, String> consumerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        return new DefaultKafkaConsumerFactory<>(config);
+    }
+
+    // @KafkaListener를 동작시키는 컨테이너를 만든다.
+    // StringJsonMessageConverter: @KafkaListener 메서드의 파라미터 타입으로 JSON 역직렬화
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+            new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        factory.setRecordMessageConverter(new StringJsonMessageConverter());
+        return factory;
+    }
+
+    // 토픽 자동 생성 (파티션 1개, 복제본 1개)
+    @Bean
+    public NewTopic paymentRefundTopic() {
+        return new NewTopic(KafkaTopics.PAYMENT_REFUND, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic orderCancelTopic() {
+        return new NewTopic(KafkaTopics.ORDER_CANCEL, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic orderStockReturnTopic() {
+        return new NewTopic(KafkaTopics.ORDER_STOCK_RETURN, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic paymentCompletedTopic() {
+        return new NewTopic(KafkaTopics.PAYMENT_COMPLETED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic userJoinedTopic() {
+        return new NewTopic(KafkaTopics.USER_JOINED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic userUpdatedTopic() {
+        return new NewTopic(KafkaTopics.USER_UPDATED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic sellerJoinedTopic() {
+        return new NewTopic(KafkaTopics.SELLER_JOINED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic sellerUpdatedTopic() {
+        return new NewTopic(KafkaTopics.SELLER_UPDATED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic orderPurchaseConfirmedTopic() {
+        return new NewTopic(KafkaTopics.ORDER_PURCHASE_CONFIRMED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic orderRefundedTopic() {
+        return new NewTopic(KafkaTopics.ORDER_REFUNDED, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic payoutWalletCreditTopic() {
+        return new NewTopic(KafkaTopics.PAYOUT_WALLET_CREDIT, 1, (short) 1);
+    }
+}

@@ -1,0 +1,152 @@
+spring:
+  application:
+    name: gateway
+
+  config:
+    import: "optional:file:./gateway/.env.gateway[.properties]"
+    activate:
+      on-profile: prod
+  data:
+    redis:
+      timeout: 2s
+      connect-timeout: 2s
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: 6379
+
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials # 헤더 중복 방지
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://mossy-eco.biz"
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        # ── Market ──
+        - id: market
+          uri: http://market-service:8080
+          predicates:
+            - Path=/api/v1/carts/**, /api/v1/orders/**, /api/v1/coupons/**, /api/v1/seller/orders**, /api/v1/wishlist/**
+          filters:
+            - name: JwtAuthenticationFilter
+
+        # ── Member (공개) ──
+        - id: member-public
+          uri: http://member-service:8080
+          predicates:
+            - Path=/api/v1/users/signup
+
+        # ── Member (인증 필요) ──
+        - id: member-private
+          uri: http://member-service:8080
+          predicates:
+            - Path=/api/v1/users/me, /api/v1/users/profile, /api/v1/users/password, /api/v1/users/address, /api/v1/users/phone, /api/v1/users/set-password, /api/v1/users/nickname, /api/v1/users/profile-image
+          filters:
+            - name: JwtAuthenticationFilter
+
+        # ── Seller 신청 (인증 필요) ──
+        - id: seller-request
+          uri: http://member-service:8080
+          predicates:
+            - Path=/api/v1/users/seller-request
+          filters:
+            - name: JwtAuthenticationFilter
+
+        # ── Admin 판매자 관리 (인증 필요) ──
+        - id: admin-seller
+          uri: http://member-service:8080
+          predicates:
+            - Path=/api/v1/admin/seller-requests/**
+          filters:
+            - name: JwtAuthenticationFilter
+
+        # ── Cash ──
+        - id: cash
+          uri: http://cash-service:8080
+          predicates:
+            - Path=/api/v1/cash/**, /api/v1/payments/**
+          filters:
+            - name: JwtAuthenticationFilter
+
+        # ── Payout ──
+        - id: payout
+          uri: http://payout-service:8080
+          predicates:
+            - Path=/api/v1/payouts/**, /api/v1/donations/**
+          filters:
+            - name: JwtAuthenticationFilter
+
+        # ── Review (공개 - 리뷰 목록 조회) ──
+        - id: review-public
+          uri: http://review-service:8080
+          predicates:
+            - Path=/api/v1/reviews/**
+            - Method=GET
+          filters:
+            - name: OptionalJwtAuthenticationFilter
+
+        # ── Review (인증 필요 - 리뷰 작성 등) ──
+        - id: review-private
+          uri: http://review-service:8080
+          predicates:
+            - Path=/api/v1/reviews/**
+            - Method=POST,PUT,PATCH,DELETE
+          filters:
+            - name: JwtAuthenticationFilter
+
+        # ── Auth (공개 - 로그인/토큰/OAuth2) ──
+        - id: auth
+          uri: http://auth-service:8080
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - name: StripInternalHeadersFilter
+
+        # ── Auth OAuth2 ──
+        - id: auth-oauth2
+          uri: http://auth-service:8080
+          predicates:
+            - Path=/oauth2/**, /login/oauth2/**
+
+        # ── Product ──
+        - id: product-public
+          uri: http://product-service:8080
+          predicates:
+            - Path=/api/v1/products/search/**, /api/v1/products/{catalogProductId}
+            - Method=GET
+          filters:
+            - name: OptionalJwtAuthenticationFilter
+
+        - id: product-private
+          uri: http://product-service:8080
+          predicates:
+            - Path=/api/v1/products/**
+          filters:
+            - name: JwtAuthenticationFilter
+
+        # ── AI Recommendation (공개 + 인증) ──
+        - id: ai-recommendation-personal
+          uri: http://ai-service:8080
+          predicates:
+            - Path=/api/v1/recommendations/personal
+          filters:
+            - name: JwtAuthenticationFilter
+
+        - id: ai-recommendation-public
+          uri: http://ai-service:8080
+          predicates:
+            - Path=/api/v1/recommendations/**
+
+jwt:
+  secret: ${JWT_SECRET}

@@ -1,0 +1,43 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: payout
+  config:
+    import: "optional:file:./payout/.env.payout[.properties]"
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  datasource:
+    url: jdbc:${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+  batch:
+    job:
+      enabled: false
+  cache:
+    type: redis
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: payout
+
+# 모든 서비스에서 동일한 경로로 스웨거 사용
+springdoc:
+  swagger-ui:
+    path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs

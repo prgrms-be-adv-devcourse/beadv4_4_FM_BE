@@ -1,0 +1,123 @@
+package com.mossy.boundedContext.payout.app;
+
+import com.mossy.boundedContext.payout.app.common.*;
+import com.mossy.boundedContext.payout.app.seller.PayoutSyncSellerUseCase;
+import com.mossy.boundedContext.payout.in.dto.command.PayoutCandidateCreateDto;
+import com.mossy.boundedContext.payout.app.user.PayoutSyncUserUseCase;
+import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
+import com.mossy.shared.market.event.OrderRefundedEvent;
+import com.mossy.shared.member.payload.SellerPayload;
+import com.mossy.global.rsData.RsData;
+
+import com.mossy.shared.member.payload.UserPayload;
+import com.mossy.shared.payout.event.PayoutCompletedEvent;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+
+/**
+ * 정산(Payout) 기능의 메인 진입점 역할을 하는 파사드(Facade)
+ * 정산과 관련된 복잡한 단계별 비즈니스 로직(Use Case)들을 외부에 제공
+ * <p>
+ * 정산 플로우 (자동화된 배치 프로세스 기준):
+ * 0. [사전준비] 회원/판매자 정보 동기화: Member 컨텍스트의 변경사항을 Payout 컨텍스트에 동기화 (syncSeller, syncUser)
+ * 1. [실시간] 정산 후보 아이템 생성: 주문이 완료되면, 해당 주문건에 대한 정산 후보 아이템(PayoutCandidateItem)을 생성 (addPayoutCandidateItems)
+ * 2. [배치] 정산 아이템 집계: 스케줄러를 통해 주기적으로 정산 후보 아이템들을 실제 정산(Payout)에 포함될 아이템으로 집계/변환 (collectPayoutItemsMore)
+ * 3. [배치] 정산 실행 및 완료: 스케줄러를 통해 주기적으로 생성된 정산(Payout)들을 실제 실행하고 완료 처리,  이 과정에서 PayoutCompletedEvent가 발행 (completePayoutsMore)
+ */
+@Service
+@RequiredArgsConstructor
+public class PayoutFacade {
+    private final PayoutSyncSellerUseCase payoutSyncSellerUseCase;
+    private final PayoutSyncUserUseCase payoutSyncUserUseCase;
+    private final PayoutCreatePayoutUseCase payoutCreatePayoutUseCase;
+    private final PayoutAddPayoutCandidateItemsUseCase payoutAddPayoutCandidateItemsUseCase;
+    private final PayoutCollectPayoutItemsMoreUseCase payoutCollectPayoutItemsMoreUseCase;
+    private final PayoutCompletePayoutsMoreUseCase payoutCompletePayoutsMoreUseCase;
+    private final PayoutHandleOrderPurchaseConfirmedUseCase payoutHandleOrderPurchaseConfirmedUseCase;
+    private final PayoutRefundUseCase payoutRefundUseCase;
+    private final PayoutHandlePayoutCompletedUseCase payoutHandlePayoutCompletedUseCase;
+    private final PayoutHandleOrderRefundedUseCase payoutHandleOrderRefundedUseCase;
+    private final PayoutDailyPayoutToWalletUseCase payoutDailyPayoutToWalletUseCase;
+
+    /**
+     * [흐름 0] 판매자 정보를 Payout 컨텍스트와 동기화
+     * Member 컨텍스트에서 판매자 정보가 변경될 때 호출
+     * @param seller 변경된 판매자 정보 DTO
+     */
+    @Transactional
+    public void syncSeller(SellerPayload seller) {
+        payoutSyncSellerUseCase.syncSeller(seller);
+    }
+
+    /**
+     * [흐름 0] 사용자 정보를 Payout 컨텍스트와 동기화
+     * Member 컨텍스트에서 사용자 정보가 변경될 때 호출
+     * @param user 변경된 사용자 정보 DTO
+     */
+    @Transactional
+    public void syncUser(UserPayload user) {
+        payoutSyncUserUseCase.syncUser(user);
+    }
+
+    /**
+     * [수동] 특정 수취인(payee)에 대한 정산을 수동으로 생성
+     * 자동화된 배치 프로세스와는 별개의 흐름
+     *
+     * @param payeeId 수취인의 ID
+     */
+    @Transactional
+    public void createPayout(Long payeeId) {
+        payoutCreatePayoutUseCase.createPayout(payeeId);
+    }
+
+    /**
+     * [흐름 1] 단일 주문 아이템을 바탕으로 정산 후보 아이템(PayoutCandidateItem)을 추가
+     * Payment 컨텍스트에서 결제가 완료될 때 호출
+     * @param dto 정산 후보 생성을 위한 DTO (OrderItem 정보 + 계산된 거리/무게등급 포함)
+     */
+    @Transactional
+    public void addPayoutCandidateItem(PayoutCandidateCreateDto dto) { payoutAddPayoutCandidateItemsUseCase.addPayoutCandidateItem(dto); }
+
+    /**
+     * [흐름 2] 정산 후보 아이템을 집계하여 실제 정산(Payout)에 포함될 PayoutItem으로 변환하는 배치를 실행
+     * Spring Batch의 트랜잭션을 사용하므로 MANDATORY 전파 레벨 사용
+     * @param limit 한 번에 처리할 개수
+     * @return 처리 결과 (성공/실패, 처리된 개수 등)
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public RsData<Integer> collectPayoutItemsMore(int limit) { return payoutCollectPayoutItemsMoreUseCase.collectPayoutItemsMore(limit); }
+    /**
+     * [흐름 3] 생성된 정산(Payout)들을 실제로 실행하고 완료 처리하는 배치를 실행
+     * 이 과정이 성공적으로 끝나면 PayoutCompletedEvent가 발행되어, 기부금 정산 등 후속 조치가 이어짐
+     * Spring Batch의 트랜잭션을 사용하므로 MANDATORY 전파 레벨 사용
+     * @param limit 한 번에 처리할 개수
+     * @return 처리 결과 (성공/실패, 처리된 개수 등)
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public RsData<Integer> completePayoutsMore(int limit) { return payoutCompletePayoutsMoreUseCase.completePayoutsMore(limit); }
+
+    @Transactional
+    public void processRefund(Long OrderItemId, BigDecimal refundAmount, BigDecimal buyerPaidAmount) { payoutRefundUseCase.processRefund(OrderItemId, refundAmount, buyerPaidAmount); }
+
+    public void handleOrderPurchaseConfirmed(OrderPurchaseConfirmedEvent event) { payoutHandleOrderPurchaseConfirmedUseCase.handle(event); }
+
+    public void handlePayoutCompleted(PayoutCompletedEvent event) { payoutHandlePayoutCompletedUseCase.handle(event); }
+
+    public void handleOrderRefunded(OrderRefundedEvent event) { payoutHandleOrderRefundedUseCase.handle(event); }
+
+    /**
+     *
+     * [흐름 4][지급 배치] 정산 완료된 Payout을 판매자 지갑에 지급
+     * 각 Payout마다 지급 이벤트를 발행 (1:1 매핑)
+     * Spring Batch의 트랜잭션을 사용하므로 MANDATORY 전파 레벨 사용
+     *
+     * @param limit 한 번에 처리할 개수
+     * @return 처리 결과 (성공/실패, 처리된 개수 등)
+     */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public RsData<Integer> processDailyPayoutToWallet(int limit) { return payoutDailyPayoutToWalletUseCase.processDailyPayoutToWallet(limit); }
+}

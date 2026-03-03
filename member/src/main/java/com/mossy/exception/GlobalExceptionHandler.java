@@ -1,0 +1,103 @@
+package com.mossy.exception;
+
+import com.mossy.global.rsData.RsData;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(DomainException.class)
+    public ResponseEntity<RsData<Void>> handleDomainException(DomainException e) {
+        log.warn("DomainException: {}", e.getMessage());
+
+        if (e.getErrorCode() != null) {
+            ErrorCode errorCode = e.getErrorCode();
+            return ResponseEntity
+                    .status(errorCode.getStatus())
+                    .body(RsData.fail(errorCode));
+        }
+
+        int status = e.getHttpStatus();
+        return ResponseEntity
+                .status(status)
+                .body(new RsData<>(e.getResultCode(), e.getMsg(), null));
+    }
+
+    // DB 제약 조건 위반 - 한글 메시지가 헤더에 들어가지 않도록 명시적 처리
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<RsData<Void>> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        log.error("DataIntegrityViolationException: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new RsData<>("F-409", "데이터 중복 또는 제약 조건 위반입니다.", null));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<RsData<Void>> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.warn("IllegalArgumentException: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new RsData<>("F-400", e.getMessage(), null));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<RsData<Void>> handleIllegalStateException(IllegalStateException e) {
+        log.warn("IllegalStateException: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new RsData<>("F-409", e.getMessage(), null));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<RsData<Void>> handleValidationException(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .findFirst()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .orElse("유효성 검증에 실패했습니다.");
+        log.warn("ValidationException: {}", message);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new RsData<>("F-400", message, null));
+    }
+
+    // 필수 헤더 누락 (X-User-Id 등) - 게이트웨이를 거치지 않은 직접 요청
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<RsData<Void>> handleMissingRequestHeader(MissingRequestHeaderException e) {
+        log.warn("MissingRequestHeaderException: {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new RsData<>("F-401", "인증 정보가 없습니다. 게이트웨이를 통해 요청해주세요.", null));
+    }
+
+    // 인증 실패 예외 (JWT 만료, 검증 실패 포함)
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<RsData<Void>> handleAuthenticationException(AuthenticationException e) {
+        log.warn("Authentication Failed: {}", e.getMessage());
+        String message = "인증에 실패했습니다.";
+        if (e.getMessage() != null && e.getMessage().contains("expired")) {
+            message = "토큰이 만료되었습니다. 다시 로그인해주세요.";
+        } else if (e.getMessage() != null && e.getMessage().contains("JWT")) {
+            message = "유효하지 않은 토큰입니다. 다시 로그인해주세요.";
+        }
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new RsData<>("F-401", message, null));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<RsData<Void>> handleException(Exception e) {
+        log.error("Unexpected Exception: ", e);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new RsData<>("F-500", "서버 오류가 발생했습니다.", null));
+    }
+}

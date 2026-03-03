@@ -1,0 +1,18 @@
+services:
+  cash:
+    build:
+      context: ..
+      dockerfile: cash/Dockerfile
+    container_name: cash
+    restart: always
+    ports:
+      - "8083:8083"
+    env_file:
+      - ../.env.default
+      - .env.cash
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - REDIS_HOST=redis
+      - MOSSY_FEIGN_MARKET_URL=http://market:8081
+    networks:
+      - mossy-network

@@ -1,0 +1,27 @@
+services:
+  gateway:
+    build:
+      context: ..
+      dockerfile: gateway/Dockerfile
+    container_name: gateway
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env.gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - GATEWAY_MARKET_URL=http://market:8081
+      - GATEWAY_MEMBER_URL=http://member:8082
+      - GATEWAY_CASH_URL=http://cash:8083
+      - GATEWAY_PAYOUT_URL=http://payout:8084
+      - GATEWAY_REVIEW_URL=http://review:8085
+      - GATEWAY_AUTH_URL=http://auth:8086
+      - GATEWAY_AI_URL=http://ai:8087
+      - GATEWAY_PRODUCT_URL=http://product:8090
+    networks:
+      - mossy-network
+
+networks:
+  mossy-network:
+    external: true

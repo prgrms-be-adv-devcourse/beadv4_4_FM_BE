@@ -1,0 +1,89 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: auth
+  # .env.auth 파일에서 상세 값을 읽어오도록 설정
+  config:
+    import: "optional:file:./auth/.env.auth[.properties]"
+
+  output:
+    ansi:
+      enabled: always
+
+  # OAuth2 설정 (로컬 개발 환경)
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid, profile, email
+            redirect-uri: http://localhost:8086/login/oauth2/code/google
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-name: Kakao
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            provider: kakao
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8086/login/oauth2/code/kakao
+            scope: profile_nickname, account_email
+            client-authentication-method: client_secret_post
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://www.googleapis.com/oauth2/v4/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+            user-name-attribute: sub
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+      frontendUrl: ${FRONTEND_URL:http://localhost:5173}
+
+  # Redis 설정 (토큰 저장 및 로그인 제한용)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  datasource:
+    url: jdbc:${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# JWT 설정
+mossy:
+  jwt:
+    secret: ${JWT_SECRET}
+    access-token-expire-ms: 1800000    # 30분
+    refresh-token-expire-ms: 1209600000    # 14일
+  feign:
+    member-url: http://localhost:8082
+
+# OpenFeign 설정 (로깅 및 타임아웃)
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+security:
+  refresh-token:
+    pepper: ${AUTH_REFRESH_TOKEN_PEPPER}
+
+
+# 로깅 설정 (Feign 통신 확인용)
+logging:
+  level:
+    com.mossy.boundedContext.auth.out.MemberServiceClient: DEBUG

@@ -1,0 +1,16 @@
+package com.mossy.boundedContext.payment.in.dto.response;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public record TossCancelResponse(
+    String paymentKey,
+    String orderId,
+    List<Cancel> cancels
+) {
+    public record Cancel(
+        BigDecimal cancelAmount,
+        String cancelReason
+    ) {
+    }
+}

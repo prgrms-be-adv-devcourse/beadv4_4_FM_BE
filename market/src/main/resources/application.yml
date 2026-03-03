@@ -1,0 +1,90 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: market
+  config:
+    import: "optional:file:./market/.env.market[.properties]"
+  profiles:
+    active: dev
+  output:
+    ansi:
+      enabled: always
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  datasource:
+    url: jdbc:${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+        default_batch_fetch_size: 100
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  # Kafka 설정
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: market
+
+  # Spring Batch 설정
+  batch:
+    job:
+      enabled: false  # 앱 시작 시 자동 실행 방지 (스케줄러에서 직접 실행)
+    jdbc:
+      initialize-schema: always  # 배치 메타데이터 테이블 자동 생성
+
+# 모든 서비스에서 동일한 경로로 스웨거 사용
+springdoc:
+  swagger-ui:
+    path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  level:
+    com.back: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
+    org.springframework.transaction.interceptor: TRACE
+
+market:
+  policy:
+    cart:
+      max_quantity: 100
+
+mossy:
+  feign:
+    product-url: http://localhost:8090  # 로컬 개발 환경: product 서비스 주소
+
+batch:
+  confirm-orders:
+    chunk-size: 100
+
+outbox:
+  poller:
+    enabled: true
+    batch-size: 100
+    max-retry: 5
+    interval-ms: 60000  # 1분 (실패한 이벤트만 재발행)
+  cleanup:
+    cron: "0 0 3 * * *"

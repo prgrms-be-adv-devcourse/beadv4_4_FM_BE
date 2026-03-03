@@ -1,0 +1,42 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: ai
+  config:
+    import: "optional:file:./ai/.env.ai[.properties]"
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  r2dbc:
+    url: r2dbc:${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat.options.model: gpt-4o-mini
+      embedding.options.model: text-embedding-3-small
+
+  cache:
+    type: redis
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ai
+
+springdoc:
+  swagger-ui:
+    path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs
+
+mossy:
+  feign:
+    product-url: http://localhost:8090  # 로컬 개발 환경: product 서비스 주소

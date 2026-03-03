@@ -1,0 +1,16 @@
+services:
+  review:
+    build:
+      context: ..
+      dockerfile: review/Dockerfile
+    container_name: review
+    restart: always
+    ports:
+      - "8085:8085"
+    env_file:
+      - ../.env.default
+      - .env.review
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - mossy-network

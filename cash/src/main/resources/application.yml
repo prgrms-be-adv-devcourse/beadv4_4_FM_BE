@@ -1,0 +1,67 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: cash
+  config:
+    import: "optional:file:./cash/.env.cash[.properties]"
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  datasource:
+    url: jdbc:${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+
+  cache:
+    type: redis
+
+  # Kafka 설정
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: cash
+
+# 모든 서비스에서 동일한 경로로 스웨거 사용
+springdoc:
+  swagger-ui:
+    path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs
+
+mossy:
+  feign:
+    market-url: http://localhost:8081  # 로컬 개발 환경: market 서비스 주소
+
+# OpenFeign 설정 (로깅 및 타임아웃)
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+# 로깅 설정 (Feign 통신 확인용)
+logging:
+  level:
+    com.mossy.boundedContext.payment.out.com.mossy.boundedContext.payment.out.MarketFeignClient: DEBUG
+
+toss:
+  payments:
+    base-url: https://api.tosspayments.com
+    secret-key: ${TOSS_SECRET_KEY}

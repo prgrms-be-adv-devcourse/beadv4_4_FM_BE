@@ -1,0 +1,47 @@
+server:
+  port: 8080
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+
+  elasticsearch:
+    uris:
+      - http://${ELASTICSEARCH_HOST}
+      -
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: market
+
+mossy:
+  feign:
+    product-url: http://product-service:8080  # 배포 환경: Docker 네트워크 내 product 서비스
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.orm.jdbc.bind: INFO  # 파라미터 바인딩 로그 숨기기
+    org.springframework.transaction: INFO # 트랜잭션 시작/종료 로그 숨기기

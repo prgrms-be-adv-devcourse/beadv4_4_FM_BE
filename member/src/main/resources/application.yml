@@ -1,0 +1,59 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: member
+  config:
+    import: "optional:file:./member/.env.member[.properties]"
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  datasource:
+    url: jdbc:${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: false
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: member
+    producer:
+      retries: 0  # 재시도 없이 바로 실패 처리 (로그만 찍고 진행)
+    template:
+      default-topic: member
+
+springdoc:
+  swagger-ui:
+    path: /mossy-docs
+  api-docs:
+    path: /v3/api-docs
+
+# S3
+cloud:
+  aws:
+    s3:
+      bucket: ${CLOUD_AWS_S3_BUCKET}
+    credentials:
+      access-key: ${CLOUD_AWS_ACCESS_KEY}
+      secret-key: ${CLOUD_AWS_SECRET_KEY}
+    region: ${CLOUD_AWS_REGION}
+
+mossy:
+  feign:
+    auth-url: http://localhost:8086

@@ -1,0 +1,47 @@
+server:
+  port: 8080
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+
+  # Redis 설정 (직접 IP를 넣거나 환경 변수명을 정확히 적어야 합니다)
+  data:
+    redis:
+      host: ${REDIS_HOST} # 환경변수가 없으면 localhost 사용
+      port: 6379
+
+  elasticsearch:
+    uris:
+      - http://elasticsearch:9200
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+
+mossy:
+  feign:
+    market-url: http://market-service:8080  # 배포 환경: Docker 네트워크 내 market 서비스
+
+logging:
+  level:
+    root: INFO
+    # 운영 환경에서는 Feign 로그를 좀 더 간결하게
+    com.mossy.boundedContext.payment.out.com.mossy.boundedContext.payment.out.MarketFeignClient: INFO
