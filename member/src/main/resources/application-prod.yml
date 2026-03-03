@@ -1,3 +1,5 @@
+server:
+  port: 8080
 spring:
   config:
     activate:
@@ -32,7 +34,7 @@ spring:
 
 mossy:
   feign:
-    auth-url: http://auth:8086
+    auth-url: http://auth-service:8080
 
 logging:
   level:

@@ -63,6 +63,9 @@ dependencies {
     // 테스트
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // Spring Boot Actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
 
 tasks.withType<Test> {

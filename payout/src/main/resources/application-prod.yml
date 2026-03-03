@@ -1,3 +1,5 @@
+server:
+  port: 8080
 spring:
   config:
     activate:
@@ -16,8 +18,13 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}

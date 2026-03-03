@@ -64,6 +64,10 @@ dependencies {
 
     //9. oauth2
     implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
+
+    // Spring Boot Actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
 }
 
 tasks.withType<Test> {

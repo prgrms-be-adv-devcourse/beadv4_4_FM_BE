@@ -8,6 +8,7 @@ services:
     ports:
       - "8087:8087"
     env_file:
+      - ../.env.default
       - .env.ai
     environment:
       - SPRING_PROFILES_ACTIVE=prod

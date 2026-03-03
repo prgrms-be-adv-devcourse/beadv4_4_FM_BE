@@ -1,3 +1,5 @@
+server:
+  port: 8080
 spring:
   config:
     activate:
@@ -24,7 +26,7 @@ spring:
   # Redis 설정 (직접 IP를 넣거나 환경 변수명을 정확히 적어야 합니다)
   data:
     redis:
-      host: ${REDIS_HOST:localhost} # 환경변수가 없으면 localhost 사용
+      host: ${REDIS_HOST} # 환경변수가 없으면 localhost 사용
       port: 6379
 
   elasticsearch:
@@ -36,7 +38,7 @@ spring:
 
 mossy:
   feign:
-    market-url: http://market:8081  # 배포 환경: Docker 네트워크 내 market 서비스
+    market-url: http://market-service:8080  # 배포 환경: Docker 네트워크 내 market 서비스
 
 logging:
   level:

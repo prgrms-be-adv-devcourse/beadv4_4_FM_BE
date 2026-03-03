@@ -67,10 +67,12 @@ public class Product extends BaseIdAndTime {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @Builder.Default
     private List<ProductItem> productItems = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @Builder.Default
     private List<ProductOptionGroup> optionGroups = new ArrayList<>();
 
 

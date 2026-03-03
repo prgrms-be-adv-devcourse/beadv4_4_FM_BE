@@ -17,7 +17,7 @@ spring:
   # Redis 설정
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
+      host: ${REDIS_HOST}
       port: 6379
 
   kafka:
@@ -27,4 +27,4 @@ spring:
 
 mossy:
   feign:
-    product-url: http://product:8090  # 배포 환경: Docker 네트워크 내 product 서비스
+    product-url: http://product-service:8080

@@ -1,3 +1,5 @@
+server:
+  port: 8080
 spring:
   config:
     activate:
@@ -30,7 +32,7 @@ spring:
 
 mossy:
   feign:
-    product-url: http://product:8090
+    product-url: http://product-service:8080
 
 logging:
   level:

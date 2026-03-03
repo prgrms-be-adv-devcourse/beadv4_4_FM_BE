@@ -54,6 +54,9 @@ dependencies {
     // Swagger UI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3")
 
+    // Spring Boot Actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+
     // 컴파일 도구 및 DB 드라이버
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

@@ -6,11 +6,13 @@ import java.math.BigDecimal;
 
 @Builder
 public record ProductInfoResponse(
-        Long productId,
+        Long productItemId,
         Long sellerId,
         String productName,
         String categoryName,
-        BigDecimal price,
+        BigDecimal totalPrice,
         String thumbnailUrl,
-        Integer quantity
+        Integer quantity,
+        String optionCombination,
+        BigDecimal weight
 ) { }
