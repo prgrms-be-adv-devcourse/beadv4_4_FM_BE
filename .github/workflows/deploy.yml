@@ -117,6 +117,7 @@ jobs:
           tags: ${{ env.REGISTRY }}:${{ matrix.service }}-service
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
   deploy:
     needs: [detect-changes, build-and-push]
