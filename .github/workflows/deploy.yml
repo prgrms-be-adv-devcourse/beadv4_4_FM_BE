@@ -18,6 +18,10 @@ on:
       - 'k8s/**'
       - '.github/workflows/**'
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   # 이전에 설정하신 이미지 경로에 맞게 설정 (ghcr.io/ddubuk228/beadv4_4_fm_be)
   REGISTRY: ghcr.io/${{ github.repository_owner }}/beadv4_4_fm_be
