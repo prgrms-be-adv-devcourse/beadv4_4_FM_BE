@@ -67,10 +67,12 @@ public class Product extends BaseIdAndTime {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @Builder.Default
     private List<ProductItem> productItems = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @Builder.Default
     private List<ProductOptionGroup> optionGroups = new ArrayList<>();
 
 
@@ -221,5 +223,15 @@ public class Product extends BaseIdAndTime {
         }
         return this.productItems.stream()
                 .allMatch(item -> item.getQuantity() <= 0);
+    }
+
+    public Long getMinTotalPrice() {
+        if (this.productItems == null || this.productItems.isEmpty()) {
+            return this.basePrice.longValue();
+        }
+        return this.productItems.stream()
+                .map(item -> item.getTotalPrice().longValue())
+                .min(Long::compare)
+                .orElse(this.basePrice.longValue());
     }
 }

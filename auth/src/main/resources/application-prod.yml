@@ -1,3 +1,5 @@
+server:
+  port: 8080
 spring:
   config:
     activate:
@@ -41,14 +43,14 @@ spring:
       port: 6379
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: jdbc:${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
 mossy:
   feign:
-    member-url: http://member:8082
+    member-url: http://member-service:8080
 
 security:
   refresh-token:

@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.order.out;
 
 import com.mossy.boundedContext.order.domain.Order;
+import com.mossy.boundedContext.order.in.dto.response.MarketOrderResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
@@ -31,7 +32,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<OrderListResponse> findOrderListByUserId(Long userId, OrderState state, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+    public Page<OrderListResponse> findOrderListByUserId(Long userId, OrderState state, LocalDate startDate,
+            LocalDate endDate, Pageable pageable) {
         BooleanExpression condition = order.buyer.id.eq(userId)
                 .and(order.state.notIn(OrderState.PENDING, OrderState.EXPIRED));
 
@@ -55,10 +57,9 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                         order.state,
                         orderItem.count(),
                         order.address,
-                        order.createdAt
-                ))
+                        order.createdAt))
                 .from(order)
-                    .join(order.orderItems, orderItem)
+                .join(order.orderItems, orderItem)
                 .where(condition)
                 .groupBy(order.id)
                 .orderBy(order.createdAt.desc())
@@ -86,19 +87,20 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                         orderItem.finalPrice,
                         coupon.couponName,
                         coupon.couponType,
-                        marketSeller.storeName
-                ))
+                        marketSeller.storeName,
+                        orderItem.state))
                 .from(order)
-                    .join(order.orderItems, orderItem)
-                    .join(marketSeller).on(orderItem.sellerId.eq(marketSeller.id))
-                    .leftJoin(orderItem.userCoupon, userCoupon)
-                    .leftJoin(userCoupon.coupon, coupon)
+                .join(order.orderItems, orderItem)
+                .join(marketSeller).on(orderItem.sellerId.eq(marketSeller.id))
+                .leftJoin(orderItem.userCoupon, userCoupon)
+                .leftJoin(userCoupon.coupon, coupon)
                 .where(order.id.eq(orderId))
                 .fetch();
     }
 
     @Override
-    public Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, OrderState state, Pageable pageable) {
+    public Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, OrderState state,
+            Pageable pageable) {
         BooleanExpression condition = orderItem.sellerId.eq(sellerId);
 
         if (state != null) {
@@ -115,11 +117,10 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                         orderItem.state,
                         orderItem.createdAt,
                         marketUser.name,
-                        order.address
-                ))
+                        order.address))
                 .from(order)
-                    .join(order.orderItems, orderItem)
-                    .join(order.buyer, marketUser)
+                .join(order.orderItems, orderItem)
+                .join(order.buyer, marketUser)
                 .where(condition)
                 .orderBy(orderItem.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -156,6 +157,34 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
                 .from(order)
                 .where(condition)
                 .fetchOne());
+    }
+
+    @Override
+    public MarketOrderResponse findMarketOrderById(Long orderId) {
+        return queryFactory
+                .select(Projections.constructor(MarketOrderResponse.class,
+                        order.id,
+                        order.orderNo,
+                        order.totalPrice,
+                        order.buyer.id,
+                        order.state))
+                .from(order)
+                .where(order.id.eq(orderId))
+                .fetchOne();
+    }
+
+    @Override
+    public MarketOrderResponse findMarketOrderByOrderNo(String orderNo) {
+        return queryFactory
+                .select(Projections.constructor(MarketOrderResponse.class,
+                        order.id,
+                        order.orderNo,
+                        order.totalPrice,
+                        order.buyer.id,
+                        order.state))
+                .from(order)
+                .where(order.orderNo.eq(orderNo))
+                .fetchOne();
     }
 
     private <T> Page<T> createPage(List<T> content, Pageable pageable, Supplier<Long> countSupplier) {

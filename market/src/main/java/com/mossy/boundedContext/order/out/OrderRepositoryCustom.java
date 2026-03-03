@@ -1,6 +1,7 @@
 package com.mossy.boundedContext.order.out;
 
 import com.mossy.boundedContext.order.domain.Order;
+import com.mossy.boundedContext.order.in.dto.response.MarketOrderResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
@@ -21,4 +22,8 @@ public interface OrderRepositoryCustom {
     Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, OrderState state, Pageable pageable);
 
     Page<Order> findPaidOrdersUpdatedBefore(LocalDateTime threshold, Pageable pageable);
+
+    MarketOrderResponse findMarketOrderById(Long orderId);
+
+    MarketOrderResponse findMarketOrderByOrderNo(String orderNo);
 }

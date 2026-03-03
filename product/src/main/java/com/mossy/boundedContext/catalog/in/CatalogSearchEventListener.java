@@ -42,9 +42,10 @@ public class CatalogSearchEventListener {
         CatalogProduct catalog = catalogProductRepository.findById(catalogId)
                 .orElseThrow(() -> new DomainException(ErrorCode.CATALOG_PRODUCT_NOT_FOUND));
 
-        String thumbnailUrl = catalogImageRepository.findByTargetIdAndIsThumbnailTrue(catalogId)
-                .map(CatalogImage::getImageUrl)
-                .orElse("default_image_url");
+//        String thumbnailUrl = catalogImageRepository.findByTargetIdAndIsThumbnailTrue(catalogId)
+//                .map(CatalogImage::getImageUrl)
+//                .orElse("default_image_url");
+        String thumbnailUrl = catalog.getThumbnail();
 
         CatalogDocument document = CatalogDocument.from(
                 catalog,

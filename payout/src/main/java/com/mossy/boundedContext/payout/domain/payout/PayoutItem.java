@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Table(name = "PAYOUT_PAYOUT_ITEM")
+@Table(name = "PAYOUT_ITEMS")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PayoutItem extends BaseIdAndTime {
@@ -81,7 +81,7 @@ public class PayoutItem extends BaseIdAndTime {
         if (relId == null) throw new DomainException(ErrorCode.REL_ID_IS_NULL);
         if (paymentDate == null) throw new DomainException(ErrorCode.PAYMENT_DATE_IS_NULL);
         if (payee == null) throw new DomainException(ErrorCode.PAYEE_IS_NULL);
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+        if (amount == null) {
             throw new DomainException(ErrorCode.INVALID_PAYOUT_AMOUNT);
         }
     }

@@ -85,7 +85,7 @@ public class ConfirmPurchasedOrdersBatchJobConfig {
     @Bean
     public ItemWriter<Order> confirmOrderWriter() {
         return chunk -> {
-            List<? extends Order> orders = chunk.getItems();
+            var orders = chunk.getItems();
 
             // 정산 이벤트를 아웃박스에 저장
             for (Order order : orders) {

@@ -122,12 +122,37 @@ public class Order extends BaseIdAndTime {
     }
 
     public void cancel(String cancelReason) {
-        if (this.state == OrderState.PAID) {
-            this.state = OrderState.CANCELED;
-            this.orderItems.forEach(item -> {
+        validateCancelable();
+
+        this.state = OrderState.CANCELED;
+        this.orderItems.forEach(item -> {
+            item.updateState(OrderState.CANCELED);
+            item.updateCancelReason(cancelReason);
+        });
+    }
+
+    public void cancelPartial(List<Long> orderItemIds, String cancelReason) {
+        validateCancelable();
+
+        this.orderItems.stream()
+            .filter(item -> orderItemIds.contains(item.getId()))
+            .forEach(item -> {
                 item.updateState(OrderState.CANCELED);
                 item.updateCancelReason(cancelReason);
             });
+
+        boolean allCanceled = this.orderItems.stream()
+            .allMatch(item -> item.getState() == OrderState.CANCELED);
+
+        this.state = allCanceled ? OrderState.CANCELED : OrderState.PARTIAL_CANCELED;
+    }
+
+    private void validateCancelable() {
+        if (this.state != OrderState.PAID && this.state != OrderState.PARTIAL_CANCELED) {
+            throw new DomainException(ErrorCode.ORDER_CANNOT_CANCEL);
+        }
+        if (this.getUpdatedAt().isBefore(LocalDateTime.now().minusWeeks(1))) {
+            throw new DomainException(ErrorCode.ORDER_PURCHASE_CONFIRMED);
         }
     }
 

@@ -1,10 +1,12 @@
+server:
+  port: 8080
 spring:
   config:
     activate:
       on-profile: prod
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: jdbc:${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -30,7 +32,7 @@ spring:
 
 mossy:
   feign:
-    product-url: http://product:8090
+    product-url: http://product-service:8080
 
 logging:
   level:

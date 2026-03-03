@@ -24,7 +24,7 @@ public class MemberInternalController {
     }
 
     @Operation(summary = "회원 인증 정보 조회 (내부전용)")
-    @GetMapping("/{userId}")
+    @GetMapping("/id/{userId}")
     public MemberAuthInfoResponse getAuthInfo(@PathVariable Long userId) {
         return userFacade.getAuthInfo(userId);
     }

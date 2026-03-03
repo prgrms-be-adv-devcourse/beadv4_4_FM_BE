@@ -6,7 +6,8 @@ import java.util.List;
 public record TossCancelPayload(
     String orderId,
     List<Cancel> cancels,
-    List<Long> orderItemIds
+    List<Long> orderItemIds,
+    String refundType
 ) {
     public TossCancelPayload {
         if (orderItemIds == null) {

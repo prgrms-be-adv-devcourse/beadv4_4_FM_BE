@@ -1,5 +1,6 @@
 server:
   port: 8080
+  forward-headers-strategy: framework
 
 spring:
   application:
@@ -8,8 +9,31 @@ spring:
   config:
     import: "optional:file:./gateway/.env.gateway[.properties]"
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials # 헤더 중복 방지
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://mossy-eco.biz"
+              - "https://mossy-eco.biz"
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowedHeaders: "*"
+            allowCredentials: true
       routes:
         # ── Market ──
         - id: market
@@ -55,7 +79,7 @@ spring:
         - id: cash
           uri: http://127.0.0.1:8083
           predicates:
-            - Path=/api/v1/cash/**
+            - Path=/api/v1/cash/**, /api/v1/payments/**
           filters:
             - name: JwtAuthenticationFilter
 
@@ -67,11 +91,21 @@ spring:
           filters:
             - name: JwtAuthenticationFilter
 
-        # ── Review ──
-        - id: review
+        # ── Review (공개 - 리뷰 목록 조회) ──
+        - id: review-public
           uri: http://127.0.0.1:8085
           predicates:
             - Path=/api/v1/reviews/**
+            - Method=GET
+          filters:
+            - name: OptionalJwtAuthenticationFilter
+
+        # ── Review (인증 필요 - 리뷰 작성 등) ──
+        - id: review-private
+          uri: http://127.0.0.1:8085
+          predicates:
+            - Path=/api/v1/reviews/**
+            - Method=POST,PUT,PATCH,DELETE
           filters:
             - name: JwtAuthenticationFilter
 

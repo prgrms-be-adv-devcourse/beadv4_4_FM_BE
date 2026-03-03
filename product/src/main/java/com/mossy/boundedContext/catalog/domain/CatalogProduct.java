@@ -52,6 +52,10 @@ public class CatalogProduct extends BaseIdAndTime {
     @Builder.Default
     private Long reviewCount = 0L;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Double totalRatingSum = 0.0;
+
     // 카탈로그 정보 수정
     public void updateCatalog(Category category, String name, String brand,
                               String description, BigDecimal weight, String modelNumber) {
@@ -61,5 +65,10 @@ public class CatalogProduct extends BaseIdAndTime {
         this.description = description;
         this.weight = weight;
         this.modelNumber = modelNumber;
+    }
+
+    public Double getAverageRating() {
+        if (reviewCount == 0) return 0.0;
+        return totalRatingSum / reviewCount;
     }
 }

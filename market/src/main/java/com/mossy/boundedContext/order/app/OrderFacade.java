@@ -11,6 +11,7 @@ import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
+import com.mossy.shared.cash.payload.TossCancelPayload;
 import com.mossy.shared.market.enums.OrderState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -77,8 +78,8 @@ public class OrderFacade {
         deleteOrderUseCase.deleteOrder(orderId, userId);
     }
 
-    public void cancelOrder(Long orderId, Long userId, String cancelReason) {
-        cancelOrderUseCase.cancelOrder(orderId, userId, cancelReason);
+    public void cancelOrder(TossCancelPayload response) {
+        cancelOrderUseCase.cancelOrder(response);
     }
 
     public Page<OrderListSellerResponse> getSellerOrderList(Long sellerId, OrderState state, Pageable pageable) {

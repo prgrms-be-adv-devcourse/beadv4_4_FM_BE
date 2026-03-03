@@ -8,6 +8,7 @@ services:
     ports:
       - "8084:8084"
     env_file:
+      - ../.env.default
       - .env.payout
     environment:
       - SPRING_PROFILES_ACTIVE=prod

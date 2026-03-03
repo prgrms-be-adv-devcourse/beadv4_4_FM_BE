@@ -22,7 +22,10 @@ public class GetReviewCatalogInfoUseCase {
 
         return new CatalogReviewInfoDto(
                 catalogProduct.getName(),
-                catalogProduct.getThumbnail()
+                catalogProduct.getThumbnail(),
+                catalogProduct.getReviewCount(),
+                catalogProduct.getAverageRating(),
+                catalogProduct.getCategory().getName()
         );
     }
 }

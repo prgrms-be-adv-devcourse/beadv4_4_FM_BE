@@ -1,3 +1,5 @@
+server:
+  port: 8080
 spring:
   config:
     activate:
@@ -5,7 +7,7 @@ spring:
 
   datasource:
     # PostgreSQL에 맞게 URL과 드라이버 변경
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: jdbc:${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -16,8 +18,13 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}

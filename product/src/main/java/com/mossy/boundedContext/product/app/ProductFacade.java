@@ -1,13 +1,11 @@
 package com.mossy.boundedContext.product.app;
 
 import com.mossy.boundedContext.product.app.command.*;
-import com.mossy.boundedContext.product.app.query.GetCartProductDetailsUseCase;
-import com.mossy.boundedContext.product.app.query.GetCatalogIdUseCase;
-import com.mossy.boundedContext.product.app.query.GetProductDetailUseCase;
-import com.mossy.boundedContext.product.app.query.GetWishlistProductsUseCase;
+import com.mossy.boundedContext.product.app.query.*;
 import com.mossy.boundedContext.product.domain.Product;
 import com.mossy.boundedContext.product.in.internal.dto.request.StockCheckRequest;
 import com.mossy.boundedContext.product.in.internal.dto.response.ProductInfoResponse;
+import com.mossy.boundedContext.product.in.internal.dto.response.ProductResponse;
 import com.mossy.boundedContext.product.in.internal.dto.response.WishlistProductResponse;
 import com.mossy.boundedContext.product.in.rest.dto.request.ProductCreateRequest;
 import com.mossy.boundedContext.product.in.rest.dto.request.ProductUpdateRequest;
@@ -39,6 +37,8 @@ public class ProductFacade {
     private final GetWishlistProductsUseCase getWishlistProductsUseCase;
     private final GetCartProductDetailsUseCase getCartProductDetailsUseCase;
     private final GetCatalogIdUseCase getCatalogIdUseCase;
+    private final FilterProductsByReviewsUseCase filterProductsByReviewsUseCase;
+    private final GetProductDetailsUseCase getProductDetailsUseCase;
     private final KafkaEventPublisher kafkaEventPublisher;
 
     // 상품 등록
@@ -122,5 +122,15 @@ public class ProductFacade {
 
     public Long getCatalogIdByProductItemId(Long productItemId) {
         return getCatalogIdUseCase.execute(productItemId);
+    }
+
+    // ai 추천 리뷰로 필터
+    public List<ProductResponse> filterByReviews(List<Long> productIds) {
+        return filterProductsByReviewsUseCase.execute(productIds);
+    }
+
+    // 추천 상품 정보
+    public List<ProductResponse> getProductDetails(List<Long> productIds) {
+        return getProductDetailsUseCase.execute(productIds);
     }
 }

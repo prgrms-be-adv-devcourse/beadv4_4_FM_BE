@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "market", url = "${mossy.feign.market-url}")
 public interface MarketFeignClient {
 
-    @GetMapping("/api/v1/internal/orders/{orderId}")
+    @GetMapping("/internal/orders/{orderId}")
     MarketOrderResponse getOrder(@PathVariable("orderId") Long orderId);
 
-    @GetMapping("/api/v1/internal/orders/by-order-no/{orderNo}")
+    @GetMapping("/internal/orders/by-order-no/{orderNo}")
     MarketOrderResponse getOrderByOrderNo(@PathVariable("orderNo") String orderNo);
 }

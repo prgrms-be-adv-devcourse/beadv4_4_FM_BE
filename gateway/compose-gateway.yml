@@ -21,3 +21,7 @@ services:
       - GATEWAY_PRODUCT_URL=http://product:8090
     networks:
       - mossy-network
+
+networks:
+  mossy-network:
+    external: true
