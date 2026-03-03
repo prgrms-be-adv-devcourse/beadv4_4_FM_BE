@@ -3,6 +3,7 @@ package com.mossy.infra.outbox;
 import com.mossy.kafka.outbox.domain.OutboxEvent;
 import com.mossy.kafka.outbox.domain.OutboxStatus;
 import com.mossy.kafka.outbox.repository.OutboxEventRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class OutboxEventPublisher {
 
@@ -25,32 +27,43 @@ public class OutboxEventPublisher {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    // PROCESSING으로 바꾼 후 커밋을 하면 다른 Pod가 중복 처리 못하도록 할 수 있다.
+    //Native query를 통해서 Race Condition 방지
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public boolean markProcessing(Long eventId) {
-        OutboxEvent event = outboxEventRepository.findById(eventId).orElseThrow();
+    public boolean tryAcquire(Long eventId) {
+        int updated = outboxEventRepository.updateStatus(
+            eventId,
+            OutboxStatus.PENDING,
+            OutboxStatus.PROCESSING
+        );
 
-        if (event.getStatus() != OutboxStatus.PENDING) {
-            return false; // 다른 Pod가 이미 선점했음
+        if (updated > 0) {
+            log.debug("Outbox 이벤트 선점 성공. outboxId={}", eventId);
+            return true;
+        } else {
+            log.debug("이미 처리 중이거나 완료된 이벤트입니다. outboxId={}", eventId);
+            return false;
         }
-
-        event.markAsProcessing();
-        return true;
     }
 
-    // Kafka 발행 후 결과 커밋
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void publishAndComplete(Long eventId, int maxRetry) {
-        OutboxEvent event = outboxEventRepository.findById(eventId).orElseThrow();
+    public void publishToKafka(Long eventId, int maxRetry) {
+        OutboxEvent event = outboxEventRepository.findById(eventId)
+            .orElseThrow(() -> new IllegalArgumentException("Outbox 이벤트를 찾을 수 없습니다. id=" + eventId));
 
         try {
             kafkaTemplate.send(event.getTopic(), event.getPayload()).get(3, TimeUnit.SECONDS);
             event.markAsPublished();
+            log.info("Kafka 발행 성공. outboxId={}, topic={}", eventId, event.getTopic());
+
         } catch (Exception e) {
             if (event.isMaxRetryExceeded(maxRetry)) {
-                event.markAsFailed(e.getMessage());  // 수동 처리 필요
+                event.markAsFailed(e.getMessage());
+                log.info("Kafka 발행 최대 재시도 초과. FAILED 처리. outboxId={}, topic={}, error={}",
+                    eventId, event.getTopic(), e.getMessage());
             } else {
-                event.markAsRetry(e.getMessage());   // PENDING으로 복귀 → 다음 폴링에서 재시도
+                event.markAsRetry(e.getMessage());
+                log.info("Kafka 발행 실패. 재시도 예정. outboxId={}, retryCount={}, error={}",
+                    eventId, event.getRetryCount(), e.getMessage());
             }
         }
     }
