@@ -18,10 +18,6 @@ on:
       - 'k8s/**'
       - '.github/workflows/**'
 
-permissions:
-  contents: read
-  packages: write
-
 env:
   # 이전에 설정하신 이미지 경로에 맞게 설정 (ghcr.io/ddubuk228/beadv4_4_fm_be)
   REGISTRY: ghcr.io/${{ github.repository_owner }}/beadv4_4_fm_be
@@ -191,8 +187,6 @@ jobs:
           {
             "commands": [
               "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
-              "kubectl create namespace mossy --dry-run=client -o yaml | kubectl apply -f -",
-              "kubectl create secret docker-registry ghcr-secret --docker-server=ghcr.io --docker-username=${{ github.actor }} --docker-password=${{ secrets.GHCR_PAT }} --docker-email=${{ github.actor }}@users.noreply.github.com --namespace mossy --dry-run=client -o yaml | kubectl apply -f -",
               "cd /tmp",
               "rm -rf beadv4_4_fm_be",
               "git clone https://github.com/${{ github.repository }}.git beadv4_4_fm_be",
