@@ -1,6 +1,5 @@
 package com.mossy.boundedContext.cash.app;
 
-import com.mossy.boundedContext.cash.domain.CashPolicy;
 import com.mossy.boundedContext.cash.domain.seller.SellerWallet;
 import com.mossy.boundedContext.cash.domain.user.UserWallet;
 import com.mossy.exception.DomainException;
@@ -8,6 +7,7 @@ import com.mossy.exception.ErrorCode;
 import com.mossy.boundedContext.cash.out.seller.SellerWalletRepository;
 import com.mossy.boundedContext.cash.out.user.UserWalletRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +16,9 @@ public class CashSupport {
 
     private final UserWalletRepository userWalletRepository;
     private final SellerWalletRepository sellerWalletRepository;
+
+    @Value("${cash.policy.holding-member-id}")
+    private Long holdingMemberId;
 
      // --- [검증 관련] ---
 
@@ -45,7 +48,7 @@ public class CashSupport {
 
 
     public SellerWallet findHoldingWallet() {
-        return sellerWalletRepository.findBySellerIdForUpdate(CashPolicy.HOLDING_MEMBER_ID)
+        return sellerWalletRepository.findBySellerIdForUpdate(holdingMemberId)
             .orElseThrow(() -> new DomainException(ErrorCode.SELLER_WALLET_NOT_FOUND));
     }
 }

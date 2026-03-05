@@ -5,6 +5,7 @@ import com.mossy.boundedContext.payment.app.mapper.PaymentMapper;
 import com.mossy.boundedContext.payment.in.dto.response.PaymentResponse;
 import com.mossy.boundedContext.payment.out.PaymentRepository;
 import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,7 @@ public class PaymentFindAllUseCase {
             .map(paymentMapper::toPaymentResponse);
 
         if (payments.isEmpty()) {
-            throw new DomainException("404", "주문(" + realOrderNo + ") 관련 결제 정보가 없습니다.");
+            throw new DomainException(ErrorCode.PAID_PAYMENT_NOT_FOUND);
         }
 
         return payments;

@@ -1,5 +1,7 @@
 package com.mossy.boundedContext.payment.domain;
 
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.enums.PaymentStatus;
@@ -89,6 +91,9 @@ public class Payment extends BaseIdAndTime {
 
     // 전체 취소 시 상태 업데이트 (기존 PAID 레코드 변경)
     public void cancel(String cancelReason) {
+        if (this.status != PaymentStatus.PAID) {
+            throw new DomainException(ErrorCode.INVALID_PAYMENT_STATUS);
+        }
         this.status = PaymentStatus.CANCELED;
         this.failReason = cancelReason;
     }
