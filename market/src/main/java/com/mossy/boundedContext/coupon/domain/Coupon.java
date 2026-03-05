@@ -14,7 +14,14 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "MARKET_COUPON")
+@Table(name = "MARKET_COUPON",
+    indexes = {
+        @Index(name = "idx_coupon_product_active_end",
+               columnList = "product_item_id, is_active, end_at"),
+        @Index(name = "idx_coupon_issuer_type_created",
+               columnList = "issuer_id, issuer_type, created_at DESC")
+    }
+)
 @AttributeOverride(name = "id", column = @Column(name = "coupon_id"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
