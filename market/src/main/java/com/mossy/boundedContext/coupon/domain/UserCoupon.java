@@ -12,7 +12,12 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "MARKET_USER_COUPON",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"coupon_id", "user_id"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"coupon_id", "user_id"}),
+        indexes = {
+            @Index(name = "idx_user_coupon_user_status_created",
+                   columnList = "user_id, status, created_at DESC")
+        }
+)
 @AttributeOverride(name = "id", column = @Column(name = "user_coupon_id"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,11 +26,11 @@ import java.time.LocalDateTime;
 public class UserCoupon extends BaseIdAndTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "user_id")
     private MarketUser marketUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
     @Column(name = "used_at")

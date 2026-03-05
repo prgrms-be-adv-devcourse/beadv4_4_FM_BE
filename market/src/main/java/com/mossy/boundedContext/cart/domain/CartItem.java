@@ -15,7 +15,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @AttributeOverride(name = "id", column = @Column(name = "cart_item_id"))
 public class CartItem extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "cart_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
     @Column(name = "product_item_id", nullable = false)

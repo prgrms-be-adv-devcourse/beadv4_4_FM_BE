@@ -13,7 +13,12 @@ import java.math.BigDecimal;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Table(name = "MARKET_ORDER_ITEM")
+@Table(name = "MARKET_ORDER_ITEM",
+    indexes = {
+        @Index(name = "idx_order_item_seller_state_created",
+               columnList = "seller_id, state, created_at DESC")
+    }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @AttributeOverride(name = "id", column = @Column(name = "order_item_id"))
@@ -21,11 +26,11 @@ import static jakarta.persistence.FetchType.LAZY;
 @Builder
 public class OrderItem extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_coupon_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "user_coupon_id")
     private UserCoupon userCoupon;
 
     @Column(name = "seller_id", nullable = false)
