@@ -10,6 +10,7 @@ import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
+import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,13 @@ public class PaymentConfirmCashUseCase {
     private final PaymentSupport paymentSupport;
     private final CashFacade cashFacade;
     private final PaymentMapper paymentMapper;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     @Transactional
     public void confirmCash(PaymentConfirmCashRequestDto request) {
+        // 예치금 결제는 Toss PG를 거치지 않으므로 orderId에 난수 접미사(__xxx)가 붙지 않음
         String orderNo = request.orderId();
+        paymentSupport.validateNoDuplicateCashPayment(orderNo);
         MarketOrderResponse order = paymentSupport.findPendingOrder(orderNo);
 
         try {
@@ -47,6 +51,13 @@ public class PaymentConfirmCashUseCase {
 
             cashFacade.cashHolding(paymentMapper.toCashHoldingRequestDto(PaymentCompletedDto.of(order,payment)));
 
+            kafkaEventPublisher.publish( new PaymentCompletedEvent(
+                order.orderId(),
+                order.buyerId(),
+                payment.getCreatedAt(),
+                request.amount(),
+                PayMethod.CASH.name()
+            ));
             outboxPublisher.saveEvent(
                 KafkaTopics.PAYMENT_COMPLETED,
                 "Payment",
