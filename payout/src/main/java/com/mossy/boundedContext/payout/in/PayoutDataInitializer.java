@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.util.List;
 @Slf4j
 @Component
 @Profile("!prod")
+@Order(1)
 @RequiredArgsConstructor
 public class PayoutDataInitializer implements CommandLineRunner {
 
@@ -210,7 +212,9 @@ public class PayoutDataInitializer implements CommandLineRunner {
 
         // bulk candidates의 각 payee에 대한 활성 Payout 생성 (collectPayoutItemsMore 전제 조건)
         ensureActivePayout(system);
+        ensureActivePayout(holding);
         ensureActivePayout(donation);
+        ensureActivePayout(seller);
         ensureActivePayout(payoutSellerRepository.findById(211L).orElseThrow());
         ensureActivePayout(payoutSellerRepository.findById(212L).orElseThrow());
         ensureActivePayout(payoutSellerRepository.findById(213L).orElseThrow());

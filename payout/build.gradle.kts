@@ -58,6 +58,9 @@ dependencies {
 
     // Spring Boot Actuator
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+
+    // Prometheus 메트릭 노출
+    implementation("io.micrometer:micrometer-registry-prometheus")
 }
 
 tasks.withType<Test> {

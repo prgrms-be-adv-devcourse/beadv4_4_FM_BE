@@ -32,7 +32,7 @@ import java.util.List;
  * 생성 데이터:
  *  - 판매자 20명  (ID: 301 ~ 320)
  *  - 구매자 100명 (ID: 401 ~ 500)
- *  - PayoutCandidateItem 30,000건 (주문 10,000건 × 3 이벤트 타입)
+ *  - PayoutCandidateItem ~100,000건 (주문 33,334건 × 3 이벤트 타입)
  *    - 정산__상품판매_대금   (payee = 판매자)
  *    - 정산__상품판매_수수료  (payee = SYSTEM, id=1)
  *    - 정산__상품판매_기부금  (payee = DONATION, id=3)
@@ -52,7 +52,7 @@ public class PayoutLoadTestDataInitializer implements CommandLineRunner {
     private static final long BUYER_ID_START   = 401L;
     private static final int  BUYER_COUNT      = 100;
     private static final long ORDER_REL_ID_START = 1_000_001L;
-    private static final int  ORDER_COUNT       = 10_000;
+    private static final int  ORDER_COUNT       = 33_334;
 
     private static final BigDecimal FEE_RATE      = new BigDecimal("0.20");
     private static final BigDecimal DONATION_RATE = new BigDecimal("0.10");

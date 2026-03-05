@@ -1,0 +1,47 @@
+services:
+  postgres-loadtest:
+    image: postgres:16
+    container_name: postgres-loadtest
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=mossy
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mossyProject123@
+    volumes:
+      - postgres-loadtest-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.enable-remote-write-receiver'   # k6 remote write 수신
+    extra_hosts:
+      - "host.docker.internal:host-gateway"    # 로컬 Spring Boot 접근용
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana-data:
+  postgres-loadtest-data:
