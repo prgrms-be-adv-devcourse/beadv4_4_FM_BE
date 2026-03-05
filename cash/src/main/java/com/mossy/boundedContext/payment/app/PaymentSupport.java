@@ -36,7 +36,12 @@ public class PaymentSupport {
     // ── 주문 조회 (FeignClient) ──
 
     public MarketOrderResponse findPendingOrder(String orderNo) {
-        MarketOrderResponse order = marketFeignClient.getOrderByOrderNo(orderNo);
+        MarketOrderResponse order;
+        try {
+            order = marketFeignClient.getOrderByOrderNo(orderNo);
+        } catch (Exception e) {
+            throw new DomainException(ErrorCode.MARKET_SERVICE_UNAVAILABLE);
+        }
         if (order.status() != OrderState.PENDING) {
             throw new DomainException(ErrorCode.PENDING_ORDER_NOT_FOUND);
         }
@@ -44,16 +49,32 @@ public class PaymentSupport {
     }
 
     public MarketOrderResponse findOrderForCancel(Long orderId) {
-        MarketOrderResponse order = marketFeignClient.getOrder(orderId);
+        MarketOrderResponse order;
+        try {
+            order = marketFeignClient.getOrder(orderId);
+        } catch (Exception e) {
+            throw new DomainException(ErrorCode.MARKET_SERVICE_UNAVAILABLE);
+        }
         if (order.status() == OrderState.PENDING) {
             throw new DomainException(ErrorCode.PAID_ORDER_NOT_FOUND);
         }
         return order;
     }
 
+    // ── 중복 결제 검증 ──
+
+    public void validateNoDuplicateCashPayment(String orderNo) {
+        if (paymentRepository.existsByOrderNoAndStatus(orderNo, PaymentStatus.PAID)) {
+            throw new DomainException(ErrorCode.ORDER_ALREADY_PAID);
+        }
+    }
+
     // ── 금액 검증 ──
 
     public void validateAmount(BigDecimal orderAmount, BigDecimal requestAmount) {
+        if (orderAmount == null || requestAmount == null) {
+            throw new DomainException(ErrorCode.INVALID_AMOUNT);
+        }
         if (orderAmount.compareTo(requestAmount) != 0) {
             throw new DomainException(ErrorCode.ORDER_AMOUNT_MISMATCH);
         }
