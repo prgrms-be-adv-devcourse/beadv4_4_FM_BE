@@ -61,6 +61,6 @@ public class PayoutCompletePayoutsMoreUseCase {
      * @return 활성화된 Payout 리스트
      */
     private List<Payout> findActivePayouts(int limit) {
-        return payoutRepository.findByPayoutDateIsNullAndAmountGreaterThanOrderByIdAsc(BigDecimal.ZERO, PageRequest.of(0, limit));
+        return payoutRepository.findActivePayoutsWithLock(BigDecimal.ZERO, PageRequest.of(0, limit));
     }
 }
