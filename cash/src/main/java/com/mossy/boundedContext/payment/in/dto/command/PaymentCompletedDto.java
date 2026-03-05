@@ -23,7 +23,7 @@ public record PaymentCompletedDto(
             .orderId(order.orderId())
             .buyerId(order.buyerId())
             .paymentDate(payment.getCreatedAt())
-            .amount(order.totalAmount())
+            .amount(payment.getAmount())
             .payMethod(payment.getPayMethod())
             .build();
     }

@@ -7,7 +7,6 @@ import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
-import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentCashRefundEvent;
 import com.mossy.shared.cash.event.PaymentTossRefundEvent;
@@ -24,7 +23,6 @@ public class PaymentCashPartialRefundUseCase {
 
     private final PaymentSupport paymentSupport;
     private final OutboxPublisher outboxPublisher;
-    private final KafkaEventPublisher kafkaEventPublisher; // 주입 추가됨
 
     @Transactional
     public void execute(String orderId, String cancelReason, List<Long> ids, BigDecimal cancelAmount) {
@@ -40,9 +38,7 @@ public class PaymentCashPartialRefundUseCase {
 
         PaymentCashRefundEvent cashRefundEvent = new PaymentCashRefundEvent(order.orderId(), order.buyerId(), cancelAmount, PayMethod.CASH);
 
-        // 1. Kafka Event 직접 선행 발행
-        kafkaEventPublisher.publish(cashRefundEvent);
-        // 2. 캐시/잔액 복구 → Outbox 패턴으로 정합성 보장
+        // 캐시/잔액 복구 → Outbox 패턴으로 정합성 보장
         outboxPublisher.saveEvent(
             KafkaTopics.PAYMENT_REFUND,
             "Payment",
@@ -59,9 +55,7 @@ public class PaymentCashPartialRefundUseCase {
         );
         PaymentTossRefundEvent tossRefundEvent = new PaymentTossRefundEvent(payload);
 
-        // 1. Kafka Event 직접 선행 발행
-        kafkaEventPublisher.publish(tossRefundEvent);
-        // 2. 주문 아이템 상태 업데이트 → 다른 모듈(market)이므로 Outbox 패턴
+        // 주문 아이템 상태 업데이트 → 다른 모듈(market)이므로 Outbox 패턴
         outboxPublisher.saveEvent(
             KafkaTopics.ORDER_CANCEL,
             "Payment",

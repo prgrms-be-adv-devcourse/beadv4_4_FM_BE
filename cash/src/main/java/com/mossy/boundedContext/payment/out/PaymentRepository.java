@@ -13,5 +13,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     Optional<Payment> findByOrderNoAndStatus(String orderNo, PaymentStatus status);
 
+    boolean existsByOrderNoAndStatus(String orderNo, PaymentStatus status);
+
     Page<Payment> findByOrderNoContaining(String orderNo, Pageable pageable);
 }
