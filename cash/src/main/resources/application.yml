@@ -52,6 +52,15 @@ cash:
   policy:
     holding-member-id: 2  # 결제 홀딩 계좌 판매자 ID (시스템 계정)
 
+outbox:
+  poller:
+    enabled: true
+    batch-size: 100
+    max-retry: 5
+    interval-ms: 60000
+  cleanup:
+    cron: "0 0 3 * * *"
+
 # OpenFeign 설정 (로깅 및 타임아웃)
 feign:
   client:
