@@ -59,6 +59,24 @@ public interface PayoutRepository extends JpaRepository<Payout, Long> {
      */
     List<Payout> findByPayoutDateIsNullAndAmountGreaterThanOrderByIdAsc(BigDecimal amount, Pageable pageable);
 
+    /**
+     * 정산 완료 배치 중복 실행 시 동일 Payout에 대한 중복 완료 처리를 방지하기 위해
+     * 비관적 쓰기 락(PESSIMISTIC_WRITE)으로 활성화된 Payout을 조회
+     * lock timeout 3초 설정으로 다른 배치가 락 보유 중일 때 무한 대기 방지
+     *
+     * @param amount 최소 금액 (일반적으로 BigDecimal.ZERO)
+     * @param pageable 페이징 정보
+     * @return 락이 걸린 활성화된 Payout 리스트
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints(@QueryHint(name = "jakarta.persistence.lock.timeout", value = "3000"))
+    @Query("""
+            SELECT p FROM Payout p
+            WHERE p.payoutDate IS NULL AND p.amount > :amount
+            ORDER BY p.id ASC
+            """)
+    List<Payout> findActivePayoutsWithLock(@Param("amount") BigDecimal amount, Pageable pageable);
+
     List<Payout> findByPayoutDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 
     List<Payout> findByPayeeAndPayoutDateBetweenOrderByPayoutDateDesc(
