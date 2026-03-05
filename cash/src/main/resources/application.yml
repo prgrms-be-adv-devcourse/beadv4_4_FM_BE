@@ -48,6 +48,10 @@ mossy:
   feign:
     market-url: http://localhost:8081  # 로컬 개발 환경: market 서비스 주소
 
+cash:
+  policy:
+    holding-member-id: 2  # 결제 홀딩 계좌 판매자 ID (시스템 계정)
+
 # OpenFeign 설정 (로깅 및 타임아웃)
 feign:
   client:
