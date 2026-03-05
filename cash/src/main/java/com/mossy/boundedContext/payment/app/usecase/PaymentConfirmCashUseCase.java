@@ -10,7 +10,6 @@ import com.mossy.boundedContext.payment.out.dto.response.MarketOrderResponse;
 import com.mossy.exception.DomainException;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
-import com.mossy.kafka.publisher.KafkaEventPublisher;
 import com.mossy.shared.cash.enums.PayMethod;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ public class PaymentConfirmCashUseCase {
     private final PaymentSupport paymentSupport;
     private final CashFacade cashFacade;
     private final PaymentMapper paymentMapper;
-    private final KafkaEventPublisher kafkaEventPublisher;
 
     @Transactional
     public void confirmCash(PaymentConfirmCashRequestDto request) {
@@ -51,13 +49,7 @@ public class PaymentConfirmCashUseCase {
 
             cashFacade.cashHolding(paymentMapper.toCashHoldingRequestDto(PaymentCompletedDto.of(order,payment)));
 
-            kafkaEventPublisher.publish( new PaymentCompletedEvent(
-                order.orderId(),
-                order.buyerId(),
-                payment.getCreatedAt(),
-                request.amount(),
-                PayMethod.CASH.name()
-            ));
+            // 주문 상태 업데이트 → 다른 모듈(market)이므로 Outbox 패턴
             outboxPublisher.saveEvent(
                 KafkaTopics.PAYMENT_COMPLETED,
                 "Payment",
