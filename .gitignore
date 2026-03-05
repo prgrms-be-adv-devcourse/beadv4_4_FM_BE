@@ -64,5 +64,7 @@ src/main/generated/
 .terraform
 
 # Environments
-*/env.*
 .env
+.env.*
+**/.env
+**/.env.*
