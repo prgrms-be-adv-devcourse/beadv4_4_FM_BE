@@ -14,6 +14,7 @@ import org.mapstruct.ReportingPolicy;
 public interface DonationMapper {
 
     // Event → DTO 변환
+    @Mapping(source = "orderItemId", target = "OrderItemId")
     CreateDonationLogDto toDto(DonationLogCreateEvent event);
 
     // DTO → Entity 변환
