@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 @Service
@@ -17,7 +18,6 @@ public class PayoutHandlePayoutCompletedUseCase {
 
     private final PayoutCandidateItemRepository payoutCandidateItemRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final PayoutCreatePayoutUseCase payoutCreatePayoutUseCase;
 
     public void handle(PayoutCompletedEvent event) {
         Long payoutId = event.payout().id();
@@ -38,6 +38,7 @@ public class PayoutHandlePayoutCompletedUseCase {
             eventPublisher.publishEvent(donationEvent);
         });
 
-        payoutCreatePayoutUseCase.createPayout(event.payout().payeeId());
+        // 새 활성 Payout은 completePayoutsStep 트랜잭션 안에서 이미 생성됨 (gap 방지)
+        // payoutCreatePayoutUseCase.createPayout(event.payout().payeeId());
     }
 }

@@ -44,7 +44,11 @@ public class PayoutCompletePayoutsMoreUseCase {
 
         // 3. 조회된 모든 Payout에 대해 completePayout 메서드를 호출하여 완료 처리
         //    이 메서드 내부에서 PayoutCompletedEvent가 발행
-        activePayouts.forEach(Payout::completePayout);
+        //    같은 트랜잭션 안에서 즉시 새 활성 Payout을 생성하여 AFTER_COMMIT gap 제거
+        activePayouts.forEach(payout -> {
+            payout.completePayout();
+            payoutRepository.save(new Payout(payout.getPayee()));
+        });
 
         return new RsData<>(
                 "201-1",

@@ -24,6 +24,7 @@ spring:
   batch:
     jdbc:
       initialize-schema: always
+      isolation-level-for-create: READ_COMMITTED
 
   cache:
     type: none              # Redis 캐시 비활성화
