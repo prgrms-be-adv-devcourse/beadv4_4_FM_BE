@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -85,6 +85,8 @@ outbox:
     enabled: true
     batch-size: 100
     max-retry: 5
-    interval-ms: 60000  # 1분 (실패한 이벤트만 재발행)
+    interval-ms: 500
+  publish:
+    timeout-seconds: 10
   cleanup:
     cron: "0 0 3 * * *"

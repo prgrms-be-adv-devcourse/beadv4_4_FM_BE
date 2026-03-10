@@ -4,6 +4,8 @@ import com.mossy.boundedContext.coupon.app.CouponFacade;
 import com.mossy.boundedContext.order.in.dto.event.OrderCancelEvent;
 import com.mossy.boundedContext.order.in.dto.event.OrderCompletedEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -17,12 +19,14 @@ public class CouponEventListener {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Retryable(backoff = @Backoff(delay = 1000))
     public void handleOrderCompleted(OrderCompletedEvent event) {
         couponFacade.useCoupons(event.userCouponIds());
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Retryable(backoff = @Backoff(delay = 1000))
     public void handleOrderCancelled(OrderCancelEvent event) {
         couponFacade.restoreCoupons(event.userCouponIds());
     }

@@ -8,27 +8,24 @@ import com.mossy.boundedContext.order.in.dto.response.OrderCreatedResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderDetailResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListResponse;
 import com.mossy.boundedContext.order.in.dto.response.OrderListSellerResponse;
-import com.mossy.exception.DomainException;
 import com.mossy.exception.ErrorCode;
+import com.mossy.global.aop.PreventDuplicate;
 import com.mossy.shared.cash.event.PaymentCompletedEvent;
 import com.mossy.shared.cash.payload.TossCancelPayload;
 import com.mossy.shared.market.enums.OrderState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class OrderFacade {
 
-    private final StringRedisTemplate redisTemplate;
     private final CreateOrderUseCase createOrderUseCase;
     private final GetOrderUseCase getOrderUseCase;
     private final GetSellerOrderUseCase getSellerOrderUseCase;
@@ -37,17 +34,8 @@ public class OrderFacade {
     private final CompletePaymentUseCase completePaymentUseCase;
     private final CouponFacade couponFacade;
 
+    @PreventDuplicate(keyPrefix = "order:create:prevent", errorCode = ErrorCode.DUPLICATE_ORDER_REQUEST)
     public OrderCreatedResponse createOrder(Long userId, OrderCreatedRequest request) {
-        String key = "order:prevent:" + userId;
-
-        // 중복 요청 방지 (5초 동안 같은 사용자의 주문 생성 차단)
-        Boolean isFirstRequest = redisTemplate.opsForValue()
-                .setIfAbsent(key, "1", 5, TimeUnit.SECONDS);
-
-        if (Boolean.FALSE.equals(isFirstRequest)) {
-            throw new DomainException(ErrorCode.DUPLICATE_ORDER_REQUEST);
-        }
-
         // 쿠폰 사용 여부 확인
         List<Long> userCouponIds = request.items().stream()
                 .map(OrderItemRequest::userCouponId)

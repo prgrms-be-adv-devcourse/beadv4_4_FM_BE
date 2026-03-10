@@ -5,6 +5,7 @@ import com.mossy.kafka.outbox.domain.OutboxStatus;
 import com.mossy.kafka.outbox.repository.OutboxEventRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,6 +19,9 @@ public class OutboxEventPublisher {
 
     private final OutboxEventRepository outboxEventRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
+
+    @Value("${outbox.publish.timeout-seconds:10}")
+    private int publishTimeoutSeconds;
 
     public OutboxEventPublisher(
         OutboxEventRepository outboxEventRepository,
@@ -51,7 +55,7 @@ public class OutboxEventPublisher {
             .orElseThrow(() -> new IllegalArgumentException("Outbox 이벤트를 찾을 수 없습니다. id=" + eventId));
 
         try {
-            kafkaTemplate.send(event.getTopic(), event.getPayload()).get(3, TimeUnit.SECONDS);
+            kafkaTemplate.send(event.getTopic(), event.getPayload()).get(publishTimeoutSeconds, TimeUnit.SECONDS);
             event.markAsPublished();
             log.info("Kafka 발행 성공. outboxId={}, topic={}", eventId, event.getTopic());
 
