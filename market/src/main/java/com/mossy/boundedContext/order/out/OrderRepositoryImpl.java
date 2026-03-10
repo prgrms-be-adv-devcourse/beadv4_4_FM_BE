@@ -136,8 +136,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }
 
     @Override
-    public Page<Order> findPaidOrdersUpdatedBefore(LocalDateTime threshold, Pageable pageable) {
-        BooleanExpression condition = order.state.eq(OrderState.PAID)
+    public Page<Order> findConfirmableOrdersUpdatedBefore(LocalDateTime threshold, Pageable pageable) {
+        BooleanExpression condition = order.state.in(OrderState.PAID, OrderState.PARTIAL_CANCELED)
                 .and(order.updatedAt.lt(threshold));
 
         List<Order> content = queryFactory

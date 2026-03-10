@@ -27,10 +27,6 @@ spring:
       host: ${REDIS_HOST}
       port: 6379
 
-  elasticsearch:
-    uris:
-      - http://${ELASTICSEARCH_HOST}
-      -
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     consumer:
