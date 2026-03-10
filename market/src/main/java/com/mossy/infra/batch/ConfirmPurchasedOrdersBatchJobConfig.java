@@ -1,6 +1,7 @@
 package com.mossy.infra.batch;
 
 import com.mossy.boundedContext.order.domain.Order;
+import com.mossy.boundedContext.order.domain.OrderItem;
 import com.mossy.boundedContext.order.out.OrderRepository;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
