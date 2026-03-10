@@ -79,7 +79,7 @@ mossy:
 batch:
   confirm-orders:
     chunk-size: 100
-    cron: "0 0 3 * * *"
+    cron: "0 * * * * *"
 
 outbox:
   poller:

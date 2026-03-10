@@ -143,9 +143,6 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         List<Order> content = queryFactory
                 .selectFrom(order)
                 .join(order.buyer, marketUser).fetchJoin()
-                .leftJoin(order.orderItems, orderItem).fetchJoin()
-                .leftJoin(orderItem.userCoupon, userCoupon).fetchJoin()
-                .leftJoin(userCoupon.coupon, coupon).fetchJoin()
                 .where(condition)
                 .orderBy(order.updatedAt.asc())
                 .offset(pageable.getOffset())

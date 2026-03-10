@@ -9,6 +9,7 @@ import com.mossy.global.jpa.entity.BaseIdAndTime;
 import com.mossy.shared.market.enums.OrderState;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -54,6 +55,7 @@ public class Order extends BaseIdAndTime {
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();

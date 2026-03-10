@@ -7,6 +7,7 @@ import com.mossy.shared.market.enums.IssuerType;
 import com.mossy.shared.market.enums.OrderState;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
 
@@ -29,6 +30,7 @@ public class OrderItem extends BaseIdAndTime {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @BatchSize(size = 100)
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_coupon_id")
     private UserCoupon userCoupon;
