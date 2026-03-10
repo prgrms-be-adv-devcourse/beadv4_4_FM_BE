@@ -19,7 +19,14 @@ import java.util.Map;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
-@Table(name = "MARKET_ORDER")
+@Table(name = "MARKET_ORDER",
+    indexes = {
+        @Index(name = "idx_order_user_state_created",
+               columnList = "user_id, state, created_at DESC"),
+        @Index(name = "idx_order_state_updated",
+               columnList = "state, updated_at")
+    }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @AttributeOverride(name = "id", column = @Column(name = "order_id"))
@@ -28,7 +35,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class Order extends BaseIdAndTime {
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "user_id", nullable = false)
     private MarketUser buyer;
 
     @Column(name = "order_no", nullable = false, unique = true)

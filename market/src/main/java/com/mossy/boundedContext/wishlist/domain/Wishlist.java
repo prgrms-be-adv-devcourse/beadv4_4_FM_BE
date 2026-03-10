@@ -24,7 +24,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 public class Wishlist extends BaseIdAndTime {
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "user_id")
     private MarketUser marketUser;
 
     @Column(name = "product_id")

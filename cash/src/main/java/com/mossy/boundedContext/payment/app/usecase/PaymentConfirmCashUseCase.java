@@ -27,7 +27,9 @@ public class PaymentConfirmCashUseCase {
 
     @Transactional
     public void confirmCash(PaymentConfirmCashRequestDto request) {
+        // 예치금 결제는 Toss PG를 거치지 않으므로 orderId에 난수 접미사(__xxx)가 붙지 않음
         String orderNo = request.orderId();
+        paymentSupport.validateNoDuplicateCashPayment(orderNo);
         MarketOrderResponse order = paymentSupport.findPendingOrder(orderNo);
 
         try {
@@ -47,6 +49,7 @@ public class PaymentConfirmCashUseCase {
 
             cashFacade.cashHolding(paymentMapper.toCashHoldingRequestDto(PaymentCompletedDto.of(order,payment)));
 
+            // 주문 상태 업데이트 → 다른 모듈(market)이므로 Outbox 패턴
             outboxPublisher.saveEvent(
                 KafkaTopics.PAYMENT_COMPLETED,
                 "Payment",

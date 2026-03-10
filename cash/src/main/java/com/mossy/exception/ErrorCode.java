@@ -59,12 +59,16 @@ public enum ErrorCode implements BaseCode {
     // 409 Conflict — 결제 검증 위반
     ORDER_AMOUNT_MISMATCH(409, "주문 금액이 일치하지 않습니다."),
     ORDER_ALREADY_PAID(409, "이미 결제가 완료된 주문입니다."),
+    INVALID_PAYMENT_STATUS(409, "현재 결제 상태에서는 취소할 수 없습니다."),
 
     // 502 Bad Gateway — 외부 서비스 오류 (Toss)
     TOSS_PAYMENT_CONFIRM_FAILED(502, "토스페이먼츠 결제 승인에 실패했습니다."),
     TOSS_PAYMENT_CANCEL_FAILED(502, "토스페이먼츠 결제 취소에 실패했습니다."),
     TOSS_PAYMENT_NOT_FOUND(502, "토스페이먼츠에서 결제 내역을 찾을 수 없습니다."),
-    TOSS_API_ERROR(502, "토스페이먼츠 API 통신 중 오류가 발생했습니다.");
+    TOSS_API_ERROR(502, "토스페이먼츠 API 통신 중 오류가 발생했습니다."),
+
+    // 502 Bad Gateway — 외부 서비스 오류 (Market)
+    MARKET_SERVICE_UNAVAILABLE(502, "마켓 서비스와 통신 중 오류가 발생했습니다.");
 
     private final int status;
     private final String msg;

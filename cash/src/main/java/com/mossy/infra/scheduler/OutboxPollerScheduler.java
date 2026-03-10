@@ -31,7 +31,6 @@ public class OutboxPollerScheduler {
     @Value("${outbox.poller.max-retry}")
     private int maxRetry;
 
-    // 실패한 이벤트 재발행 스케쥴러
     @Scheduled(fixedDelayString = "${outbox.poller.interval-ms}")
     public void pollAndPublish() {
         LocalDateTime thirtySecondsAgo = LocalDateTime.now().minusSeconds(30);
@@ -79,7 +78,6 @@ public class OutboxPollerScheduler {
         }
     }
 
-    // PUBLISHED 이벤트 삭제 스케쥴러
     @Transactional
     @Scheduled(cron = "${outbox.cleanup.cron}")
     public void cleanupOldEvents() {
