@@ -193,7 +193,7 @@ jobs:
               "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
               "cd /tmp",
               "rm -rf beadv4_4_fm_be",
-              "git clone https://github.com/${{ github.repository }}.git beadv4_4_fm_be",
+              "git clone -b main https://github.com/${{ github.repository }}.git beadv4_4_fm_be",
               "cd beadv4_4_fm_be",
               "echo '${SECRET_YAML_BASE64}' | base64 -d > k8s/secret.yaml",
               "kubectl apply -k k8s/",
