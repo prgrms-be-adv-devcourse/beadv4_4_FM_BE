@@ -36,7 +36,9 @@ dependencyManagement {
 
 dependencies {
     // common 모듈
-    implementation(project(":common"))
+    implementation(project(":common")) {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-web")
+    }
     implementation(project(":kafka"))
 
     // WebFlux (논블로킹/리액티브)
