@@ -79,7 +79,7 @@ public class OrderScheduler {
 
     // 매일 새벽 3시 실행
     // PAID 상태에서 일주일이 지난 주문을 CONFIRMED로 변경 및 아웃박스 저장
-    @Scheduled(cron = "0 0 3 * * *")
+    @Scheduled(cron = "${batch.confirm-orders.cron}")
     public void confirmAndSavePayoutEvents() {
         try {
             LocalDateTime threshold = LocalDateTime.now().minusWeeks(1);
