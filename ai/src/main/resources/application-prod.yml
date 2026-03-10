@@ -6,7 +6,7 @@ spring:
       on-profile: prod
 
   r2dbc:
-    url: r2dbc:${DB_URL}?sslMode=disable
+    url: r2dbc:${DB_URL}?sslMode=require
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
