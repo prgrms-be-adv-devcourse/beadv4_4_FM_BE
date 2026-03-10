@@ -39,13 +39,12 @@ public class OrderScheduler {
         this.outboxPublisher = outboxPublisher;
     }
 
-    // 10분마다 실행
-    // 주문 생성 후 30분이 지나도 PENDING인 주문은 EXPIRED로 업데이트
+    // 주문 생성 후 15분이 지나도 PENDING인 주문은 EXPIRED로 업데이트
     // 재고 복구를 위한 이벤트를 아웃박스에 저장
     @Transactional
-    @Scheduled(cron = "0 */15 * * * *")
+    @Scheduled(fixedDelay = 60000)
     public void updateExpiredOrders() {
-        LocalDateTime threshold = LocalDateTime.now().minusMinutes(30);
+        LocalDateTime threshold = LocalDateTime.now().minusMinutes(15);
         List<Order> expiredOrders = orderRepository.findPendingOrdersCreatedBefore(threshold);
 
         for (Order order : expiredOrders) {
@@ -80,7 +79,7 @@ public class OrderScheduler {
 
     // 매일 새벽 3시 실행
     // PAID 상태에서 일주일이 지난 주문을 CONFIRMED로 변경 및 아웃박스 저장
-    @Scheduled(cron = "0 0 3 * * *")
+    @Scheduled(cron = "${batch.confirm-orders.cron}")
     public void confirmAndSavePayoutEvents() {
         try {
             LocalDateTime threshold = LocalDateTime.now().minusWeeks(1);
