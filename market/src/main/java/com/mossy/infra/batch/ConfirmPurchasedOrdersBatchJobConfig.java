@@ -1,9 +1,11 @@
 package com.mossy.infra.batch;
 
 import com.mossy.boundedContext.order.domain.Order;
+import com.mossy.boundedContext.order.domain.OrderItem;
 import com.mossy.boundedContext.order.out.OrderRepository;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
+import com.mossy.shared.market.enums.OrderState;
 import com.mossy.shared.market.event.OrderPurchaseConfirmedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -47,11 +49,11 @@ public class ConfirmPurchasedOrdersBatchJobConfig {
     public Step confirmPurchasedOrdersStep(
         JobRepository jobRepository,
         PlatformTransactionManager transactionManager,
-        RepositoryItemReader<Order> paidOrdersReader
+        RepositoryItemReader<Order> confirmableOrdersReader
     ) {
         return new StepBuilder("confirmPurchasedOrdersStep", jobRepository)
                 .<Order, Order>chunk(chunkSize, transactionManager)
-                .reader(paidOrdersReader)
+                .reader(confirmableOrdersReader)
                 .processor(confirmOrderProcessor())
                 .writer(confirmOrderWriter())
                 .build();
@@ -61,13 +63,13 @@ public class ConfirmPurchasedOrdersBatchJobConfig {
     // 배치 중단 후 다시 실행될 때의 시점을 가져와서 이어서 작업하기 위함
     @Bean
     @StepScope
-    public RepositoryItemReader<Order> paidOrdersReader(
+    public RepositoryItemReader<Order> confirmableOrdersReader(
         @Value("#{jobParameters['threshold']}") LocalDateTime threshold
     ) {
         return new RepositoryItemReaderBuilder<Order>()
-                .name("paidOrdersReader")
+                .name("confirmableOrdersReader")
                 .repository(orderRepository)
-                .methodName("findPaidOrdersUpdatedBefore")
+                .methodName("findConfirmableOrdersUpdatedBefore")
                 .arguments(List.of(threshold))
                 .sorts(Map.of("updatedAt", Sort.Direction.ASC))
                 .pageSize(chunkSize)
@@ -89,7 +91,9 @@ public class ConfirmPurchasedOrdersBatchJobConfig {
 
             // 정산 이벤트를 아웃박스에 저장
             for (Order order : orders) {
+                // PARTIAL_CANCELED인 경우 취소되지 않은 OrderItem만 필터링
                 List<OrderPurchaseConfirmedEvent.OrderItemPayload> eventOrderItems = order.getOrderItems().stream()
+                    .filter(orderItem -> orderItem.getState() != OrderState.CANCELED)
                     .map(orderItem -> new OrderPurchaseConfirmedEvent.OrderItemPayload(
                             orderItem.getId(),
                             orderItem.getSellerId(),

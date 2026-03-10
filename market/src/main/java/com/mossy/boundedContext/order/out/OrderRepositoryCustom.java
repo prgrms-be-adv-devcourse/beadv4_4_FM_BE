@@ -21,7 +21,7 @@ public interface OrderRepositoryCustom {
 
     Page<OrderListSellerResponse> findSellerOrderListBySellerId(Long sellerId, OrderState state, Pageable pageable);
 
-    Page<Order> findPaidOrdersUpdatedBefore(LocalDateTime threshold, Pageable pageable);
+    Page<Order> findConfirmableOrdersUpdatedBefore(LocalDateTime threshold, Pageable pageable);
 
     MarketOrderResponse findMarketOrderById(Long orderId);
 
