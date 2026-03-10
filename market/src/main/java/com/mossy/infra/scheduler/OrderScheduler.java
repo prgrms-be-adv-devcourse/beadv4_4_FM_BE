@@ -39,13 +39,12 @@ public class OrderScheduler {
         this.outboxPublisher = outboxPublisher;
     }
 
-    // 10분마다 실행
-    // 주문 생성 후 30분이 지나도 PENDING인 주문은 EXPIRED로 업데이트
+    // 주문 생성 후 15분이 지나도 PENDING인 주문은 EXPIRED로 업데이트
     // 재고 복구를 위한 이벤트를 아웃박스에 저장
     @Transactional
-    @Scheduled(cron = "0 */15 * * * *")
+    @Scheduled(fixedDelay = 60000)
     public void updateExpiredOrders() {
-        LocalDateTime threshold = LocalDateTime.now().minusMinutes(30);
+        LocalDateTime threshold = LocalDateTime.now().minusMinutes(15);
         List<Order> expiredOrders = orderRepository.findPendingOrdersCreatedBefore(threshold);
 
         for (Order order : expiredOrders) {
