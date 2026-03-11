@@ -21,6 +21,15 @@ public class OutboxPublisher {
 
     @Transactional(propagation = Propagation.MANDATORY)
     public void saveEvent(String topic, String aggregateType, Long aggregateId, String eventKey, Object event) {
+        saveEventInternal(topic, aggregateType, aggregateId, eventKey, event);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveCompensationEvent(String topic, String aggregateType, Long aggregateId, String eventKey, Object event) {
+        saveEventInternal(topic, aggregateType, aggregateId, eventKey, event);
+    }
+
+    private void saveEventInternal(String topic, String aggregateType, Long aggregateId, String eventKey, Object event) {
         try {
             String payload = objectMapper.writeValueAsString(event);
             OutboxEvent outboxEvent = OutboxEvent.builder()

@@ -73,7 +73,7 @@ public class CreateOrderUseCase {
                 ))
                 .toList();
 
-            outboxPublisher.saveEvent(
+            outboxPublisher.saveCompensationEvent(
                 KafkaTopics.ORDER_CREATE_FAILED,
                 "Order",
                 System.nanoTime(),
