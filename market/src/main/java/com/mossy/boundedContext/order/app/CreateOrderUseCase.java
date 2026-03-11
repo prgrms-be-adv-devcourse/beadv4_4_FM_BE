@@ -66,21 +66,25 @@ public class CreateOrderUseCase {
                     .build();
 
         } catch (Exception e) {
-            List<OrderStockReturnEvent.OrderItemStock> returnItems = stockCheckRequests.stream()
-                .map(item -> new OrderStockReturnEvent.OrderItemStock(
-                    item.productItemId(),
-                    item.quantity()
-                ))
-                .toList();
-
-            outboxPublisher.saveCompensationEvent(
-                KafkaTopics.ORDER_CREATE_FAILED,
-                "Order",
-                System.nanoTime(),
-                OrderStockReturnEvent.class.getSimpleName(),
-                new OrderStockReturnEvent(returnItems)
-            );
+            publishStockCompensationEvent(stockCheckRequests);
             throw e;
         }
+    }
+
+    private void publishStockCompensationEvent(List<StockCheckRequest> stockCheckRequests) {
+        List<OrderStockReturnEvent.OrderItemStock> returnItems = stockCheckRequests.stream()
+            .map(item -> new OrderStockReturnEvent.OrderItemStock(
+                item.productItemId(),
+                item.quantity()
+            ))
+            .toList();
+
+        outboxPublisher.saveCompensationEvent(
+            KafkaTopics.ORDER_CREATE_FAILED,
+            "Order",
+            System.nanoTime(),
+            OrderStockReturnEvent.class.getSimpleName(),
+            new OrderStockReturnEvent(returnItems)
+        );
     }
 }
