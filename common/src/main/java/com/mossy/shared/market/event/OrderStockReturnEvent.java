@@ -3,9 +3,9 @@ package com.mossy.shared.market.event;
 import java.util.List;
 
 public record OrderStockReturnEvent(
-        List<OrderItemStock> orderItems
+        List<StockItem> items
 ) {
-    public record OrderItemStock(
+    public record StockItem(
             Long productItemId,
             Integer quantity
     ) {}

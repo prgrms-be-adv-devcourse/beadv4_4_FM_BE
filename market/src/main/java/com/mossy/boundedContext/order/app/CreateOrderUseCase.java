@@ -72,8 +72,8 @@ public class CreateOrderUseCase {
     }
 
     private void publishStockCompensationEvent(List<StockCheckRequest> stockCheckRequests) {
-        List<OrderStockReturnEvent.OrderItemStock> returnItems = stockCheckRequests.stream()
-            .map(item -> new OrderStockReturnEvent.OrderItemStock(
+        List<OrderStockReturnEvent.StockItem> returnItems = stockCheckRequests.stream()
+            .map(item -> new OrderStockReturnEvent.StockItem(
                 item.productItemId(),
                 item.quantity()
             ))

@@ -86,8 +86,8 @@ public class CancelOrderUseCase {
     }
 
     private void returnStock(Order order, List<OrderItem> canceledItems) {
-        List<OrderStockReturnEvent.OrderItemStock> orderItemStocks = canceledItems.stream()
-            .map(orderItem -> new OrderStockReturnEvent.OrderItemStock(
+        List<OrderStockReturnEvent.StockItem> orderItemStocks = canceledItems.stream()
+            .map(orderItem -> new OrderStockReturnEvent.StockItem(
                 orderItem.getProductItemId(),
                 orderItem.getQuantity()
             ))
