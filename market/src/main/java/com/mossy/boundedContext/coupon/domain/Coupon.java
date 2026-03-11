@@ -63,7 +63,6 @@ public class Coupon extends BaseIdAndTime {
     private boolean isActive = false;
 
     // 수동 비활성화 여부
-    // 이 컬럼이 없으면 스케쥴러에서 계속 isActive를 true로 만듦
     @Convert(converter = YesNoConverter.class)
     @Column(name = "deactivated", nullable = false)
     private boolean deactivated = false;
@@ -106,7 +105,8 @@ public class Coupon extends BaseIdAndTime {
         this.isActive = true;
     }
 
-    public void deactivate() {
+    public void deactivate(Long sellerId) {
+        validateOwnerSeller(sellerId);
         this.isActive = false;
         this.deactivated = true;
     }
@@ -116,11 +116,14 @@ public class Coupon extends BaseIdAndTime {
     }
 
     public void update(
+            Long sellerId,
             String couponName,
             BigDecimal discountValue,
             BigDecimal maxDiscountAmount,
             LocalDateTime endAt
     ) {
+        validateOwnerSeller(sellerId);
+
         LocalDateTime newEndAt = endAt != null ? endAt : this.endAt;
         validatePeriod(this.startAt, newEndAt);
 
@@ -154,19 +157,16 @@ public class Coupon extends BaseIdAndTime {
         return maxDiscountAmount;
     }
 
-    // 쿠폰을 등록한 판매자 본인인지 검증
-    public void validateOwnerSeller(Long sellerId) {
-        if (!this.issuerId.equals(sellerId) || this.issuerType != IssuerType.SELLER) {
-            throw new DomainException(ErrorCode.COUPON_ACCESS_DENIED);
-        }
+    // 쿠폰 삭제 가능 여부 확인
+    // 수동 비활성화 또는 기간 만료된 쿠폰만 삭제 가능
+    public boolean canDelete(Long sellerId) {
+        validateOwnerSeller(sellerId);
+        return this.deactivated || LocalDateTime.now().isAfter(this.endAt);
     }
 
-    // 쿠폰 삭제 가능 여부 검증
-    // 수동 비활성화 또는 기간 만료된 쿠폰만 삭제 가능
-    public void validateDeletable() {
-        boolean isDeletable = this.deactivated || LocalDateTime.now().isAfter(this.endAt);
-        if (!isDeletable) {
-            throw new DomainException(ErrorCode.COUPON_NOT_DELETABLE);
+    private void validateOwnerSeller(Long sellerId) {
+        if (!this.issuerId.equals(sellerId) || this.issuerType != IssuerType.SELLER) {
+            throw new DomainException(ErrorCode.COUPON_ACCESS_DENIED);
         }
     }
 

@@ -155,11 +155,14 @@ public class Order extends BaseIdAndTime {
     }
 
     private void validateCancelable() {
-        if (this.state != OrderState.PAID && this.state != OrderState.PARTIAL_CANCELED) {
-            throw new DomainException(ErrorCode.ORDER_CANNOT_CANCEL);
-        }
-        if (this.getUpdatedAt().isBefore(LocalDateTime.now().minusWeeks(1))) {
+        if (this.paidAt != null && this.paidAt.isBefore(LocalDateTime.now().minusWeeks(1))) {
             throw new DomainException(ErrorCode.ORDER_PURCHASE_CONFIRMED);
+        }
+
+        if (this.state == OrderState.PENDING ||
+            this.state == OrderState.EXPIRED ||
+            this.state == OrderState.CONFIRMED) {
+            throw new DomainException(ErrorCode.ORDER_CANNOT_CANCEL);
         }
     }
 

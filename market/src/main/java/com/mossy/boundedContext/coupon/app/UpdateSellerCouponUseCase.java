@@ -20,9 +20,8 @@ public class UpdateSellerCouponUseCase {
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new DomainException(ErrorCode.COUPON_NOT_FOUND));
 
-        coupon.validateOwnerSeller(sellerId);
-
         coupon.update(
+                sellerId,
                 request.couponName(),
                 request.discountValue(),
                 request.maxDiscountAmount(),

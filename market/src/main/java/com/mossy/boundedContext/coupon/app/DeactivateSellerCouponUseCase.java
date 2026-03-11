@@ -25,9 +25,7 @@ public class DeactivateSellerCouponUseCase {
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new DomainException(ErrorCode.COUPON_NOT_FOUND));
 
-        coupon.validateOwnerSeller(sellerId);
-
-        coupon.deactivate();
+        coupon.deactivate(sellerId);
 
         userCouponRepository.findAllByCouponIdInAndStatus(List.of(couponId), UserCouponStatus.UNUSED)
                 .forEach(UserCoupon::expire);

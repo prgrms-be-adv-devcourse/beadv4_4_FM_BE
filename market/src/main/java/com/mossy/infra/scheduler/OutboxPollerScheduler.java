@@ -7,7 +7,6 @@ import com.mossy.kafka.outbox.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "outbox.poller.enabled", havingValue = "true", matchIfMissing = true)
 public class OutboxPollerScheduler {
 
     private final OutboxEventRepository outboxEventRepository;
@@ -34,16 +32,16 @@ public class OutboxPollerScheduler {
     // 실패한 이벤트 재발행 스케쥴러
     @Scheduled(fixedDelayString = "${outbox.poller.interval-ms}")
     public void pollAndPublish() {
-        LocalDateTime thirtySecondsAgo = LocalDateTime.now().minusSeconds(30);
+        LocalDateTime threshold = LocalDateTime.now().minusSeconds(10);
         List<OutboxEvent> stuckEvents = outboxEventRepository
-            .findByStatusAndCreatedAtBeforeOrderByCreatedAtAsc(
+            .findByStatusAndUpdatedAtBeforeOrderByCreatedAtAsc(
                 OutboxStatus.PENDING,
-                thirtySecondsAgo,
+                threshold,
                 PageRequest.of(0, batchSize)
             );
 
         if (stuckEvents.isEmpty()) {
-            log.debug("재발행할 Outbox 이벤트 없음 (정상)");
+            log.info("재발행할 Outbox 이벤트 없음 (정상)");
             return;
         }
 

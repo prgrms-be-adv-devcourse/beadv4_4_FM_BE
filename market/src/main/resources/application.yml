@@ -83,7 +83,6 @@ batch:
 
 outbox:
   poller:
-    enabled: true
     batch-size: 100
     max-retry: 5
     interval-ms: 500
