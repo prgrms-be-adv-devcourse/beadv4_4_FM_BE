@@ -14,5 +14,5 @@ public @interface PreventDuplicate {
 
     ErrorCode errorCode();
 
-    int ttlSeconds() default 5;
+    int ttlSeconds() default 3;
 }
