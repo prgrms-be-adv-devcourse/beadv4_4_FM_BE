@@ -9,6 +9,9 @@ import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest;
 import com.mossy.boundedContext.order.in.dto.response.OrderCreatedResponse;
 import com.mossy.boundedContext.order.out.OrderRepository;
 import com.mossy.boundedContext.order.out.external.OrderFeignClient;
+import com.mossy.kafka.KafkaTopics;
+import com.mossy.kafka.outbox.service.OutboxPublisher;
+import com.mossy.shared.market.event.OrderStockReturnEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,7 @@ public class CreateOrderUseCase {
     private final OrderRepository orderRepository;
     private final OrderFeignClient orderFeignClient;
     private final MarketPolicy marketPolicy;
+    private final OutboxPublisher outboxPublisher;
 
     @Transactional
     public OrderCreatedResponse create(
@@ -62,7 +66,20 @@ public class CreateOrderUseCase {
                     .build();
 
         } catch (Exception e) {
-            orderFeignClient.increaseStock(stockCheckRequests);
+            List<OrderStockReturnEvent.OrderItemStock> returnItems = stockCheckRequests.stream()
+                .map(item -> new OrderStockReturnEvent.OrderItemStock(
+                    item.productItemId(),
+                    item.quantity()
+                ))
+                .toList();
+
+            outboxPublisher.saveEvent(
+                KafkaTopics.ORDER_CREATE_FAILED,
+                "Order",
+                System.nanoTime(),
+                OrderStockReturnEvent.class.getSimpleName(),
+                new OrderStockReturnEvent(returnItems)
+            );
             throw e;
         }
     }

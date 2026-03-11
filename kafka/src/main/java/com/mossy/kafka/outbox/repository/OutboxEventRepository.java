@@ -18,8 +18,8 @@ public interface OutboxEventRepository extends JpaRepository<OutboxEvent, Long> 
     List<OutboxEvent> findByStatusAndCreatedAtBeforeOrderByCreatedAtAsc(
         OutboxStatus status, LocalDateTime createdBefore, Pageable pageable);
 
-    List<OutboxEvent> findByStatusAndUpdatedAtBeforeOrderByCreatedAtAsc(
-        OutboxStatus status, LocalDateTime updatedBefore, Pageable pageable);
+    List<OutboxEvent> findByStatusInAndUpdatedAtBeforeOrderByCreatedAtAsc(
+        List<OutboxStatus> statuses, LocalDateTime updatedBefore, Pageable pageable);
 
     @Modifying
     @Query("DELETE FROM OutboxEvent o WHERE o.status = :status AND o.createdAt < :cutoff")

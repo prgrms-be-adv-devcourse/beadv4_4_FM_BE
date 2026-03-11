@@ -83,6 +83,11 @@ public class KafkaConfig {
     }
 
     @Bean
+    public NewTopic orderCreateFailedTopic() {
+        return new NewTopic(KafkaTopics.ORDER_CREATE_FAILED, 1, (short) 1);
+    }
+
+    @Bean
     public NewTopic paymentCompletedTopic() {
         return new NewTopic(KafkaTopics.PAYMENT_COMPLETED, 1, (short) 1);
     }
