@@ -31,6 +31,19 @@ public class OutboxEventPublisher {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void recoverProcessingEvent(Long eventId) {
+        int updated = outboxEventRepository.updateStatus(
+            eventId,
+            OutboxStatus.PROCESSING,
+            OutboxStatus.PENDING
+        );
+
+        if (updated > 0) {
+            log.info("이벤트 복구 완료. outboxId={}", eventId);
+        }
+    }
+
     //Native query를 통해서 Race Condition 방지
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean tryAcquire(Long eventId) {

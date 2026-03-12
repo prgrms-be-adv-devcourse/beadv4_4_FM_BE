@@ -7,12 +7,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,16 +21,13 @@ import java.util.stream.Stream;
 public class DuplicatePreventAspect {
 
     private final StringRedisTemplate redisTemplate;
-    private final RedisScript<Long> unlockScript;
 
     @Around("@annotation(preventDuplicate)")
     public Object prevent(ProceedingJoinPoint joinPoint, PreventDuplicate preventDuplicate) throws Throwable {
         String key = buildRedisKey(joinPoint, preventDuplicate.keyPrefix());
 
-        String uuid = UUID.randomUUID().toString();
-
         Boolean isFirstRequest = redisTemplate.opsForValue()
-                .setIfAbsent(key, uuid, preventDuplicate.ttlSeconds(), TimeUnit.SECONDS);
+                .setIfAbsent(key, "1", preventDuplicate.ttlSeconds(), TimeUnit.SECONDS);
 
         if (Boolean.FALSE.equals(isFirstRequest)) {
             log.warn("중복 요청 차단: key={}", key);
@@ -43,21 +37,7 @@ public class DuplicatePreventAspect {
         try {
             return joinPoint.proceed();
         } finally {
-            deleteSafely(key, uuid);
-        }
-    }
-
-    private void deleteSafely(String key, String requestId) {
-        Long result = redisTemplate.execute(
-                unlockScript,
-                Collections.singletonList(key),
-                requestId
-        );
-
-        if (result == 1) {
-            log.debug("Lock 삭제 성공: key={}, requestId={}", key, requestId);
-        } else {
-            log.debug("Lock 삭제 스킵 (다른 요청의 Lock 또는 TTL 만료): key={}", key);
+            redisTemplate.delete(key);
         }
     }
 

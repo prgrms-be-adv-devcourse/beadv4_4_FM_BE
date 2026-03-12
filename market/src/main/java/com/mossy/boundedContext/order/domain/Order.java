@@ -161,7 +161,8 @@ public class Order extends BaseIdAndTime {
 
         if (this.state == OrderState.PENDING ||
             this.state == OrderState.EXPIRED ||
-            this.state == OrderState.CONFIRMED) {
+            this.state == OrderState.CONFIRMED ||
+            this.state == OrderState.CANCELED) {
             throw new DomainException(ErrorCode.ORDER_CANNOT_CANCEL);
         }
     }

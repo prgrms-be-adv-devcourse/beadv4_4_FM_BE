@@ -49,8 +49,8 @@ public class OrderScheduler {
 
         for (Order order : expiredOrders) {
             order.expire();
-            List<OrderStockReturnEvent.OrderItemStock> orderItemStocks = order.getOrderItems().stream()
-                    .map(orderItem -> new OrderStockReturnEvent.OrderItemStock(
+            List<OrderStockReturnEvent.StockItem> orderItemStocks = order.getOrderItems().stream()
+                    .map(orderItem -> new OrderStockReturnEvent.StockItem(
                             orderItem.getProductItemId(),
                             orderItem.getQuantity()
                     ))
