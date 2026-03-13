@@ -1,5 +1,6 @@
 package com.mossy.boundedContext.coupon.app;
 
+import com.mossy.boundedContext.coupon.domain.Coupon;
 import com.mossy.boundedContext.coupon.domain.UserCoupon;
 import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.in.dto.request.CouponCreateRequest;
@@ -11,6 +12,7 @@ import com.mossy.exception.ErrorCode;
 import com.mossy.global.aop.PreventDuplicate;
 import com.mossy.shared.market.enums.CouponType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CouponFacade {
@@ -35,6 +38,10 @@ public class CouponFacade {
     private final RestoreCouponsUseCase restoreCouponsUseCase;
     private final GetSellerCouponsUseCase getSellerCouponsUseCase;
     private final GetUserCouponsUseCase getUserCouponsUseCase;
+    private final GetActivatableCouponsUseCase getActivatableCouponsUseCase;
+    private final ActivateCouponUseCase activateCouponUseCase;
+    private final GetExpiredCouponsUseCase getExpiredCouponsUseCase;
+    private final ExpireCouponUseCase expireCouponUseCase;
 
     public Long createSellerCoupon(Long sellerId, CouponCreateRequest request) {
         return createSellerCouponUseCase.create(sellerId, request);
@@ -92,5 +99,31 @@ public class CouponFacade {
             Pageable pageable
     ) {
         return getSellerCouponsUseCase.getSellerCoupons(sellerId, status, couponType, pageable);
+    }
+
+    public void activateCoupons() {
+        List<Coupon> activatableCoupons = getActivatableCouponsUseCase.execute();
+
+        for (Coupon coupon : activatableCoupons) {
+            try {
+                activateCouponUseCase.execute(coupon);
+            } catch (Exception e) {
+                log.error("쿠폰 활성화 실패 - couponId: {}, error: {}",
+                        coupon.getId(), e.getMessage(), e);
+            }
+        }
+    }
+
+    public void expireCoupons() {
+        List<Coupon> expiredCoupons = getExpiredCouponsUseCase.execute();
+
+        for (Coupon coupon : expiredCoupons) {
+            try {
+                expireCouponUseCase.execute(coupon);
+            } catch (Exception e) {
+                log.error("쿠폰 만료 실패 - couponId: {}, error: {}",
+                        coupon.getId(), e.getMessage(), e);
+            }
+        }
     }
 }

@@ -1,83 +1,41 @@
 package com.mossy.infra.scheduler;
 
-import com.mossy.boundedContext.order.domain.Order;
-import com.mossy.boundedContext.order.out.OrderRepository;
-import com.mossy.kafka.KafkaTopics;
-import com.mossy.kafka.outbox.service.OutboxPublisher;
-import com.mossy.shared.market.event.OrderStockReturnEvent;
+import com.mossy.boundedContext.order.app.OrderFacade;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class OrderScheduler {
 
-    private final OrderRepository orderRepository;
+    private final OrderFacade orderFacade;
     private final JobLauncher jobLauncher;
     private final Job confirmPurchasedOrdersJob;
-    private final OutboxPublisher outboxPublisher;
-
-    public OrderScheduler(
-        OrderRepository orderRepository,
-        JobLauncher jobLauncher,
-        @Qualifier("confirmPurchasedOrdersJob") Job confirmPurchasedOrdersJob,
-        OutboxPublisher outboxPublisher
-    ) {
-        this.orderRepository = orderRepository;
-        this.jobLauncher = jobLauncher;
-        this.confirmPurchasedOrdersJob = confirmPurchasedOrdersJob;
-        this.outboxPublisher = outboxPublisher;
-    }
 
     // 주문 생성 후 15분이 지나도 PENDING인 주문은 EXPIRED로 업데이트
     // 재고 복구를 위한 이벤트를 아웃박스에 저장
-    @Transactional
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 600000)
     public void updateExpiredOrders() {
-        LocalDateTime threshold = LocalDateTime.now().minusMinutes(15);
-        List<Order> expiredOrders = orderRepository.findPendingOrdersCreatedBefore(threshold);
-
-        for (Order order : expiredOrders) {
-            order.expire();
-            List<OrderStockReturnEvent.StockItem> orderItemStocks = order.getOrderItems().stream()
-                    .map(orderItem -> new OrderStockReturnEvent.StockItem(
-                            orderItem.getProductItemId(),
-                            orderItem.getQuantity()
-                    ))
-                    .toList();
-
-            outboxPublisher.saveEvent(
-                    KafkaTopics.ORDER_STOCK_RETURN,
-                    "Order",
-                    order.getId(),
-                    OrderStockReturnEvent.class.getSimpleName(),
-                    new OrderStockReturnEvent(orderItemStocks)
-            );
-
-            log.info("주문 만료 처리 완료 - orderId: {}, 재고 복구 이벤트 저장", order.getId());
-        }
+        orderFacade.expireOrders();
     }
 
     // 매일 자정에 실행
     // 결제되지 않은 주문을 일주일 뒤 삭제
-    @Transactional
     @Scheduled(cron = "0 0 0 * * *")
     public void deleteExpiredOrders() {
-        LocalDateTime threshold = LocalDateTime.now().minusWeeks(1);
-        orderRepository.deleteExpiredOrders(threshold);
+        orderFacade.deleteExpiredOrders();
     }
 
-    // 매일 새벽 3시 실행
+    // 매일 새벽 4시 실행
     // PAID 상태에서 일주일이 지난 주문을 CONFIRMED로 변경 및 아웃박스 저장
     @Scheduled(cron = "${batch.confirm-orders.cron}")
     public void confirmAndSavePayoutEvents() {
