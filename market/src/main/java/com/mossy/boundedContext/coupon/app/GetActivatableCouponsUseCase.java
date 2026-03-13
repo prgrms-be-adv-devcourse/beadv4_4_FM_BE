@@ -7,16 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ActivateCouponsUseCase {
+public class GetActivatableCouponsUseCase {
 
     private final CouponRepository couponRepository;
 
-    @Transactional
-    public void execute() {
-        couponRepository.findActivatableCoupons(LocalDateTime.now())
-                .forEach(Coupon::activate);
+    @Transactional(readOnly = true)
+    public List<Coupon> execute() {
+        return couponRepository.findActivatableCoupons(LocalDateTime.now());
     }
 }
