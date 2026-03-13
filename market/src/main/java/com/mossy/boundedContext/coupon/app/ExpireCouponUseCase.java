@@ -5,7 +5,6 @@ import com.mossy.boundedContext.coupon.domain.UserCoupon;
 import com.mossy.boundedContext.coupon.domain.UserCouponStatus;
 import com.mossy.boundedContext.coupon.out.UserCouponRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
