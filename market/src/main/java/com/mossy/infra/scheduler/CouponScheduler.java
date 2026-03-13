@@ -16,7 +16,7 @@ public class CouponScheduler {
         couponFacade.activateCoupons();
     }
 
-    @Scheduled(cron = "30 * * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void expireCoupons() {
         couponFacade.expireCoupons();
     }
