@@ -23,7 +23,7 @@ public class OrderScheduler {
 
     // 주문 생성 후 15분이 지나도 PENDING인 주문은 EXPIRED로 업데이트
     // 재고 복구를 위한 이벤트를 아웃박스에 저장
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 600000)
     public void updateExpiredOrders() {
         orderFacade.expireOrders();
     }
