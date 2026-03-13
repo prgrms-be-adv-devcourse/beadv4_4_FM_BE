@@ -85,8 +85,8 @@ outbox:
   poller:
     batch-size: 100
     max-retry: 5
-    interval-ms: 500
+    interval-ms: 1000
   publish:
     timeout-seconds: 10
   cleanup:
-    cron: "0 0 3 * * *"
+    cron: "0 0 4 * * *"

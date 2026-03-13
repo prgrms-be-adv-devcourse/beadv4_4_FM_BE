@@ -35,6 +35,8 @@ public class CouponFacade {
     private final RestoreCouponsUseCase restoreCouponsUseCase;
     private final GetSellerCouponsUseCase getSellerCouponsUseCase;
     private final GetUserCouponsUseCase getUserCouponsUseCase;
+    private final ActivateCouponsUseCase activateCouponsUseCase;
+    private final ExpireCouponsUseCase expireCouponsUseCase;
 
     public Long createSellerCoupon(Long sellerId, CouponCreateRequest request) {
         return createSellerCouponUseCase.create(sellerId, request);
@@ -92,5 +94,13 @@ public class CouponFacade {
             Pageable pageable
     ) {
         return getSellerCouponsUseCase.getSellerCoupons(sellerId, status, couponType, pageable);
+    }
+
+    public void activateCoupons() {
+        activateCouponsUseCase.execute();
+    }
+
+    public void expireCoupons() {
+        expireCouponsUseCase.execute();
     }
 }
