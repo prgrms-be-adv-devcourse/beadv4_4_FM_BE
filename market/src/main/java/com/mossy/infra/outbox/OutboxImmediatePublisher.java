@@ -22,14 +22,15 @@ public class OutboxImmediatePublisher {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleOutboxSaved(OutboxSavedEvent event) {
+
+        boolean acquired = outboxEventPublisher.tryAcquire(event.outboxId());
+
+        if (!acquired) {
+            log.debug("다른 Pod가 이미 처리 중인 이벤트입니다. outboxId={}", event.outboxId());
+            return;
+        }
+
         try {
-            boolean acquired = outboxEventPublisher.tryAcquire(event.outboxId());
-
-            if (!acquired) {
-                log.debug("다른 Pod가 이미 처리 중인 이벤트입니다. outboxId={}", event.outboxId());
-                return;
-            }
-
             outboxEventPublisher.publishToKafka(event.outboxId(), maxRetry);
 
             log.debug("Outbox 이벤트 즉시 발행 완료. outboxId={}", event.outboxId());

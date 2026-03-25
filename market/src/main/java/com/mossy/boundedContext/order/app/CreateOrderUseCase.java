@@ -9,14 +9,15 @@ import com.mossy.boundedContext.order.in.dto.request.OrderCreatedRequest;
 import com.mossy.boundedContext.order.in.dto.response.OrderCreatedResponse;
 import com.mossy.boundedContext.order.out.OrderRepository;
 import com.mossy.boundedContext.order.out.external.OrderFeignClient;
+import com.mossy.boundedContext.order.out.external.dto.request.StockCheckRequest;
+import com.mossy.exception.DomainException;
+import com.mossy.exception.ErrorCode;
 import com.mossy.kafka.KafkaTopics;
 import com.mossy.kafka.outbox.service.OutboxPublisher;
 import com.mossy.shared.market.event.OrderStockReturnEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.mossy.boundedContext.order.out.external.dto.request.StockCheckRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class CreateOrderUseCase {
 
         } catch (Exception e) {
             publishStockCompensationEvent(stockCheckRequests);
-            throw e;
+            throw new DomainException(ErrorCode.ORDER_CREATION_FAILED);
         }
     }
 

@@ -1,7 +1,5 @@
 package com.mossy.kafka.outbox.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mossy.global.eventPublisher.EventPublisher;
 import com.mossy.kafka.outbox.domain.OutboxEvent;
 import com.mossy.kafka.outbox.event.OutboxSavedEvent;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class OutboxPublisher {
 
     private final OutboxEventRepository outboxEventRepository;
-    private final ObjectMapper objectMapper;
     private final EventPublisher eventPublisher;
 
     @Transactional(propagation = Propagation.MANDATORY)
@@ -30,23 +27,17 @@ public class OutboxPublisher {
     }
 
     private void saveEventInternal(String topic, String aggregateType, Long aggregateId, String eventKey, Object event) {
-        try {
-            String payload = objectMapper.writeValueAsString(event);
-            OutboxEvent outboxEvent = OutboxEvent.builder()
-                    .topic(topic)
-                    .aggregateType(aggregateType)
-                    .aggregateId(aggregateId)
-                    .eventKey(eventKey)
-                    .payload(payload)
-                    .build();
+        OutboxEvent outboxEvent = OutboxEvent.builder()
+                .topic(topic)
+                .aggregateType(aggregateType)
+                .aggregateId(aggregateId)
+                .eventKey(eventKey)
+                .payload(event.toString())
+                .build();
 
-            OutboxEvent savedEvent = outboxEventRepository.save(outboxEvent);
+        // 트랜잭션 커밋 후 즉시 Kafka로 발행하기 위한 Spring Event 발행
+        OutboxEvent savedEvent = outboxEventRepository.save(outboxEvent);
 
-            // 트랜잭션 커밋 후 즉시 Kafka로 발행하기 위한 Spring Event 발행
-            eventPublisher.publish(new OutboxSavedEvent(savedEvent.getId()));
-
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to save outbox event", e);
-        }
+        eventPublisher.publish(new OutboxSavedEvent(savedEvent.getId()));
     }
 }

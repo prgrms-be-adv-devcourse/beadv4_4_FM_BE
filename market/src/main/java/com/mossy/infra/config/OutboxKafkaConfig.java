@@ -19,16 +19,16 @@ public class OutboxKafkaConfig {
     private String bootstrapServers;
 
     @Bean
-    public KafkaTemplate<String, String> outboxKafkaTemplate() {
+    public KafkaTemplate<String, Object> outboxKafkaTemplate() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, org.springframework.kafka.support.serializer.JsonSerializer.class);
         props.put(ProducerConfig.ACKS_CONFIG, "all");
         props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
         props.put(ProducerConfig.RETRIES_CONFIG, 3);
 
-        ProducerFactory<String, String> factory = new DefaultKafkaProducerFactory<>(props);
+        ProducerFactory<String, Object> factory = new DefaultKafkaProducerFactory<>(props);
         return new KafkaTemplate<>(factory);
     }
 }

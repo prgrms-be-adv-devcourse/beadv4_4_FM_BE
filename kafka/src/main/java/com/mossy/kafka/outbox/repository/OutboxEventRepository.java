@@ -23,7 +23,7 @@ public interface OutboxEventRepository extends JpaRepository<OutboxEvent, Long> 
 
     @Modifying
     @Query("DELETE FROM OutboxEvent o WHERE o.status = :status AND o.createdAt < :cutoff")
-    long deleteByStatusAndCreatedAtBefore(@Param("status") OutboxStatus status, @Param("cutoff") LocalDateTime cutoff);
+    int deleteByStatusAndCreatedAtBefore(@Param("status") OutboxStatus status, @Param("cutoff") LocalDateTime cutoff);
 
     @Modifying
     @Query("UPDATE OutboxEvent o SET o.status = :newStatus WHERE o.id = :id AND o.status = :currentStatus")
