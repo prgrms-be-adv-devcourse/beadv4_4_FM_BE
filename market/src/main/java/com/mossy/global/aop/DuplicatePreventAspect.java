@@ -34,11 +34,7 @@ public class DuplicatePreventAspect {
             throw new DomainException(preventDuplicate.errorCode());
         }
 
-        try {
-            return joinPoint.proceed();
-        } finally {
-            redisTemplate.delete(key);
-        }
+        return joinPoint.proceed();
     }
 
     private String buildRedisKey(ProceedingJoinPoint joinPoint, String keyPrefix) {
