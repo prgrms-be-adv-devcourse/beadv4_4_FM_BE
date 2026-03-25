@@ -54,7 +54,7 @@ public class Order extends BaseIdAndTime {
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
