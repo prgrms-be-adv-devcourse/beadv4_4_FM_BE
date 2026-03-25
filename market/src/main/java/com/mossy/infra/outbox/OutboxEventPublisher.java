@@ -18,14 +18,14 @@ import java.util.concurrent.TimeUnit;
 public class OutboxEventPublisher {
 
     private final OutboxEventRepository outboxEventRepository;
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Value("${outbox.publish.timeout-seconds}")
     private int publishTimeoutSeconds;
 
     public OutboxEventPublisher(
         OutboxEventRepository outboxEventRepository,
-        @Qualifier("outboxKafkaTemplate") KafkaTemplate<String, String> kafkaTemplate
+        @Qualifier("outboxKafkaTemplate") KafkaTemplate<String, Object> kafkaTemplate
     ) {
         this.outboxEventRepository = outboxEventRepository;
         this.kafkaTemplate = kafkaTemplate;
