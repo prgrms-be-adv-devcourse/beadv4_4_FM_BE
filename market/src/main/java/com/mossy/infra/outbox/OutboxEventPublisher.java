@@ -20,7 +20,7 @@ public class OutboxEventPublisher {
     private final OutboxEventRepository outboxEventRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Value("${outbox.publish.timeout-seconds:10}")
+    @Value("${outbox.publish.timeout-seconds}")
     private int publishTimeoutSeconds;
 
     public OutboxEventPublisher(
