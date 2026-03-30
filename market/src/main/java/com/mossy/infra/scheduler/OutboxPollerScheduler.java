@@ -49,18 +49,13 @@ public class OutboxPollerScheduler {
         log.info("Outbox 실패 : {} 건. 재발행을 시도합니다.", stuckEvents.size());
 
         for (OutboxEvent event : stuckEvents) {
+
+            if (!outboxEventPublisher.tryAcquire(event.getId())) {
+                log.debug("다른 Pod가 이미 처리 중입니다. outboxId={}", event.getId());
+                continue;
+            }
+
             try {
-                if (event.getStatus() == OutboxStatus.PROCESSING) {
-                    outboxEventPublisher.recoverProcessingEvent(event.getId());
-                }
-
-                boolean acquired = outboxEventPublisher.tryAcquire(event.getId());
-
-                if (!acquired) {
-                    log.debug("다른 Pod가 이미 처리 중입니다. outboxId={}", event.getId());
-                    continue;
-                }
-
                 outboxEventPublisher.publishToKafka(event.getId(), maxRetry);
 
                 log.info("Outbox 이벤트 재발행 성공. outboxId={}, topic={}",
@@ -79,7 +74,7 @@ public class OutboxPollerScheduler {
     public void cleanupOldEvents() {
         LocalDateTime cutoff = LocalDateTime.now().minusDays(7);
 
-        long deletedCount = outboxEventRepository
+        int deletedCount = outboxEventRepository
             .deleteByStatusAndCreatedAtBefore(OutboxStatus.PUBLISHED, cutoff);
 
         if (deletedCount > 0) {

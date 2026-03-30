@@ -30,7 +30,7 @@ public class Cart extends BaseIdAndTime {
     @JoinColumn(name = "user_id", nullable = false)
     private MarketUser buyer;
 
-    @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
 
     public static Cart createCart(MarketUser buyer) {
